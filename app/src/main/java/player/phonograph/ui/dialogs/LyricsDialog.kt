@@ -156,7 +156,7 @@ class LyricsDialog : DialogFragment() {
             getString(R.string.action_load),
             -1,
             false,
-            requireContext().getTintedDrawable(R.drawable.ic_add_white_24dp, Color.BLACK)
+            getTintedDrawable(R.drawable.ic_add_white_24dp, Color.BLACK)
         ) { _, _ -> manualLoadLyrics() })
         // binding.types.isSelectionRequired = true
     }

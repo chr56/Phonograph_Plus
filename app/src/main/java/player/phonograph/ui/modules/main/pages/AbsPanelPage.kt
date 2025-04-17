@@ -121,10 +121,7 @@ sealed class AbsPanelPage : AbsPage() {
 
         context.attach(binding.panelToolbar.menu) {
             menuItem(NONE, NONE, 999, getString(R.string.action_settings)) {
-                icon = context.getTintedDrawable(
-                    R.drawable.ic_tune_white_24dp,
-                    context.primaryTextColor(context.nightMode),
-                )
+                icon = getTintedDrawable(R.drawable.ic_tune_white_24dp, context.primaryTextColor(context.nightMode))
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
                 onClick {
                     val optionsPopup = mainFragment.popup
@@ -157,20 +154,12 @@ sealed class AbsPanelPage : AbsPage() {
         with(menuContext) {
             if (clearMenu) rootMenu.clear()
             menuItem(getString(R.string.action_play)) {
-                icon = context
-                    .getTintedDrawable(
-                        R.drawable.ic_play_arrow_white_24dp,
-                        context.primaryTextColor(context.nightMode)
-                    )
+                icon = getTintedDrawable(R.drawable.ic_play_arrow_white_24dp, context.primaryTextColor(context.nightMode))
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
                 onClick { onPlay(it) }
             }
             menuItem(getString(R.string.action_shuffle_all)) {
-                icon = context
-                    .getTintedDrawable(
-                        R.drawable.ic_shuffle_white_24dp,
-                        context.primaryTextColor(context.nightMode)
-                    )
+                icon = getTintedDrawable(R.drawable.ic_shuffle_white_24dp, context.primaryTextColor(context.nightMode))
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
                 onClick { onShuffle(it) }
             }

@@ -41,7 +41,6 @@ import player.phonograph.util.ui.textColorTransitionAnimator
 import util.theme.color.darkenColor
 import util.theme.color.lightenColor
 import util.theme.color.primaryTextColor
-import util.theme.color.secondaryTextColor
 import util.theme.materials.MaterialColor
 import androidx.annotation.ColorInt
 import androidx.lifecycle.Lifecycle
@@ -416,8 +415,8 @@ class PlayerQueueFragment : AbsMusicServiceFragment() {
     }
 
     //region Toolbar Actions
-    private fun lookupRepeatModeIcon(context: Context, repeatMode: RepeatMode, color: Int): Drawable? =
-        context.getTintedDrawable(
+    private fun lookupRepeatModeIcon(repeatMode: RepeatMode, color: Int): Drawable? =
+        getTintedDrawable(
             when (repeatMode) {
                 RepeatMode.NONE               -> R.drawable.ic_repeat_off_white_24dp
                 RepeatMode.REPEAT_QUEUE       -> R.drawable.ic_repeat_white_24dp
@@ -425,8 +424,8 @@ class PlayerQueueFragment : AbsMusicServiceFragment() {
             }, color
         )
 
-    private fun lookupShuffleModeIcon(context: Context, shuffleMode: ShuffleMode, color: Int): Drawable? =
-        context.getTintedDrawable(
+    private fun lookupShuffleModeIcon(shuffleMode: ShuffleMode, color: Int): Drawable? =
+        getTintedDrawable(
             when (shuffleMode) {
                 ShuffleMode.NONE    -> R.drawable.ic_shuffle_disabled_white_24dp
                 ShuffleMode.SHUFFLE -> R.drawable.ic_shuffle_white_24dp
@@ -444,23 +443,23 @@ class PlayerQueueFragment : AbsMusicServiceFragment() {
         color: Int,
     ) {
         repeatModeItem = menuItem(getString(R.string.action_repeat_mode)) {
-            icon = lookupRepeatModeIcon(context, repeatMode, color)
+            icon = lookupRepeatModeIcon(repeatMode, color)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
             onClick { toggleRepeatMode() }
         }
         shuffleModeItem = menuItem(getString(R.string.action_shuffle_mode)) {
-            icon = lookupShuffleModeIcon(context, shuffleMode, color)
+            icon = lookupShuffleModeIcon(shuffleMode, color)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
             onClick { toggleShuffleMode() }
         }
     }
 
     private fun updateRepeatModeIcon(context: Context, repeatMode: RepeatMode, color: Int) {
-        repeatModeItem?.icon = lookupRepeatModeIcon(context, repeatMode, color)
+        repeatModeItem?.icon = lookupRepeatModeIcon(repeatMode, color)
     }
 
     private fun updateShuffleModeIcon(context: Context, shuffleMode: ShuffleMode, color: Int) {
-        shuffleModeItem?.icon = lookupShuffleModeIcon(context, shuffleMode, color)
+        shuffleModeItem?.icon = lookupShuffleModeIcon(shuffleMode, color)
     }
 
     private fun MenuContext.setupToolbarOverflowMenu() {

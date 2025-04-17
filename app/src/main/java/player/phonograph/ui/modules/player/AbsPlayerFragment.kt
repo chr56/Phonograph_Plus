@@ -337,7 +337,7 @@ abstract class AbsPlayerFragment :
         observe(viewModel.favoriteState) { (song, isFavorite) ->
             if (song != null && song == queueViewModel.currentSong.value) {
                 favoriteMenuItem?.apply {
-                    icon = requireContext().getTintedDrawable(
+                    icon = getTintedDrawable(
                         if (isFavorite) R.drawable.ic_favorite_white_24dp else R.drawable.ic_favorite_border_white_24dp,
                         toolbarIconColor(requireContext(), Color.TRANSPARENT)
                     )
@@ -400,7 +400,7 @@ private fun buildPlayerToolbar(
         // visible
         lyricsMenuItem = menuItem(activity.getString(R.string.lyrics)) {
             order = 0
-            icon = activity.getTintedDrawable(R.drawable.ic_comment_text_outline_white_24dp, Color.WHITE)
+            icon = context.getTintedDrawable(R.drawable.ic_comment_text_outline_white_24dp, Color.WHITE)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
             visible = false
             itemId = R.id.action_show_lyrics
@@ -414,7 +414,7 @@ private fun buildPlayerToolbar(
 
         favoriteMenuItem = menuItem(activity.getString(R.string.action_add_to_favorites)) {
             order = 1
-            icon = activity.getTintedDrawable(R.drawable.ic_favorite_border_white_24dp, Color.WHITE)
+            icon = context.getTintedDrawable(R.drawable.ic_favorite_border_white_24dp, Color.WHITE)
             // default state
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
             itemId = R.id.action_toggle_favorite

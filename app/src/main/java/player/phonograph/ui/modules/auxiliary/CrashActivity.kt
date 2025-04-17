@@ -135,10 +135,7 @@ class CrashActivity : ToolbarActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         attach(menu) {
             menuItem(0, R.id.nav_settings, 1, getString(R.string.action_settings)) {
-                icon = getTintedDrawable(
-                    R.drawable.ic_settings_white_24dp,
-                    context.primaryTextColor(colorPrimary)
-                )
+                icon = getTintedDrawable(R.drawable.ic_settings_white_24dp, context.primaryTextColor(colorPrimary))
                 showAsActionFlag = SHOW_AS_ACTION_IF_ROOM
                 onClick {
                     Handler(Looper.getMainLooper()).postDelayed(

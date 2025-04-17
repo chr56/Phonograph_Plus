@@ -21,7 +21,7 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.SettingObserver
 import player.phonograph.ui.modules.main.MainActivity
 import player.phonograph.util.permissions.checkNotificationPermission
-import player.phonograph.util.theme.createTintedDrawable
+import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.ui.BitmapUtil
 import util.theme.color.primaryTextColor
 import util.theme.color.secondaryTextColor
@@ -537,7 +537,7 @@ class PlayingNotificationManager : ServiceComponent {
          */
         private fun icon(action: NotificationAction, status: MusicServiceStatus, backgroundColor: Int): Bitmap =
             BitmapUtil.createBitmap(
-                service.createTintedDrawable(action.icon(status), service.primaryTextColor(backgroundColor))!!, 1.5f
+                service.getTintedDrawable(action.icon(status), service.primaryTextColor(backgroundColor))!!, 1.5f
             )
 
     }

@@ -39,7 +39,7 @@ class FilesChooserAdapter(
                 }
                 shortSeparator.visibility = if (position == dataSet.size - 1) GONE else VISIBLE
                 image.setImageDrawable(
-                    image.context.getTintedDrawable(
+                    image.getTintedDrawable(
                         if (item is FileEntity.File) R.drawable.ic_file_music_white_24dp
                         else R.drawable.ic_folder_white_24dp,
                         themeIconColor(context)

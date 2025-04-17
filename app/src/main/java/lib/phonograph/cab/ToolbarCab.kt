@@ -148,7 +148,7 @@ class ToolbarCab internal constructor(val toolbar: Toolbar) {
             menuHandler!!.invoke(this)
             // tint
             val iconRes = androidx.appcompat.R.drawable.abc_ic_menu_overflow_material
-            overflowIcon = toolbar.context.getTintedDrawable(iconRes, titleTextColor)
+            overflowIcon = getTintedDrawable(iconRes, titleTextColor)
             for (item in menu) {
                 item.icon = item.icon?.apply { setTint(titleTextColor) }
             }

@@ -149,7 +149,7 @@ class MainFragment : Fragment() {
             menuItem {
                 itemId = R.id.action_search
                 titleRes(R.string.action_search)
-                icon = mainActivity.getTintedDrawable(R.drawable.ic_search_white_24dp, primaryTextColor)
+                icon = getTintedDrawable(R.drawable.ic_search_white_24dp, primaryTextColor)
                 showAsActionFlag = SHOW_AS_ACTION_ALWAYS
                 onClick {
                     startActivity(Intent(mainActivity, SearchActivity::class.java))

@@ -76,7 +76,7 @@ fun setupDrawerMenu(
             for ((page, tab) in pagesConfig.withIndex()) {
                 menuItem {
                     groupId = mainGroupId
-                    icon = activity.getTintedDrawable(Pages.getTintedIconRes(tab), textColorPrimary)
+                    icon = getTintedDrawable(Pages.getTintedIconRes(tab), textColorPrimary)
                     title = Pages.getDisplayName(tab, activity)
                     itemId = 1000 + page
                     onClick {

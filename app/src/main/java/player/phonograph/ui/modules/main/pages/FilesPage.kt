@@ -104,10 +104,7 @@ class FilesPage : AbsPage() {
         val context = mainActivity
         context.attach(binding.panelToolbar.menu) {
             menuItem(NONE, NONE, 999, getString(R.string.action_settings)) {
-                icon = context.getTintedDrawable(
-                    R.drawable.ic_tune_white_24dp,
-                    context.primaryTextColor(context.nightMode),
-                )
+                icon = getTintedDrawable(R.drawable.ic_tune_white_24dp, context.primaryTextColor(context.nightMode))
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
                 onClick {
                     mainFragment.popup.onShow = ::configPopup
@@ -145,11 +142,10 @@ class FilesPage : AbsPage() {
 
     private fun configAppBarActionButton(menuContext: MenuContext) = with(menuContext) {
         menuItem(getString(R.string.action_play)) {
-            icon = context
-                .getTintedDrawable(
-                    R.drawable.ic_play_arrow_white_24dp,
-                    context.primaryTextColor(context.nightMode)
-                )
+            icon = getTintedDrawable(
+                R.drawable.ic_play_arrow_white_24dp,
+                context.primaryTextColor(context.nightMode)
+            )
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
             onClick {
                 lifecycleScope.launch(Dispatchers.IO) {
@@ -159,11 +155,7 @@ class FilesPage : AbsPage() {
             }
         }
         menuItem(getString(R.string.action_shuffle_all)) {
-            icon = context
-                .getTintedDrawable(
-                    R.drawable.ic_shuffle_white_24dp,
-                    context.primaryTextColor(context.nightMode)
-                )
+            icon = getTintedDrawable(R.drawable.ic_shuffle_white_24dp, context.primaryTextColor(context.nightMode))
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
             onClick {
                 lifecycleScope.launch(Dispatchers.IO) {

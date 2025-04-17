@@ -51,7 +51,7 @@ class ReportIssueDialog : DialogFragment() {
 
         binding.buttonSend.tint(view.context.primaryColor(), true, view.context.nightMode)
         binding.buttonSend.setImageDrawable(
-            view.context.getTintedDrawable(R.drawable.ic_send_white_24dp, Color.WHITE)
+            view.getTintedDrawable(R.drawable.ic_send_white_24dp, Color.WHITE)
         )
         binding.buttonSend.setOnClickListener {
             it.context.copyDeviceInfoToClipBoard()

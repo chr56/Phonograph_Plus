@@ -58,7 +58,7 @@ class BreadCrumbView : FrameLayout {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = layoutManager
 
-        val drawable = context.getTintedDrawable(
+        val drawable = getTintedDrawable(
             R.drawable.ic_keyboard_arrow_right_white_24dp,
             context.primaryTextColor(context.nightMode)
         )!!

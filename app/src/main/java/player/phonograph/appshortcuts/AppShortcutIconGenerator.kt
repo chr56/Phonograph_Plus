@@ -4,7 +4,7 @@ import player.phonograph.R
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.settings.ThemeSetting
-import player.phonograph.util.theme.createTintedDrawable
+import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.ui.BitmapUtil
 import androidx.annotation.RequiresApi
 import androidx.core.graphics.drawable.IconCompat
@@ -52,8 +52,8 @@ object AppShortcutIconGenerator {
 
     private fun generateThemedIcon(context: Context, iconId: Int, foregroundColor: Int, backgroundColor: Int): IconCompat {
         // Get and tint foreground and background drawables
-        val vectorDrawable = context.createTintedDrawable(iconId, foregroundColor)
-        val backgroundDrawable = context.createTintedDrawable(R.drawable.ic_app_shortcut_background, backgroundColor)
+        val vectorDrawable = context.getTintedDrawable(iconId, foregroundColor)
+        val backgroundDrawable = context.getTintedDrawable(R.drawable.ic_app_shortcut_background, backgroundColor)
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val adaptiveIconDrawable = AdaptiveIconDrawable(backgroundDrawable, vectorDrawable)
             IconCompat.createWithAdaptiveBitmap(BitmapUtil.createBitmap(adaptiveIconDrawable))
