@@ -29,6 +29,11 @@ class PlayerFragmentViewModel : ViewModel() {
         }
     }
 
+    fun refreshFavoriteState(context: Context) {
+        val song = favoriteState.value.first ?: return
+        updateFavoriteState(context, song)
+    }
+
     private var _shownToolbar: MutableStateFlow<Boolean> = MutableStateFlow(true)
     val showToolbar get() = _shownToolbar.asStateFlow()
 

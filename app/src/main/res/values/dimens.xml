@@ -11,6 +11,7 @@
     <!-- 3x standard action bar height (56dp) -->
     <dimen name="toolbar_scrim_height">168dp</dimen>
 
+    <dimen name="player_queue_panel_height_min">96dp</dimen>
     <dimen name="progress_container_height">20dp</dimen>
     <dimen name="fab_media_controller_container_height">100dp</dimen>
     <dimen name="media_controller_container_height">84dp</dimen>

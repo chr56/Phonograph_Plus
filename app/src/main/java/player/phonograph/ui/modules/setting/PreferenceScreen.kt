@@ -35,7 +35,7 @@ import player.phonograph.ui.modules.setting.dialog.LastAddedPlaylistIntervalDial
 import player.phonograph.ui.modules.setting.dialog.MaterialColorPickerDialog
 import player.phonograph.ui.modules.setting.dialog.MonetColorPickerDialog
 import player.phonograph.ui.modules.setting.dialog.NotificationActionsConfigDialog
-import player.phonograph.ui.modules.setting.dialog.NowPlayingScreenPreferenceDialog
+import player.phonograph.ui.modules.setting.dialog.NowPlayingScreenStylePreferenceDialog
 import player.phonograph.ui.modules.setting.dialog.PathFilterPreferenceDialog
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.reportError
@@ -113,12 +113,9 @@ fun PhonographPreferenceScreen() {
             )
             DialogPref(
                 model = DialogPreferenceModel(
-                    dialog = NowPlayingScreenPreferenceDialog::class.java,
+                    dialog = NowPlayingScreenStylePreferenceDialog::class.java,
                     titleRes = R.string.pref_title_player_style,
-                    currentValueForHint = { context ->
-                        val screen = Setting(context).Composites[Keys.nowPlayingScreen].flowData()
-                        context.getString(screen.titleRes)
-                    }
+                    summaryRes = R.string.pref_title_now_playing_screen_style
                 ))
             LibraryCategoriesSetting()
             BooleanPref(

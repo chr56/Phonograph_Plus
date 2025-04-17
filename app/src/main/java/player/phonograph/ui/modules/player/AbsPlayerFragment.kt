@@ -2,95 +2,149 @@ package player.phonograph.ui.modules.player
 
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
 import lib.storage.launcher.IOpenFileStorageAccessible
 import lib.storage.launcher.OpenDocumentContract
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.context.GlobalContext
 import player.phonograph.R
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.lyrics.LrcLyrics
+import player.phonograph.model.ui.NowPlayingScreenStyle
+import player.phonograph.model.ui.PlayerBaseStyle
+import player.phonograph.model.ui.PlayerControllerStyle
 import player.phonograph.model.ui.UnarySlidingUpPanelProvider
 import player.phonograph.repo.loader.FavoriteSongs
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.service.queue.QueueManager
 import player.phonograph.ui.dialogs.LyricsDialog
-import player.phonograph.ui.dialogs.QueueSnapshotsDialog
 import player.phonograph.ui.dialogs.SleepTimerDialog
 import player.phonograph.ui.dialogs.SpeedControlDialog
 import player.phonograph.ui.modules.panel.AbsMusicServiceFragment
 import player.phonograph.ui.modules.panel.PanelViewModel
 import player.phonograph.ui.modules.panel.QueueViewModel
 import player.phonograph.ui.modules.player.PlayerAlbumCoverFragment.Companion.VISIBILITY_ANIM_DURATION
-import player.phonograph.ui.modules.playlist.dialogs.CreatePlaylistDialogActivity
-import player.phonograph.ui.modules.setting.dialog.NowPlayingScreenPreferenceDialog
+import player.phonograph.ui.modules.player.controller.PlayerControllerFragment
+import player.phonograph.ui.modules.setting.dialog.NowPlayingScreenStylePreferenceDialog
 import player.phonograph.util.NavigationUtil
+import player.phonograph.util.parcelable
 import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.theme.tintButtons
+import player.phonograph.util.ui.PHONOGRAPH_ANIM_TIME
+import player.phonograph.util.ui.backgroundColorTransitionAnimator
+import player.phonograph.util.ui.isLandscape
+import player.phonograph.util.ui.setupValueAnimator
 import player.phonograph.util.warning
+import util.theme.color.primaryTextColor
+import util.theme.color.secondaryTextColor
 import util.theme.color.toolbarIconColor
 import util.theme.view.menu.setMenuColor
+import util.theme.view.menu.tintOverflowButtonColor
+import util.theme.view.menu.tintToolbarMenuActionIcons
+import util.theme.view.toolbar.setToolbarTextColor
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.ColorInt
 import androidx.appcompat.widget.Toolbar
+import androidx.core.animation.doOnEnd
+import androidx.core.animation.doOnStart
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.coroutineScope
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.lifecycle.withCreated
 import androidx.lifecycle.withResumed
 import androidx.lifecycle.withStarted
+import android.animation.Animator
+import android.animation.AnimatorSet
+import android.animation.ValueAnimator
+import android.content.Context
 import android.graphics.Color
+import android.graphics.Point
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewAnimationUtils.createCircularReveal
+import android.view.ViewGroup
+import kotlin.math.max
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 abstract class AbsPlayerFragment :
         AbsMusicServiceFragment(), UnarySlidingUpPanelProvider, SlidingUpPanelLayout.PanelSlideListener {
+
+    companion object {
+        const val ARGUMENT_STYLE = "player_style"
+    }
+
+    protected var argumentStyle: NowPlayingScreenStyle? = null
 
     protected val viewModel: PlayerFragmentViewModel by viewModels()
     protected val lyricsViewModel: LyricsViewModel by viewModels({ requireActivity() })
     protected val panelViewModel: PanelViewModel by viewModel(ownerProducer = { requireActivity() })
 
-    protected lateinit var playbackControlsFragment: AbsPlayerControllerFragment<*>
+    protected lateinit var playbackControlsFragment: PlayerControllerFragment<*>
     protected lateinit var queueFragment: PlayerQueueFragment
+
+    protected abstract val slidingUpPanel: SlidingUpPanelLayout?
+
+    protected abstract val controllerPosition: Point
 
     protected abstract fun requireToolBarContainer(): View?
     protected abstract fun requireToolbar(): Toolbar
 
+    protected abstract fun inflateView(inflater: LayoutInflater): View
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        lifecycle.addObserver(MediaStoreListener())
+
+        argumentStyle = arguments?.parcelable<NowPlayingScreenStyle>(ARGUMENT_STYLE)
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View? {
+        val inflated = inflateView(inflater)
+        val controller =
+            PlayerControllerFragment.newInstance(argumentStyle?.controllerStyle ?: PlayerControllerStyle.DEFAULT)
+        val queue = PlayerQueueFragment.newInstance(
+            withShadow = argumentStyle?.baseStyle == PlayerBaseStyle.FLAT, // todo
+            withActionButtons = argumentStyle?.options?.showModeButtonsForQueue == true,
+            displayCurrentSong = !isLandscape(resources)
+        )
+        childFragmentManager.commit {
+            replace(R.id.playback_controls_fragment, controller)
+            replace(R.id.player_queue_fragment, queue)
+        }
+        childFragmentManager.executePendingTransactions()
+        playbackControlsFragment = controller
+        queueFragment = queue
+        return inflated
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        slidingUpPanel?.addPanelSlideListener(this)
         initToolbar()
-        playbackControlsFragment =
-            childFragmentManager.findFragmentById(R.id.playback_controls_fragment) as AbsPlayerControllerFragment<*>
-
-        queueFragment = childFragmentManager.findFragmentById(R.id.player_queue_fragment) as PlayerQueueFragment
-
         observeState()
     }
 
     override fun onDestroyView() {
         favoriteMenuItem = null
         lyricsMenuItem = null
+        currentAnimatorSet?.cancel()
         super.onDestroyView()
     }
 
-    //
-    // Toolbar
-    //
-
+    //region Toolbar
     private var lyricsMenuItem: MenuItem? = null
     private var favoriteMenuItem: MenuItem? = null
 
@@ -108,15 +162,22 @@ abstract class AbsPlayerFragment :
         }
     }
 
-    private fun showToolbar(toolbar: View) {
-        toolbar.visibility = View.VISIBLE
-        toolbar.animate().alpha(1f).setDuration(VISIBILITY_ANIM_DURATION)
+    private fun updateToolbarVisibility(toolbar: View, visibility: Boolean, animated: Boolean) {
+        if (animated) {
+            if (visibility) {
+                toolbar.animate().alpha(1f).setDuration(VISIBILITY_ANIM_DURATION)
+                    .withStartAction { toolbar.visibility = View.VISIBLE }
+                    .start()
+            } else {
+                toolbar.animate().alpha(0f).setDuration(VISIBILITY_ANIM_DURATION)
+                    .withEndAction { toolbar.visibility = View.GONE }
+                    .start()
+            }
+        } else {
+            toolbar.visibility = if (visibility) View.VISIBLE else View.GONE
+        }
     }
-
-    private fun hideToolbar(toolbar: View) {
-        toolbar.animate().alpha(0f).setDuration(VISIBILITY_ANIM_DURATION)
-            .withEndAction { toolbar.visibility = View.GONE }
-    }
+    //endregion
 
     fun onShow() {
         playbackControlsFragment.onShow()
@@ -127,6 +188,9 @@ abstract class AbsPlayerFragment :
         collapseToNormal()
     }
 
+    //region SlideUpPanel
+    override fun onPanelSlide(panel: View, slideOffset: Float) {}
+
     override fun onPanelStateChanged(panel: View, previousState: PanelState, newState: PanelState) {
         when (newState) {
             PanelState.EXPANDED  -> {
@@ -136,11 +200,7 @@ abstract class AbsPlayerFragment :
 
             PanelState.COLLAPSED -> {
                 collapseBackPressedCallback.remove()
-                lifecycleScope.launch(Dispatchers.Main) {
-                    withCreated {
-                        queueFragment.resetToCurrentPosition(true)
-                    }
-                }
+                queueFragment.resetToCurrentPosition(true)
                 if (panel.id == R.id.player_sliding_layout) queueFragment.positionLockState = false
             }
 
@@ -159,24 +219,113 @@ abstract class AbsPlayerFragment :
                 collapseToNormal()
             }
         }
+    //endregion
 
     protected abstract fun collapseToNormal()
 
-    private lateinit var listener: MediaStoreListener
-    override fun onCreate(savedInstanceState: Bundle?) {
-        listener = MediaStoreListener()
-        super.onCreate(savedInstanceState)
-        lifecycle.addObserver(listener)
-    }
+    open val useTransparentStatusbar: Boolean = false
 
-    private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
-        override fun onMediaStoreChanged() {
-            viewModel.updateFavoriteState(requireContext(), MusicPlayerRemote.currentSong)
+    private var currentAnimatorSet: AnimatorSet? = null
+
+    private fun onColorChanged(oldColor: Int, newColor: Int) {
+        val animated = lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
+        if (animated) {
+            currentAnimatorSet?.end()
+            currentAnimatorSet?.cancel()
+            currentAnimatorSet = buildDefaultColorChangeAnimatorSet(oldColor, newColor).also { it.start() }
+        } else {
+            currentAnimatorSet?.cancel()
+            forceChangeColor(newColor)
         }
     }
 
-    protected abstract fun forceChangeColor(@ColorInt newColor: Int)
-    protected abstract fun changeColorWithAnimations(@ColorInt oldColor: Int, @ColorInt newColor: Int)
+    protected abstract val coloredToolbar: Boolean
+
+    protected abstract val playerColoredBackground: View
+    protected abstract val playerColoredBackgroundOverlay: View
+
+    protected fun buildDefaultColorChangeAnimatorSet(
+        @ColorInt oldColor: Int,
+        @ColorInt newColor: Int,
+    ): AnimatorSet {
+
+        // todo: fix offset
+        val rippleCenter = playbackControlsFragment.provideRippleCenter()
+        val backgroundAnimator: Animator? =
+            if (rippleCenter != null && playerColoredBackground.isAttachedToWindow) {
+                makeCircularRevealAnimation(
+                    playerColoredBackground,
+                    playerColoredBackgroundOverlay,
+                    rippleCenter, controllerPosition,
+                    newColor
+                )
+            } else {
+                playerColoredBackground.backgroundColorTransitionAnimator(oldColor, newColor)
+            }
+
+        val toolbarAnimator =
+            if (coloredToolbar) requireToolbar().backgroundColorTransitionAnimator(oldColor, newColor) else null
+
+
+        val toolbarTextAnimator =
+            if (coloredToolbar) {
+                ValueAnimator.ofArgb(oldColor, newColor)
+                    .setupValueAnimator { setToolbarWidgetColor(it.animatedValue as Int) }
+            } else {
+                null
+            }
+
+        return AnimatorSet().apply {
+            duration = PHONOGRAPH_ANIM_TIME
+            play(backgroundAnimator).apply {
+                if (toolbarAnimator != null) with(toolbarAnimator)
+                if (toolbarTextAnimator != null) with(toolbarTextAnimator)
+            }
+        }
+    }
+
+    private fun makeCircularRevealAnimation(
+        background: View,
+        backgroundOverlay: View,
+        rippleCenter: Point,
+        offset: Point,
+        @ColorInt newColor: Int,
+    ): Animator {
+        val radius = max(backgroundOverlay.width, backgroundOverlay.height)
+        return createCircularReveal(
+            backgroundOverlay,
+            rippleCenter.x + offset.x, rippleCenter.y + offset.y,
+            0f, radius.toFloat(),
+        ).apply {
+            doOnStart {
+                backgroundOverlay.setBackgroundColor(newColor)
+                backgroundOverlay.visibility = View.VISIBLE
+            }
+            doOnEnd {
+                background.setBackgroundColor(newColor)
+                backgroundOverlay.visibility = View.GONE
+            }
+        }
+    }
+
+    protected open fun forceChangeColor(@ColorInt newColor: Int) {
+        playbackControlsFragment.requireView().setBackgroundColor(newColor)
+        if (coloredToolbar) {
+            requireToolbar().setBackgroundColor(newColor)
+            setToolbarWidgetColor(newColor)
+        }
+    }
+
+    protected fun setToolbarWidgetColor(backgroundColor: Int) {
+        val context: Context = requireContext()
+        val titleTextColor = context.primaryTextColor(backgroundColor)
+        val subtitleTextColor = context.secondaryTextColor(backgroundColor)
+
+        val playerToolbar = requireToolbar()
+        playerToolbar.setToolbarTextColor(titleTextColor, titleTextColor, subtitleTextColor)
+        tintToolbarMenuActionIcons(playerToolbar.menu, titleTextColor)
+        tintOverflowButtonColor(context, titleTextColor)
+    }
 
     private fun observeState() {
         observe(queueViewModel.currentSong) { song ->
@@ -185,62 +334,52 @@ abstract class AbsPlayerFragment :
                 viewModel.updateFavoriteState(requireContext(), song)
             }
         }
-        observe(viewModel.favoriteState) {
-            if (it.first != null && it.first == queueViewModel.currentSong.value) {
-                val isFavorite = it.second
-                lifecycle.withStarted {
-                    val res =
-                        if (isFavorite) R.drawable.ic_favorite_white_24dp else R.drawable.ic_favorite_border_white_24dp
-                    val color = toolbarIconColor(requireContext(), Color.TRANSPARENT)
-                    favoriteMenuItem?.apply {
-                        icon = requireContext().getTintedDrawable(res, color)
-                        title =
-                            if (isFavorite) getString(R.string.action_remove_from_favorites)
-                            else getString(R.string.action_add_to_favorites)
-                    }
+        observe(viewModel.favoriteState) { (song, isFavorite) ->
+            if (song != null && song == queueViewModel.currentSong.value) {
+                favoriteMenuItem?.apply {
+                    icon = requireContext().getTintedDrawable(
+                        if (isFavorite) R.drawable.ic_favorite_white_24dp else R.drawable.ic_favorite_border_white_24dp,
+                        toolbarIconColor(requireContext(), Color.TRANSPARENT)
+                    )
+                    title =
+                        if (isFavorite) getString(R.string.action_remove_from_favorites)
+                        else getString(R.string.action_add_to_favorites)
                 }
             }
         }
         observe(viewModel.showToolbar) {
             val container = requireToolBarContainer() ?: return@observe
-            withStarted {
-                if (it) {
-                    showToolbar(container)
-                } else {
-                    hideToolbar(container)
-                }
-            }
+            updateToolbarVisibility(container, it, animated = isResumed)
         }
         observe(lyricsViewModel.lyricsInfo) { lyricsInfo ->
-            withContext(Dispatchers.Main) {
-                lyricsMenuItem?.isVisible = !lyricsInfo.isNullOrEmpty()
-                val activated = lyricsInfo?.activatedLyrics
-                MusicPlayerRemote.replaceLyrics(activated as? LrcLyrics)
-            }
+            MusicPlayerRemote.replaceLyrics(lyricsInfo?.activatedLyrics as? LrcLyrics)
+            lyricsMenuItem?.isVisible = !lyricsInfo.isNullOrEmpty()
         }
         observe(panelViewModel.colorChange) { (oldColor, newColor) ->
-            withResumed {
-                val animated = lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
-                if (animated) {
-                    changeColorWithAnimations(oldColor, newColor)
-                } else {
-                    forceChangeColor(newColor)
-                }
+            withResumed { // fixme: fix lifecycle issues
+                onColorChanged(oldColor, newColor)
             }
-
         }
     }
 
     protected inline fun <reified T> observe(
         flow: StateFlow<T>,
-        state: Lifecycle.State = Lifecycle.State.CREATED,
         lifecycle: Lifecycle = this.lifecycle,
+        state: Lifecycle.State = Lifecycle.State.CREATED,
         scope: CoroutineScope = lifecycle.coroutineScope,
         flowCollector: FlowCollector<T>,
     ) {
         scope.launch {
             lifecycle.repeatOnLifecycle(state) {
                 flow.collect(flowCollector)
+            }
+        }
+    }
+
+    private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
+        override fun onMediaStoreChanged() {
+            lifecycleScope.launch {
+                withStarted { viewModel.refreshFavoriteState(requireContext()) }
             }
         }
     }
@@ -275,10 +414,7 @@ private fun buildPlayerToolbar(
 
         favoriteMenuItem = menuItem(activity.getString(R.string.action_add_to_favorites)) {
             order = 1
-            icon =
-                activity.getTintedDrawable(
-                    R.drawable.ic_favorite_border_white_24dp, Color.WHITE
-                )
+            icon = activity.getTintedDrawable(R.drawable.ic_favorite_border_white_24dp, Color.WHITE)
             // default state
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
             itemId = R.id.action_toggle_favorite
@@ -293,23 +429,10 @@ private fun buildPlayerToolbar(
 
         // collapsed
         menuItem {
-            title = activity.getString(R.string.action_clear_playing_queue)
+            title = activity.getString(R.string.change_now_playing_screen)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
             onClick {
-                MusicPlayerRemote.pauseSong()
-                MusicPlayerRemote.queueManager.clearQueue()
-                true
-            }
-        }
-        menuItem {
-            title = activity.getString(R.string.action_save_playing_queue)
-            showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
-            onClick {
-                activity.startActivity(
-                    CreatePlaylistDialogActivity.Parameter.buildLaunchingIntentForCreating(
-                        activity, MusicPlayerRemote.playingQueue
-                    )
-                )
+                NowPlayingScreenStylePreferenceDialog().show(childFragmentManager, "NOW_PLAYING_SCREEN")
                 true
             }
         }
@@ -355,45 +478,6 @@ private fun buildPlayerToolbar(
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
             onClick {
                 SpeedControlDialog().show(childFragmentManager, "SPEED_CONTROL_DIALOG")
-                true
-            }
-        }
-        menuItem {
-            title = activity.getString(R.string.change_now_playing_screen)
-            showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
-            onClick {
-                NowPlayingScreenPreferenceDialog()
-                    .show(childFragmentManager, "NOW_PLAYING_SCREEN")
-                true
-            }
-        }
-        menuItem {
-            title = context.getString(R.string.playing_queue_history)
-            showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
-            onClick {
-                QueueSnapshotsDialog()
-                    .show(childFragmentManager, "QUEUE_SNAPSHOTS")
-                true
-            }
-        }
-        menuItem {
-            title = activity.getString(R.string.action_clean_missing_items)
-            showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
-            onClick {
-                MaterialAlertDialogBuilder(context)
-                    .setTitle(R.string.action_clean)
-                    .setMessage(R.string.action_clean_missing_items)
-                    .setPositiveButton(activity.getString(android.R.string.ok)) { dialog, _ ->
-                        val queueManager: QueueManager = GlobalContext.get().get()
-                        queueManager.clean()
-                        dialog.dismiss()
-                    }
-                    .setNegativeButton(activity.getString(android.R.string.cancel)) { dialog, _ ->
-                        dialog.dismiss()
-                    }
-                    .create()
-                    .tintButtons()
-                    .show()
                 true
             }
         }

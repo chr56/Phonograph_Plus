@@ -15,6 +15,7 @@
     <declare-styleable name="player_queue">
         <attr name="displayCurrentSong" format="boolean" />
         <attr name="withShadow" format="boolean" />
+        <attr name="withActionButtons" format="boolean" />
     </declare-styleable>
 
 </resources>

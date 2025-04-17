@@ -14,18 +14,24 @@
 
     <include
         android:id="@+id/current_song"
-        layout="@layout/item_list"/>
+        layout="@layout/item_list" />
 
-    <TextView
-        android:id="@+id/player_queue_sub_header"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/player_queue_toolbar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/player_queue_sub_header_height"
-        android:gravity="center_vertical"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:text="@string/up_next"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        android:textColor="?android:textColorSecondary" />
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp">
+
+        <TextView
+            android:id="@+id/player_queue_sub_header"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/player_queue_sub_header_height"
+            android:gravity="center_vertical"
+            android:text="@string/up_next"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:textColor="?android:textColorSecondary" />
+    </androidx.appcompat.widget.Toolbar>
 
     <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
         android:id="@+id/player_recycler_view"

@@ -6,15 +6,14 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import player.phonograph.R
 import player.phonograph.databinding.SlidingMusicPanelLayoutBinding
-import player.phonograph.model.ui.NowPlayingScreen
+import player.phonograph.model.ui.NowPlayingScreenStyle
 import player.phonograph.model.ui.UnarySlidingUpPanelProvider
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.modules.player.AbsPlayerFragment
 import player.phonograph.ui.modules.player.MiniPlayerFragment
-import player.phonograph.ui.modules.player.card.CardPlayerFragment
-import player.phonograph.ui.modules.player.flat.FlatPlayerFragment
+import player.phonograph.ui.modules.player.style.buildPlayerFragment
 import player.phonograph.util.theme.primaryColor
 import player.phonograph.util.theme.themeFooterColor
 import player.phonograph.util.theme.updateSystemBarsColor
@@ -25,6 +24,7 @@ import androidx.annotation.FloatRange
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
+import androidx.fragment.app.commit
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -107,7 +107,7 @@ abstract class AbsSlidingMusicPanelActivity :
 
         // add fragment
         lifecycleScope.launch {
-            val flow = Setting(this@AbsSlidingMusicPanelActivity).Composites[Keys.nowPlayingScreen].flow()
+            val flow = Setting(this@AbsSlidingMusicPanelActivity).Composites[Keys.nowPlayingScreenStyle].flow()
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 flow.distinctUntilChanged().collect { screen ->
                     setupPlayerFragment(screen)
@@ -151,21 +151,17 @@ abstract class AbsSlidingMusicPanelActivity :
         cancelSystemBarsColorAnimation() // just in case
     }
 
-    private fun setupPlayerFragment(screen: NowPlayingScreen) {
-        supportFragmentManager.apply {
-            beginTransaction().replace(
+    private fun setupPlayerFragment(style: NowPlayingScreenStyle) {
+        supportFragmentManager.commit {
+            replace(
                 R.id.player_fragment_container,
-                when (screen) {
-                    NowPlayingScreen.FLAT -> FlatPlayerFragment()
-                    NowPlayingScreen.CARD -> CardPlayerFragment()
-                },
+                buildPlayerFragment(style),
                 NOW_PLAYING_FRAGMENT
-            ).commit()
-            executePendingTransactions()
+            )
         }
+        supportFragmentManager.executePendingTransactions()
 
-        playerFragment =
-            supportFragmentManager.findFragmentById(R.id.player_fragment_container) as AbsPlayerFragment
+        playerFragment = supportFragmentManager.findFragmentById(R.id.player_fragment_container) as AbsPlayerFragment
 
     }
 
@@ -296,7 +292,7 @@ abstract class AbsSlidingMusicPanelActivity :
     }
 
     private fun actualStatusbarColor(@ColorInt color: Int): Int =
-        if (playerFragment is CardPlayerFragment) Color.TRANSPARENT else color
+        if (playerFragment?.useTransparentStatusbar == true) Color.TRANSPARENT else color
 
     private fun actualNavigationbarColor(@ColorInt color: Int): Int =
         if (isBottomBarHidden) translucentScrim else color

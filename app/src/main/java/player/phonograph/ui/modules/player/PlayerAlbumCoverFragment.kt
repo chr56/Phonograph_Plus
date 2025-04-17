@@ -23,14 +23,12 @@ import player.phonograph.util.component.MusicProgressUpdateDelegate
 import player.phonograph.util.parcelable
 import player.phonograph.util.theme.themeFooterColor
 import player.phonograph.util.ui.PHONOGRAPH_ANIM_TIME
-import androidx.annotation.ColorInt
 import androidx.annotation.MainThread
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.withCreated
 import androidx.lifecycle.withResumed
 import androidx.lifecycle.withStarted
@@ -76,7 +74,7 @@ class PlayerAlbumCoverFragment :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         lifecycle.addObserver(musicProgressUpdateDelegate)
-        refreshPaletteColor(themeFooterColor(requireContext()))
+        defaultColor = themeFooterColor(requireContext())
     }
 
     private fun observeState() {
@@ -223,11 +221,7 @@ class PlayerAlbumCoverFragment :
     }
 
     private fun updateCurrentPaletteColor(song: Song?) {
-        if (song != null && song.data.isNotEmpty()) {
-            refreshPaletteColor(requireContext(), song)
-        } else {
-            refreshPaletteColor(themeFooterColor(requireContext()))
-        }
+        refreshPaletteColor(requireContext(), song)
     }
 
     private val pageChangeListener = object : ViewPager2.OnPageChangeCallback() {
@@ -328,33 +322,35 @@ class PlayerAlbumCoverFragment :
     }
 
     private var disposable: Disposable? = null
-    private fun refreshPaletteColor(context: Context, song: Song) {
-        disposable?.dispose()
-        disposable = loadImage(context)
-            .from(song)
-            .parameters(
-                Parameters.Builder()
-                    .set(PARAMETERS_KEY_PALETTE, true)
-                    .set(PARAMETERS_KEY_QUICK_CACHE, true)
-                    .build()
-            )
-            .into(
-                PaletteColorTarget(
-                    start = { _, color ->
-                        panelViewModel.updateHighlightColor(color)
-                    },
-                    success = { _, color ->
-                        panelViewModel.updateHighlightColor(color)
-                    },
-                    defaultColor = themeFooterColor(context),
+    private fun refreshPaletteColor(context: Context, song: Song?) {
+        if (song != null && song.data.isNotEmpty()) {
+            disposable?.dispose()
+            disposable = loadImage(context)
+                .from(song)
+                .parameters(
+                    Parameters.Builder()
+                        .set(PARAMETERS_KEY_PALETTE, true)
+                        .set(PARAMETERS_KEY_QUICK_CACHE, true)
+                        .build()
                 )
-            )
-            .enqueue()
+                .into(
+                    PaletteColorTarget(
+                        error = { _, color ->
+                            panelViewModel.updateHighlightColor(color)
+                        },
+                        success = { _, color ->
+                            panelViewModel.updateHighlightColor(color)
+                        },
+                        defaultColor = defaultColor,
+                    )
+                )
+                .enqueue()
+        } else {
+            panelViewModel.updateHighlightColor(defaultColor)
+        }
     }
 
-    private fun refreshPaletteColor(@ColorInt color: Int) {
-        panelViewModel.updateHighlightColor(color)
-    }
+    var defaultColor: Int = -1
 
     companion object {
         const val VISIBILITY_ANIM_DURATION = 300L

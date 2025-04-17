@@ -8,6 +8,8 @@ import androidx.annotation.ColorInt
 import android.animation.Animator
 import android.animation.ArgbEvaluator
 import android.animation.ObjectAnimator
+import android.animation.TimeInterpolator
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.os.Build
 import android.view.View
@@ -18,12 +20,12 @@ const val PHONOGRAPH_ANIM_TIME = 1000L
 
 fun View.backgroundColorTransitionAnimator(
     @ColorInt startColor: Int,
-    @ColorInt endColor: Int
+    @ColorInt endColor: Int,
 ): Animator = createColorAnimator(this, "backgroundColor", startColor, endColor)
 
 fun TextView.textColorTransitionAnimator(
     @ColorInt startColor: Int,
-    @ColorInt endColor: Int
+    @ColorInt endColor: Int,
 ): Animator = createColorAnimator(this, "textColor", startColor, endColor)
 
 @SuppressLint("ObsoleteSdkInt")
@@ -44,3 +46,29 @@ private fun createColorAnimator(
     }.apply {
         duration = PHONOGRAPH_ANIM_TIME
     }
+
+fun createScaleAnimator(
+    target: View,
+    axis: Boolean,
+    interpolator: TimeInterpolator,
+    delay: Long = 0,
+    duration: Long = PHONOGRAPH_ANIM_TIME / 3,
+): Animator =
+    ObjectAnimator.ofFloat(
+        target, if (axis) View.SCALE_X else View.SCALE_Y,
+        0f, 1f
+    ).also {
+        it.interpolator = interpolator
+        it.startDelay = delay
+        it.duration = duration
+    }
+
+fun ValueAnimator.setupValueAnimator(
+    interpolator: TimeInterpolator = PathInterpolator(0.4f, 0f, 1f, 1f),
+    duration: Long = PHONOGRAPH_ANIM_TIME / 2,
+    onUpdate: (ValueAnimator) -> Unit,
+): ValueAnimator = also { animator ->
+    animator.duration = duration
+    animator.interpolator = interpolator
+    animator.addUpdateListener(onUpdate)
+}

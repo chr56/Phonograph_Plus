@@ -13,7 +13,7 @@ import player.phonograph.model.sort.SortRef
 import player.phonograph.model.time.Duration
 import player.phonograph.model.time.TimeIntervalCalculationMode
 import player.phonograph.model.ui.ItemLayoutStyle
-import player.phonograph.model.ui.NowPlayingScreen
+import player.phonograph.model.ui.NowPlayingScreenStyle
 import player.phonograph.util.file.safeGetCanonicalPath
 import player.phonograph.util.time.TimeInterval
 import androidx.datastore.core.DataStore
@@ -72,22 +72,6 @@ data object CheckUpdateIntervalPreferenceProvider :
 
     override fun save(data: Duration): String =
         data.serialise()
-}
-
-data object NowPlayingScreenPreferenceProvider :
-        MonoPreferenceProvider<NowPlayingScreen, Int>(
-            Keys._nowPlayingScreenIndex, { NowPlayingScreen.CARD }
-        ) {
-
-    override fun read(flow: Flow<Int>): Flow<NowPlayingScreen> = flow.map { id ->
-        var screen = NowPlayingScreen.CARD
-        for (nowPlayingScreen in NowPlayingScreen.entries) {
-            if (nowPlayingScreen.id == id) screen = nowPlayingScreen
-        }
-        screen
-    }
-
-    override fun save(data: NowPlayingScreen): Int = data.id
 }
 
 data object StartDirectoryPreferenceProvider :
@@ -273,4 +257,20 @@ object HomeTabConfigPreferenceProvider : JsonPreferenceProvider<PagesConfig>(
         Json { ignoreUnknownKeys = true }
     }
 
+}
+
+data object NowPlayingScreenStylePreferenceProvider : JsonPreferenceProvider<NowPlayingScreenStyle>(
+    Keys._nowPlayingScreenStyle, { NowPlayingScreenStyle.DEFAULT }
+) {
+    override fun decode(string: String): NowPlayingScreenStyle =
+        parser.decodeFromString<NowPlayingScreenStyle>(string)
+
+    override fun encode(data: NowPlayingScreenStyle): String =
+        parser.encodeToString(data)
+
+    override fun validate(data: NowPlayingScreenStyle): Boolean = true
+
+    private val parser by lazy {
+        Json { ignoreUnknownKeys = true }
+    }
 }

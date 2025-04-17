@@ -59,6 +59,7 @@ object MigrationManager {
                 migrate(LegacyDetailDialogMigration())
                 migrate(PlaylistFilesOperationBehaviourMigration())
                 migrate(ColoredSystemBarsMigration())
+                migrate(NowPlayingScreenMigration())
             }
 
             Log.i(TAG, "End Migration")
@@ -138,6 +139,12 @@ private class ColoredSystemBarsMigration : Migration(introduced = 1086) {
     override fun doMigrate(context: Context) {
         removePreference(context, DeprecatedPreference.ColoredSystemBars.COLORED_NAVIGATION_BAR)
         removePreference(context, DeprecatedPreference.ColoredSystemBars.COLORED_STATUSBAR)
+    }
+}
+
+private class NowPlayingScreenMigration : Migration(introduced = 1100) {
+    override fun doMigrate(context: Context) {
+        removePreference(context, DeprecatedPreference.NowPlayingScreen.NOW_PLAYING_SCREEN_ID)
     }
 }
 
@@ -269,5 +276,10 @@ object DeprecatedPreference {
     object ColoredSystemBars {
         const val COLORED_STATUSBAR = "colored_statusbar"
         const val COLORED_NAVIGATION_BAR = "colored_navigation_bar"
+    }
+
+    // "refactored since 1100"
+    object NowPlayingScreen {
+        const val NOW_PLAYING_SCREEN_ID = "now_playing_screen_id"
     }
 }

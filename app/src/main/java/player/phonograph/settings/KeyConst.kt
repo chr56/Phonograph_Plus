@@ -22,6 +22,8 @@ const val SELECTED_ACCENT_COLOR = "accent_color_selected"
 const val MONET_PALETTE_PRIMARY_COLOR = "primary_color_monet_palette"
 const val MONET_PALETTE_ACCENT_COLOR = "accent_color_monet_palette"
 
+const val NOW_PLAYING_SCREEN_STYLE = "now_playing_screen_style"
+
 // Appearance - Notification
 const val COLORED_NOTIFICATION = "colored_notification"
 const val CLASSIC_NOTIFICATION = "classic_notification"
@@ -30,7 +32,6 @@ const val NOTIFICATION_ACTIONS = "notification_actions"
 // Behavior-Retention
 const val REMEMBER_LAST_TAB = "remember_last_tab"
 const val LAST_PAGE = "last_start_page"
-const val NOW_PLAYING_SCREEN_ID = "now_playing_screen_id"
 
 // Database
 
