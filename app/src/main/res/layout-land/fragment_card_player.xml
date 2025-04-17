@@ -14,11 +14,10 @@
         android:orientation="vertical"
         tools:ignore="UselessParent">
 
-        <include layout="@layout/status_bar" />
-
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/player_toolbar"
             style="@style/Widget.Phonograph.Toolbar"
+            android:layout_height="@dimen/mini_player_height"
             android:background="@android:color/transparent" />
 
         <RelativeLayout
@@ -58,6 +57,10 @@
 
                     <View
                         android:id="@+id/color_background"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+                    <View
+                        android:id="@+id/color_background_overlay"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
 

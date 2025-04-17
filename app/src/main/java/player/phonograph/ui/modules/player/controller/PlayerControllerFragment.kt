@@ -17,18 +17,15 @@ import player.phonograph.util.parcelable
 import util.theme.color.isColorLight
 import util.theme.color.primaryTextColor
 import util.theme.color.secondaryTextColor
-import androidx.annotation.ColorInt
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import android.animation.Animator
+import android.graphics.Point
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewAnimationUtils.createCircularReveal
 import android.view.ViewGroup
 import kotlin.getValue
-import kotlin.math.max
 import kotlinx.coroutines.launch
 
 abstract class PlayerControllerFragment<B : PlayerControllerBinding> : AbsMusicServiceFragment() {
@@ -139,6 +136,8 @@ abstract class PlayerControllerFragment<B : PlayerControllerBinding> : AbsMusicS
 
     protected val shouldWithAnimation get() = lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
 
+    abstract fun provideRippleCenter(): Point?
+
     fun onShow() {
         binding.onShow(isResumed)
     }
@@ -158,6 +157,8 @@ abstract class PlayerControllerFragment<B : PlayerControllerBinding> : AbsMusicS
 
     class FlatStyled : PlayerControllerFragment<PlayerControllerFlatStyledBinding>() {
         override val binding: PlayerControllerFlatStyledBinding = PlayerControllerFlatStyledBinding()
+
+        override fun provideRippleCenter(): Point? = null
     }
 
     class ClassicStyled : PlayerControllerFragment<PlayerControllerClassicStyledBinding>() {
@@ -169,25 +170,11 @@ abstract class PlayerControllerFragment<B : PlayerControllerBinding> : AbsMusicS
                 binding.centralButton.elevation = value
             }
 
-        fun createRippleColorAnimator(
-            background: View,
-            @ColorInt oldColor: Int,
-            @ColorInt newColor: Int,
-        ): Animator {
-            val root = binding.root
+        override fun provideRippleCenter(): Point {
             val fab = binding.centralButton
-
-            val x = fab.x + fab.width / 2 + root.x
-            val y = fab.y + fab.height / 2 + root.y
-            val startRadius = max(fab.width / 2, fab.height / 2)
-            val endRadius = max(background.width, background.height)
-
-            background.setBackgroundColor(newColor)
-            return createCircularReveal(
-                background,
-                x.toInt(), y.toInt(),
-                startRadius.toFloat(), endRadius.toFloat()
-            )
+            val x = fab.x + fab.width / 2
+            val y = fab.y + fab.height / 2
+            return Point(x.toInt(), y.toInt())
         }
     }
 }

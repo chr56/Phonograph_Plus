@@ -28,13 +28,23 @@ import player.phonograph.ui.modules.setting.dialog.NowPlayingScreenStylePreferen
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.parcelable
 import player.phonograph.util.theme.getTintedDrawable
+import player.phonograph.util.ui.PHONOGRAPH_ANIM_TIME
+import player.phonograph.util.ui.backgroundColorTransitionAnimator
 import player.phonograph.util.ui.isLandscape
+import player.phonograph.util.ui.setupValueAnimator
 import player.phonograph.util.warning
+import util.theme.color.primaryTextColor
+import util.theme.color.secondaryTextColor
 import util.theme.color.toolbarIconColor
 import util.theme.view.menu.setMenuColor
+import util.theme.view.menu.tintOverflowButtonColor
+import util.theme.view.menu.tintToolbarMenuActionIcons
+import util.theme.view.toolbar.setToolbarTextColor
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.ColorInt
 import androidx.appcompat.widget.Toolbar
+import androidx.core.animation.doOnEnd
+import androidx.core.animation.doOnStart
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
@@ -44,12 +54,19 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.coroutineScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.withResumed
+import android.animation.Animator
+import android.animation.AnimatorSet
+import android.animation.ValueAnimator
+import android.content.Context
 import android.graphics.Color
+import android.graphics.Point
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewAnimationUtils.createCircularReveal
 import android.view.ViewGroup
+import kotlin.math.max
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.FlowCollector
@@ -73,6 +90,8 @@ abstract class AbsPlayerFragment :
     protected lateinit var queueFragment: PlayerQueueFragment
 
     protected abstract val slidingUpPanel: SlidingUpPanelLayout?
+
+    protected abstract val controllerPosition: Point
 
     protected abstract fun requireToolBarContainer(): View?
     protected abstract fun requireToolbar(): Toolbar
@@ -119,6 +138,7 @@ abstract class AbsPlayerFragment :
     override fun onDestroyView() {
         favoriteMenuItem = null
         lyricsMenuItem = null
+        currentAnimatorSet?.cancel()
         super.onDestroyView()
     }
 
@@ -201,10 +221,109 @@ abstract class AbsPlayerFragment :
 
     protected abstract fun collapseToNormal()
 
-    protected abstract fun forceChangeColor(@ColorInt newColor: Int)
-    protected abstract fun changeColorWithAnimations(@ColorInt oldColor: Int, @ColorInt newColor: Int)
-
     open val useTransparentStatusbar: Boolean = false
+
+    private var currentAnimatorSet: AnimatorSet? = null
+
+    private fun onColorChanged(oldColor: Int, newColor: Int) {
+        val animated = lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
+        if (animated) {
+            currentAnimatorSet?.end()
+            currentAnimatorSet?.cancel()
+            currentAnimatorSet = buildDefaultColorChangeAnimatorSet(oldColor, newColor).also { it.start() }
+        } else {
+            currentAnimatorSet?.cancel()
+            forceChangeColor(newColor)
+        }
+    }
+
+    protected abstract val coloredToolbar: Boolean
+
+    protected abstract val playerColoredBackground: View
+    protected abstract val playerColoredBackgroundOverlay: View
+
+    protected fun buildDefaultColorChangeAnimatorSet(
+        @ColorInt oldColor: Int,
+        @ColorInt newColor: Int,
+    ): AnimatorSet {
+
+        // todo: fix offset
+        val rippleCenter = playbackControlsFragment.provideRippleCenter()
+        val backgroundAnimator: Animator? =
+            if (rippleCenter != null && playerColoredBackground.isAttachedToWindow) {
+                makeCircularRevealAnimation(
+                    playerColoredBackground,
+                    playerColoredBackgroundOverlay,
+                    rippleCenter, controllerPosition,
+                    newColor
+                )
+            } else {
+                playerColoredBackground.backgroundColorTransitionAnimator(oldColor, newColor)
+            }
+
+        val toolbarAnimator =
+            if (coloredToolbar) requireToolbar().backgroundColorTransitionAnimator(oldColor, newColor) else null
+
+
+        val toolbarTextAnimator =
+            if (coloredToolbar) {
+                ValueAnimator.ofArgb(oldColor, newColor)
+                    .setupValueAnimator { setToolbarWidgetColor(it.animatedValue as Int) }
+            } else {
+                null
+            }
+
+        return AnimatorSet().apply {
+            duration = PHONOGRAPH_ANIM_TIME
+            play(backgroundAnimator).apply {
+                if (toolbarAnimator != null) with(toolbarAnimator)
+                if (toolbarTextAnimator != null) with(toolbarTextAnimator)
+            }
+        }
+    }
+
+    private fun makeCircularRevealAnimation(
+        background: View,
+        backgroundOverlay: View,
+        rippleCenter: Point,
+        offset: Point,
+        @ColorInt newColor: Int,
+    ): Animator {
+        val radius = max(backgroundOverlay.width, backgroundOverlay.height)
+        return createCircularReveal(
+            backgroundOverlay,
+            rippleCenter.x + offset.x, rippleCenter.y + offset.y,
+            0f, radius.toFloat(),
+        ).apply {
+            doOnStart {
+                backgroundOverlay.setBackgroundColor(newColor)
+                backgroundOverlay.visibility = View.VISIBLE
+            }
+            doOnEnd {
+                background.setBackgroundColor(newColor)
+                backgroundOverlay.visibility = View.GONE
+            }
+        }
+    }
+
+    protected open fun forceChangeColor(@ColorInt newColor: Int) {
+        playbackControlsFragment.requireView().setBackgroundColor(newColor)
+        if (coloredToolbar) {
+            requireToolbar().setBackgroundColor(newColor)
+            setToolbarWidgetColor(newColor)
+        }
+    }
+
+    protected fun setToolbarWidgetColor(backgroundColor: Int) {
+        val context: Context = requireContext()
+        val titleTextColor = context.primaryTextColor(backgroundColor)
+        val subtitleTextColor = context.secondaryTextColor(backgroundColor)
+
+        val playerToolbar = requireToolbar()
+        playerToolbar.setToolbarTextColor(titleTextColor, titleTextColor, subtitleTextColor)
+        tintToolbarMenuActionIcons(playerToolbar.menu, titleTextColor)
+        tintOverflowButtonColor(context, titleTextColor)
+    }
 
     private fun observeState() {
         observe(queueViewModel.currentSong) { song ->
@@ -236,12 +355,7 @@ abstract class AbsPlayerFragment :
         }
         observe(panelViewModel.colorChange) { (oldColor, newColor) ->
             withResumed { // fixme: fix lifecycle issues
-                val animated = lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
-                if (animated) {
-                    changeColorWithAnimations(oldColor, newColor)
-                } else {
-                    forceChangeColor(newColor)
-                }
+                onColorChanged(oldColor, newColor)
             }
         }
     }

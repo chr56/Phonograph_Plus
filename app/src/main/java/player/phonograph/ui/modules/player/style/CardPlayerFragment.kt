@@ -14,28 +14,16 @@ import player.phonograph.ui.modules.player.AbsPlayerFragment
 import player.phonograph.ui.modules.player.controller.PlayerControllerFragment
 import player.phonograph.util.text.infoString
 import player.phonograph.util.theme.themeCardBackgroundColor
-import player.phonograph.util.ui.PHONOGRAPH_ANIM_TIME
-import player.phonograph.util.ui.backgroundColorTransitionAnimator
-import player.phonograph.util.ui.convertDpToPixel
 import player.phonograph.util.ui.isLandscape
-import util.theme.color.darkenColor
-import util.theme.color.primaryTextColor
-import util.theme.color.secondaryTextColor
-import util.theme.view.menu.tintOverflowButtonColor
-import util.theme.view.menu.tintToolbarMenuActionIcons
-import util.theme.view.toolbar.setToolbarTextColor
-import androidx.annotation.ColorInt
 import androidx.appcompat.widget.Toolbar
-import androidx.core.animation.doOnEnd
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
-import androidx.fragment.app.FragmentContainerView
+import androidx.core.view.updatePadding
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import android.animation.Animator
-import android.animation.AnimatorSet
+import android.graphics.Point
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -58,10 +46,15 @@ class CardPlayerFragment : AbsPlayerFragment() {
 
     private interface CardImpl {
         fun init()
-        fun postInit()
-        fun generateAnimators(@ColorInt oldColor: Int, @ColorInt newColor: Int): AnimatorSet
-        fun forceChangeColor(@ColorInt newColor: Int)
+        fun adjustHeight()
+        fun applyWindowInsect()
     }
+
+    override val controllerPosition: Point
+        get() = Point(
+            viewBinding.playbackControlsFragment.left,
+            viewBinding.playbackControlsFragment.top
+        )
 
     override fun inflateView(inflater: LayoutInflater): View {
         impl = (if (isLandscape(resources)) LandscapeImpl(this) else PortraitImpl(this))
@@ -75,11 +68,17 @@ class CardPlayerFragment : AbsPlayerFragment() {
 
         view.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
             override fun onGlobalLayout() {
+                view.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                impl.applyWindowInsect()
+                fixPanelNestedScrolling()
+            }
+        })
+
+        view.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
                 lifecycleScope.launch {
                     lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                        // view.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                        impl.postInit()
-                        fixPanelNestedScrolling()
+                        impl.adjustHeight()
                     }
                 }
             }
@@ -92,8 +91,6 @@ class CardPlayerFragment : AbsPlayerFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         viewBinding.playerSlidingLayout.removePanelSlideListener(this)
-        currentAnimatorSet?.end()
-        currentAnimatorSet?.cancel()
         _viewBinding = null
     }
 
@@ -164,14 +161,9 @@ class CardPlayerFragment : AbsPlayerFragment() {
 
     override val useTransparentStatusbar: Boolean = true
 
-    override fun forceChangeColor(newColor: Int) = impl.forceChangeColor(newColor)
-
-    private var currentAnimatorSet: AnimatorSet? = null
-    override fun changeColorWithAnimations(oldColor: Int, newColor: Int) {
-        currentAnimatorSet?.end()
-        currentAnimatorSet?.cancel()
-        currentAnimatorSet = impl.generateAnimators(oldColor, newColor).also { it.start() }
-    }
+    override val playerColoredBackground: View get() = viewBinding.colorBackground
+    override val playerColoredBackgroundOverlay: View get() = viewBinding.colorBackgroundOverlay
+    override val coloredToolbar: Boolean get() = impl is LandscapeImpl
 
     override fun collapseToNormal() {
         viewBinding.playerSlidingLayout.panelState = PanelState.COLLAPSED
@@ -180,45 +172,43 @@ class CardPlayerFragment : AbsPlayerFragment() {
     private class PortraitImpl(val fragment: CardPlayerFragment) : CardImpl {
         override fun init() {}
 
-        override fun postInit() {
-
-            val albumCoverContainer: FragmentContainerView = fragment.viewBinding.playerAlbumCoverFragment
-
-            val minPanelHeight = convertDpToPixel((72 + 24).toFloat(), fragment.resources).toInt()
-
-            val slidingLayout = fragment.viewBinding.playerSlidingLayout
-            val coverContainer = fragment.viewBinding.coverContainer
-
-            val availablePanelHeight =
-                slidingLayout.height - coverContainer.height - convertDpToPixel(8f, fragment.resources).toInt()
-
-            if (availablePanelHeight < minPanelHeight) {
-                // shrink AlbumCover
-                val albumCoverHeight = albumCoverContainer.height - (minPanelHeight - availablePanelHeight)
-                albumCoverContainer.layoutParams.height = albumCoverHeight
+        override fun adjustHeight() {
+            with(fragment) {
+                val statusBar = viewBinding.statusBarPadding
+                if (statusBar != null) {
+                    ViewCompat.setOnApplyWindowInsetsListener(statusBar) { view, windowInsets ->
+                        val insets = windowInsets.getInsets(WindowInsetsCompat.Type.statusBars())
+                        view.updateLayoutParams<MarginLayoutParams> {
+                            height = insets.top
+                        }
+                        WindowInsetsCompat.CONSUMED
+                    }
+                }
             }
-            slidingLayout.panelHeight = max(minPanelHeight, availablePanelHeight)
         }
 
-        override fun generateAnimators(oldColor: Int, newColor: Int): AnimatorSet =
-            fragment.defaultColorChangeAnimatorSet(oldColor, newColor)
+        override fun applyWindowInsect() {
+            with(fragment) {
+                val queueSlidingLayout: SlidingUpPanelLayout = viewBinding.playerSlidingLayout
+                val basicPlayer: View = viewBinding.coverContainer
 
-        override fun forceChangeColor(newColor: Int) {
-            fragment.playbackControlsFragment.requireView().setBackgroundColor(newColor)
+                val availablePanelHeight = queueSlidingLayout.height - basicPlayer.height
+                val minPanelHeight = resources.getDimensionPixelSize(R.dimen.player_queue_panel_height_min)
+
+                if (availablePanelHeight < minPanelHeight) {
+                    // shrink AlbumCover
+                    val albumCoverContainer = viewBinding.playerAlbumCoverFragment
+                    val albumCoverHeight = albumCoverContainer.height - (minPanelHeight - availablePanelHeight)
+                    albumCoverContainer.layoutParams.height = albumCoverHeight
+                }
+                queueSlidingLayout.panelHeight = max(minPanelHeight, availablePanelHeight)
+            }
         }
     }
 
     private class LandscapeImpl(val fragment: CardPlayerFragment) : CardImpl {
         override fun init() {
             with(fragment) {
-                // WindowInsets
-                ViewCompat.setOnApplyWindowInsetsListener(viewBinding.playerFragmentRoot) { view, windowInsets ->
-                    val insets = windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars())
-                    view.updateLayoutParams<MarginLayoutParams> {
-                        rightMargin = insets.right
-                    }
-                    WindowInsetsCompat.CONSUMED
-                }
                 // Current Song
                 lifecycleScope.launch {
                     lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -233,70 +223,35 @@ class CardPlayerFragment : AbsPlayerFragment() {
             }
         }
 
-        override fun postInit() {
+        override fun applyWindowInsect() {
             with(fragment) {
+                ViewCompat.setOnApplyWindowInsetsListener(viewBinding.root) { view, windowInsets ->
+                    val insets = windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars())
+                    view.updateLayoutParams<MarginLayoutParams> {
+                        rightMargin = insets.right
+                        bottomMargin = insets.bottom
+                    }
+                    windowInsets
+                }
+                ViewCompat.setOnApplyWindowInsetsListener(viewBinding.playerToolbar) { view, windowInsets ->
+                    val insets = windowInsets.getInsets(WindowInsetsCompat.Type.statusBars())
+                    view.updateLayoutParams<MarginLayoutParams> {
+                        height = resources.getDimensionPixelSize(R.dimen.mini_player_height) + insets.top
+                    }
+                    view.updatePadding(top = insets.top)
+                    WindowInsetsCompat.CONSUMED
+                }
+            }
+        }
+
+        override fun adjustHeight() {
+            with(fragment) {
+                // Height
                 val controllerHeight = playbackControlsFragment.requireView().height
                 val playerSlidingLayout = viewBinding.playerSlidingLayout
                 playerSlidingLayout.panelHeight = playerSlidingLayout.height - controllerHeight
             }
         }
-
-        override fun generateAnimators(oldColor: Int, newColor: Int): AnimatorSet =
-            fragment.defaultColorChangeAnimatorSet(
-                oldColor, newColor,
-                fragment.viewBinding.playerToolbar.backgroundColorTransitionAnimator(oldColor, newColor),
-                fragment.requireView().findViewById<View>(R.id.status_bar)
-                    .backgroundColorTransitionAnimator(darkenColor(oldColor), darkenColor(newColor))
-            ) {
-                setToolbarWidgetColor(newColor)
-            }
-
-        override fun forceChangeColor(newColor: Int) {
-            fragment.playbackControlsFragment.requireView().setBackgroundColor(newColor)
-            with(fragment.viewBinding) {
-                playerToolbar.setBackgroundColor(newColor)
-                setToolbarWidgetColor(newColor)
-            }
-        }
-
-        private fun setToolbarWidgetColor(newColor: Int) {
-            with(fragment.viewBinding) {
-                val context = root.context
-                val titleTextColor = context.primaryTextColor(newColor)
-                val subtitleTextColor = context.secondaryTextColor(newColor)
-                playerToolbar.setToolbarTextColor(titleTextColor, titleTextColor, subtitleTextColor)
-                tintToolbarMenuActionIcons(playerToolbar.menu, titleTextColor)
-                tintOverflowButtonColor(context, titleTextColor)
-            }
-        }
-    }
-
-    fun defaultColorChangeAnimatorSet(
-        @ColorInt oldColor: Int,
-        @ColorInt newColor: Int,
-        vararg animators: Animator,
-        onEnd: ((animator: Animator) -> Unit)? = null,
-    ): AnimatorSet {
-
-        val controlsFragment = playbackControlsFragment
-        val backgroundAnimator: Animator? =
-            if (controlsFragment is PlayerControllerFragment.ClassicStyled && viewBinding.root.isAttachedToWindow) {
-                controlsFragment.createRippleColorAnimator(viewBinding.colorBackground, oldColor, newColor)
-            } else {
-                viewBinding.colorBackground.backgroundColorTransitionAnimator(oldColor, newColor)
-            }
-        return AnimatorSet()
-            .apply {
-                duration = PHONOGRAPH_ANIM_TIME / 2
-                play(backgroundAnimator).apply {
-                    for (animator in animators) {
-                        with(animator)
-                    }
-                }
-                if (onEnd != null) {
-                    doOnEnd(onEnd)
-                }
-            }
     }
 
 }
