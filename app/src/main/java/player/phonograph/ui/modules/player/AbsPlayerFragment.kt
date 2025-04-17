@@ -52,8 +52,10 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.coroutineScope
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.withResumed
+import androidx.lifecycle.withStarted
 import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ValueAnimator
@@ -376,7 +378,9 @@ abstract class AbsPlayerFragment :
 
     private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
         override fun onMediaStoreChanged() {
-            viewModel.updateFavoriteState(requireContext(), MusicPlayerRemote.currentSong)
+            lifecycleScope.launch {
+                withStarted { viewModel.refreshFavoriteState(requireContext()) }
+            }
         }
     }
 
