@@ -103,7 +103,7 @@ abstract class AbsSlidingMusicPanelActivity :
         }
 
         // add fragment
-        val nowPlayingScreenStyle = Setting(this)[Keys.nowPlayingScreenStyle].flow()
+        val nowPlayingScreenStyle = Setting(this)[Keys.nowPlayingScreenStyle].flow
         observe(nowPlayingScreenStyle, state = Lifecycle.State.STARTED, distinctive = true) { screen ->
             // todo
             setupPlayerFragment(screen)

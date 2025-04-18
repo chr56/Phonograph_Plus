@@ -95,7 +95,7 @@ object GenreLoader : Loader<Genre> {
     fun List<Genre>.allGenreSongs(): List<Song> = this.flatMap { genreSongs(App.instance, it.id) }
 
     private fun List<Genre>.sortAll(context: Context): List<Genre> {
-        val sortMode = Setting(context).Composites[Keys.genreSortMode].data
+        val sortMode = Setting(context)[Keys.genreSortMode].data
         val revert = sortMode.revert
         return when (sortMode.sortRef) {
             SortRef.DISPLAY_NAME -> this.sort(revert) { it.name }

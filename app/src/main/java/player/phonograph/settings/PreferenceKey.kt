@@ -14,7 +14,7 @@ sealed interface PreferenceKey<T>
 /**
  * Key container of primitive type preference
  */
-sealed class PrimitiveKey<T>(
+class PrimitiveKey<T>(
     val preferenceKey: Preferences.Key<T>,
     val defaultValue: () -> T,
 ) : PreferenceKey<T>
@@ -22,6 +22,6 @@ sealed class PrimitiveKey<T>(
 /**
  * Key container of composite type preference
  */
-sealed class CompositeKey<T>(
+class CompositeKey<T>(
     val valueProvider: CompositePreferenceProvider<T>,
 ) : PreferenceKey<T>

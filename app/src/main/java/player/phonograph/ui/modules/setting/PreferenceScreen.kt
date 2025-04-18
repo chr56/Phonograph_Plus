@@ -363,7 +363,7 @@ fun PhonographPreferenceScreen() {
                     summaryRes = R.string.pref_summary_check_for_updates_interval
                 ) {
                     val resources = it.resources
-                    val preference = Setting(it).Composites[Keys.checkUpdateInterval]
+                    val preference = Setting(it)[Keys.checkUpdateInterval]
                     val duration = preference.data
                     resources.getString(
                         R.string.time_interval_text,
@@ -399,7 +399,7 @@ private fun LibraryCategoriesSetting() {
                                     "${context.getString(R.string.are_you_sure)}\n"
                         )
                         .setPositiveButton(android.R.string.ok) { _, _ ->
-                            Setting(context).Composites[Keys.homeTabConfig].data = PagesConfig.DEFAULT_CONFIG
+                            Setting(context)[Keys.homeTabConfig].data = PagesConfig.DEFAULT_CONFIG
                         }
                         .setNegativeButton(android.R.string.cancel) { _, _ -> }
                         .show().tintButtons()
@@ -577,7 +577,7 @@ private fun BooleanPref(
         } else {
             rememberDataStoreBooleanState(
                 key = booleanPreferencesKey(key),
-                dataStore = Setting.settingsDatastore(LocalContext.current),
+                dataStore = Setting(LocalContext.current).dataStore,
                 defaultValue = defaultValue
             )
         }
@@ -749,7 +749,7 @@ internal class OptionGroupModel(
         }
 
     private suspend fun read(context: Context): Int {
-        val value = Setting.settingsDatastore(context).data.first()[stringPreferencesKey(key)]
+        val value = Setting(context).dataStore.data.first()[stringPreferencesKey(key)]
         val index = optionsValue.indexOf(value)
         return if (index > -1) {
             index
@@ -764,7 +764,7 @@ internal class OptionGroupModel(
     }
 
     suspend fun save(context: Context, index: Int) {
-        Setting.settingsDatastore(context).edit { preferences ->
+        Setting(context).dataStore.edit { preferences ->
             val newValue = optionsValue.getOrElse(index) { optionsValue[defaultValueIndex] }
             preferences[stringPreferencesKey(key)] = newValue
         }
@@ -779,7 +779,7 @@ private fun dependOn(key: String, required: Boolean = true): Boolean {
     return if (LocalInspectionMode.current) {
         false
     } else {
-        val datastore = Setting.settingsDatastore(LocalContext.current)
+        val datastore = Setting(LocalContext.current).dataStore
         rememberDataStoreBooleanState(key = booleanPreferencesKey(key), dataStore = datastore).value == required
     }
 }

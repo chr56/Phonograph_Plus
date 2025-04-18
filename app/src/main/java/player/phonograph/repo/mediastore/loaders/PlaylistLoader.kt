@@ -145,7 +145,7 @@ object PlaylistLoader : Loader<Playlist> {
             ?.use { it.count > 0 } ?: false
 
     private fun List<Playlist>.sortAll(context: Context): List<Playlist> {
-        val sortMode = Setting(context).Composites[Keys.playlistSortMode].data
+        val sortMode = Setting(context)[Keys.playlistSortMode].data
         val revert = sortMode.revert
         return when (sortMode.sortRef) {
             SortRef.DISPLAY_NAME  -> this.sort(revert) { it.name }

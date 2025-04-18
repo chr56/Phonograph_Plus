@@ -46,7 +46,7 @@ class CheckUpdateIntervalDialog : ComposeViewDialogFragment() {
     override fun Content() {
         val context = LocalContext.current
         var duration: Duration by remember {
-            mutableStateOf(Setting(context).Composites[Keys.checkUpdateInterval].data)
+            mutableStateOf(Setting(context)[Keys.checkUpdateInterval].data)
         }
         PhonographTheme {
             val dialogState = rememberMaterialDialogState(true)
@@ -72,7 +72,7 @@ class CheckUpdateIntervalDialog : ComposeViewDialogFragment() {
                     ) {
                         dismiss()
                         synchronized(this) {
-                            Setting(App.instance).Composites[Keys.checkUpdateInterval].data = duration
+                            Setting(App.instance)[Keys.checkUpdateInterval].data = duration
                         }
                     }
                 }

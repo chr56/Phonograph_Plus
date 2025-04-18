@@ -35,7 +35,7 @@ class HomeTabConfigDialog : DialogFragment() {
         val view = requireActivity().layoutInflater.inflate(R.layout.recycler_view_wrapped, null)
 
 
-        val config: PagesConfig = Setting(requireContext()).Composites[Keys.homeTabConfig].data
+        val config: PagesConfig = Setting(requireContext())[Keys.homeTabConfig].data
 
         adapter = PageTabConfigAdapter(config).also { it.init() }
         recyclerView = view.findViewById(R.id.recycler_view)
@@ -53,7 +53,7 @@ class HomeTabConfigDialog : DialogFragment() {
                 Log.v(TAG, adapter.getState())
                 val pageConfig = adapter.currentConfig
                 if (pageConfig != null) {
-                    Setting(requireContext()).Composites[Keys.homeTabConfig].data = pageConfig
+                    Setting(requireContext())[Keys.homeTabConfig].data = pageConfig
                     dismiss()
                 } else {
                     Toast.makeText(
@@ -65,7 +65,7 @@ class HomeTabConfigDialog : DialogFragment() {
             }
             .negativeButton(android.R.string.cancel) { dismiss(); Log.i(TAG, adapter.getState()) }
             .neutralButton(R.string.reset_action) {
-                Setting(requireContext()).Composites[Keys.homeTabConfig].data = PagesConfig.DEFAULT_CONFIG
+                Setting(requireContext())[Keys.homeTabConfig].data = PagesConfig.DEFAULT_CONFIG
                 Log.v(TAG, adapter.getState())
                 dismiss()
             }

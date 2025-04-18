@@ -346,7 +346,7 @@ class FoldersPage : AbsPanelPage() {
             }
 
         private fun MutableList<SongCollection>.sort(context: Context): List<SongCollection> {
-            val mode = Setting(context).Composites[Keys.collectionSortMode].data
+            val mode = Setting(context)[Keys.collectionSortMode].data
             sortBy {
                 when (mode.sortRef) {
                     SortRef.DISPLAY_NAME -> it.name

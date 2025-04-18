@@ -13,7 +13,7 @@ import org.koin.core.context.GlobalContext
 import player.phonograph.R
 import player.phonograph.repo.database.store.PathFilterStore
 import player.phonograph.settings.Keys
-import player.phonograph.settings.PrimitivePreference
+import player.phonograph.settings.Preference
 import player.phonograph.settings.Setting
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
@@ -83,7 +83,7 @@ class PathFilterPreferenceDialog : ComposeViewDialogFragment() {
 
 private class PathFilterPreferenceModel(context: Context) {
 
-    val mode: PrimitivePreference<Boolean> = Setting(context)[Keys.pathFilterExcludeMode]
+    val mode: Preference<Boolean> = Setting(context)[Keys.pathFilterExcludeMode]
 
     private val _paths: MutableStateFlow<List<String>> = MutableStateFlow(emptyList())
     val paths = _paths.asStateFlow()
@@ -105,7 +105,7 @@ private class PathFilterPreferenceModel(context: Context) {
 
     private val pathFilterStore: PathFilterStore by GlobalContext.get().inject()
 
-    private fun update(preference: PrimitivePreference<Boolean>) {
+    private fun update(preference: Preference<Boolean>) {
         _paths.tryEmit(with(pathFilterStore) { if (preference.data) blacklistPaths else whitelistPaths })
     }
 

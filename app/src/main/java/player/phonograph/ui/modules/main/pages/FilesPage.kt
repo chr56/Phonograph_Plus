@@ -190,7 +190,7 @@ class FilesPage : AbsPage() {
 
     //region Popup
     private fun configPopup(popup: ListOptionsPopup) {
-        val currentSortMode = Setting(popup.contentView.context).Composites[Keys.fileSortMode].data
+        val currentSortMode = Setting(popup.contentView.context)[Keys.fileSortMode].data
         popup.allowRevert = true
         popup.revert = currentSortMode.revert
 
@@ -205,7 +205,7 @@ class FilesPage : AbsPage() {
 
     private fun dismissPopup(popup: ListOptionsPopup) {
         val context = popup.contentView.context
-        Setting(context).Composites[Keys.fileSortMode].data =
+        Setting(context)[Keys.fileSortMode].data =
             SortMode(popup.sortRef, popup.revert)
         model.useLegacyListFile = popup.useLegacyListFiles
         @SuppressLint("NotifyDataSetChanged")

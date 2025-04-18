@@ -19,7 +19,7 @@ class SettingObserver(
     private val setting: Setting = Setting(context),
 ) {
     fun <T> collect(
-        key: PrimitiveKey<T>,
+        key: PreferenceKey<T>,
         coroutineContext: CoroutineContext = SupervisorJob(),
         collector: FlowCollector<T>,
     ) {
@@ -28,16 +28,5 @@ class SettingObserver(
         }
     }
 
-    fun <T> collect(
-        key: CompositeKey<T>,
-        coroutineContext: CoroutineContext = SupervisorJob(),
-        collector: FlowCollector<T>,
-    ) {
-        coroutineScope.launch(coroutineContext) {
-            setting.Composites[key].flow().distinctUntilChanged().collect(collector)
-        }
-    }
-
-    fun <T> blocking(key: PrimitiveKey<T>): T = setting[key].data
-    fun <T> blocking(key: CompositeKey<T>): T = setting.Composites[key].data
+    fun <T> blocking(key: PreferenceKey<T>): T = setting[key].data
 }

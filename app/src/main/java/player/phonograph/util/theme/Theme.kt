@@ -101,7 +101,7 @@ fun toggleTheme(context: Context): Boolean {
 }
 
 private fun colorFlow(context: Context, monetPalette: PrimitiveKey<Int>, selected: PrimitiveKey<Int>): Flow<Int> {
-    val preferencesFlow = Setting.settingsDatastore(context).data
+    val preferencesFlow = Setting(context).dataStore.data
     return preferencesFlow.map { preference ->
         val enableMonet = preference[Keys.enableMonet.preferenceKey] ?: Keys.enableMonet.defaultValue()
         if (SDK_INT >= VERSION_CODES.S && enableMonet) {

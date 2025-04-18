@@ -4,56 +4,81 @@
 
 package player.phonograph.settings
 
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
-import android.content.Context
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 
-interface Preference<T>
-class PrimitivePreference<T>(private val key: PrimitiveKey<T>, context: Context) : Preference<T> {
+interface Preference<T> {
 
-    private val dataStore = Setting.settingsDatastore(context)
-
+    /**
+     *  an observable [Flow] of this preference
+     */
     val flow: Flow<T>
-        get() = dataStore.data.map { it[key.preferenceKey] ?: key.defaultValue() }
 
-    suspend fun flowData(): T = dataStore.data.first()[key.preferenceKey] ?: key.defaultValue()
+    /**
+     * read preference value
+     */
+    suspend fun read(): T
 
-    suspend fun edit(value: () -> T) {
+    /**
+     * edit preference value
+     */
+    suspend fun edit(value: () -> T)
+
+
+    /**
+     * default value of this preference
+     */
+    val default: T
+
+    /**
+     * reset preference value
+     */
+    suspend fun reset() = edit { default }
+
+    /**
+     * read and write the preference in blocking way
+     */
+    var data: T
+        get() = runBlocking { read() }
+        set(value) = runBlocking { edit { value } }
+}
+
+class PrimitivePreference<T>(key: PrimitiveKey<T>, val dataStore: DataStore<Preferences>) : Preference<T> {
+
+    private val preferenceKey: Preferences.Key<T> = key.preferenceKey
+    private val defaultValue: () -> T = key.defaultValue
+
+    override val flow: Flow<T> get() = dataStore.data.map { it[preferenceKey] ?: defaultValue() }
+
+    override suspend fun read(): T = dataStore.data.first()[preferenceKey] ?: defaultValue()
+
+    override suspend fun edit(value: () -> T) {
         dataStore.edit { mutablePreferences ->
-            mutablePreferences[key.preferenceKey] = value()
+            mutablePreferences[preferenceKey] = value()
         }
     }
 
-    /**
-     * block api
-     */
-    var data: T
-        get() = runBlocking { flowData() }
-        set(value) = runBlocking { edit { value } }
+    override val default: T get() = defaultValue()
 
 }
 
-class CompositePreference<T>(key: CompositeKey<T>, context: Context) : Preference<T> {
-
-    private val dataStore = Setting.settingsDatastore(context)
+class CompositePreference<T>(key: CompositeKey<T>, val dataStore: DataStore<Preferences>) : Preference<T> {
 
     private val provider = key.valueProvider
 
-    suspend fun flow(): Flow<T> = provider.flow(dataStore)
+    override val flow: Flow<T> get() = provider.flow(dataStore)
 
-    suspend fun flowData(): T = flow().first() ?: provider.default()
+    override suspend fun read(): T = flow.first() ?: provider.defaultValue()
 
-    suspend fun edit(value: () -> T) {
+    override suspend fun edit(value: () -> T) {
         provider.edit(dataStore, value)
     }
 
-    /**
-     * block api
-     */
-    var data: T
-        get() = runBlocking { flowData() }
-        set(value) = runBlocking { edit { value } }
+    override val default: T get() = provider.defaultValue()
+
 }

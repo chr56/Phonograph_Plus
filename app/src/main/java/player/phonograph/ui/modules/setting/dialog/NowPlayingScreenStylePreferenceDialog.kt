@@ -12,8 +12,8 @@ import player.phonograph.model.ui.NowPlayingScreenStyle
 import player.phonograph.model.ui.PlayerBaseStyle
 import player.phonograph.model.ui.PlayerControllerStyle
 import player.phonograph.model.ui.PlayerOptions
-import player.phonograph.settings.CompositePreference
 import player.phonograph.settings.Keys
+import player.phonograph.settings.Preference
 import player.phonograph.settings.Setting
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
@@ -117,8 +117,8 @@ class NowPlayingScreenStylePreferenceDialog : ComposeViewDialogFragment() {
 
     class Model : ViewModel() {
 
-        private fun preference(context: Context): CompositePreference<NowPlayingScreenStyle> =
-            Setting(context).Composites[Keys.nowPlayingScreenStyle]
+        private fun preference(context: Context): Preference<NowPlayingScreenStyle> =
+            Setting(context)[Keys.nowPlayingScreenStyle]
 
         private val _state: MutableStateFlow<NowPlayingScreenStyle> = MutableStateFlow(NowPlayingScreenStyle.DEFAULT)
         val state get() = _state.asStateFlow()
@@ -128,7 +128,7 @@ class NowPlayingScreenStylePreferenceDialog : ComposeViewDialogFragment() {
          */
         fun read(context: Context) {
             viewModelScope.launch(Dispatchers.IO) {
-                preference(context).flow().collect {
+                preference(context).flow.collect {
                     _state.emit(it)
                 }
             }
@@ -152,7 +152,7 @@ class NowPlayingScreenStylePreferenceDialog : ComposeViewDialogFragment() {
          * Reset to default
          */
         fun reset(context: Context) {
-            viewModelScope.launch(Dispatchers.IO) { preference(context).edit { NowPlayingScreenStyle.DEFAULT } }
+            viewModelScope.launch(Dispatchers.IO) { preference(context).reset() }
         }
 
     }

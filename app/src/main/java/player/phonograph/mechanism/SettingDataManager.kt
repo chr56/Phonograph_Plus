@@ -28,7 +28,6 @@ import kotlin.LazyThreadSafetyMode.NONE
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.SerialName
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
@@ -43,7 +42,7 @@ object SettingDataManager {
     private val parser by lazy(NONE) { Json { prettyPrint = true } }
 
     suspend fun rawMainPreference(context: Context): Map<Preferences.Key<*>, Any> =
-        Setting.settingsDatastore(context).data.first().asMap()
+        Setting(context).dataStore.data.first().asMap()
 
     suspend fun exportSettings(uri: Uri, context: Context): Boolean =
         try {
@@ -124,7 +123,7 @@ object SettingDataManager {
                 reportError(e, TAG, "Failed to deserialize setting.")
                 emptyArray()
             }
-            Setting.settingsDatastore(context).edit { preferences ->
+            Setting(context).dataStore.edit { preferences ->
                 preferences.putAll(*prefArray)
             }
         }
@@ -170,7 +169,7 @@ object SettingDataManager {
         runBlocking {
             // todo forceUnregisterAllListener
             //Setting.instance.forceUnregisterAllListener()
-            Setting.settingsDatastore(App.instance).edit { it.clear() }
+            Setting(App.instance).dataStore.edit { it.clear() }
         }
         Toast.makeText(App.instance, R.string.success, Toast.LENGTH_SHORT).show()
     }

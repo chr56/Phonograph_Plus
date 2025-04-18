@@ -402,7 +402,7 @@ object MediaItemProviders {
     private object RecentAddedProvider : AbsMediaItemProvider() {
 
         private fun lastAddedCutoffTimeStamp(context: Context): Long =
-            Setting(context).Composites[Keys.lastAddedCutoffTimeStamp].data / 1000
+            Setting(context)[Keys.lastAddedCutoffTimeStamp].data / 1000
 
         private suspend fun fetch(context: Context): List<Song> =
             Songs.since(context, lastAddedCutoffTimeStamp(context))

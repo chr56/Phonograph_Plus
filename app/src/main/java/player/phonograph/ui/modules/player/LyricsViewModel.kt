@@ -62,7 +62,7 @@ class LyricsViewModel : ViewModel() {
         loadLyricsJob?.cancel()
         // load new lyrics
         loadLyricsJob = viewModelScope.launch {
-            val enableLyrics = Setting(context)[Keys.enableLyrics].flowData()
+            val enableLyrics = Setting(context)[Keys.enableLyrics].read()
             if (enableLyrics) {
                 if (StoragePermissionChecker.hasStorageReadPermission(context)) {
                     replace(LyricsLoader.search(File(song.data), song.title))

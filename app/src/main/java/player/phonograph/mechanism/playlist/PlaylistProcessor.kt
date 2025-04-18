@@ -196,7 +196,7 @@ private data object HistoryPlaylistProcessor : PlaylistReader {
 private data object LastAddedPlaylistProcessor : PlaylistReader {
 
     override suspend fun allSongs(context: Context): List<Song> =
-        Songs.since(context, Setting(context).Composites[Keys.lastAddedCutoffTimeStamp].data / 1000)
+        Songs.since(context, Setting(context)[Keys.lastAddedCutoffTimeStamp].data / 1000)
 
     override suspend fun containsSong(context: Context, songId: Long): Boolean =
         allSongs(context).find { it.id == songId } != null

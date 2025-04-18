@@ -24,7 +24,7 @@ sealed class AbsFileViewModel : ViewModel() {
 
 
     private val _currentLocation: MutableStateFlow<Location> =
-        MutableStateFlow(Locations.from(Setting(App.instance).Composites[Keys.startDirectory].data, App.instance))
+        MutableStateFlow(Locations.from(Setting(App.instance)[Keys.startDirectory].data, App.instance))
 
     val currentLocation = _currentLocation.asStateFlow()
 

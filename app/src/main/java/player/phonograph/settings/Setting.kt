@@ -10,28 +10,21 @@ import androidx.datastore.preferences.preferencesDataStore
 import android.content.Context
 
 
-class Setting(val context: Context) {
+class Setting(context: Context) {
 
-    operator fun <T> get(key: PrimitiveKey<T>): PrimitivePreference<T> =
-        PrimitivePreference(key, context)
+    val dataStore = context.settingsDatastore
 
-    @Suppress("PropertyName")
-    val Composites
-        get() = object : CompositesSetting {
-            override operator fun <T> get(key: CompositeKey<T>): CompositePreference<T> =
-                CompositePreference(key, context)
+    operator fun <T> get(key: PreferenceKey<T>): Preference<T> =
+        when (key) {
+            is PrimitiveKey<T> -> PrimitivePreference(key, dataStore)
+            is CompositeKey<T> -> CompositePreference(key, dataStore)
         }
-
-    interface CompositesSetting {
-        operator fun <T> get(key: CompositeKey<T>): CompositePreference<T>
-    }
 
     companion object {
 
-        fun settingsDatastore(context: Context): DataStore<Preferences> = context.settingsDatastore
-
         private const val PREFERENCE_NAME = "setting_main"
 
+        @JvmStatic
         private val Context.settingsDatastore: DataStore<Preferences>
                 by preferencesDataStore(
                     name = PREFERENCE_NAME,

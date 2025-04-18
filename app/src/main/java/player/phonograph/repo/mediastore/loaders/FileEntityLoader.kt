@@ -47,7 +47,7 @@ object FileEntityLoader {
                     val item = readFileEntity(cursor, currentLocation, storageManager)
                     list.put(item)
                 } while (cursor.moveToNext())
-                val sortMode = Setting(App.instance).Composites[Keys.fileSortMode].data
+                val sortMode = Setting(App.instance)[Keys.fileSortMode].data
                 list.sortedWith(FileEntityComparator(sortMode))
             } else emptyList()
         }
@@ -108,7 +108,7 @@ object FileEntityLoader {
                 }
             item?.let { result.add(it) }
         }
-        val sortMode = Setting(context).Composites[Keys.fileSortMode].data
+        val sortMode = Setting(context)[Keys.fileSortMode].data
         return result.sortedWith(FileEntityComparator(sortMode))
     }
 

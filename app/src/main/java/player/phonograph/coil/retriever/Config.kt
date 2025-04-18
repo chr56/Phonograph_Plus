@@ -43,7 +43,7 @@ private var sourceConfig: ImageSourceConfig? = null
 private var sourceConfigJob: Job? = null
 
 suspend fun collectSourceConfig(context: Context): ImageSourceConfig = sourceConfig ?: run {
-    val imageSourceConfigFlow = Setting(context).Composites[Keys.imageSourceConfig].flow()
+    val imageSourceConfigFlow = Setting(context)[Keys.imageSourceConfig].flow
     if (sourceConfigJob == null) {
         sourceConfigJob = CoroutineScope(Dispatchers.IO).launch {
             imageSourceConfigFlow.collect { sourceConfig = it }
