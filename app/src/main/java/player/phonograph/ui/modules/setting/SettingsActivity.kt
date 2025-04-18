@@ -111,7 +111,7 @@ class SettingsActivity : ComposeActivity(),
                     ) {
                         Box(Modifier.padding(it)) {
                             val state = remember { dropMenuState }
-                            PhonographPreferenceScreen()
+                            PhonographPreferenceScreen(onBackPressedDispatcher)
                             Box(modifier = Modifier.align(Alignment.TopEnd)) {
                                 DropdownMenu(expanded = state.value, onDismissRequest = { state.value = false }) {
                                     Menu()

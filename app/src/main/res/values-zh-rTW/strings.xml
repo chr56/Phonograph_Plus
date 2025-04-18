@@ -101,7 +101,13 @@
     <string name="this_week">本周</string>
     <string name="this_month">本月</string>
     <string name="this_year">今年</string>
-    <string name="equalizer">等化器</string>
+    <string name="equalizer">等化器</string>>
+    <string name="pref_category_appearance">外觀</string>
+    <string name="pref_category_content">內容</string>
+    <string name="pref_category_behaviour">行為</string>
+    <string name="pref_category_notification">通知</string>
+    <string name="pref_category_advanced">高級</string>
+    <string name="pref_category_updates">更新</string>
     <string name="pref_header_colors">色彩</string>
     <string name="pref_header_content">內容</string>
     <string name="pref_header_lyrics">歌詞</string>

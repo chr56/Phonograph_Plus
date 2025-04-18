@@ -102,6 +102,12 @@
     <string name="this_month">This month</string>
     <string name="this_year">This year</string>
     <string name="equalizer">Equalizer</string>
+    <string name="pref_category_appearance">Appearance</string>
+    <string name="pref_category_content">Content</string>
+    <string name="pref_category_behaviour">Behaviour</string>
+    <string name="pref_category_notification">Notification</string>
+    <string name="pref_category_advanced">Advanced</string>
+    <string name="pref_category_updates">Updates</string>
     <string name="pref_header_colors">Colors</string>
     <string name="pref_header_content">Content</string>
     <string name="pref_header_lyrics">Lyrics</string>
