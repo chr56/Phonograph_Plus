@@ -11,12 +11,11 @@ import player.phonograph.model.Song
 import player.phonograph.model.service.ShuffleMode
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.ui.ItemLayoutStyle
+import player.phonograph.util.observe
 import player.phonograph.util.theme.accentColor
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -61,13 +60,7 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>> : AbsPanelPage() {
             setProgressViewOffset(false, 10, 120)
             setOnRefreshListener { viewModel.loadDataset(context) }
         }
-        lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                viewModel.loading.collect {
-                    binding.refreshContainer.isRefreshing = it
-                }
-            }
-        }
+        observe(viewModel.loading) { binding.refreshContainer.isRefreshing = it }
     }
 
     protected lateinit var adapter: A
@@ -75,19 +68,15 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>> : AbsPanelPage() {
     private fun prepareAdapter() {
         adapter = createAdapter()
         binding.recyclerView.adapter = adapter
-        lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                viewModel.dataset.collect { items ->
-                    updateDisplayedItems(items.toList())
+        observe(viewLifecycleOwner.lifecycle, viewModel.dataset) { items ->
+            updateDisplayedItems(items.toList())
 
-                    binding.empty.text = resources.getText(R.string.empty)
-                    binding.empty.visibility = if (items.isEmpty()) View.VISIBLE else View.GONE
+            binding.empty.text = resources.getText(R.string.empty)
+            binding.empty.visibility = if (items.isEmpty()) View.VISIBLE else View.GONE
 
-                    val headerTextRes = viewModel.headerTextRes
-                    if (headerTextRes != 0) {
-                        binding.panelText.text = resources.getQuantityString(headerTextRes, items.size, items.size)
-                    }
-                }
+            val headerTextRes = viewModel.headerTextRes
+            if (headerTextRes != 0) {
+                binding.panelText.text = resources.getQuantityString(headerTextRes, items.size, items.size)
             }
         }
     }

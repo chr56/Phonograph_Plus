@@ -22,6 +22,7 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.modules.popup.OptionsPopup
+import player.phonograph.util.observe
 import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.primaryColor
@@ -35,9 +36,6 @@ import util.theme.view.toolbar.setToolbarColor
 import util.theme.view.toolbar.tintCollapseIcon
 import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.widget.ViewPager2
 import android.content.Context
 import android.graphics.Color
@@ -46,7 +44,6 @@ import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import kotlinx.coroutines.launch
 
 class SearchActivity : AbsSlidingMusicPanelActivity(), SearchView.OnQueryTextListener,
                        ICreateFileStorageAccessible, IOpenFileStorageAccessible, IOpenDirStorageAccessible {
@@ -81,22 +78,8 @@ class SearchActivity : AbsSlidingMusicPanelActivity(), SearchView.OnQueryTextLis
 
         updateSystemBarsColor(darkenColor(primaryColor()), Color.TRANSPARENT)
 
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                viewModel.query.collect { text ->
-                    searchView?.setQuery(text, false)
-                }
-            }
-        }
-        lifecycleScope.launch {
-            val disableRealTimeSearchFlow = Setting(this@SearchActivity)[Keys.disableRealTimeSearch].flow
-            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                disableRealTimeSearchFlow.collect {
-                    disableRealTimeSearch = it
-                }
-            }
-        }
-
+        observe(viewModel.query) { text -> searchView?.setQuery(text, false) }
+        observe(Setting(this@SearchActivity)[Keys.disableRealTimeSearch].flow) { disableRealTimeSearch = it }
         lifecycle.addObserver(MediaStoreListener())
     }
 

@@ -23,12 +23,10 @@ import player.phonograph.ui.adapter.DisplayPresenter
 import player.phonograph.ui.adapter.PlaylistBasicDisplayPresenter
 import player.phonograph.ui.adapter.QueueSongBasicDisplayPresenter
 import player.phonograph.ui.adapter.SongBasicDisplayPresenter
+import player.phonograph.util.observe
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.content.Context
@@ -39,7 +37,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 
 /**
  * Fragment to display result with recycler view
@@ -75,23 +72,15 @@ abstract class SearchResultPageFragment<T> : Fragment() {
                 false
             }
         }
-        observeData(targetFlow())
+        observe(targetFlow()) { data ->
+            binding.empty.visibility = if (data.isEmpty()) View.VISIBLE else View.GONE
+            updateDataset(data)
+        }
     }
 
     protected abstract fun targetFlow(): StateFlow<List<T>>
 
     protected abstract fun updateDataset(newData: List<T>)
-
-    private fun observeData(flow: StateFlow<List<T>>) {
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                flow.collect { data ->
-                    binding.empty.visibility = if (data.isEmpty()) View.VISIBLE else View.GONE
-                    updateDataset(data)
-                }
-            }
-        }
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()

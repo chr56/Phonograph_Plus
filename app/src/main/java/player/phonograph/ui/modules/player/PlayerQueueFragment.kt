@@ -27,6 +27,7 @@ import player.phonograph.ui.dialogs.QueueSnapshotsDialog
 import player.phonograph.ui.modules.panel.AbsMusicServiceFragment
 import player.phonograph.ui.modules.panel.PanelViewModel
 import player.phonograph.ui.modules.playlist.dialogs.CreatePlaylistDialogActivity
+import player.phonograph.util.observe
 import player.phonograph.util.text.buildInfoString
 import player.phonograph.util.text.infoString
 import player.phonograph.util.text.readableDuration
@@ -44,9 +45,7 @@ import util.theme.color.primaryTextColor
 import util.theme.materials.MaterialColor
 import androidx.annotation.ColorInt
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.coroutineScope
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.withCreated
 import androidx.lifecycle.withStarted
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -64,10 +63,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import kotlin.getValue
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.FlowCollector
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class PlayerQueueFragment : AbsMusicServiceFragment() {
@@ -396,20 +392,6 @@ class PlayerQueueFragment : AbsMusicServiceFragment() {
         observe(panelViewModel.colorChange) { (oldColor, newColor) ->
             withStarted {
                 changeHighlightColor(oldColor, newColor, lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED))
-            }
-        }
-    }
-
-    private inline fun <reified T> observe(
-        flow: StateFlow<T>,
-        state: Lifecycle.State = Lifecycle.State.CREATED,
-        lifecycle: Lifecycle = this.lifecycle,
-        scope: CoroutineScope = lifecycle.coroutineScope,
-        flowCollector: FlowCollector<T>,
-    ) {
-        scope.launch {
-            lifecycle.repeatOnLifecycle(state) {
-                flow.collect(flowCollector)
             }
         }
     }

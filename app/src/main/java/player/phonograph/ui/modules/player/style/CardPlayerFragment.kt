@@ -12,6 +12,7 @@ import player.phonograph.model.Song
 import player.phonograph.model.ui.UnarySlidingUpPanelProvider
 import player.phonograph.ui.modules.player.AbsPlayerFragment
 import player.phonograph.ui.modules.player.controller.PlayerControllerFragment
+import player.phonograph.util.observe
 import player.phonograph.util.text.infoString
 import player.phonograph.util.theme.themeCardBackgroundColor
 import player.phonograph.util.ui.isLandscape
@@ -210,14 +211,10 @@ class CardPlayerFragment : AbsPlayerFragment() {
         override fun init() {
             with(fragment) {
                 // Current Song
-                lifecycleScope.launch {
-                    lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                        queueViewModel.currentSong.collect { song: Song? ->
-                            with(viewBinding) {
-                                playerToolbar.title = song?.title ?: "-"
-                                playerToolbar.subtitle = song?.infoString() ?: "-"
-                            }
-                        }
+                observe(queueViewModel.currentSong, state = Lifecycle.State.STARTED) { song: Song? ->
+                    with(viewBinding) {
+                        playerToolbar.title = song?.title ?: "-"
+                        playerToolbar.subtitle = song?.infoString() ?: "-"
                     }
                 }
             }

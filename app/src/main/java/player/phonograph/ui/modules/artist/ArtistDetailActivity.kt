@@ -21,8 +21,8 @@ import player.phonograph.model.Artist
 import player.phonograph.model.Song
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
-import player.phonograph.model.ui.PaletteColorProvider
 import player.phonograph.model.ui.ItemLayoutStyle
+import player.phonograph.model.ui.PaletteColorProvider
 import player.phonograph.repo.loader.Songs
 import player.phonograph.ui.adapter.AlbumBasicDisplayPresenter
 import player.phonograph.ui.adapter.DisplayAdapter
@@ -32,6 +32,7 @@ import player.phonograph.ui.adapter.SongBasicDisplayPresenter
 import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
 import player.phonograph.util.component.GetContentDelegate
 import player.phonograph.util.component.IGetContentRequester
+import player.phonograph.util.observe
 import player.phonograph.util.text.albumCountString
 import player.phonograph.util.text.buildInfoString
 import player.phonograph.util.text.readableDuration
@@ -51,9 +52,6 @@ import util.theme.view.toolbar.setToolbarColor
 import androidx.activity.addCallback
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
@@ -69,7 +67,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 
 class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvider, IGetContentRequester,
                              ICreateFileStorageAccessible, IOpenFileStorageAccessible, IOpenDirStorageAccessible {
@@ -138,44 +135,16 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvide
     }
 
     private fun observeData() {
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.usePaletteColor.collect {
-                    albumAdapter.presenter = ArtistAlbumDisplayPresenter(it)
-                    val dataset = albumAdapter.dataset
-                    synchronized(albumAdapter) {
-                        albumAdapter.dataset = emptyList()
-                        albumAdapter.dataset = dataset
-                    }
-                }
-            }
-        }
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.artist.collect {
-                    updateArtistInfo(it ?: Artist())
-                }
-            }
-        }
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.albums.collect {
-                    albumAdapter.dataset = it ?: emptyList()
-                }
-            }
-        }
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.songs.collect {
-                    songAdapter.dataset = it ?: emptyList()
-                }
-            }
-        }
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.paletteColor.collect { color ->
-                    setColors(color)
-                }
+        observe(viewModel.artist) { artist -> updateArtistInfo(artist ?: Artist()) }
+        observe(viewModel.albums) { albums -> albumAdapter.dataset = albums ?: emptyList() }
+        observe(viewModel.songs) { songs -> songAdapter.dataset = songs ?: emptyList() }
+        observe(viewModel.paletteColor) { color -> setColors(color) }
+        observe(viewModel.usePaletteColor) { it ->
+            albumAdapter.presenter = ArtistAlbumDisplayPresenter(it)
+            val dataset = albumAdapter.dataset
+            synchronized(albumAdapter) {
+                albumAdapter.dataset = emptyList()
+                albumAdapter.dataset = dataset
             }
         }
     }

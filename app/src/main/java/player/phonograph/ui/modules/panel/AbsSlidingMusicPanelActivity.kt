@@ -14,6 +14,7 @@ import player.phonograph.settings.Setting
 import player.phonograph.ui.modules.player.AbsPlayerFragment
 import player.phonograph.ui.modules.player.MiniPlayerFragment
 import player.phonograph.ui.modules.player.style.buildPlayerFragment
+import player.phonograph.util.observe
 import player.phonograph.util.theme.primaryColor
 import player.phonograph.util.theme.themeFooterColor
 import player.phonograph.util.theme.updateSystemBarsColor
@@ -26,8 +27,6 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.commit
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
 import android.graphics.Color
@@ -36,8 +35,6 @@ import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.view.animation.PathInterpolator
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.launch
 
 /**
  *
@@ -106,32 +103,19 @@ abstract class AbsSlidingMusicPanelActivity :
         }
 
         // add fragment
-        lifecycleScope.launch {
-            val flow = Setting(this@AbsSlidingMusicPanelActivity).Composites[Keys.nowPlayingScreenStyle].flow()
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                flow.distinctUntilChanged().collect { screen ->
-                    setupPlayerFragment(screen)
-                    miniPlayerFragment?.requireView()?.setOnClickListener { requestToExpand() }
-                    panelBinding.navigationBar.setOnClickListener { requestToExpand() }
-                }
-            }
+        val nowPlayingScreenStyle = Setting(this)[Keys.nowPlayingScreenStyle].flow()
+        observe(nowPlayingScreenStyle, state = Lifecycle.State.STARTED, distinctive = true) { screen ->
+            // todo
+            setupPlayerFragment(screen)
+            miniPlayerFragment?.requireView()?.setOnClickListener { requestToExpand() }
+            panelBinding.navigationBar.setOnClickListener { requestToExpand() }
         }
 
         // states
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                panelViewModel.colorChange.collect { (oldColor, newColor) ->
-                    if (slidingUpPanelLayout.panelState == PanelState.EXPANDED) {
-                        animateSystemBarsColor(oldColor, newColor)
-                    }
-                }
-            }
-        }
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                queueViewModel.queue.collect { queue ->
-                    hideBottomBar(queue.isEmpty() == true)
-                }
+        observe(queueViewModel.queue) { queue -> hideBottomBar(queue.isEmpty() == true) }
+        observe(panelViewModel.colorChange) { (oldColor, newColor) ->
+            if (slidingUpPanelLayout.panelState == PanelState.EXPANDED) {
+                animateSystemBarsColor(oldColor, newColor)
             }
         }
 

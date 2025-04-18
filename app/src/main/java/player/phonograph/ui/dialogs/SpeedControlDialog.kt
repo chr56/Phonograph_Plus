@@ -8,10 +8,10 @@ import player.phonograph.R
 import player.phonograph.databinding.DialogSpeedControlBinding
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.MusicService
+import player.phonograph.util.observe
 import player.phonograph.util.theme.tintButtons
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.lifecycleScope
 import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
@@ -20,7 +20,6 @@ import android.view.inputmethod.EditorInfo
 import android.widget.SeekBar
 import kotlin.math.roundToInt
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
 
 class SpeedControlDialog : DialogFragment() {
 
@@ -51,7 +50,12 @@ class SpeedControlDialog : DialogFragment() {
 
         setup()
 
-        observe(service)
+
+        speedData.value = service.speed // init
+        observe(viewLifecycleOwner.lifecycle, speedData) { speed ->
+            binding.speedSeeker.progress = calculateProcess(speed)
+            binding.speed.setText(String.format(null, "%.2f", speed))
+        }
 
 
         return AlertDialog.Builder(requireContext())
@@ -102,18 +106,6 @@ class SpeedControlDialog : DialogFragment() {
                 }
             } else {
                 false
-            }
-        }
-    }
-
-    private fun observe(service: MusicService) {
-
-        speedData.value = service.speed // init
-
-        lifecycleScope.launch {
-            speedData.collect { speed ->
-                binding.speedSeeker.progress = calculateProcess(speed)
-                binding.speed.setText(String.format("%.2f", speed))
             }
         }
     }

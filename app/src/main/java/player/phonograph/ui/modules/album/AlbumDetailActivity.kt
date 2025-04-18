@@ -18,14 +18,15 @@ import player.phonograph.model.Album
 import player.phonograph.model.Song
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
-import player.phonograph.model.ui.PaletteColorProvider
 import player.phonograph.model.ui.ItemLayoutStyle
+import player.phonograph.model.ui.PaletteColorProvider
 import player.phonograph.repo.loader.Songs
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayPresenter
 import player.phonograph.ui.adapter.SongBasicDisplayPresenter
 import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
 import player.phonograph.util.NavigationUtil.goToArtist
+import player.phonograph.util.observe
 import player.phonograph.util.text.buildInfoString
 import player.phonograph.util.text.readableDuration
 import player.phonograph.util.text.readableYear
@@ -41,9 +42,6 @@ import util.theme.view.menu.tintOverflowButtonColor
 import util.theme.view.menu.tintToolbarMenuActionIcons
 import util.theme.view.toolbar.setToolbarColor
 import androidx.activity.addCallback
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.content.Context
@@ -53,7 +51,6 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.View
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 
 /**
  * Be careful when changing things in this Activity!
@@ -96,27 +93,17 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvider
         lifecycle.addObserver(MediaStoreListener())
 
         // Observer
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                viewModel.album.collect { album ->
-                    if (album.id >= 0) {
-                        updateAlbumsInfo(album)
-                        viewModel.loadAlbumImage(this@AlbumDetailActivity, album, viewBinding.image)
-                    }
-                }
+        observe(viewModel.album) { album ->
+            if (album.id >= 0) {
+                updateAlbumsInfo(album)
+                viewModel.loadAlbumImage(this@AlbumDetailActivity, album, viewBinding.image)
             }
         }
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                viewModel.songs.collect {
-                    songAdapter.dataset = it
-                }
-            }
+        observe(viewModel.songs) { songs ->
+            songAdapter.dataset = songs
         }
-        lifecycleScope.launch {
-            viewModel.paletteColor.collect {
-                updateColors(it)
-            }
+        observe(viewModel.paletteColor) { color ->
+            updateColors(color)
         }
 
         // back-press

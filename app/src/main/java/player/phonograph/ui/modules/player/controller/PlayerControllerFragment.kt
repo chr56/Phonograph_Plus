@@ -13,20 +13,18 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.modules.panel.AbsMusicServiceFragment
 import player.phonograph.ui.modules.panel.PanelViewModel
 import player.phonograph.util.component.MusicProgressUpdateDelegate
+import player.phonograph.util.observe
 import player.phonograph.util.parcelable
 import util.theme.color.isColorLight
 import util.theme.color.primaryTextColor
 import util.theme.color.secondaryTextColor
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import android.graphics.Point
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlin.getValue
-import kotlinx.coroutines.launch
 
 abstract class PlayerControllerFragment<B : PlayerControllerBinding> : AbsMusicServiceFragment() {
 
@@ -79,43 +77,23 @@ abstract class PlayerControllerFragment<B : PlayerControllerBinding> : AbsMusicS
 
         binding.commit(requireContext())
 
-        lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                queueViewModel.repeatMode.collect { repeatMode ->
-                    binding.onUpdateRepeatModeIcon(repeatMode)
-                }
-            }
+        observe(queueViewModel.repeatMode) { repeatMode -> binding.onUpdateRepeatModeIcon(repeatMode) }
+        observe(queueViewModel.shuffleMode) { shuffleMode -> binding.onUpdateShuffleModeIcon(shuffleMode) }
+        observe(MusicPlayerRemote.currentState) { state ->
+            binding.onUpdatePlayerState(
+                when (state) {
+                    PlayerState.PAUSED    -> PlayerControllerBinding.STATE_PAUSED
+                    PlayerState.PLAYING   -> PlayerControllerBinding.STATE_PLAYING
+                    PlayerState.STOPPED   -> PlayerControllerBinding.STATE_STOPPED
+                    PlayerState.PREPARING -> PlayerControllerBinding.STATE_BUFFERING
+                }, shouldWithAnimation
+            )
         }
-        lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                queueViewModel.shuffleMode.collect { shuffleMode ->
-                    binding.onUpdateShuffleModeIcon(shuffleMode)
-                }
-            }
-        }
-        lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                MusicPlayerRemote.currentState.collect {
-                    binding.onUpdatePlayerState(
-                        when (it) {
-                            PlayerState.PAUSED    -> PlayerControllerBinding.STATE_PAUSED
-                            PlayerState.PLAYING   -> PlayerControllerBinding.STATE_PLAYING
-                            PlayerState.STOPPED   -> PlayerControllerBinding.STATE_STOPPED
-                            PlayerState.PREPARING -> PlayerControllerBinding.STATE_BUFFERING
-                        }, shouldWithAnimation
-                    )
-                }
-            }
-        }
-        lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                panelViewModel.colorChange.collect { (oldColor, newColor) ->
-                    val context = requireContext()
-                    val oldControlsColor = context.secondaryTextColor(!isColorLight(oldColor))
-                    val newControlsColor = context.secondaryTextColor(!isColorLight(newColor))
-                    binding.onUpdateColor(oldControlsColor, newControlsColor, false)
-                }
-            }
+        observe(panelViewModel.colorChange) { (oldColor, newColor) ->
+            val context = requireContext()
+            val oldControlsColor = context.secondaryTextColor(!isColorLight(oldColor))
+            val newControlsColor = context.secondaryTextColor(!isColorLight(newColor))
+            binding.onUpdateColor(oldControlsColor, newControlsColor, false)
         }
     }
 

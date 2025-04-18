@@ -26,6 +26,7 @@ import player.phonograph.ui.modules.player.PlayerAlbumCoverFragment.Companion.VI
 import player.phonograph.ui.modules.player.controller.PlayerControllerFragment
 import player.phonograph.ui.modules.setting.dialog.NowPlayingScreenStylePreferenceDialog
 import player.phonograph.util.NavigationUtil
+import player.phonograph.util.observe
 import player.phonograph.util.parcelable
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.ui.PHONOGRAPH_ANIM_TIME
@@ -53,7 +54,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.coroutineScope
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.withResumed
 import androidx.lifecycle.withStarted
 import android.animation.Animator
@@ -71,8 +71,6 @@ import android.view.ViewGroup
 import kotlin.math.max
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.FlowCollector
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 abstract class AbsPlayerFragment :
@@ -358,20 +356,6 @@ abstract class AbsPlayerFragment :
         observe(panelViewModel.colorChange) { (oldColor, newColor) ->
             withResumed { // fixme: fix lifecycle issues
                 onColorChanged(oldColor, newColor)
-            }
-        }
-    }
-
-    protected inline fun <reified T> observe(
-        flow: StateFlow<T>,
-        lifecycle: Lifecycle = this.lifecycle,
-        state: Lifecycle.State = Lifecycle.State.CREATED,
-        scope: CoroutineScope = lifecycle.coroutineScope,
-        flowCollector: FlowCollector<T>,
-    ) {
-        scope.launch {
-            lifecycle.repeatOnLifecycle(state) {
-                flow.collect(flowCollector)
             }
         }
     }

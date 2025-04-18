@@ -24,6 +24,7 @@ import player.phonograph.model.playlist.Playlist
 import player.phonograph.ui.basis.DialogActivity
 import player.phonograph.util.PLAYLIST_MIME_TYPE
 import player.phonograph.util.concurrent.coroutineToast
+import player.phonograph.util.observe
 import player.phonograph.util.parcelableArrayListExtra
 import player.phonograph.util.text.currentDate
 import player.phonograph.util.text.dateTimeSuffix
@@ -34,7 +35,6 @@ import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
@@ -140,31 +140,22 @@ class CreatePlaylistDialogActivity : DialogActivity(),
 
     private fun bindState() {
 
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.location.collect { path ->
-                    binding.location.editText?.setText(path)
-                }
-            }
+        observe(viewModel.location, state = Lifecycle.State.STARTED) { path ->
+            binding.location.editText?.setText(path)
         }
-
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.mode.collect { mode ->
-                    binding.location.visibility =
-                        if (mode == CreatePlaylistViewModel.MODE_FILE_SAF || mode == CreatePlaylistViewModel.MODE_PLAYLISTS_SAF)
-                            View.VISIBLE
-                        else
-                            View.INVISIBLE
-                    binding.name.visibility =
-                        if (mode == CreatePlaylistViewModel.MODE_PLAYLISTS_SAF || mode == CreatePlaylistViewModel.MODE_PLAYLISTS_MEDIASTORE)
-                            View.INVISIBLE
-                        else
-                            View.VISIBLE
-                    binding.checkBoxSaf.visibility =
-                        if (mode == CreatePlaylistViewModel.MODE_DATABASE) View.INVISIBLE else View.VISIBLE
-                }
-            }
+        observe(viewModel.mode, state = Lifecycle.State.STARTED) { mode ->
+            binding.location.visibility =
+                if (mode == CreatePlaylistViewModel.MODE_FILE_SAF || mode == CreatePlaylistViewModel.MODE_PLAYLISTS_SAF)
+                    View.VISIBLE
+                else
+                    View.INVISIBLE
+            binding.name.visibility =
+                if (mode == CreatePlaylistViewModel.MODE_PLAYLISTS_SAF || mode == CreatePlaylistViewModel.MODE_PLAYLISTS_MEDIASTORE)
+                    View.INVISIBLE
+                else
+                    View.VISIBLE
+            binding.checkBoxSaf.visibility =
+                if (mode == CreatePlaylistViewModel.MODE_DATABASE) View.INVISIBLE else View.VISIBLE
         }
 
     }

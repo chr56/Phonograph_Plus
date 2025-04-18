@@ -32,6 +32,7 @@ import player.phonograph.util.currentChannel
 import player.phonograph.util.currentVersionCode
 import player.phonograph.util.debug
 import player.phonograph.util.logMetrics
+import player.phonograph.util.observe
 import player.phonograph.util.parcelableExtra
 import player.phonograph.util.text.infoString
 import player.phonograph.util.theme.accentColor
@@ -45,9 +46,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.drawerlayout.widget.DrawerLayout.SimpleDrawerListener
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.withStarted
 import android.content.Context
 import android.content.Intent
@@ -116,24 +115,10 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
             }, 900
         )
 
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                queueViewModel.currentSong.collect { song ->
-                    updateNavigationDrawerHeader(song)
-                }
-            }
-        }
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                drawerViewModel.selectedPage.collect { page ->
-                    drawerBinding.navigationView.setCheckedItem(1000 + page)
-                }
-            }
-        }
+        observe(queueViewModel.currentSong) { song -> updateNavigationDrawerHeader(song) }
+        observe(drawerViewModel.selectedPage) { page -> drawerBinding.navigationView.setCheckedItem(1000 + page) }
 
-        lifecycleScope.launch(Dispatchers.Default) {
-            latelySetup()
-        }
+        lifecycleScope.launch(Dispatchers.Default) { latelySetup() }
         debug { logMetrics("MainActivity.onCreate()") }
     }
 

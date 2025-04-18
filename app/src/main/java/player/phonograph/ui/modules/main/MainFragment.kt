@@ -29,6 +29,7 @@ import player.phonograph.ui.modules.popup.ListOptionsPopup
 import player.phonograph.ui.modules.search.SearchActivity
 import player.phonograph.util.debug
 import player.phonograph.util.logMetrics
+import player.phonograph.util.observe
 import player.phonograph.util.reportError
 import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.getTintedDrawable
@@ -188,15 +189,11 @@ class MainFragment : Fragment() {
 
     private fun setupViewPager(homeTabConfig: PagesConfig) {
 
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                drawerViewModel.selectedPage.collect { page ->
-                    try {
-                        binding.pager.currentItem = page
-                    } catch (e: Exception) {
-                        reportError(e, "MainFragment", "Failed to select page $page")
-                    }
-                }
+        observe(drawerViewModel.selectedPage) { page ->
+            try {
+                binding.pager.currentItem = page
+            } catch (e: Exception) {
+                reportError(e, "MainFragment", "Failed to select page $page")
             }
         }
 

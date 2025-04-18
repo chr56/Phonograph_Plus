@@ -22,6 +22,7 @@ import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayPresenter
 import player.phonograph.ui.adapter.SongBasicDisplayPresenter
 import player.phonograph.ui.adapter.SongCollectionBasicDisplayPresenter
+import player.phonograph.util.observe
 import player.phonograph.util.theme.accentColor
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import androidx.activity.OnBackPressedCallback
@@ -61,11 +62,7 @@ class FoldersPage : AbsPanelPage() {
         prepareRecyclerView()
         prepareAdaptersAndData()
 
-        lifecycleScope.launch {
-            viewModel.bannerText.collect { text ->
-                binding.panelText.text = text
-            }
-        }
+        observe(viewLifecycleOwner.lifecycle, viewModel.bannerText) { text -> binding.panelText.text = text }
 
         lifecycle.addObserver(object : DefaultLifecycleObserver {
             override fun onPause(owner: LifecycleOwner) {
@@ -110,24 +107,19 @@ class FoldersPage : AbsPanelPage() {
         songAdapter = DisplayAdapter(requireActivity(), buildSongDisplayPresenter())
         binding.recyclerView.adapter = songCollectionDisplayAdapter
 
-        lifecycleScope.launch {
-            viewModel.folders.collect { data ->
-                binding.empty.visibility = if (data.isEmpty()) View.VISIBLE else View.GONE
-                songCollectionDisplayAdapter.dataset = data
-            }
+        observe(viewLifecycleOwner.lifecycle, viewModel.folders) { data ->
+            binding.empty.visibility = if (data.isEmpty()) View.VISIBLE else View.GONE
+            songCollectionDisplayAdapter.dataset = data
+
         }
-        lifecycleScope.launch {
-            viewModel.currentSongs.collect { data ->
-                songAdapter.dataset = data
-            }
+        observe(viewLifecycleOwner.lifecycle, viewModel.currentSongs) { data ->
+            songAdapter.dataset = data
         }
-        lifecycleScope.launch {
-            viewModel.mainViewMode.collect { mode ->
-                updateNavigateUpBackPressedCallback(mode)
-                binding.recyclerView.adapter = if (mode) songCollectionDisplayAdapter else songAdapter
-                layoutManager.spanCount = if (mode) folderPageDisplayConfig.gridSize else songPageDisplayConfig.gridSize
-                layoutManager.scrollToPosition(if (mode) viewModel.historyFolderPosition else viewModel.historyPosition)
-            }
+        observe(viewLifecycleOwner.lifecycle, viewModel.mainViewMode) { mode ->
+            updateNavigateUpBackPressedCallback(mode)
+            binding.recyclerView.adapter = if (mode) songCollectionDisplayAdapter else songAdapter
+            layoutManager.spanCount = if (mode) folderPageDisplayConfig.gridSize else songPageDisplayConfig.gridSize
+            layoutManager.scrollToPosition(if (mode) viewModel.historyFolderPosition else viewModel.historyPosition)
         }
     }
 

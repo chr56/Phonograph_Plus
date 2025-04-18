@@ -11,8 +11,8 @@ class FilesChooserExplorerFragment : AbsFilesExplorerFragment<FilesChooserViewMo
 
     override val model: FilesChooserViewModel by viewModels({ requireActivity() })
 
-    override fun updateFilesDisplayed() {
-        adapter.dataSet = model.currentFiles.value.toMutableList()
+    override fun updateFilesDisplayed(items: List<FileEntity>) {
+        adapter.dataSet = items.toMutableList()
     }
 
     override fun createAdapter(): FilesChooserAdapter =

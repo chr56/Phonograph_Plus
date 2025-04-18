@@ -28,6 +28,7 @@ import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.ui.UIMode
 import player.phonograph.repo.loader.Playlists
 import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
+import player.phonograph.util.observe
 import player.phonograph.util.parcelable
 import player.phonograph.util.text.readableDuration
 import player.phonograph.util.theme.accentColor
@@ -129,38 +130,30 @@ class PlaylistDetailActivity :
     }
 
     private fun observeData() {
-        lifecycleScope.launch {
-            viewModel.items.collect { songs ->
-                adapter.dataset = songs
-                binding.empty.visibility = if (songs.isEmpty()) VISIBLE else GONE
+        observe(viewModel.items) { songs ->
+            adapter.dataset = songs
+            binding.empty.visibility = if (songs.isEmpty()) VISIBLE else GONE
+        }
+        observe(viewModel.currentMode) { mode ->
+            supportActionBar!!.title =
+                if (mode == UIMode.Editor)
+                    "${viewModel.playlist.name} [${getString(R.string.edit)}]"
+                else
+                    viewModel.playlist.name
+            updateBannerVisibility(mode)
+            @SuppressLint("NotifyDataSetChanged")
+            adapter.notifyDataSetChanged()
+            if (mode == UIMode.Common) execute(Refresh(true))
+        }
+        observe(viewModel.totalCount) {
+            with(binding) {
+                @SuppressLint("SetTextI18n")
+                songCountText.text = it.toString()
             }
         }
-        lifecycleScope.launch {
-            viewModel.currentMode.collect { mode ->
-                supportActionBar!!.title =
-                    if (mode == UIMode.Editor)
-                        "${viewModel.playlist.name} [${getString(R.string.edit)}]"
-                    else
-                        viewModel.playlist.name
-                updateBannerVisibility(mode)
-                @SuppressLint("NotifyDataSetChanged")
-                adapter.notifyDataSetChanged()
-                if (mode == UIMode.Common) execute(Refresh(true))
-            }
-        }
-        lifecycleScope.launch {
-            viewModel.totalCount.collect {
-                with(binding) {
-                    @SuppressLint("SetTextI18n")
-                    songCountText.text = it.toString()
-                }
-            }
-        }
-        lifecycleScope.launch {
-            viewModel.totalDuration.collect {
-                with(binding) {
-                    durationText.text = readableDuration(it)
-                }
+        observe(viewModel.totalDuration) { duration ->
+            with(binding) {
+                durationText.text = readableDuration(duration)
             }
         }
     }

@@ -19,6 +19,7 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.modules.player.LyricsViewModel
 import player.phonograph.util.component.MusicProgressUpdateDelegate
+import player.phonograph.util.observe
 import player.phonograph.util.reportError
 import player.phonograph.util.text.lyricsTimestamp
 import player.phonograph.util.theme.getTintedDrawable
@@ -106,20 +107,16 @@ class LyricsDialog : DialogFragment() {
 
         setupFollowing(lyricsInfo)
 
-        lifecycleScope.launch {
-            viewModel.lyricsInfo.collect { info ->
-                withContext(Dispatchers.Main) {
-                    updateTitle(info)
-                    updateChips(info)
-                    updateRecycleView(info)
-                    lastHighlightPosition = -1
-                }
+        observe(viewLifecycleOwner.lifecycle, viewModel.lyricsInfo) { info ->
+            withContext(Dispatchers.Main) {
+                updateTitle(info)
+                updateChips(info)
+                updateRecycleView(info)
+                lastHighlightPosition = -1
             }
         }
-        lifecycleScope.launch {
-            viewModel.requireLyricsFollowing.collect {
-                binding.lyricsFollowing.isChecked = it
-            }
+        observe(viewLifecycleOwner.lifecycle, viewModel.requireLyricsFollowing) { following ->
+            binding.lyricsFollowing.isChecked = following
         }
     }
 

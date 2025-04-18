@@ -7,12 +7,11 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.modules.panel.AbsMusicServiceFragment
 import player.phonograph.ui.views.PlayPauseDrawable
 import player.phonograph.util.component.MusicProgressUpdateDelegate
+import player.phonograph.util.observe
 import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.themeIconColor
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.Drawable
@@ -23,7 +22,6 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import kotlin.math.abs
-import kotlinx.coroutines.launch
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -66,21 +64,13 @@ class MiniPlayerFragment : AbsMusicServiceFragment() {
 
     private fun setUpPlayPauseButton() {
         miniPlayerPlayPauseDrawable = PlayPauseDrawable(requireContext())
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                MusicPlayerRemote.currentState.collect {
-                    updatePlayPauseDrawableState(
-                        lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
-                    )
-                }
-            }
+        observe(MusicPlayerRemote.currentState) {
+            updatePlayPauseDrawableState(
+                lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
+            )
         }
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                queueViewModel.currentSong.collect {
-                    replaceText(if (it != null) it.title else getString(R.string.empty))
-                }
-            }
+        observe(queueViewModel.currentSong) {
+            replaceText(if (it != null) it.title else getString(R.string.empty))
         }
     }
 

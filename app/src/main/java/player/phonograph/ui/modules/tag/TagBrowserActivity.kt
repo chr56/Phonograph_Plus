@@ -23,6 +23,7 @@ import player.phonograph.ui.modules.web.LastFmDialog
 import player.phonograph.ui.modules.web.WebSearchLauncher
 import player.phonograph.ui.modules.web.WebSearchTool
 import player.phonograph.util.debug
+import player.phonograph.util.observe
 import player.phonograph.util.theme.updateSystemBarsColor
 import util.theme.color.darkenColor
 import androidx.activity.OnBackPressedDispatcher
@@ -52,9 +53,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewModelScope
 import android.content.Context
 import android.content.Intent
@@ -101,13 +99,9 @@ class TagBrowserActivity :
             }
         }
 
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                viewModel.state.collect { state ->
-                    val color = state?.color
-                    if (color != null) updateSystemBarsColor(darkenColor(color.toArgb()), Color.Transparent.toArgb())
-                }
-            }
+        observe(viewModel.state) { state ->
+            val color = state?.color
+            if (color != null) updateSystemBarsColor(darkenColor(color.toArgb()), Color.Transparent.toArgb())
         }
     }
 

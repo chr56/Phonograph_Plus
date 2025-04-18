@@ -21,6 +21,7 @@ import player.phonograph.ui.modules.explorer.FilesPageExplorerFragment
 import player.phonograph.ui.modules.explorer.FilesPageViewModel
 import player.phonograph.ui.modules.popup.ListOptionsPopup
 import player.phonograph.util.concurrent.coroutineToast
+import player.phonograph.util.observe
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import util.theme.color.primaryTextColor
@@ -28,7 +29,6 @@ import androidx.fragment.app.commitNow
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.withResumed
 import android.annotation.SuppressLint
 import android.content.Context
@@ -122,12 +122,8 @@ class FilesPage : AbsPage() {
         binding.panelText.setTextColor(requireContext().primaryTextColor(requireContext().nightMode))
         binding.panelToolbar.setTitleTextColor(requireContext().primaryTextColor(requireContext().nightMode))
 
-        lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                model.currentFiles.collect {
-                    binding.panelText.text = headerText(resources, it.size)
-                }
-            }
+        observe(viewLifecycleOwner.lifecycle, model.currentFiles, state = Lifecycle.State.STARTED) { files ->
+            binding.panelText.text = headerText(resources, files.size)
         }
 
         mainFragment.addOnAppBarOffsetChangedListener(outerAppbarOffsetListener)

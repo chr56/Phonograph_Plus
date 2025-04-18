@@ -20,15 +20,14 @@ import player.phonograph.settings.Setting
 import player.phonograph.ui.modules.panel.AbsMusicServiceFragment
 import player.phonograph.ui.modules.panel.PanelViewModel
 import player.phonograph.util.component.MusicProgressUpdateDelegate
+import player.phonograph.util.observe
 import player.phonograph.util.parcelable
 import player.phonograph.util.theme.themeFooterColor
 import player.phonograph.util.ui.PHONOGRAPH_ANIM_TIME
 import androidx.annotation.MainThread
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.withCreated
 import androidx.lifecycle.withResumed
 import androidx.lifecycle.withStarted
@@ -78,58 +77,38 @@ class PlayerAlbumCoverFragment :
     }
 
     private fun observeState() {
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                queueViewModel.queue.collect { queue ->
-                    val position = MusicPlayerRemote.position
-                    refreshAdapter(queue, position)
+        observe(queueViewModel.queue) { queue ->
+            val position = MusicPlayerRemote.position
+            refreshAdapter(queue, position)
+        }
+        observe(queueViewModel.shuffleMode) {
+            val queue = MusicPlayerRemote.playingQueue
+            val position = MusicPlayerRemote.position
+            refreshAdapter(queue, position)
+        }
+        observe(queueViewModel.position) { position ->
+            val songs = albumCoverPagerAdapter?.dataSet
+            if (songs != null) {
+                if (position in songs.indices) {
+                    updateCurrentItemPosition(position)
+                    updateCurrentPaletteColor(songs[position])
                 }
             }
         }
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                queueViewModel.shuffleMode.collect {
-                    val queue = MusicPlayerRemote.playingQueue
-                    val position = MusicPlayerRemote.position
-                    refreshAdapter(queue, position)
+        observe(lyricsViewModel.lyricsInfo) {
+            val lyricsShow = Setting(App.instance)[Keys.synchronizedLyricsShow].data
+            withContext(Dispatchers.Main) {
+                if (lyricsShow) {
+                    resetLyricsLayout()
+                } else {
+                    hideLyricsLayout()
                 }
             }
         }
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                queueViewModel.position.collect { position ->
-                    val songs = albumCoverPagerAdapter?.dataSet
-                    if (songs != null) {
-                        if (position in songs.indices) {
-                            updateCurrentItemPosition(position)
-                            updateCurrentPaletteColor(songs[position])
-                        }
-                    }
-                }
-            }
-        }
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                lyricsViewModel.lyricsInfo.collect { _ ->
-                    val lyricsShow = Setting(App.instance)[Keys.synchronizedLyricsShow].data
-                    withContext(Dispatchers.Main) {
-                        if (lyricsShow) {
-                            resetLyricsLayout()
-                        } else {
-                            hideLyricsLayout()
-                        }
-                    }
-                }
-            }
-        }
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                playerViewModel.favoriteState.collect { newState ->
-                    if (newState.first == lastFavoriteState.first && newState.second && !lastFavoriteState.second)
-                        showHeartAnimation()
-                    lastFavoriteState = newState
-                }
-            }
+        observe(playerViewModel.favoriteState) { newState ->
+            if (newState.first == lastFavoriteState.first && newState.second && !lastFavoriteState.second)
+                showHeartAnimation()
+            lastFavoriteState = newState
         }
     }
 

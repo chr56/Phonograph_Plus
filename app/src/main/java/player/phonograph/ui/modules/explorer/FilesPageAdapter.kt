@@ -13,10 +13,11 @@ import player.phonograph.model.file.FileEntity
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.adapter.MultiSelectionController
+import player.phonograph.util.observe
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.themeIconColor
 import androidx.activity.ComponentActivity
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.Lifecycle
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Resources
@@ -26,8 +27,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class FilesPageAdapter(
     activity: ComponentActivity,
@@ -112,15 +111,15 @@ class FilesPageAdapter(
     private var loadCover: Boolean = false
 
     init {
-        activity.lifecycleScope.launch(Dispatchers.IO) {
-            Setting(activity)[Keys.showFileImages].flow.collect {
+        observe(
+            activity.lifecycle,
+            Setting(activity)[Keys.showFileImages].flow,
+            state = Lifecycle.State.STARTED
+        ) { showFileImages ->
+            if (loadCover != showFileImages) {
+                loadCover = showFileImages
                 @SuppressLint("NotifyDataSetChanged")
-                if (loadCover != it) {
-                    loadCover = it
-                    launch(Dispatchers.Main) {
-                        notifyDataSetChanged()
-                    }
-                }
+                notifyDataSetChanged()
             }
         }
     }

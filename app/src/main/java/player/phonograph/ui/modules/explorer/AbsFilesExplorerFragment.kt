@@ -9,8 +9,10 @@ import lib.storage.extension.rootDirectory
 import player.phonograph.R
 import player.phonograph.databinding.FragmentFileExploreBinding
 import player.phonograph.mechanism.explorer.Locations
+import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.Location
 import player.phonograph.model.file.defaultStartDirectory
+import player.phonograph.util.observe
 import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
@@ -25,7 +27,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.withStateAtLeast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -38,8 +39,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<*>> : Fragment() {
 
@@ -69,7 +68,6 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val accentColor = accentColor()
-        setupObservers()
 
         // Back press
         lifecycle.addObserver(object : DefaultLifecycleObserver {
@@ -117,61 +115,46 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
         }
 
         // Data
+        setupObservers()
         model.refreshFiles(requireContext())
     }
 
     abstract fun createAdapter(): A
 
     protected open fun setupObservers() {
-        lifecycleScope.launch {
-            model.currentLocation.collect { newLocation ->
-                lifecycle.withStateAtLeast(Lifecycle.State.STARTED) {
-                    lifecycleScope.launch(Dispatchers.Main) {
-                        // Bread Crumb
-                        binding.breadCrumb.apply {
-                            location = newLocation
-                            layoutManager.scrollHorizontallyBy(
-                                binding.breadCrumb.width / 4,
-                                recyclerView.Recycler(),
-                                RecyclerView.State()
-                            )
+        observe(model.currentLocation) { newLocation ->
+            lifecycle.withStateAtLeast(Lifecycle.State.STARTED) {
+                // Bread Crumb
+                binding.breadCrumb.apply {
+                    location = newLocation
+                    layoutManager.scrollHorizontallyBy(
+                        binding.breadCrumb.width / 4,
+                        recyclerView.Recycler(),
+                        RecyclerView.State()
+                    )
+                }
+                binding.buttonBack.setImageDrawable(
+                    requireContext().getThemedDrawable(
+                        if (newLocation.isRoot) {
+                            R.drawable.ic_sdcard_white_24dp
+                        } else {
+                            R.drawable.ic_nav_back_white_24dp
                         }
-                        binding.buttonBack.setImageDrawable(
-                            requireContext().getThemedDrawable(
-                                if (newLocation.isRoot) {
-                                    R.drawable.ic_sdcard_white_24dp
-                                } else {
-                                    R.drawable.ic_nav_back_white_24dp
-                                }
-                            )
-                        )
-                    }
-                    updateBackPressedDispatcher(newLocation)
-                }
+                    )
+                )
+                updateBackPressedDispatcher(newLocation)
             }
         }
-        lifecycleScope.launch {
-            model.currentFiles.collect {
-                lifecycle.withStateAtLeast(Lifecycle.State.STARTED) {
-                    lifecycleScope.launch(Dispatchers.Main) {
-                        updateFilesDisplayed()
-                        layoutManager.scrollToPosition(model.historyPosition)
-                    }
-                }
-            }
+        observe(model.currentFiles) { items ->
+            updateFilesDisplayed(items)
+            layoutManager.scrollToPosition(model.historyPosition)
         }
-        lifecycleScope.launch {
-            model.loading.collect {
-                lifecycle.withStateAtLeast(Lifecycle.State.STARTED) {
-                    lifecycleScope.launch(Dispatchers.Main) {
-                        binding.container.isRefreshing = it
-                    }
-                }
-            }
+        observe(model.loading) { loading ->
+            binding.container.isRefreshing = loading
         }
     }
 
-    abstract fun updateFilesDisplayed()
+    abstract fun updateFilesDisplayed(items: List<FileEntity>)
 
 
     /**
