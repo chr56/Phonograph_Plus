@@ -60,31 +60,26 @@ fun PreferenceScreenAppearance() {
                     locale.getDisplayName(locale)
                 }
             )
-            DialogPreference(
-                dialog = NowPlayingScreenStylePreferenceDialog::class.java,
-                titleRes = R.string.pref_title_player_style,
-                summaryRes = R.string.pref_title_now_playing_screen_style,
-                reset = {
-                    resetPreference(it, R.string.pref_title_player_style, Keys.nowPlayingScreenStyle)
+            ListPreference(
+                key = Keys.theme,
+                optionsValues = listOf(
+                    THEME_AUTO_LIGHTBLACK,
+                    THEME_AUTO_LIGHTDARK,
+                    THEME_LIGHT,
+                    THEME_BLACK,
+                    THEME_DARK,
+                ),
+                optionsValuesLocalized = listOf(
+                    R.string.theme_name_auto_lightblack,
+                    R.string.theme_name_auto_lightdark,
+                    R.string.theme_name_light,
+                    R.string.theme_name_black,
+                    R.string.theme_name_dark,
+                ),
+                titleRes = R.string.pref_title_general_theme,
+                onChange = { _, _ ->
+                    ThemeSetting.updateThemeStyle(context)
                 }
-            )
-            DialogPreference(
-                dialog = HomeTabConfigDialog::class.java,
-                titleRes = R.string.library_categories,
-                summaryRes = R.string.pref_summary_library_categories,
-                reset = {
-                    resetPreference(it, R.string.library_categories, Keys.homeTabConfig)
-                }
-            )
-            BooleanPreference(
-                key = Keys.rememberLastTab,
-                titleRes = R.string.pref_title_remember_last_tab,
-                summaryRes = R.string.pref_summary_remember_last_tab,
-            )
-            BooleanPreference(
-                key = Keys.fixedTabLayout,
-                titleRes = R.string.perf_title_fixed_tab_layout,
-                summaryRes = R.string.pref_summary_fixed_tab_layout,
             )
         }
 
@@ -108,27 +103,6 @@ fun PreferenceScreenAppearance() {
                 summaryRes = R.string.accent_color_desc,
                 ColorPalette.Variant.Accent
             )
-            ListPreference(
-                key = Keys.theme,
-                optionsValues = listOf(
-                    THEME_AUTO_LIGHTBLACK,
-                    THEME_AUTO_LIGHTDARK,
-                    THEME_LIGHT,
-                    THEME_BLACK,
-                    THEME_DARK,
-                ),
-                optionsValuesLocalized = listOf(
-                    R.string.theme_name_auto_lightblack,
-                    R.string.theme_name_auto_lightdark,
-                    R.string.theme_name_light,
-                    R.string.theme_name_black,
-                    R.string.theme_name_dark,
-                ),
-                titleRes = R.string.pref_title_general_theme,
-                onChange = { _, _ ->
-                    ThemeSetting.updateThemeStyle(context)
-                }
-            )
             if (SDK_INT >= N_MR1) BooleanPreference(
                 key = Keys.coloredAppShortcuts,
                 titleRes = R.string.pref_title_app_shortcuts,
@@ -139,6 +113,39 @@ fun PreferenceScreenAppearance() {
                 }
             )
         }
+
+        SettingsGroup(titleRes = R.string.pref_header_now_playing_screen) {
+            DialogPreference(
+                dialog = NowPlayingScreenStylePreferenceDialog::class.java,
+                titleRes = R.string.pref_title_player_style,
+                summaryRes = R.string.pref_title_now_playing_screen_style,
+                reset = {
+                    resetPreference(it, R.string.pref_title_player_style, Keys.nowPlayingScreenStyle)
+                }
+            )
+        }
+
+        SettingsGroup(titleRes = R.string.pref_header_library) {
+            DialogPreference(
+                dialog = HomeTabConfigDialog::class.java,
+                titleRes = R.string.library_categories,
+                summaryRes = R.string.pref_summary_library_categories,
+                reset = {
+                    resetPreference(it, R.string.library_categories, Keys.homeTabConfig)
+                }
+            )
+            BooleanPreference(
+                key = Keys.rememberLastTab,
+                titleRes = R.string.pref_title_remember_last_tab,
+                summaryRes = R.string.pref_summary_remember_last_tab,
+            )
+            BooleanPreference(
+                key = Keys.fixedTabLayout,
+                titleRes = R.string.perf_title_fixed_tab_layout,
+                summaryRes = R.string.pref_summary_fixed_tab_layout,
+            )
+        }
+
         Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.systemBars))
     }
 }

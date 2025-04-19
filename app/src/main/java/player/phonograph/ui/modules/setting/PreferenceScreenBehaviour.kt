@@ -39,7 +39,7 @@ fun PreferenceScreenBehaviour() {
     Column(
         Modifier.verticalScroll(rememberScrollState())
     ) {
-        SettingsGroup(titleRes = R.string.pref_header_player_behaviour) {
+        SettingsGroup(titleRes = R.string.pref_header_audio) {
             BooleanPreference(
                 key = Keys.audioDucking,
                 summaryRes = R.string.pref_summary_audio_ducking,
@@ -55,6 +55,9 @@ fun PreferenceScreenBehaviour() {
                 summaryRes = R.string.pref_summary_always_play,
                 titleRes = R.string.pref_title_always_play,
             )
+            EqualizerSetting()
+        }
+        SettingsGroup(titleRes = R.string.pref_header_player_behaviour) {
             BooleanPreference(
                 key = Keys.gaplessPlayback,
                 summaryRes = R.string.pref_summary_gapless_playback,
@@ -65,7 +68,6 @@ fun PreferenceScreenBehaviour() {
                 summaryRes = R.string.pref_summary_broadcast_current_player_state,
                 titleRes = R.string.pref_title_broadcast_current_player_state,
             )
-            EqualizerSetting()
         }
         Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.systemBars))
     }

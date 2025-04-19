@@ -37,7 +37,7 @@ fun PreferenceScreenContent() {
     Column(
         Modifier.verticalScroll(rememberScrollState())
     ) {
-        SettingsGroup(titleRes = R.string.pref_header_content) {
+        SettingsGroup(titleRes = R.string.pref_header_path_filter) {
             DialogPreference(
                 dialog = PathFilterPreferenceDialog::class.java,
                 titleRes = R.string.path_filter,
@@ -50,6 +50,53 @@ fun PreferenceScreenContent() {
                     }
                 }
             )
+        }
+        SettingsGroup(titleRes = R.string.pref_header_images) {
+            DialogPreference(
+                dialog = ImageSourceConfigDialog::class.java,
+                titleRes = R.string.image_source_config,
+                reset = {
+                    resetPreference(it, R.string.image_source_config, Keys.imageSourceConfig)
+                }
+            )
+            BooleanPreference(
+                key = Keys.imageCache,
+                summaryRes = R.string.pref_summary_image_cache,
+                titleRes = R.string.pref_title_image_cache,
+            )
+            ExternalPreference(titleRes = R.string.clear_image_cache) { CacheStore.clear(App.instance) }
+        }
+        SettingsGroup(titleRes = R.string.pref_header_interactions) {
+            DialogPreference(
+                dialog = ClickModeSettingDialog::class.java,
+                titleRes = R.string.pref_title_click_behavior,
+                summaryRes = R.string.pref_summary_click_behavior,
+                reset = {
+                    resetPreference(
+                        it,
+                        R.string.pref_title_click_behavior,
+                        Keys.songItemClickMode,
+                        Keys.songItemClickExtraFlag,
+                    )
+                }
+            )
+            DialogPreference(
+                dialog = ExternalPlayRequestSettingDialog::class.java,
+                titleRes = R.string.pref_title_external_play_request,
+                summaryRes = R.string.pref_summary_external_play_request,
+                reset = {
+                    resetPreference(
+                        it,
+                        R.string.pref_title_external_play_request,
+                        Keys.externalPlayRequestMultipleMode,
+                        Keys.externalPlayRequestSingleMode,
+                        Keys.externalPlayRequestShowPrompt,
+                        Keys.externalPlayRequestSilence,
+                    )
+                }
+            )
+        }
+        SettingsGroup(titleRes = R.string.pref_header_playlists) {
             DialogPreference(
                 dialog = LastAddedPlaylistIntervalDialog::class.java,
                 titleRes = R.string.pref_title_last_added_interval,
@@ -81,49 +128,7 @@ fun PreferenceScreenContent() {
                     )
                 }
             )
-            DialogPreference(
-                dialog = ClickModeSettingDialog::class.java,
-                titleRes = R.string.pref_title_click_behavior,
-                summaryRes = R.string.pref_summary_click_behavior,
-                reset = {
-                    resetPreference(
-                        it,
-                        R.string.pref_title_click_behavior,
-                        Keys.songItemClickMode,
-                        Keys.songItemClickExtraFlag,
-                    )
-                }
-            )
-            DialogPreference(
-                dialog = ExternalPlayRequestSettingDialog::class.java,
-                titleRes = R.string.pref_title_external_play_request,
-                summaryRes = R.string.pref_summary_external_play_request,
-                reset = {
-                    resetPreference(
-                        it,
-                        R.string.pref_title_external_play_request,
-                        Keys.externalPlayRequestMultipleMode,
-                        Keys.externalPlayRequestSingleMode,
-                        Keys.externalPlayRequestShowPrompt,
-                        Keys.externalPlayRequestSilence,
-                    )
-                }
-            )
-            DialogPreference(
-                dialog = ImageSourceConfigDialog::class.java,
-                titleRes = R.string.image_source_config,
-                reset = {
-                    resetPreference(it, R.string.image_source_config, Keys.imageSourceConfig)
-                }
-            )
-            BooleanPreference(
-                key = Keys.imageCache,
-                summaryRes = R.string.pref_summary_image_cache,
-                titleRes = R.string.pref_title_image_cache,
-            )
-            ExternalPreference(titleRes = R.string.clear_image_cache) { CacheStore.clear(App.instance) }
         }
-
         SettingsGroup(titleRes = R.string.pref_header_lyrics) {
             BooleanPreference(
                 key = Keys.enableLyrics,
