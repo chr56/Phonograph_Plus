@@ -6,15 +6,13 @@ package player.phonograph.ui.modules.setting.elements
 
 import player.phonograph.R
 import player.phonograph.ui.compose.components.TempPopupContent
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
@@ -32,46 +30,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 
 @Composable
 fun ColumnScope.PathFilterSettings(
-    mode: Boolean,
-    switchMode: () -> Unit,
+    textDescription: String,
     paths: List<String>,
     actionAdd: () -> Unit,
     actionRefresh: () -> Unit,
     actionClear: () -> Unit,
     actionRemove: (String) -> Unit,
 ) {
-    val textMode: String = stringResource(if (mode) R.string.excluded_paths else R.string.included_paths)
-    val textDescription = stringResource(
-        if (mode) R.string.pref_summary_path_filter_excluded_mode
-        else R.string.pref_summary_path_filter_included_mode
+    Text(
+        textDescription,
+        Modifier.fillMaxWidth(),
+        style = MaterialTheme.typography.body2,
+        textAlign = TextAlign.Center
     )
-    Row(
-        Modifier
-            .clickable { switchMode() }
-            .padding(vertical = 16.dp)
-    ) {
-        Column(Modifier.weight(4f)) {
-            Text(textMode)
-            Text(
-                textDescription,
-                fontSize = 14.sp,
-                color = Color.Gray
-            )
-        }
-        Switch(
-            mode,
-            null,
-            Modifier
-                .weight(1f)
-                .align(Alignment.CenterVertically)
-        )
-    }
     Row {
         ActionButton(
             contentDescription = R.string.add_action,
@@ -90,7 +68,7 @@ fun ColumnScope.PathFilterSettings(
             contentDescription = R.string.clear_action,
             icon = Icons.Default.Delete,
             modifier = Modifier.weight(2f),
-            confirmationText = { "${stringResource(R.string.clear_action)}\n$textMode" },
+            confirmationText = { stringResource(R.string.clear_action) },
             onClick = actionClear
         )
     }
@@ -111,7 +89,7 @@ fun ColumnScope.PathFilterSettings(
                     .weight(1f)
                     .align(Alignment.CenterVertically),
                 confirmationText = {
-                    "${stringResource(R.string.delete_action)}($textMode)\n$path"
+                    "${stringResource(R.string.delete_action)}:\n$path"
                 },
                 onClick = { actionRemove(path) },
             )
@@ -134,10 +112,8 @@ private fun ActionButton(
     var showPopup: Boolean by remember { mutableStateOf(false) }
     val dismissPopup = { showPopup = false }
     TextButton(
-        onClick = {
-            if (confirmationText != null) showPopup = !showPopup else onClick()
-        },
-        modifier
+        onClick = { if (confirmationText != null) showPopup = !showPopup else onClick() },
+        modifier = modifier
     ) {
         Icon(icon, stringResource(contentDescription), tint = MaterialTheme.colors.secondary)
     }
@@ -146,6 +122,7 @@ private fun ActionButton(
             Text(
                 text = confirmationText?.invoke() ?: stringResource(contentDescription),
                 style = MaterialTheme.typography.button,
+                modifier = Modifier.padding(8.dp)
             )
         }
     }

@@ -21,7 +21,7 @@ import player.phonograph.ui.modules.setting.dialog.ClickModeSettingDialog
 import player.phonograph.ui.modules.setting.dialog.ExternalPlayRequestSettingDialog
 import player.phonograph.ui.modules.setting.dialog.ImageSourceConfigDialog
 import player.phonograph.ui.modules.setting.dialog.LastAddedPlaylistIntervalDialog
-import player.phonograph.ui.modules.setting.dialog.PathFilterPreferenceDialog
+import player.phonograph.ui.modules.setting.dialog.PathFilterEditorDialog
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -38,17 +38,24 @@ fun PreferenceScreenContent() {
         Modifier.verticalScroll(rememberScrollState())
     ) {
         SettingsGroup(titleRes = R.string.pref_header_path_filter) {
-            DialogPreference(
-                dialog = PathFilterPreferenceDialog::class.java,
+            BooleanPreference(
+                key = Keys.pathFilterExcludeMode,
                 titleRes = R.string.path_filter,
-                currentValueForHint = { context ->
-                    with(context) {
-                        val preference = Setting(context)[Keys.pathFilterExcludeMode]
-                        getString(
-                            if (preference.data) R.string.path_filter_excluded_mode else R.string.path_filter_included_mode
-                        )
-                    }
+                currentValueForHint = { context, mode ->
+                    context.getString(if (mode) R.string.path_filter_excluded_mode else R.string.path_filter_included_mode)
                 }
+            )
+            DialogPreference(
+                dialog = PathFilterEditorDialog.ExcludedMode::class.java,
+                titleRes = R.string.excluded_paths,
+                summaryRes = R.string.pref_summary_path_filter_excluded_mode,
+                enabled = dependOn(Keys.pathFilterExcludeMode) { it == true }
+            )
+            DialogPreference(
+                dialog = PathFilterEditorDialog.IncludedMode::class.java,
+                titleRes = R.string.included_paths,
+                summaryRes = R.string.pref_summary_path_filter_included_mode,
+                enabled = dependOn(Keys.pathFilterExcludeMode) { it == false }
             )
         }
         SettingsGroup(titleRes = R.string.pref_header_images) {
