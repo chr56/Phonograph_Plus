@@ -140,8 +140,8 @@ class CardPlayerFragment : AbsPlayerFragment() {
         return true
     }
 
-    override fun onPanelSlide(view: View, slideOffset: Float) {
-        updateElevation(view, slideOffset)
+    override fun onPanelSlide(panel: View, slideOffset: Float) {
+        updateElevation(panel, slideOffset)
     }
 
     private fun updateElevation(view: View, slide: Float) {
