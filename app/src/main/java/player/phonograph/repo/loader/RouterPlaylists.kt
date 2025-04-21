@@ -55,7 +55,6 @@ object RouterPlaylists : IPlaylists {
             is DatabasePlaylistLocation -> RoomPlaylists.exists(context, location)
             is FilePlaylistLocation     -> MediaStorePlaylists.exists(context, location)
             is VirtualPlaylistLocation  -> true
-            else                        -> false
         }
 
     override suspend fun searchByName(context: Context, query: String): List<Playlist> =
