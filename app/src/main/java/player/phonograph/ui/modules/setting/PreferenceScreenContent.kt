@@ -13,6 +13,7 @@ import player.phonograph.model.time.TimeIntervalCalculationMode
 import player.phonograph.model.time.displayText
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
+import player.phonograph.ui.modules.explorer.PathSelectorRequester
 import player.phonograph.ui.modules.setting.components.BooleanPreference
 import player.phonograph.ui.modules.setting.components.DialogPreference
 import player.phonograph.ui.modules.setting.components.ExternalPreference
@@ -31,9 +32,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import java.io.File
 
 @Composable
 fun PreferenceScreenContent() {
+    val context = LocalContext.current
     Column(
         Modifier.verticalScroll(rememberScrollState())
     ) {
@@ -135,6 +139,21 @@ fun PreferenceScreenContent() {
                     )
                 }
             )
+        }
+        SettingsGroup(titleRes = R.string.pref_header_files) {
+            ExternalPreference(
+                titleRes = R.string.pref_title_start_directory,
+                summaryRes = R.string.pref_summary_start_directory
+            ) {
+                val contractTool = (context as? PathSelectorRequester)?.pathSelectorContractTool
+                val preference = Setting(context)[Keys.startDirectory]
+                contractTool?.launch(preference.data.absolutePath) { path ->
+                    if (path != null) {
+                        val file = File(path)
+                        if (file.exists() && !file.isFile) preference.data = file
+                    }
+                }
+            }
         }
         SettingsGroup(titleRes = R.string.pref_header_lyrics) {
             BooleanPreference(

@@ -120,10 +120,13 @@
     <string name="pref_header_library">Library</string>
     <string name="pref_header_images">Images</string>
     <string name="pref_header_playlists">Playlists</string>
+    <string name="pref_header_files">Files</string>
     <string name="pref_header_notification">Notification</string>
     <string name="pref_header_compatibility">Compatibility</string>
     <string name="pref_title_now_playing_screen_style">Now Playing Screen Style</string>
     <string name="pref_title_player_controller_style">Now Playing Screen Playback Controller Style</string>
+    <string name="pref_title_start_directory">Start Directory</string>
+    <string name="pref_summary_start_directory">The default directory when browsing files.</string>
     <string name="player_controller_style_classic">Classic</string>
     <string name="player_controller_style_flat">Flat</string>
     <string name="player_controller_designate_button_functions">Playback Controller Function - %1$s</string>

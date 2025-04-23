@@ -120,10 +120,13 @@
     <string name="pref_header_library">音樂庫</string>
     <string name="pref_header_images">圖片</string>
     <string name="pref_header_playlists">播放清單</string>
+    <string name="pref_header_files">檔案</string>
     <string name="pref_header_notification">通知</string>
     <string name="pref_header_compatibility">相容性</string>
     <string name="pref_title_now_playing_screen_style">播放面板風格</string>
     <string name="pref_title_player_controller_style">播放控件風格</string>
+    <string name="pref_title_start_directory">起始目錄</string>
+    <string name="pref_summary_start_directory">瀏覽檔案時的預設起始目錄</string>
     <string name="player_controller_style_classic">經典</string>
     <string name="player_controller_style_flat">扁平</string>
     <string name="player_controller_designate_button_functions">控件功能 - %1$s</string>

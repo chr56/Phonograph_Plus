@@ -120,10 +120,13 @@
     <string name="pref_header_library">媒体库</string>
     <string name="pref_header_images">图片</string>
     <string name="pref_header_playlists">播放列表</string>
+    <string name="pref_header_files">文件</string>
     <string name="pref_header_notification">通知</string>
     <string name="pref_header_compatibility">兼容性</string>
     <string name="pref_title_now_playing_screen_style">主播放器界面样式</string>
     <string name="pref_title_player_controller_style">播放控件样式</string>
+    <string name="pref_title_start_directory">起始目录</string>
+    <string name="pref_summary_start_directory">浏览文件时的默认起始目录</string>
     <string name="player_controller_style_classic">经典</string>
     <string name="player_controller_style_flat">扁平</string>
     <string name="player_controller_designate_button_functions">控件功能 - %1$s</string>
