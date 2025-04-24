@@ -62,7 +62,7 @@ object RouterPlaylists : IPlaylists {
         RoomPlaylists.searchByName(context, query) + MediaStorePlaylists.searchByName(context, query)
 
     private suspend fun sorted(context: Context, playlists: List<Playlist>): List<Playlist> {
-        val sortMode = Setting(context).Composites[Keys.playlistSortMode].flowData()
+        val sortMode = Setting(context)[Keys.playlistSortMode].read()
         val revert = sortMode.revert
         return when (sortMode.sortRef) {
             SortRef.DISPLAY_NAME  -> playlists.sort(revert) { it.name }

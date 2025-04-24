@@ -24,346 +24,346 @@ import androidx.datastore.preferences.core.longPreferencesKey as longPK
 import androidx.datastore.preferences.core.stringPreferencesKey as stringPK
 
 /**
- * Container Object for all available registered [PreferenceKey]
+ * All available [PreferenceKey] registered
  */
-@Suppress("ClassName", "ConvertObjectToDataObject")
+@Suppress("ObjectPropertyName")
 object Keys {
 
     // Appearance
-    object theme :
-            PrimitiveKey<String>(stringPK(THEME), { THEME_AUTO_LIGHTBLACK })
+    val theme
+        get() = PrimitiveKey<String>(stringPK(THEME)) { THEME_AUTO_LIGHTBLACK }
 
-    object _homeTabConfigJson :
-            PrimitiveKey<String>(stringPK(HOME_TAB_CONFIG), { "" })
+    val _homeTabConfigJson
+        get() = PrimitiveKey<String>(stringPK(HOME_TAB_CONFIG)) { "" }
 
-    object homeTabConfig :
-            CompositeKey<PagesConfig>(HomeTabConfigPreferenceProvider)
+    val homeTabConfig
+        get() = CompositeKey<PagesConfig>(HomeTabConfigPreferenceProvider)
 
-    object coloredAppShortcuts :
-            PrimitiveKey<Boolean>(booleanPK(COLORED_APP_SHORTCUTS), { true })
+    val coloredAppShortcuts
+        get() = PrimitiveKey<Boolean>(booleanPK(COLORED_APP_SHORTCUTS)) { true }
 
-    object fixedTabLayout :
-            PrimitiveKey<Boolean>(booleanPK(FIXED_TAB_LAYOUT), { false })
+    val fixedTabLayout
+        get() = PrimitiveKey<Boolean>(booleanPK(FIXED_TAB_LAYOUT)) { false }
 
-    object selectedPrimaryColor :
-            PrimitiveKey<Int>(intPK(SELECTED_PRIMARY_COLOR), { MaterialColor.Blue._A400.asColor })
+    val selectedPrimaryColor
+        get() = PrimitiveKey<Int>(intPK(SELECTED_PRIMARY_COLOR)) { MaterialColor.Blue._A400.asColor }
 
-    object selectedAccentColor :
-            PrimitiveKey<Int>(intPK(SELECTED_ACCENT_COLOR), { MaterialColor.Yellow._900.asColor })
+    val selectedAccentColor
+        get() = PrimitiveKey<Int>(intPK(SELECTED_ACCENT_COLOR)) { MaterialColor.Yellow._900.asColor }
 
-    object enableMonet :
-            PrimitiveKey<Boolean>(booleanPK(ENABLE_MONET), { false })
+    val enableMonet
+        get() = PrimitiveKey<Boolean>(booleanPK(ENABLE_MONET)) { false }
 
-    object monetPalettePrimaryColor :
-            PrimitiveKey<Int>(intPK(MONET_PALETTE_PRIMARY_COLOR), { MonetColor.defaultMonetPrimaryColor.value })
+    val monetPalettePrimaryColor
+        get() = PrimitiveKey<Int>(intPK(MONET_PALETTE_PRIMARY_COLOR)) { MonetColor.defaultMonetPrimaryColor.value }
 
-    object monetPaletteAccentColor :
-            PrimitiveKey<Int>(intPK(MONET_PALETTE_ACCENT_COLOR), { MonetColor.defaultMonetAccentColor.value })
+    val monetPaletteAccentColor
+        get() = PrimitiveKey<Int>(intPK(MONET_PALETTE_ACCENT_COLOR)) { MonetColor.defaultMonetAccentColor.value }
 
 
     // Appearance - Notification
-    object coloredNotification :
-            PrimitiveKey<Boolean>(booleanPK(COLORED_NOTIFICATION), { true })
+    val coloredNotification
+        get() = PrimitiveKey<Boolean>(booleanPK(COLORED_NOTIFICATION)) { true }
 
-    object classicNotification :
-            PrimitiveKey<Boolean>(booleanPK(CLASSIC_NOTIFICATION), { false })
+    val classicNotification
+        get() = PrimitiveKey<Boolean>(booleanPK(CLASSIC_NOTIFICATION)) { false }
 
-    object _notificationActionsJson :
-            PrimitiveKey<String>(stringPK(NOTIFICATION_ACTIONS), { "{}" })
+    val _notificationActionsJson
+        get() = PrimitiveKey<String>(stringPK(NOTIFICATION_ACTIONS)) { "{}" }
 
-    object notificationActions :
-            CompositeKey<NotificationActionsConfig>(NotificationActionsPreferenceProvider)
+    val notificationActions
+        get() = CompositeKey<NotificationActionsConfig>(NotificationActionsPreferenceProvider)
 
     // Behavior-Retention
-    object rememberLastTab :
-            PrimitiveKey<Boolean>(booleanPK(REMEMBER_LAST_TAB), { true })
+    val rememberLastTab
+        get() = PrimitiveKey<Boolean>(booleanPK(REMEMBER_LAST_TAB)) { true }
 
-    object lastPage :
-            PrimitiveKey<Int>(intPK(LAST_PAGE), { 0 })
+    val lastPage
+        get() = PrimitiveKey<Int>(intPK(LAST_PAGE)) { 0 }
 
-    object _nowPlayingScreenStyle :
-            PrimitiveKey<String>(stringPK(NOW_PLAYING_SCREEN_STYLE), { "" })
+    val _nowPlayingScreenStyle
+        get() = PrimitiveKey<String>(stringPK(NOW_PLAYING_SCREEN_STYLE)) { "" }
 
-    object nowPlayingScreenStyle :
-            CompositeKey<NowPlayingScreenStyle>(NowPlayingScreenStylePreferenceProvider)
+    val nowPlayingScreenStyle
+        get() = CompositeKey<NowPlayingScreenStyle>(NowPlayingScreenStylePreferenceProvider)
 
     // Database
 
     // Behavior-File
-    object _startDirectoryPath :
-            PrimitiveKey<String>(stringPK(START_DIRECTORY), { defaultStartDirectory.path })
+    val _startDirectoryPath
+        get() = PrimitiveKey<String>(stringPK(START_DIRECTORY)) { defaultStartDirectory.path }
 
-    object startDirectory :
-            CompositeKey<File>(StartDirectoryPreferenceProvider)
+    val startDirectory
+        get() = CompositeKey<File>(StartDirectoryPreferenceProvider)
 
-    object preloadImages :
-            PrimitiveKey<Boolean>(booleanPK(PRELOAD_IMAGES), { true })
+    val preloadImages
+        get() = PrimitiveKey<Boolean>(booleanPK(PRELOAD_IMAGES)) { true }
 
-    object _imageSourceConfigJson :
-            PrimitiveKey<String>(stringPK(IMAGE_SOURCE_CONFIG), { "{}" })
+    val _imageSourceConfigJson
+        get() = PrimitiveKey<String>(stringPK(IMAGE_SOURCE_CONFIG)) { "{}" }
 
-    object imageSourceConfig :
-            CompositeKey<ImageSourceConfig>(CoilImageSourcePreferenceProvider)
+    val imageSourceConfig
+        get() = CompositeKey<ImageSourceConfig>(CoilImageSourcePreferenceProvider)
 
-    object imageCache :
-            PrimitiveKey<Boolean>(booleanPK(IMAGE_CACHE), { false })
+    val imageCache
+        get() = PrimitiveKey<Boolean>(booleanPK(IMAGE_CACHE)) { false }
 
     // Behavior-Playing
-    object songItemClickMode :
-            PrimitiveKey<Int>(intPK(SONG_ITEM_CLICK_MODE), { SongClickMode.SONG_PLAY_NOW })
+    val songItemClickMode
+        get() = PrimitiveKey<Int>(intPK(SONG_ITEM_CLICK_MODE)) { SongClickMode.SONG_PLAY_NOW }
 
-    object songItemClickExtraFlag :
-            PrimitiveKey<Int>(intPK(SONG_ITEM_CLICK_EXTRA_FLAG), { SongClickMode.FLAG_MASK_PLAY_QUEUE_IF_EMPTY })
+    val songItemClickExtraFlag
+        get() = PrimitiveKey<Int>(intPK(SONG_ITEM_CLICK_EXTRA_FLAG)) { SongClickMode.FLAG_MASK_PLAY_QUEUE_IF_EMPTY }
 
-    object externalPlayRequestShowPrompt :
-            PrimitiveKey<Boolean>(booleanPK(EXTERNAL_PLAY_REQUEST_SHOW_PROMPT), { false })
+    val externalPlayRequestShowPrompt
+        get() = PrimitiveKey<Boolean>(booleanPK(EXTERNAL_PLAY_REQUEST_SHOW_PROMPT)) { false }
 
-    object externalPlayRequestSingleMode :
-            PrimitiveKey<Int>(intPK(EXTERNAL_PLAY_REQUEST_SINGLE_MODE), { SongClickMode.SONG_PLAY_NOW })
+    val externalPlayRequestSingleMode
+        get() = PrimitiveKey<Int>(intPK(EXTERNAL_PLAY_REQUEST_SINGLE_MODE)) { SongClickMode.SONG_PLAY_NOW }
 
-    object externalPlayRequestMultipleMode :
-            PrimitiveKey<Int>(intPK(EXTERNAL_PLAY_REQUEST_MULTIPLE_MODE), { SongClickMode.QUEUE_PLAY_NOW })
+    val externalPlayRequestMultipleMode
+        get() = PrimitiveKey<Int>(intPK(EXTERNAL_PLAY_REQUEST_MULTIPLE_MODE)) { SongClickMode.QUEUE_PLAY_NOW }
 
-    object externalPlayRequestSilence :
-            PrimitiveKey<Boolean>(booleanPK(EXTERNAL_PLAY_REQUEST_SILENCE), { false })
+    val externalPlayRequestSilence
+        get() = PrimitiveKey<Boolean>(booleanPK(EXTERNAL_PLAY_REQUEST_SILENCE)) { false }
 
-    object gaplessPlayback :
-            PrimitiveKey<Boolean>(booleanPK(GAPLESS_PLAYBACK), { false })
+    val gaplessPlayback
+        get() = PrimitiveKey<Boolean>(booleanPK(GAPLESS_PLAYBACK)) { false }
 
-    object audioDucking :
-            PrimitiveKey<Boolean>(booleanPK(AUDIO_DUCKING), { true })
+    val audioDucking
+        get() = PrimitiveKey<Boolean>(booleanPK(AUDIO_DUCKING)) { true }
 
-    object resumeAfterAudioFocusGain :
-            PrimitiveKey<Boolean>(booleanPK(RESUME_AFTER_AUDIO_FOCUS_GAIN), { false })
+    val resumeAfterAudioFocusGain
+        get() = PrimitiveKey<Boolean>(booleanPK(RESUME_AFTER_AUDIO_FOCUS_GAIN)) { false }
 
-    object alwaysPlay :
-            PrimitiveKey<Boolean>(booleanPK(ALWAYS_PLAY), { false })
+    val alwaysPlay
+        get() = PrimitiveKey<Boolean>(booleanPK(ALWAYS_PLAY)) { false }
 
-    object enableLyrics :
-            PrimitiveKey<Boolean>(booleanPK(ENABLE_LYRICS), { true })
+    val enableLyrics
+        get() = PrimitiveKey<Boolean>(booleanPK(ENABLE_LYRICS)) { true }
 
-    object broadcastSynchronizedLyrics :
-            PrimitiveKey<Boolean>(booleanPK(BROADCAST_SYNCHRONIZED_LYRICS), { true })
+    val broadcastSynchronizedLyrics
+        get() = PrimitiveKey<Boolean>(booleanPK(BROADCAST_SYNCHRONIZED_LYRICS)) { true }
 
-    object useLegacyStatusBarLyricsApi :
-            PrimitiveKey<Boolean>(booleanPK(USE_LEGACY_STATUS_BAR_LYRICS_API), { false })
+    val useLegacyStatusBarLyricsApi
+        get() = PrimitiveKey<Boolean>(booleanPK(USE_LEGACY_STATUS_BAR_LYRICS_API)) { false }
 
-    object broadcastCurrentPlayerState :
-            PrimitiveKey<Boolean>(booleanPK(BROADCAST_CURRENT_PLAYER_STATE), { true })
+    val broadcastCurrentPlayerState
+        get() = PrimitiveKey<Boolean>(booleanPK(BROADCAST_CURRENT_PLAYER_STATE)) { true }
 
-    object persistentPlaybackNotification :
-            PrimitiveKey<Boolean>(booleanPK(PERSISTENT_PLAYBACK_NOTIFICATION), { false })
+    val persistentPlaybackNotification
+        get() = PrimitiveKey<Boolean>(booleanPK(PERSISTENT_PLAYBACK_NOTIFICATION)) { false }
 
     // Behavior-Lyrics
-    object synchronizedLyricsShow :
-            PrimitiveKey<Boolean>(booleanPK(SYNCHRONIZED_LYRICS_SHOW), { true })
+    val synchronizedLyricsShow
+        get() = PrimitiveKey<Boolean>(booleanPK(SYNCHRONIZED_LYRICS_SHOW)) { true }
 
-    object displaySynchronizedLyricsTimeAxis :
-            PrimitiveKey<Boolean>(booleanPK(DISPLAY_LYRICS_TIME_AXIS), { true })
+    val displaySynchronizedLyricsTimeAxis
+        get() = PrimitiveKey<Boolean>(booleanPK(DISPLAY_LYRICS_TIME_AXIS)) { true }
 
-    object _lastAddedCutOffMode :
-            PrimitiveKey<Int>(intPK(LAST_ADDED_CUTOFF_MODE), { TimeIntervalCalculationMode.PAST.value })
+    val _lastAddedCutOffMode
+        get() = PrimitiveKey<Int>(intPK(LAST_ADDED_CUTOFF_MODE)) { TimeIntervalCalculationMode.PAST.value }
 
-    object _lastAddedCutOffDuration :
-            PrimitiveKey<String>(stringPK(LAST_ADDED_CUTOFF_DURATION), { Duration.Week(3).serialise() })
+    val _lastAddedCutOffDuration
+        get() = PrimitiveKey<String>(stringPK(LAST_ADDED_CUTOFF_DURATION)) { Duration.Week(3).serialise() }
 
-    object lastAddedCutoffTimeStamp :
-            CompositeKey<Long>(LastAddedCutOffDurationPreferenceProvider)
+    val lastAddedCutoffTimeStamp
+        get() = CompositeKey<Long>(LastAddedCutOffDurationPreferenceProvider)
 
     // Upgrade
-    object checkUpgradeAtStartup :
-            PrimitiveKey<Boolean>(booleanPK(CHECK_UPGRADE_AT_STARTUP), { false })
+    val checkUpgradeAtStartup
+        get() = PrimitiveKey<Boolean>(booleanPK(CHECK_UPGRADE_AT_STARTUP)) { false }
 
-    object _checkUpdateInterval :
-            PrimitiveKey<String>(stringPK(CHECK_UPGRADE_INTERVAL), { Duration.Day(1).serialise() })
+    val _checkUpdateInterval
+        get() = PrimitiveKey<String>(stringPK(CHECK_UPGRADE_INTERVAL)) { Duration.Day(1).serialise() }
 
-    object checkUpdateInterval :
-            CompositeKey<Duration>(CheckUpdateIntervalPreferenceProvider)
+    val checkUpdateInterval
+        get() = CompositeKey<Duration>(CheckUpdateIntervalPreferenceProvider)
 
-    object lastCheckUpgradeTimeStamp :
-            PrimitiveKey<Long>(longPK(LAST_CHECK_UPGRADE_TIME), { 0 })
+    val lastCheckUpgradeTimeStamp
+        get() = PrimitiveKey<Long>(longPK(LAST_CHECK_UPGRADE_TIME)) { 0 }
 
     // List-SortMode
-    object _songSortMode :
-            PrimitiveKey<String>(stringPK(SONG_SORT_MODE), { SortMode(SortRef.ID, false).serialize() })
+    val _songSortMode
+        get() = PrimitiveKey<String>(stringPK(SONG_SORT_MODE)) { SortMode(SortRef.ID, false).serialize() }
 
-    object songSortMode :
-            CompositeKey<SortMode>(SortModePreferenceProvider.SongSortMode)
-
-
-    object _albumSortMode :
-            PrimitiveKey<String>(stringPK(ALBUM_SORT_MODE), { SortMode(SortRef.ID, false).serialize() })
-
-    object albumSortMode :
-            CompositeKey<SortMode>(SortModePreferenceProvider.AlbumSortMode)
+    val songSortMode
+        get() = CompositeKey<SortMode>(SortModePreferenceProvider.SongSortMode)
 
 
-    object _artistSortMode :
-            PrimitiveKey<String>(stringPK(ARTIST_SORT_MODE), { SortMode(SortRef.ID, false).serialize() })
+    val _albumSortMode
+        get() = PrimitiveKey<String>(stringPK(ALBUM_SORT_MODE)) { SortMode(SortRef.ID, false).serialize() }
 
-    object artistSortMode :
-            CompositeKey<SortMode>(SortModePreferenceProvider.ArtistSortMode)
-
-
-    object _genreSortMode :
-            PrimitiveKey<String>(stringPK(GENRE_SORT_MODE), { SortMode(SortRef.ID, false).serialize() })
-
-    object genreSortMode :
-            CompositeKey<SortMode>(SortModePreferenceProvider.GenreSortMode)
+    val albumSortMode
+        get() = CompositeKey<SortMode>(SortModePreferenceProvider.AlbumSortMode)
 
 
-    object _fileSortMode :
-            PrimitiveKey<String>(stringPK(FILE_SORT_MODE), { SortMode(SortRef.ID, false).serialize() })
+    val _artistSortMode
+        get() = PrimitiveKey<String>(stringPK(ARTIST_SORT_MODE)) { SortMode(SortRef.ID, false).serialize() }
 
-    object fileSortMode :
-            CompositeKey<SortMode>(SortModePreferenceProvider.FileSortMode)
-
-
-    object _collectionSortMode :
-            PrimitiveKey<String>(stringPK(SONG_COLLECTION_SORT_MODE), { SortMode(SortRef.ID, false).serialize() })
-
-    object collectionSortMode :
-            CompositeKey<SortMode>(SortModePreferenceProvider.CollectionSortMode)
+    val artistSortMode
+        get() = CompositeKey<SortMode>(SortModePreferenceProvider.ArtistSortMode)
 
 
-    object _playlistSortMode :
-            PrimitiveKey<String>(stringPK(PLAYLIST_SORT_MODE), { SortMode(SortRef.ID, false).serialize() })
+    val _genreSortMode
+        get() = PrimitiveKey<String>(stringPK(GENRE_SORT_MODE)) { SortMode(SortRef.ID, false).serialize() }
 
-    object playlistSortMode :
-            CompositeKey<SortMode>(SortModePreferenceProvider.PlaylistSortMode)
+    val genreSortMode
+        get() = CompositeKey<SortMode>(SortModePreferenceProvider.GenreSortMode)
+
+
+    val _fileSortMode
+        get() = PrimitiveKey<String>(stringPK(FILE_SORT_MODE)) { SortMode(SortRef.ID, false).serialize() }
+
+    val fileSortMode
+        get() = CompositeKey<SortMode>(SortModePreferenceProvider.FileSortMode)
+
+
+    val _collectionSortMode
+        get() = PrimitiveKey<String>(stringPK(SONG_COLLECTION_SORT_MODE)) { SortMode(SortRef.ID, false).serialize() }
+
+    val collectionSortMode
+        get() = CompositeKey<SortMode>(SortModePreferenceProvider.CollectionSortMode)
+
+
+    val _playlistSortMode
+        get() = PrimitiveKey<String>(stringPK(PLAYLIST_SORT_MODE)) { SortMode(SortRef.ID, false).serialize() }
+
+    val playlistSortMode
+        get() = CompositeKey<SortMode>(SortModePreferenceProvider.PlaylistSortMode)
 
 
     // List-Appearance
 
-    object albumArtistColoredFooters :
-            PrimitiveKey<Boolean>(booleanPK(ALBUM_ARTIST_COLORED_FOOTERS), { true })
+    val albumArtistColoredFooters
+        get() = PrimitiveKey<Boolean>(booleanPK(ALBUM_ARTIST_COLORED_FOOTERS)) { true }
 
-    object albumColoredFooters :
-            PrimitiveKey<Boolean>(booleanPK(ALBUM_COLORED_FOOTERS), { true })
+    val albumColoredFooters
+        get() = PrimitiveKey<Boolean>(booleanPK(ALBUM_COLORED_FOOTERS)) { true }
 
-    object songColoredFooters :
-            PrimitiveKey<Boolean>(booleanPK(SONG_COLORED_FOOTERS), { true })
+    val songColoredFooters
+        get() = PrimitiveKey<Boolean>(booleanPK(SONG_COLORED_FOOTERS)) { true }
 
-    object artistColoredFooters :
-            PrimitiveKey<Boolean>(booleanPK(ARTIST_COLORED_FOOTERS), { true })
+    val artistColoredFooters
+        get() = PrimitiveKey<Boolean>(booleanPK(ARTIST_COLORED_FOOTERS)) { true }
 
-    object showFileImages :
-            PrimitiveKey<Boolean>(booleanPK(SHOW_FILE_IMAGINES), { false })
+    val showFileImages
+        get() = PrimitiveKey<Boolean>(booleanPK(SHOW_FILE_IMAGINES)) { false }
 
     // ListPage-Appearance
 
-    object _songItemLayout :
-            PrimitiveKey<Int>(intPK(SONG_ITEM_LAYOUT), { ItemLayoutStyle.LIST_EXTENDED.ordinal })
+    val _songItemLayout
+        get() = PrimitiveKey<Int>(intPK(SONG_ITEM_LAYOUT)) { ItemLayoutStyle.LIST_EXTENDED.ordinal }
 
-    object songItemLayout :
-            CompositeKey<ItemLayoutStyle>(ItemLayoutProvider.SongItemLayoutProvider)
+    val songItemLayout
+        get() = CompositeKey<ItemLayoutStyle>(ItemLayoutProvider.SongItemLayoutProvider)
 
-    object _songItemLayoutLand :
-            PrimitiveKey<Int>(intPK(SONG_ITEM_LAYOUT_LAND), { ItemLayoutStyle.LIST.ordinal })
+    val _songItemLayoutLand
+        get() = PrimitiveKey<Int>(intPK(SONG_ITEM_LAYOUT_LAND)) { ItemLayoutStyle.LIST.ordinal }
 
-    object songItemLayoutLand :
-            CompositeKey<ItemLayoutStyle>(ItemLayoutProvider.LandSongItemLayoutProvider)
+    val songItemLayoutLand
+        get() = CompositeKey<ItemLayoutStyle>(ItemLayoutProvider.LandSongItemLayoutProvider)
 
-    object _albumItemLayout :
-            PrimitiveKey<Int>(intPK(ALBUM_ITEM_LAYOUT), { ItemLayoutStyle.LIST_3L.ordinal })
+    val _albumItemLayout
+        get() = PrimitiveKey<Int>(intPK(ALBUM_ITEM_LAYOUT)) { ItemLayoutStyle.LIST_3L.ordinal }
 
-    object albumItemLayout :
-            CompositeKey<ItemLayoutStyle>(ItemLayoutProvider.AlbumItemLayoutProvider)
+    val albumItemLayout
+        get() = CompositeKey<ItemLayoutStyle>(ItemLayoutProvider.AlbumItemLayoutProvider)
 
-    object _albumItemLayoutLand :
-            PrimitiveKey<Int>(intPK(ALBUM_ITEM_LAYOUT_LAND), { ItemLayoutStyle.LIST_3L.ordinal })
+    val _albumItemLayoutLand
+        get() = PrimitiveKey<Int>(intPK(ALBUM_ITEM_LAYOUT_LAND)) { ItemLayoutStyle.LIST_3L.ordinal }
 
-    object albumItemLayoutLand :
-            CompositeKey<ItemLayoutStyle>(ItemLayoutProvider.LandAlbumItemLayoutProvider)
+    val albumItemLayoutLand
+        get() = CompositeKey<ItemLayoutStyle>(ItemLayoutProvider.LandAlbumItemLayoutProvider)
 
-    object _artistItemLayout :
-            PrimitiveKey<Int>(intPK(ARTIST_ITEM_LAYOUT), { ItemLayoutStyle.LIST.ordinal })
+    val _artistItemLayout
+        get() = PrimitiveKey<Int>(intPK(ARTIST_ITEM_LAYOUT)) { ItemLayoutStyle.LIST.ordinal }
 
-    object artistItemLayout :
-            CompositeKey<ItemLayoutStyle>(ItemLayoutProvider.ArtistItemLayoutProvider)
+    val artistItemLayout
+        get() = CompositeKey<ItemLayoutStyle>(ItemLayoutProvider.ArtistItemLayoutProvider)
 
-    object _artistItemLayoutLand :
-            PrimitiveKey<Int>(intPK(ARTIST_ITEM_LAYOUT_LAND), { ItemLayoutStyle.LIST_3L.ordinal })
+    val _artistItemLayoutLand
+        get() = PrimitiveKey<Int>(intPK(ARTIST_ITEM_LAYOUT_LAND)) { ItemLayoutStyle.LIST_3L.ordinal }
 
-    object artistItemLayoutLand :
-            CompositeKey<ItemLayoutStyle>(ItemLayoutProvider.LandArtistItemLayoutProvider)
+    val artistItemLayoutLand
+        get() = CompositeKey<ItemLayoutStyle>(ItemLayoutProvider.LandArtistItemLayoutProvider)
 
-    object _folderItemLayout :
-            PrimitiveKey<Int>(intPK(FOLDER_ITEM_LAYOUT), { ItemLayoutStyle.LIST.ordinal })
+    val _folderItemLayout
+        get() = PrimitiveKey<Int>(intPK(FOLDER_ITEM_LAYOUT)) { ItemLayoutStyle.LIST.ordinal }
 
-    object folderItemLayout :
-            CompositeKey<ItemLayoutStyle>(ItemLayoutProvider.FolderItemLayoutProvider)
+    val folderItemLayout
+        get() = CompositeKey<ItemLayoutStyle>(ItemLayoutProvider.FolderItemLayoutProvider)
 
-    object _folderItemLayoutLand :
-            PrimitiveKey<Int>(intPK(FOLDER_ITEM_LAYOUT_LAND), { ItemLayoutStyle.LIST_3L.ordinal })
+    val _folderItemLayoutLand
+        get() = PrimitiveKey<Int>(intPK(FOLDER_ITEM_LAYOUT_LAND)) { ItemLayoutStyle.LIST_3L.ordinal }
 
-    object folderItemLayoutLand :
-            CompositeKey<ItemLayoutStyle>(ItemLayoutProvider.LandFolderItemLayoutProvider)
+    val folderItemLayoutLand
+        get() = CompositeKey<ItemLayoutStyle>(ItemLayoutProvider.LandFolderItemLayoutProvider)
 
-    object songGridSize :
-            PrimitiveKey<Int>(intPK(SONG_GRID_SIZE), { 1 })
+    val songGridSize
+        get() = PrimitiveKey<Int>(intPK(SONG_GRID_SIZE)) { 1 }
 
-    object songGridSizeLand :
-            PrimitiveKey<Int>(intPK(SONG_GRID_SIZE_LAND), { 2 })
+    val songGridSizeLand
+        get() = PrimitiveKey<Int>(intPK(SONG_GRID_SIZE_LAND)) { 2 }
 
-    object albumGridSize :
-            PrimitiveKey<Int>(intPK(ALBUM_GRID_SIZE), { 2 })
+    val albumGridSize
+        get() = PrimitiveKey<Int>(intPK(ALBUM_GRID_SIZE)) { 2 }
 
-    object albumGridSizeLand :
-            PrimitiveKey<Int>(intPK(ALBUM_GRID_SIZE_LAND), { 3 })
+    val albumGridSizeLand
+        get() = PrimitiveKey<Int>(intPK(ALBUM_GRID_SIZE_LAND)) { 3 }
 
-    object artistGridSize :
-            PrimitiveKey<Int>(intPK(ARTIST_GRID_SIZE), { 3 })
+    val artistGridSize
+        get() = PrimitiveKey<Int>(intPK(ARTIST_GRID_SIZE)) { 3 }
 
-    object artistGridSizeLand :
-            PrimitiveKey<Int>(intPK(ARTIST_GRID_SIZE_LAND), { 4 })
+    val artistGridSizeLand
+        get() = PrimitiveKey<Int>(intPK(ARTIST_GRID_SIZE_LAND)) { 4 }
 
-    object genreGridSize :
-            PrimitiveKey<Int>(intPK(GENRE_GRID_SIZE), { 1 })
+    val genreGridSize
+        get() = PrimitiveKey<Int>(intPK(GENRE_GRID_SIZE)) { 1 }
 
-    object genreGridSizeLand :
-            PrimitiveKey<Int>(intPK(GENRE_GRID_SIZE_LAND), { 2 })
+    val genreGridSizeLand
+        get() = PrimitiveKey<Int>(intPK(GENRE_GRID_SIZE_LAND)) { 2 }
 
-    object playlistGridSize :
-            PrimitiveKey<Int>(intPK(PLAYLIST_GRID_SIZE), { 1 })
+    val playlistGridSize
+        get() = PrimitiveKey<Int>(intPK(PLAYLIST_GRID_SIZE)) { 1 }
 
-    object playlistGridSizeLand :
-            PrimitiveKey<Int>(intPK(PLAYLIST_GRID_SIZE_LAND), { 2 })
+    val playlistGridSizeLand
+        get() = PrimitiveKey<Int>(intPK(PLAYLIST_GRID_SIZE_LAND)) { 2 }
 
-    object folderGridSize :
-            PrimitiveKey<Int>(intPK(FOLDER_GRID_SIZE), { 1 })
+    val folderGridSize
+        get() = PrimitiveKey<Int>(intPK(FOLDER_GRID_SIZE)) { 1 }
 
-    object folderGridSizeLand :
-            PrimitiveKey<Int>(intPK(FOLDER_GRID_SIZE_LAND), { 2 })
+    val folderGridSizeLand
+        get() = PrimitiveKey<Int>(intPK(FOLDER_GRID_SIZE_LAND)) { 2 }
 
     // SleepTimer
-    object lastSleepTimerValue :
-            PrimitiveKey<Int>(intPK(LAST_SLEEP_TIMER_VALUE), { 30 })
+    val lastSleepTimerValue
+        get() = PrimitiveKey<Int>(intPK(LAST_SLEEP_TIMER_VALUE)) { 30 }
 
-    object nextSleepTimerElapsedRealTime :
-            PrimitiveKey<Long>(longPK(NEXT_SLEEP_TIMER_ELAPSED_REALTIME), { -1L })
+    val nextSleepTimerElapsedRealTime
+        get() = PrimitiveKey<Long>(longPK(NEXT_SLEEP_TIMER_ELAPSED_REALTIME)) { -1L }
 
-    object sleepTimerFinishMusic :
-            PrimitiveKey<Boolean>(booleanPK(SLEEP_TIMER_FINISH_SONG), { false })
+    val sleepTimerFinishMusic
+        get() = PrimitiveKey<Boolean>(booleanPK(SLEEP_TIMER_FINISH_SONG)) { false }
 
     // Misc
-    object ignoreUpgradeDate :
-            PrimitiveKey<Long>(longPK(IGNORE_UPGRADE_DATE), { 0 })
+    val ignoreUpgradeDate
+        get() = PrimitiveKey<Long>(longPK(IGNORE_UPGRADE_DATE)) { 0 }
 
-    object pathFilterExcludeMode :
-            PrimitiveKey<Boolean>(booleanPK(PATH_FILTER_EXCLUDE_MODE), { true })
+    val pathFilterExcludeMode
+        get() = PrimitiveKey<Boolean>(booleanPK(PATH_FILTER_EXCLUDE_MODE)) { true }
 
     // Compatibility
-    object alwaysUseMediaSessionToDisplayCover :
-            PrimitiveKey<Boolean>(booleanPK(ALWAYS_USE_MEDIA_SESSION_TO_DISPLAY_COVER), { false })
+    val alwaysUseMediaSessionToDisplayCover
+        get() = PrimitiveKey<Boolean>(booleanPK(ALWAYS_USE_MEDIA_SESSION_TO_DISPLAY_COVER)) { false }
 
-    object useLegacyFavoritePlaylistImpl :
-            PrimitiveKey<Boolean>(booleanPK(USE_LEGACY_FAVORITE_PLAYLIST_IMPL), { false })
+    val useLegacyFavoritePlaylistImpl
+        get() = PrimitiveKey<Boolean>(booleanPK(USE_LEGACY_FAVORITE_PLAYLIST_IMPL)) { false }
 
-    object useLegacyListFilesImpl :
-            PrimitiveKey<Boolean>(booleanPK(USE_LEGACY_LIST_FILES_IMPL), { false })
+    val useLegacyListFilesImpl
+        get() = PrimitiveKey<Boolean>(booleanPK(USE_LEGACY_LIST_FILES_IMPL)) { false }
 
-    object disableRealTimeSearch :
-            PrimitiveKey<Boolean>(booleanPK(DISABLE_REAL_TIME_SEARCH), { false })
+    val disableRealTimeSearch
+        get() = PrimitiveKey<Boolean>(booleanPK(DISABLE_REAL_TIME_SEARCH)) { false }
 
 }

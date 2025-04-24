@@ -27,7 +27,7 @@ class LyricsUpdater : ServiceComponent {
 
     suspend fun updateViaSong(context: Context, song: Song?) {
         if (song == null) return
-        val enableLyrics = Setting(context)[Keys.enableLyrics].flowData()
+        val enableLyrics = Setting(context)[Keys.enableLyrics].read()
         if (!enableLyrics) return
         val file = File(song.data)
         lyrics =

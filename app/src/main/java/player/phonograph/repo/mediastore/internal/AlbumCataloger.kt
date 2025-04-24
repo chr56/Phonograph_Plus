@@ -56,7 +56,7 @@ suspend fun generateArtistAlbums(songs: List<Song>): List<Album> =
     catalogAlbums(songs, SortMode(SortRef.YEAR, false)).await()
 
 suspend fun generateAlbums(context: Context, songs: List<Song>): List<Album> =
-    catalogAlbums(songs, Setting(context).Composites[Keys.albumSortMode].flowData()).await()
+    catalogAlbums(songs, Setting(context)[Keys.albumSortMode].read()).await()
 
 private suspend fun catalogAlbums(songs: List<Song>, sortMode: SortMode): Deferred<List<Album>> = coroutineScope {
     async {

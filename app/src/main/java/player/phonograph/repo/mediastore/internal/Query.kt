@@ -125,7 +125,7 @@ const val BASE_PLAYLIST_SELECTION =
     "${MediaStoreCompat.Audio.PlaylistsColumns.NAME} != '' "
 
 private fun defaultSortOrder(context: Context) =
-    Setting(context).Composites[Keys.songSortMode].data.mediastoreQuerySortOrder()
+    Setting(context)[Keys.songSortMode].data.mediastoreQuerySortOrder()
 
 fun SortMode.mediastoreQuerySortOrder(): String {
     val first = when (sortRef) {

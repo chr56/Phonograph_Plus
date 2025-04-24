@@ -85,5 +85,5 @@ object MediaBrowserDelegate {
     }
 
     private fun lastAddedCutoffTimeStamp(context: Context): Long =
-        Setting(context).Composites[Keys.lastAddedCutoffTimeStamp].data / 1000
+        Setting(context)[Keys.lastAddedCutoffTimeStamp].data / 1000
 }

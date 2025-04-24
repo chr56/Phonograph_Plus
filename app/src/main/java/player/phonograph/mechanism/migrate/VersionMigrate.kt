@@ -158,7 +158,7 @@ private fun deleteSharedPreferences(context: Context, fileName: String) {
 private fun removePreference(context: Context, keyName: String) {
     try {
         CoroutineScope(SupervisorJob()).launch {
-            Setting.settingsDatastore(context).edit {
+            Setting(context).dataStore.edit {
                 val booleanKey = booleanPreferencesKey(keyName)
                 val stringKey = stringPreferencesKey(keyName)
                 val intKey = intPreferencesKey(keyName)

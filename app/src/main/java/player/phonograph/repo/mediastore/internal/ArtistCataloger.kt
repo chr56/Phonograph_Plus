@@ -27,7 +27,7 @@ import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.yield
 
 suspend fun generateArtists(context: Context, songs: List<Song>): List<Artist> =
-    catalogArtists(songs, Setting(context).Composites[Keys.artistSortMode].flowData()).await()
+    catalogArtists(songs, Setting(context)[Keys.artistSortMode].read()).await()
 
 private suspend fun catalogArtists(songs: List<Song>, sortMode: SortMode): Deferred<List<Artist>> = coroutineScope {
     async {

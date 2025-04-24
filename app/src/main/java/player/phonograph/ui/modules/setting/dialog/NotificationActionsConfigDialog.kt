@@ -33,7 +33,7 @@ class NotificationActionsConfigDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val view = requireActivity().layoutInflater.inflate(R.layout.recycler_view_wrapped, null)
 
-        val config: NotificationActionsConfig = Setting(requireContext()).Composites[Keys.notificationActions].data
+        val config: NotificationActionsConfig = Setting(requireContext())[Keys.notificationActions].data
 
         adapter = ActionConfigAdapter(config).also { it.init() }
         recyclerView = view.findViewById(R.id.recycler_view)
@@ -54,7 +54,7 @@ class NotificationActionsConfigDialog : DialogFragment() {
             .positiveButton(android.R.string.ok) {
                 val actionsConfig = adapter.currentConfig
                 if (actionsConfig != null) {
-                    Setting(requireContext()).Composites[Keys.notificationActions].data = actionsConfig
+                    Setting(requireContext())[Keys.notificationActions].data = actionsConfig
                     dismiss()
                 } else {
                     Toast.makeText(
@@ -66,7 +66,7 @@ class NotificationActionsConfigDialog : DialogFragment() {
             }
             .negativeButton(android.R.string.cancel) { dismiss() }
             .neutralButton(R.string.reset_action) {
-                Setting(requireContext()).Composites[Keys.notificationActions].data = NotificationActionsConfig.DEFAULT
+                Setting(requireContext())[Keys.notificationActions].data = NotificationActionsConfig.DEFAULT
                 dismiss()
             }
             .tintButtons()

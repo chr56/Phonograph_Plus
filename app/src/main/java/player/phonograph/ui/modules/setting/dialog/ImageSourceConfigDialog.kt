@@ -34,7 +34,7 @@ class ImageSourceConfigDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val view = requireActivity().layoutInflater.inflate(R.layout.recycler_view_wrapped, null)
 
-        val config: ImageSourceConfig = Setting(requireContext()).Composites[Keys.imageSourceConfig].data
+        val config: ImageSourceConfig = Setting(requireContext())[Keys.imageSourceConfig].data
         adapter = ImageSourceConfigAdapter(config).also { it.init() }
         recyclerView = view.findViewById(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(activity)
@@ -54,12 +54,12 @@ class ImageSourceConfigDialog : DialogFragment() {
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-                Setting(requireContext()).Composites[Keys.imageSourceConfig].data = sourceConfig
+                Setting(requireContext())[Keys.imageSourceConfig].data = sourceConfig
                 dismiss()
             }
             .negativeButton(android.R.string.cancel) { dismiss(); }
             .neutralButton(R.string.reset_action) {
-                Setting(requireContext()).Composites[Keys.imageSourceConfig].data = ImageSourceConfig.DEFAULT
+                Setting(requireContext())[Keys.imageSourceConfig].data = ImageSourceConfig.DEFAULT
                 dismiss()
             }
             .tintButtons()

@@ -1,6 +1,5 @@
 package player.phonograph.ui.modules.main
 
-import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import lib.activityresultcontract.registerActivityResultLauncherDelegate
 import lib.storage.launcher.CreateFileStorageAccessDelegate
 import lib.storage.launcher.ICreateFileStorageAccessible
@@ -276,7 +275,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
             setting[Keys.checkUpgradeAtStartup].flow.collect { enabled ->
                 if (enabled) {
                     val lastTimeStamp = setting[Keys.lastCheckUpgradeTimeStamp].data
-                    val interval = setting.Composites[Keys.checkUpdateInterval].data
+                    val interval = setting[Keys.checkUpdateInterval].data
                     if (System.currentTimeMillis() > lastTimeStamp + interval.toSeconds() * 1000L) {
                         checkUpdate()
                     } else {

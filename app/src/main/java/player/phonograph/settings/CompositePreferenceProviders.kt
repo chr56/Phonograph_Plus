@@ -31,8 +31,8 @@ import java.io.File
  * Provider for Composite Preference (not primitive type)
  */
 interface CompositePreferenceProvider<T> {
-    val default: () -> T
-    suspend fun flow(dataStore: DataStore<Preferences>): Flow<T>
+    val defaultValue: () -> T
+    fun flow(dataStore: DataStore<Preferences>): Flow<T>
     suspend fun edit(dataStore: DataStore<Preferences>, value: () -> T)
 }
 /**
@@ -43,13 +43,13 @@ interface CompositePreferenceProvider<T> {
  */
 sealed class MonoPreferenceProvider<T, R>(
     private val backField: PrimitiveKey<R>,
-    override val default: () -> T,
+    override val defaultValue: () -> T,
 ) : CompositePreferenceProvider<T> {
 
     abstract fun read(flow: Flow<R>): Flow<T>
     abstract fun save(data: T): R
 
-    override suspend fun flow(dataStore: DataStore<Preferences>): Flow<T> {
+    override fun flow(dataStore: DataStore<Preferences>): Flow<T> {
         val preferencesFlow = dataStore.data
         val rawFlow = preferencesFlow.map { it[backField.preferenceKey] ?: backField.defaultValue() }
         return read(rawFlow)
@@ -68,7 +68,7 @@ data object CheckUpdateIntervalPreferenceProvider :
         ) {
 
     override fun read(flow: Flow<String>): Flow<Duration> =
-        flow.map { Duration.from(it) ?: default() }
+        flow.map { Duration.from(it) ?: defaultValue() }
 
     override fun save(data: Duration): String =
         data.serialise()
@@ -131,9 +131,9 @@ sealed class ItemLayoutProvider(backField: PrimitiveKey<Int>, default: () -> Ite
 }
 
 object LastAddedCutOffDurationPreferenceProvider : CompositePreferenceProvider<Long> {
-    override val default: () -> Long get() = { System.currentTimeMillis() }
+    override val defaultValue: () -> Long get() = { System.currentTimeMillis() }
 
-    override suspend fun flow(dataStore: DataStore<Preferences>): Flow<Long> {
+    override fun flow(dataStore: DataStore<Preferences>): Flow<Long> {
         val keyDuration = Keys._lastAddedCutOffDuration
         val keyMode = Keys._lastAddedCutOffMode
 
@@ -164,14 +164,14 @@ object LastAddedCutOffDurationPreferenceProvider : CompositePreferenceProvider<L
 
 sealed class JsonPreferenceProvider<T>(
     private val backField: PrimitiveKey<String>,
-    override val default: () -> T,
+    override val defaultValue: () -> T,
 ) : CompositePreferenceProvider<T> {
 
     abstract fun decode(string: String): T
     abstract fun encode(data: T): String
     abstract fun validate(data: T): Boolean
 
-    override suspend fun flow(dataStore: DataStore<Preferences>): Flow<T> {
+    override fun flow(dataStore: DataStore<Preferences>): Flow<T> {
         val rawFlow = dataStore.data.map { it[backField.preferenceKey] ?: backField.defaultValue() }
         return rawFlow.map { raw ->
             try {
@@ -191,10 +191,10 @@ sealed class JsonPreferenceProvider<T>(
 
     suspend fun reset(dataStore: DataStore<Preferences>): T = try {
         Log.i(TAG, "Reset to default")
-        edit(dataStore, default) // reset to default
-        default()
+        edit(dataStore, defaultValue) // reset to default
+        defaultValue()
     } catch (_: Exception) {
-        default()
+        defaultValue()
     }
 
 
