@@ -4,15 +4,43 @@
 
 package player.phonograph.repo.room
 
+import org.koin.core.context.GlobalContext
+import player.phonograph.mechanism.event.MediaStoreTracker
+import player.phonograph.model.listener.MediaStoreChangedListener
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.mediastore.MediaStoreSongs
 import player.phonograph.repo.room.converter.MediastoreSongConverter
 import android.content.Context
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 object DatabaseUtil {
+
+    fun syncWithMediastore(context: Context, musicDatabase: MusicDatabase) {
+        class PersistentListener : MediaStoreChangedListener {
+
+            override fun onMediaStoreChanged() {
+                refresh()
+            }
+
+            fun refresh() {
+                coroutineScope.launch {
+                    checkAndRefresh(context, musicDatabase)
+                }
+            }
+
+            val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+        }
+
+        val mediaStoreTracker = GlobalContext.get().get<MediaStoreTracker>()
+        val persistentListener = PersistentListener()
+        persistentListener.refresh()
+        mediaStoreTracker.register(persistentListener)
+    }
 
     suspend fun checkAndRefresh(context: Context, musicDatabase: MusicDatabase) {
         val mediaStoreSongDao = musicDatabase.MediaStoreSongDao()

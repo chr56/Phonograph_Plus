@@ -18,9 +18,6 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import android.content.Context
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.io.Closeable
 
 
@@ -53,9 +50,7 @@ abstract class MusicDatabase : RoomDatabase(), Closeable {
                 .enableMultiInstanceInvalidation()
                 .build()
                 .also { db ->
-                    CoroutineScope(Dispatchers.IO).launch {
-                        DatabaseUtil.checkAndRefresh(context.applicationContext, db)
-                    }
+                    DatabaseUtil.syncWithMediastore(context.applicationContext, db)
                 }
 
         val koinInstance: MusicDatabase get() = GlobalContext.get().get()
