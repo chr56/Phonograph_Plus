@@ -31,7 +31,6 @@ import androidx.core.view.marginBottom
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.viewModels
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
@@ -40,7 +39,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
-import kotlin.getValue
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.runBlocking
 
@@ -167,25 +165,22 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
 
     //region MediaStore & FloatingActionButton
 
-    private lateinit var playlistsModifiedReceiver: PlaylistsModifiedReceiver
+    private val playlistsModifiedReceiver = object : PlaylistsModifiedReceiver() {
+        override fun onPlaylistChanged(context: Context, intent: Intent) {
+            viewModel.loadDataset(requireContext())
+        }
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // PlaylistsModifiedReceiver
-        playlistsModifiedReceiver = object : PlaylistsModifiedReceiver() {
-            override fun onPlaylistChanged(context: Context, intent: Intent) {
-                viewModel.loadDataset(requireContext())
-            }
-        }
-        LocalBroadcastManager.getInstance(App.instance).registerReceiver(
-            playlistsModifiedReceiver, PlaylistsModifiedReceiver.filter
-        )
+        playlistsModifiedReceiver.registerSelf(requireContext())
         // AddNewItemButton
         setUpFloatingActionButton()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        LocalBroadcastManager.getInstance(App.instance).unregisterReceiver(playlistsModifiedReceiver)
+        playlistsModifiedReceiver.unregisterSelf(requireContext())
     }
 
     private fun setUpFloatingActionButton() {

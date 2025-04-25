@@ -12,7 +12,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 
-fun sentPlaylistChangedLocalBoardCast() = PlaylistsModifiedReceiver.sendBroadcastLocally(App.Companion.instance)
+fun sentPlaylistChangedLocalBoardCast(context: Context = App.instance) =
+    LocalBroadcastManager.getInstance(context.applicationContext)
+        .sendBroadcast(Intent(ACTION_BROADCAST_PLAYLISTS_CHANGED))
 
 abstract class PlaylistsModifiedReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
@@ -23,13 +25,15 @@ abstract class PlaylistsModifiedReceiver : BroadcastReceiver() {
 
     abstract fun onPlaylistChanged(context: Context, intent: Intent)
 
-    companion object {
 
-        val filter: IntentFilter = IntentFilter(ACTION_BROADCAST_PLAYLISTS_CHANGED)
+    fun registerSelf(context: Context) {
+        LocalBroadcastManager.getInstance(context)
+            .registerReceiver(this, IntentFilter(ACTION_BROADCAST_PLAYLISTS_CHANGED))
+    }
 
-        fun sendBroadcastLocally(context: Context) =
-            LocalBroadcastManager.getInstance(context.applicationContext)
-                .sendBroadcast(Intent(ACTION_BROADCAST_PLAYLISTS_CHANGED))
+    fun unregisterSelf(context: Context) {
+        LocalBroadcastManager.getInstance(context)
+            .unregisterReceiver(this)
     }
 }
 

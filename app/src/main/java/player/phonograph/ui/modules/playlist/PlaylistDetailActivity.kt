@@ -49,7 +49,6 @@ import androidx.core.graphics.BlendModeCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.withCreated
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.annotation.SuppressLint
@@ -102,8 +101,7 @@ class PlaylistDetailActivity :
         )
 
         lifecycle.addObserver(MediaStoreListener())
-        LocalBroadcastManager.getInstance(this)
-            .registerReceiver(playlistsModifiedReceiver, PlaylistsModifiedReceiver.filter)
+        playlistsModifiedReceiver.registerSelf(this)
 
         super.onCreate(savedInstanceState)
         setUpToolbar()
@@ -357,7 +355,7 @@ class PlaylistDetailActivity :
             WrapperAdapterUtils.releaseAll(it)
             wrappedAdapter = null
         }
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(playlistsModifiedReceiver)
+        playlistsModifiedReceiver.unregisterSelf(this)
         binding.recyclerView.adapter = null
     }
 
