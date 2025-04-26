@@ -5,7 +5,8 @@
 package player.phonograph.repo.database.store
 
 import org.koin.core.context.GlobalContext
-import player.phonograph.mechanism.event.MediaStoreTracker
+import player.phonograph.App
+import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.DatabasePlaylistLocation
 import player.phonograph.model.playlist.FilePlaylistLocation
@@ -37,7 +38,7 @@ class FavoritesStore(context: Context) :
 
     private fun clearTable(tableName: String) {
         writableDatabase.delete(tableName, null, null)
-        mediaStoreTracker.notifyAllListeners()
+        EventHub.sendEvent(App.instance, EventHub.EVENT_FAVORITES_CHANGED)
     }
 
     suspend fun getAllSongs(parser: suspend (Long, String, String, Long) -> Song?): List<Song> =
@@ -147,7 +148,7 @@ class FavoritesStore(context: Context) :
             false
         } finally {
             database.endTransaction()
-            mediaStoreTracker.notifyAllListeners()
+            EventHub.sendEvent(App.instance, EventHub.EVENT_FAVORITES_CHANGED)
         }
     }
 
@@ -202,7 +203,7 @@ class FavoritesStore(context: Context) :
             false
         } finally {
             database.endTransaction()
-            mediaStoreTracker.notifyAllListeners()
+            EventHub.sendEvent(App.instance, EventHub.EVENT_FAVORITES_CHANGED)
         }
     }
 
@@ -242,7 +243,7 @@ class FavoritesStore(context: Context) :
             false
         } finally {
             database.endTransaction()
-            mediaStoreTracker.notifyAllListeners()
+            EventHub.sendEvent(App.instance, EventHub.EVENT_FAVORITES_CHANGED)
         }
     }
 
@@ -276,8 +277,6 @@ class FavoritesStore(context: Context) :
         }
         return paths.isNotEmpty()
     }
-
-    private val mediaStoreTracker: MediaStoreTracker by GlobalContext.get().inject()
 
     companion object {
         private const val VERSION = 2

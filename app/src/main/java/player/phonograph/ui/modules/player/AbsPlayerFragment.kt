@@ -8,7 +8,7 @@ import lib.storage.launcher.IOpenFileStorageAccessible
 import lib.storage.launcher.OpenDocumentContract
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import player.phonograph.R
-import player.phonograph.mechanism.event.MediaStoreTracker
+import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.model.ui.NowPlayingScreenStyle
 import player.phonograph.model.ui.PlayerBaseStyle
@@ -100,9 +100,10 @@ abstract class AbsPlayerFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        lifecycle.addObserver(MediaStoreListener())
 
         argumentStyle = arguments?.parcelable<NowPlayingScreenStyle>(ARGUMENT_STYLE)
+
+        favoritesEventReceiver.registerSelf(requireContext())
     }
 
     override fun onCreateView(
@@ -142,6 +143,10 @@ abstract class AbsPlayerFragment :
         super.onDestroyView()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        favoritesEventReceiver.unregisterSelf(requireContext())
+    }
     //region Toolbar
     private var lyricsMenuItem: MenuItem? = null
     private var favoriteMenuItem: MenuItem? = null
@@ -360,11 +365,10 @@ abstract class AbsPlayerFragment :
         }
     }
 
-    private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
-        override fun onMediaStoreChanged() {
-            lifecycleScope.launch {
-                withStarted { viewModel.refreshFavoriteState(requireContext()) }
-            }
+
+    private val favoritesEventReceiver = EventHub.EventReceiver(EventHub.EVENT_FAVORITES_CHANGED) { _, _ ->
+        lifecycleScope.launch {
+            withStarted { viewModel.refreshFavoriteState(requireContext()) }
         }
     }
 

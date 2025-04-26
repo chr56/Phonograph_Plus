@@ -6,7 +6,7 @@ package player.phonograph.ui.modules.main.pages
 
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.mechanism.broadcast.PlaylistsModifiedReceiver
+import player.phonograph.mechanism.event.EventHub
 import player.phonograph.mechanism.playlist.PlaylistProcessors
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.DynamicPlaylists
@@ -32,7 +32,6 @@ import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.viewModels
 import android.content.Context
-import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -165,22 +164,21 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
 
     //region MediaStore & FloatingActionButton
 
-    private val playlistsModifiedReceiver = object : PlaylistsModifiedReceiver() {
-        override fun onPlaylistChanged(context: Context, intent: Intent) {
-            viewModel.loadDataset(requireContext())
-        }
+    private val playlistsEventReceiver = EventHub.EventReceiver(EventHub.EVENT_PLAYLISTS_CHANGED) { _, _ ->
+        viewModel.loadDataset(requireContext())
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // PlaylistsModifiedReceiver
-        playlistsModifiedReceiver.registerSelf(requireContext())
+        playlistsEventReceiver.registerSelf(requireContext())
         // AddNewItemButton
         setUpFloatingActionButton()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        playlistsModifiedReceiver.unregisterSelf(requireContext())
+        playlistsEventReceiver.unregisterSelf(requireContext())
     }
 
     private fun setUpFloatingActionButton() {

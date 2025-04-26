@@ -130,11 +130,7 @@ class MusicService : MediaBrowserServiceCompat(),
             couldPutCover = SDK_INT >= VERSION_SET_COVER_USING_METADATA || alwaysUseMediaSessionToDisplayCover
         }
         // misc
-        setUpMediaStoreObserver(
-            this,
-            controller.handler, // todo use other handler
-            this@MusicService::handleAndSendChangeInternal
-        )
+        setUpMediaStoreObserver(this, controller.handler) // todo use other handler
         AppWidgetUpdateReceiver.register(this)
         sendBroadcast(Intent("player.phonograph.PHONOGRAPH_MUSIC_SERVICE_CREATED"))
     }

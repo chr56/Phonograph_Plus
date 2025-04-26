@@ -10,7 +10,7 @@ import lib.storage.launcher.OpenDirStorageAccessDelegate
 import lib.storage.launcher.OpenFileStorageAccessDelegate
 import player.phonograph.databinding.ActivityGenreDetailBinding
 import player.phonograph.mechanism.actions.DetailToolbarMenuProviders
-import player.phonograph.mechanism.event.MediaStoreTracker
+import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.Genre
 import player.phonograph.model.Song
 import player.phonograph.model.sort.SortMode
@@ -127,8 +127,8 @@ class GenreDetailActivity : AbsSlidingMusicPanelActivity(),
     }
 
 
-    private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
-        override fun onMediaStoreChanged() {
+    private inner class MediaStoreListener : EventHub.LifeCycleEventReceiver(this, EventHub.EVENT_MEDIASTORE_CHANGED) {
+        override fun onEventReceived(context: Context, intent: Intent) {
             loadDataSet(this@GenreDetailActivity)
         }
     }

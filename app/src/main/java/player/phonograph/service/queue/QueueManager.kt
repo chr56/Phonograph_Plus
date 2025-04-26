@@ -273,6 +273,15 @@ class QueueManager(val context: Application) {
     }
 
     /**
+     * read from persistence again
+     */
+    fun reload() {
+        snapshotAndNotify(queueHolder) {
+            queueHolder = QueueHolder.fromPersistence(context)
+        }
+    }
+
+    /**
      * for queue operations
      * detect queue changes and notify observers effectually
      */

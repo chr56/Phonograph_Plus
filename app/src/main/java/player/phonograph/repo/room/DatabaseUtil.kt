@@ -4,14 +4,13 @@
 
 package player.phonograph.repo.room
 
-import org.koin.core.context.GlobalContext
-import player.phonograph.mechanism.event.MediaStoreTracker
-import player.phonograph.model.listener.MediaStoreChangedListener
+import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.mediastore.MediaStoreSongs
 import player.phonograph.repo.room.converter.MediastoreSongConverter
 import android.content.Context
+import android.content.Intent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -20,12 +19,13 @@ import kotlinx.coroutines.withContext
 
 object DatabaseUtil {
 
-    fun syncWithMediastore(context: Context, musicDatabase: MusicDatabase) {
-        class PersistentListener : MediaStoreChangedListener {
+    fun syncWithMediastore(context: Context, musicDatabase: MusicDatabase): EventHub.EventReceiver {
+        class PersistentListener : EventHub.EventReceiver(EventHub.EVENT_MEDIASTORE_CHANGED) {
 
-            override fun onMediaStoreChanged() {
+            override fun onEventReceived(context: Context, intent: Intent) {
                 refresh()
             }
+
 
             fun refresh() {
                 coroutineScope.launch {
@@ -36,10 +36,10 @@ object DatabaseUtil {
             val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
         }
 
-        val mediaStoreTracker = GlobalContext.get().get<MediaStoreTracker>()
-        val persistentListener = PersistentListener()
-        persistentListener.refresh()
-        mediaStoreTracker.register(persistentListener)
+        return PersistentListener().apply {
+            refresh()
+            registerSelf(context)
+        }
     }
 
     suspend fun checkAndRefresh(context: Context, musicDatabase: MusicDatabase) {

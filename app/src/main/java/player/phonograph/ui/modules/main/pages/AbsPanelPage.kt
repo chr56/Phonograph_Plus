@@ -10,7 +10,7 @@ import com.github.chr56.android.menu_model.MenuContext
 import com.google.android.material.appbar.AppBarLayout
 import player.phonograph.R
 import player.phonograph.databinding.FragmentDisplayPageBinding
-import player.phonograph.mechanism.event.MediaStoreTracker
+import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.ui.modules.popup.ListOptionsPopup
@@ -24,6 +24,8 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.withResumed
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -154,7 +156,8 @@ sealed class AbsPanelPage : AbsPage() {
         with(menuContext) {
             if (clearMenu) rootMenu.clear()
             menuItem(getString(R.string.action_play)) {
-                icon = getTintedDrawable(R.drawable.ic_play_arrow_white_24dp, context.primaryTextColor(context.nightMode))
+                icon =
+                    getTintedDrawable(R.drawable.ic_play_arrow_white_24dp, context.primaryTextColor(context.nightMode))
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
                 onClick { onPlay(it) }
             }
@@ -283,11 +286,12 @@ sealed class AbsPanelPage : AbsPage() {
 
     //region MediaStoreListener
     private fun prepareMediaStoreListener() {
-        lifecycle.addObserver(MediaStoreListener())
+        lifecycle.addObserver(MediaStoreListener(requireContext()))
     }
 
-    private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
-        override fun onMediaStoreChanged() {
+    private inner class MediaStoreListener(context: Context) :
+            EventHub.LifeCycleEventReceiver(context, EventHub.EVENT_MEDIASTORE_CHANGED) {
+        override fun onEventReceived(context: Context, intent: Intent) {
             lifecycleScope.launch {
                 lifecycle.withResumed {
                     onContentChanged()

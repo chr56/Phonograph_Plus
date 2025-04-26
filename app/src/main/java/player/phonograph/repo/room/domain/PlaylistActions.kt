@@ -4,7 +4,8 @@
 
 package player.phonograph.repo.room.domain
 
-import player.phonograph.mechanism.broadcast.sentPlaylistChangedLocalBoardCast
+import player.phonograph.App
+import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.Song
 import player.phonograph.repo.room.MusicDatabase
 import player.phonograph.repo.room.entity.PlaylistEntity
@@ -20,7 +21,7 @@ object PlaylistActions {
     ): Boolean {
         val id = createPlaylist(database, name)
         return if (id > 0) {
-            sentPlaylistChangedLocalBoardCast()
+            EventHub.sendEvent(App.instance, EventHub.EVENT_PLAYLISTS_CHANGED)
             amendPlaylist(database, id, songs) == songs.size
         } else {
             false
@@ -55,7 +56,7 @@ object PlaylistActions {
         val result = playlistDao.rename(id, newName)
         if (result) {
             playlistDao.modifyDate(id, currentTimestamp())
-            sentPlaylistChangedLocalBoardCast()
+            EventHub.sendEvent(App.instance, EventHub.EVENT_PLAYLISTS_CHANGED)
         }
         return result
     }
@@ -75,7 +76,7 @@ object PlaylistActions {
         val lines = playlistSongDao.insert(entities).size // lines of success
         if (lines > 0) {
             database.PlaylistDao().modifyDate(id, currentTimestamp())
-            sentPlaylistChangedLocalBoardCast()
+            EventHub.sendEvent(App.instance, EventHub.EVENT_PLAYLISTS_CHANGED)
         }
         return lines
     }
@@ -134,7 +135,7 @@ object PlaylistActions {
         } else {
             false
         }.also {
-            sentPlaylistChangedLocalBoardCast()
+            EventHub.sendEvent(App.instance, EventHub.EVENT_PLAYLISTS_CHANGED)
         }
     }
 

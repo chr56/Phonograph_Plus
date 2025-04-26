@@ -5,19 +5,20 @@
 package player.phonograph.mechanism.broadcast
 
 import legacy.phonograph.MediaStoreCompat.Audio.Playlists
-import player.phonograph.model.service.EVENT_MEDIA_STORE_CHANGED
+import player.phonograph.App
+import player.phonograph.mechanism.event.EventHub
 import android.content.Context
 import android.database.ContentObserver
 import android.os.Handler
+import android.os.Looper
 import android.provider.MediaStore.Audio.Albums
 import android.provider.MediaStore.Audio.Artists
 import android.provider.MediaStore.Audio.Genres
 import android.provider.MediaStore.Audio.Media
 
 private lateinit var mediaStoreObserver: MediaStoreObserver
-class MediaStoreObserver(
+private class MediaStoreObserver(
     private val playerHandler: Handler,
-    private val handleAndSendChangeInternalCallback: (String) -> Unit,
 ) : ContentObserver(playerHandler), Runnable {
 
     override fun onChange(selfChange: Boolean) {
@@ -29,9 +30,7 @@ class MediaStoreObserver(
     }
 
     override fun run() {
-        // actually call refresh when the delayed callback fires
-        // do not send a sticky broadcast here
-        handleAndSendChangeInternalCallback(EVENT_MEDIA_STORE_CHANGED)
+        EventHub.sendEvent(App.instance, EventHub.EVENT_MEDIASTORE_CHANGED)
     }
 
     companion object {
@@ -41,12 +40,8 @@ class MediaStoreObserver(
 }
 
 
-fun setUpMediaStoreObserver(
-    context: Context,
-    playerHandler: Handler,
-    handleAndSendChangeInternalCallback: (String) -> Unit,
-) {
-    mediaStoreObserver = MediaStoreObserver(playerHandler, handleAndSendChangeInternalCallback)
+fun setUpMediaStoreObserver(context: Context, playerHandler: Handler) {
+    mediaStoreObserver = MediaStoreObserver(playerHandler)
     with(context.contentResolver) {
         registerContentObserver(Media.EXTERNAL_CONTENT_URI, true, mediaStoreObserver)
         registerContentObserver(Albums.EXTERNAL_CONTENT_URI, true, mediaStoreObserver)

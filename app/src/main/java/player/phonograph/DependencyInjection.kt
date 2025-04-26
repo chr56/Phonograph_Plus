@@ -5,7 +5,6 @@
 package player.phonograph
 
 import org.koin.dsl.module
-import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.repo.database.loaders.DatabaseFavoritePlaylistLoader
 import player.phonograph.repo.database.loaders.DatabaseFavoriteSongLoader
 import player.phonograph.repo.database.loaders.RecentlyPlayedTracksLoader
@@ -24,7 +23,6 @@ import player.phonograph.settings.Setting
 
 val moduleStatus = module {
     single { QueueManager(get()) }
-    single { MediaStoreTracker(get()) }
 }
 
 val moduleLoaders = module {

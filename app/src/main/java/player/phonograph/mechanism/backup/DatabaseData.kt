@@ -8,15 +8,15 @@ import lib.storage.textparser.ExternalFilePathParser
 import okio.BufferedSink
 import org.koin.core.context.GlobalContext
 import player.phonograph.R
-import player.phonograph.mechanism.event.MediaStoreTracker
+import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.Song
-import player.phonograph.model.playlist.FilePlaylistLocation
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.repo.database.store.FavoritesStore
 import player.phonograph.repo.database.store.PathFilterStore
 import player.phonograph.repo.loader.Songs
 import player.phonograph.repo.mediastore.MediaStorePlaylists
 import player.phonograph.service.queue.MusicPlaybackQueueStore
+import player.phonograph.service.queue.QueueManager
 import player.phonograph.util.reportError
 import player.phonograph.util.warning
 import androidx.annotation.Keep
@@ -153,7 +153,7 @@ object DatabaseDataManger {
                 currentQueueQueue ?: originalQueue ?: emptyList(),
                 originalQueue ?: currentQueueQueue ?: emptyList(),
             )
-            GlobalContext.get().get<MediaStoreTracker>().notifyAllListeners()
+            GlobalContext.get().get<QueueManager>().reload()
             true
         } else {
             warning(TAG, "PlayingQueues: Nothing to import")
@@ -247,7 +247,7 @@ object DatabaseDataManger {
         }
 
         // todo: report the imported
-        GlobalContext.get().get<MediaStoreTracker>().notifyAllListeners()
+        EventHub.sendEvent(context, EventHub.EVENT_FAVORITES_CHANGED)
 
         return r1 || r2
     }
