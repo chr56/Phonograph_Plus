@@ -20,8 +20,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import player.phonograph.R
 import player.phonograph.databinding.ActivityPlaylistDetailBinding
-import player.phonograph.mechanism.broadcast.PlaylistsModifiedReceiver
-import player.phonograph.mechanism.event.MediaStoreTracker
+import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylistLocation
 import player.phonograph.model.playlist.Playlist
@@ -49,7 +48,6 @@ import androidx.core.graphics.BlendModeCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.withCreated
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.annotation.SuppressLint
@@ -102,8 +100,7 @@ class PlaylistDetailActivity :
         )
 
         lifecycle.addObserver(MediaStoreListener())
-        LocalBroadcastManager.getInstance(this)
-            .registerReceiver(playlistsModifiedReceiver, PlaylistsModifiedReceiver.filter)
+        playlistsEventReceiver.registerWithLifecycle(lifecycle)
 
         super.onCreate(savedInstanceState)
         setUpToolbar()
@@ -357,7 +354,6 @@ class PlaylistDetailActivity :
             WrapperAdapterUtils.releaseAll(it)
             wrappedAdapter = null
         }
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(playlistsModifiedReceiver)
         binding.recyclerView.adapter = null
     }
 
@@ -378,13 +374,14 @@ class PlaylistDetailActivity :
     }
 
 
-    private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
-        override fun onMediaStoreChanged() = refreshIfInNeed()
+    private inner class MediaStoreListener : EventHub.LifeCycleEventReceiver(this, EventHub.EVENT_MEDIASTORE_CHANGED) {
+        override fun onEventReceived(context: Context, intent: Intent) = refreshIfInNeed()
     }
 
-    private val playlistsModifiedReceiver = object : PlaylistsModifiedReceiver() {
-        override fun onPlaylistChanged(context: Context, intent: Intent) = refreshIfInNeed()
-    }
+    private val playlistsEventReceiver =
+        EventHub.LifeCycleEventReceiver(this, EventHub.EVENT_PLAYLISTS_CHANGED) { _, _ ->
+            refreshIfInNeed()
+        }
 
     private suspend fun checkExistence(playlist: Playlist): Boolean =
         !(playlist.location is FilePlaylistLocation && !Playlists.exists(this, playlist.location))

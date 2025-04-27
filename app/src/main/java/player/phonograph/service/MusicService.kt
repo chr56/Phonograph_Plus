@@ -9,8 +9,7 @@ import org.koin.android.ext.android.get
 import player.phonograph.ACTUAL_PACKAGE_NAME
 import player.phonograph.BuildConfig
 import player.phonograph.appwidgets.AppWidgetUpdateReceiver
-import player.phonograph.mechanism.broadcast.setUpMediaStoreObserver
-import player.phonograph.mechanism.broadcast.unregisterMediaStoreObserver
+import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.model.service.ACTION_CANCEL_PENDING_QUIT
@@ -130,11 +129,7 @@ class MusicService : MediaBrowserServiceCompat(),
             couldPutCover = SDK_INT >= VERSION_SET_COVER_USING_METADATA || alwaysUseMediaSessionToDisplayCover
         }
         // misc
-        setUpMediaStoreObserver(
-            this,
-            controller.handler, // todo use other handler
-            this@MusicService::handleAndSendChangeInternal
-        )
+        EventHub.setUpMediaStoreObserver(this, controller.handler) // todo use other handler
         AppWidgetUpdateReceiver.register(this)
         sendBroadcast(Intent("player.phonograph.PHONOGRAPH_MUSIC_SERVICE_CREATED"))
     }
@@ -209,7 +204,7 @@ class MusicService : MediaBrowserServiceCompat(),
         mediaSessionController.onDestroy(this)
         coverLoader.terminate()
         AppWidgetUpdateReceiver.unRegister(this)
-        unregisterMediaStoreObserver(this)
+        EventHub.unregisterMediaStoreObserver(this)
         controller.removeObserver(this)
         controller.onDestroy(this)
         queueManager.removeObserver(this)

@@ -4,9 +4,8 @@
 
 package player.phonograph.mechanism.playlist
 
-import org.koin.core.context.GlobalContext
 import player.phonograph.R
-import player.phonograph.mechanism.event.MediaStoreTracker
+import player.phonograph.mechanism.event.EventHub
 import player.phonograph.mechanism.playlist.mediastore.addToPlaylistViaMediastore
 import player.phonograph.mechanism.playlist.mediastore.moveItemViaMediastore
 import player.phonograph.mechanism.playlist.mediastore.removeFromPlaylistViaMediastore
@@ -174,12 +173,12 @@ private data object FavoriteSongsPlaylistProcessor : PlaylistReader, PlaylistWri
 
     override suspend fun appendSong(context: Context, song: Song) {
         FavoriteSongs.addToFavorites(context, song)
-        notifyMediaStoreChanged()
+        EventHub.sendEvent(context, EventHub.EVENT_FAVORITES_CHANGED)
     }
 
     override suspend fun appendSongs(context: Context, songs: List<Song>) {
         for (song in songs) FavoriteSongs.addToFavorites(context, song)
-        notifyMediaStoreChanged()
+        EventHub.sendEvent(context, EventHub.EVENT_FAVORITES_CHANGED)
     }
 
     override suspend fun moveSong(context: Context, from: Int, to: Int): Boolean = false
@@ -221,7 +220,5 @@ private data object ShuffleAllPlaylistProcessor : PlaylistReader {
     override suspend fun allSongs(context: Context): List<Song> = Songs.all(context)
     override suspend fun containsSong(context: Context, songId: Long): Boolean = true
 }
-
-private fun notifyMediaStoreChanged() = GlobalContext.get().get<MediaStoreTracker>().notifyAllListeners()
 
 private const val TAG = "PlaylistProcessors"

@@ -11,7 +11,7 @@ import com.google.android.material.appbar.AppBarLayout
 import player.phonograph.R
 import player.phonograph.databinding.FragmentFilePageBinding
 import player.phonograph.mechanism.actions.actionPlay
-import player.phonograph.mechanism.event.MediaStoreTracker
+import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.service.ShuffleMode
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
@@ -28,10 +28,12 @@ import util.theme.color.primaryTextColor
 import androidx.fragment.app.commitNow
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.withResumed
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
 import android.view.Gravity
@@ -55,7 +57,7 @@ class FilesPage : AbsPage() {
     private lateinit var listener: MediaStoreListener
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        listener = MediaStoreListener()
+        listener = MediaStoreListener(requireContext())
         lifecycle.addObserver(listener)
     }
 
@@ -218,13 +220,19 @@ class FilesPage : AbsPage() {
     //endregion
 
     //region MediaStore
-    private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
-        override fun onMediaStoreChanged() {
+    private inner class MediaStoreListener(context: Context) :
+            EventHub.LifeCycleEventReceiver(context, EventHub.EVENT_MEDIASTORE_CHANGED) {
+        override fun onEventReceived(context: Context, intent: Intent) {
             lifecycleScope.launch {
                 lifecycle.withResumed {
                     model.refreshFiles(requireContext())
                 }
             }
+        }
+
+        override fun onDestroy(owner: LifecycleOwner) {
+            super.onDestroy(owner)
+            owner.lifecycle.removeObserver(this)
         }
     }
     //endregion

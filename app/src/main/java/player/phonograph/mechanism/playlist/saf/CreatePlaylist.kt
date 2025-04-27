@@ -4,7 +4,8 @@
 
 package player.phonograph.mechanism.playlist.saf
 
-import player.phonograph.mechanism.broadcast.sentPlaylistChangedLocalBoardCast
+import player.phonograph.App
+import player.phonograph.mechanism.event.EventHub
 import player.phonograph.mechanism.playlist.m3u.M3UWriter
 import player.phonograph.model.Song
 import player.phonograph.util.openOutputStreamSafe
@@ -21,7 +22,7 @@ suspend fun writePlaylist(context: Context, uri: Uri, songs: List<Song>): Boolea
         try {
             M3UWriter.write(stream, songs, true)
             delay(250)
-            sentPlaylistChangedLocalBoardCast()
+            EventHub.sendEvent(App.instance, EventHub.EVENT_PLAYLISTS_CHANGED)
             true
         } catch (e: Exception) {
             reportError(e, TAG, "Failed to write $uri")

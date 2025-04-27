@@ -17,7 +17,7 @@ import lib.storage.launcher.OpenFileStorageAccessDelegate
 import player.phonograph.R
 import player.phonograph.databinding.ActivitySearchBinding
 import player.phonograph.databinding.PopupWindowSearchBinding
-import player.phonograph.mechanism.event.MediaStoreTracker
+import player.phonograph.mechanism.event.EventHub
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
@@ -38,6 +38,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
 import androidx.viewpager2.widget.ViewPager2
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -178,8 +179,8 @@ class SearchActivity : AbsSlidingMusicPanelActivity(), SearchView.OnQueryTextLis
         searchView?.clearFocus()
     }
 
-    private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
-        override fun onMediaStoreChanged() {
+    private inner class MediaStoreListener : EventHub.LifeCycleEventReceiver(this, EventHub.EVENT_MEDIASTORE_CHANGED) {
+        override fun onEventReceived(context: Context, intent: Intent) {
             viewModel.refresh(this@SearchActivity)
         }
     }

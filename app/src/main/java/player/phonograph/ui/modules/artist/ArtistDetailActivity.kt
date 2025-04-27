@@ -15,7 +15,7 @@ import org.koin.core.parameter.parametersOf
 import player.phonograph.R
 import player.phonograph.databinding.ActivityArtistDetailBinding
 import player.phonograph.mechanism.actions.DetailToolbarMenuProviders
-import player.phonograph.mechanism.event.MediaStoreTracker
+import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Song
@@ -204,8 +204,8 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvide
         tintOverflowButtonColor(this, iconColor)
     }
 
-    private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
-        override fun onMediaStoreChanged() {
+    private inner class MediaStoreListener : EventHub.LifeCycleEventReceiver(this, EventHub.EVENT_MEDIASTORE_CHANGED) {
+        override fun onEventReceived(context: Context, intent: Intent) {
             viewModel.load(this@ArtistDetailActivity)
         }
     }

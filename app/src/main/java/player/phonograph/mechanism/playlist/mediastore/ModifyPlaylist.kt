@@ -6,8 +6,9 @@ package player.phonograph.mechanism.playlist.mediastore
 
 import legacy.phonograph.MediaStoreCompat
 import legacy.phonograph.MediaStoreCompat.Audio.Playlists
+import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.mechanism.broadcast.sentPlaylistChangedLocalBoardCast
+import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.Song
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
 import player.phonograph.util.MEDIASTORE_VOLUME_EXTERNAL
@@ -186,7 +187,7 @@ suspend fun deletePlaylistsViaMediastore(
     if (failList.isNotEmpty())
         warning(TAG, failList.fold("Failed to delete playlist(id):") { acc, s -> "$acc, $s" })
 
-    sentPlaylistChangedLocalBoardCast()
+    EventHub.sendEvent(App.instance, EventHub.EVENT_PLAYLISTS_CHANGED)
     failList.toLongArray()
 }
 

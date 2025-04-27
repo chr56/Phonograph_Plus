@@ -16,7 +16,7 @@ import org.koin.core.context.GlobalContext
 import player.phonograph.R
 import player.phonograph.databinding.FragmentQueueBinding
 import player.phonograph.mechanism.actions.ActionMenuProviders
-import player.phonograph.mechanism.event.MediaStoreTracker
+import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.Song
 import player.phonograph.model.service.RepeatMode
 import player.phonograph.model.service.ShuffleMode
@@ -45,6 +45,7 @@ import util.theme.color.primaryTextColor
 import util.theme.materials.MaterialColor
 import androidx.annotation.ColorInt
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.withCreated
 import androidx.lifecycle.withStarted
@@ -52,6 +53,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.animation.Animator
 import android.content.Context
+import android.content.Intent
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -62,7 +64,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import kotlin.getValue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -97,7 +98,7 @@ class PlayerQueueFragment : AbsMusicServiceFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        lifecycle.addObserver(MediaStoreListener())
+        lifecycle.addObserver(MediaStoreListener(requireContext()))
         arguments?.let { args ->
             argumentWithShadow = args.getBoolean(ARGUMENT_WITH_SHADOW, false)
             argumentWithActionButtons = args.getBoolean(ARGUMENT_WITH_ACTION_BUTTONS, true)
@@ -173,8 +174,9 @@ class PlayerQueueFragment : AbsMusicServiceFragment() {
 
     fun onHide() {}
 
-    private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
-        override fun onMediaStoreChanged() {
+    private inner class MediaStoreListener(context: Context) :
+            EventHub.LifeCycleEventReceiver(context, EventHub.EVENT_MEDIASTORE_CHANGED) {
+        override fun onEventReceived(context: Context, intent: Intent) {
             lifecycleScope.launch(Dispatchers.Main) {
                 withStarted {
                     playingQueueAdapter.dataset = MusicPlayerRemote.playingQueue
@@ -183,6 +185,11 @@ class PlayerQueueFragment : AbsMusicServiceFragment() {
                     resetToCurrentPosition(false)
                 }
             }
+        }
+
+        override fun onDestroy(owner: LifecycleOwner) {
+            super.onDestroy(owner)
+            owner.lifecycle.removeObserver(this)
         }
     }
 

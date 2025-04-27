@@ -5,8 +5,8 @@
 package player.phonograph.repo.database.store
 
 import org.koin.core.context.GlobalContext
-import player.phonograph.mechanism.event.MediaStoreTracker
-import player.phonograph.repo.database.DatabaseConstants
+import player.phonograph.App
+import player.phonograph.mechanism.event.EventHub
 import player.phonograph.repo.database.DatabaseConstants.PATH_FILTER
 import player.phonograph.util.debug
 import player.phonograph.util.file.safeGetCanonicalPath
@@ -14,7 +14,6 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import android.os.Environment
 import android.os.Environment.DIRECTORY_ALARMS
 import android.os.Environment.DIRECTORY_NOTIFICATIONS
 import android.os.Environment.DIRECTORY_RINGTONES
@@ -211,6 +210,6 @@ class PathFilterStore(context: Context) :
 
         fun get() = GlobalContext.get().get<PathFilterStore>()
 
-        private fun notifyMediaStoreChanged() = GlobalContext.get().get<MediaStoreTracker>().notifyAllListeners()
+        private fun notifyMediaStoreChanged() = EventHub.sendEvent(App.instance, EventHub.EVENT_MEDIASTORE_CHANGED)
     }
 }

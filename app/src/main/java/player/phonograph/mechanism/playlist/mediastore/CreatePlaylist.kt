@@ -5,7 +5,8 @@
 package player.phonograph.mechanism.playlist.mediastore
 
 import legacy.phonograph.MediaStoreCompat.Audio.PlaylistsColumns
-import player.phonograph.mechanism.broadcast.sentPlaylistChangedLocalBoardCast
+import player.phonograph.App
+import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.Song
 import player.phonograph.util.MEDIASTORE_VOLUME_EXTERNAL
 import player.phonograph.util.mediastoreUriPlaylists
@@ -22,7 +23,7 @@ import android.net.Uri
 fun createPlaylistViaMediastore(context: Context, name: String): Long {
     val id = insertNewPlaylist(context, name)
     if (id != -1L) {
-        sentPlaylistChangedLocalBoardCast()
+        EventHub.sendEvent(App.instance, EventHub.EVENT_PLAYLISTS_CHANGED)
     }
     return id
 }
@@ -35,7 +36,7 @@ suspend fun createPlaylistViaMediastore(context: Context, name: String, songs: L
     val id = insertNewPlaylist(context, name)
     if (id != -1L) {
         addToPlaylistViaMediastore(context, songs, MEDIASTORE_VOLUME_EXTERNAL, id, true)
-        sentPlaylistChangedLocalBoardCast()
+        EventHub.sendEvent(App.instance, EventHub.EVENT_PLAYLISTS_CHANGED)
     }
     return id
 }
@@ -85,7 +86,7 @@ suspend fun duplicatePlaylistViaMediaStore(
             failureList.append(names[index]).append(" ")
         }
     }
-    sentPlaylistChangedLocalBoardCast()
+    EventHub.sendEvent(App.instance, EventHub.EVENT_PLAYLISTS_CHANGED)
     if (failures > 0) {
         warning("Playlist", "Playlists failed to save: $failureList")
     }
