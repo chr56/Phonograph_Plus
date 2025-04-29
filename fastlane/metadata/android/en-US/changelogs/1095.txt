@@ -1,0 +1,4 @@
+<b>1.9.5(1095) 2025.05.01</b>
+- Fix: crash when loading lyric for nonexistent file
+- Modify: update icon for page display settings
+- Translation: update Hungarian (by Balázs Úr & Balázs Meskó)

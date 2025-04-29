@@ -1,19 +1,21 @@
-version: "1.9.4"
+version: "1.9.5"
 channel: "STABLE"
-versionCode: 1094
-timestamp: 1742440000
+versionCode: 1095
+timestamp: 1746057600
 notes:
   en:
     highlights: [ ]
     items:
-      - "Fix: flooding internal error notifications, due to image loading for certain files"
-      - "Fix: possible crashes after replacing playing queue on some circumstance"
+      - "Fix: crash when loading lyric for nonexistent file"
+      - "Modify: update icon for page display settings"
+      - "Translation: update Hungarian (by Balázs Úr & Balázs Meskó)"
 
   zh:
     highlights: [ ]
     items:
-      - "修复 加载部分文件图片时出现的大量内部错误通知"
-      - "修复 在某些情况下替换播放队列后可能崩溃"
+      - "修复 加载不存在文件时崩溃"
+      - "修改 页面显示设置图标"
+      - "翻译 更新 匈牙利语 (Balázs Úr & Balázs Meskó)"
 
-previousVersion: "1.9.3"
+previousVersion: "1.9.4"
 previousChannel: "STABLE"
