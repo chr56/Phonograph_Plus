@@ -102,17 +102,19 @@
     <string name="this_month">Esse mês</string>
     <string name="this_year">Esse ano</string>
     <string name="equalizer">Equalizador</string>
+    <string name="pref_header_appearance">Aparência</string>
     <string name="pref_header_colors">Cores</string>
     <string name="pref_header_content">Conteúdo</string>
     <string name="pref_header_lyrics">Letra</string>
     <string name="pref_header_now_playing_screen">Reproduzindo agora</string>
-    <string name="pref_title_general_theme">Tema geral</string>
     <string name="pref_header_audio">Áudio</string>
     <string name="pref_header_player_behaviour">Comportamento do Reprodutor</string>
     <string name="pref_header_library">Biblioteca</string>
     <string name="pref_header_images">Imagens</string>
     <string name="pref_header_playlists">Listas de reprodução</string>
     <string name="pref_header_notification">Notificação</string>
+    <string name="pref_header_compatibility">Compatibilidade</string>
+    <string name="pref_title_general_theme">Tema geral</string>
     <string name="pref_title_player_style">Estilo do Reprodutor Principal</string>
     <string name="pref_title_navigation_bar">Barra de navegação colorida</string>
     <string name="pref_title_app_shortcuts">Atalhos do aplicativo colorido</string>
@@ -297,7 +299,6 @@
     <string name="direction_open_folder_with_saf">Agora, selecione a pasta de arquivos que contém os arquivos com os quais você gostaria de operar</string>
     <string name="direction_open_file_with_saf">Agora, selecione o arquivo com o qual você gostaria de operar</string>
     <string name="file_incorrect">O arquivo está incorreto!</string>
-    <string name="pref_header_appearance">Aparência</string>
     <string name="pref_title_reset_home_pages_tab_config">Redefinir todas as guias</string>
     <string name="pref_summary_reset_home_pages_tab_config">Todas as categorias de biblioteca seriam redefinidas para o padrão.</string>
     <string name="are_you_sure">Tem certeza?</string>
@@ -312,7 +313,6 @@
     <string name="music_tags">Etiquetas da Música</string>
     <string name="file">Arquivo</string>
     <string name="folder">Pasta</string>
-    <string name="pref_header_compatibility">Compatibilidade</string>
     <string name="pref_title_use_legacy_favorite_playlist_impl">Use o mecanismo de playlist favorito legado</string>
     <string name="pref_summary_use_legacy_favorite_playlist_impl">Se habilitar isso, o aplicativo salvará as músicas favoritas em uma lista de reprodução m3u no armazenamento em vez de salvar as músicas favoritas no banco de dados interno do aplicativo. (Você pode exportar a lista manualmente.)</string>
     <string name="databases">Bancos de dados</string>

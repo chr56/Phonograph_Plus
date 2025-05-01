@@ -101,17 +101,19 @@
     <string name="this_month">Этот месяц</string>
     <string name="this_year">Этот год</string>
     <string name="equalizer">Эквалайзер</string>
+    <string name="pref_header_appearance">Вид экрана воспроизведения</string>
     <string name="pref_header_colors">Цвета</string>
     <string name="pref_header_content">Содержание</string>
     <string name="pref_header_lyrics">Текст песни</string>
     <string name="pref_header_now_playing_screen">Сейчас воспроизводится</string>
-    <string name="pref_title_general_theme">Главная тема</string>
     <string name="pref_header_audio">Аудио</string>
     <string name="pref_header_player_behaviour">Поведение плеера</string>
     <string name="pref_header_library">Библиотека</string>
     <string name="pref_header_images">Изображения</string>
     <string name="pref_header_playlists">Плейлисты</string>
     <string name="pref_header_notification">Уведомления</string>
+    <string name="pref_header_compatibility">Совместимость</string>
+    <string name="pref_title_general_theme">Главная тема</string>
     <string name="pref_title_player_style">Основной стиль плеера</string>
     <string name="pref_title_navigation_bar">Цветная панель управления</string>
     <string name="pref_title_app_shortcuts">Цветные шорткаты</string>
@@ -286,7 +288,6 @@
     <string name="direction_open_folder_with_saf">Теперь, пожалуйста, выберите папку с файлами, с которой вы хотели бы работать</string>
     <string name="direction_open_file_with_saf">Теперь выберите файл, с которым вы хотите работать</string>
     <string name="file_incorrect">Файл неверный!</string>
-    <string name="pref_header_appearance">Вид экрана воспроизведения</string>
     <string name="pref_title_reset_home_pages_tab_config">Сбросить все вкладки</string>
     <string name="pref_summary_reset_home_pages_tab_config">Все категории библиотек будут сброшены по умолчанию.</string>
     <string name="are_you_sure">Вы уверены?</string>
@@ -301,7 +302,6 @@
     <string name="music_tags">Теги</string>
     <string name="file">Файл</string>
     <string name="folder">Папка</string>
-    <string name="pref_header_compatibility">Совместимость</string>
     <string name="pref_title_use_legacy_favorite_playlist_impl">Использовать устаревший механизм избранного плейлиста</string>
     <string name="pref_summary_use_legacy_favorite_playlist_impl">Если включить эту функцию, то приложение будет сохранять любимые песни в список воспроизведения m3u в хранилище вместо сохранения любимых песен во внутренней базе данных приложения. (Вы можете экспортировать список вручную).</string>
     <string name="databases">Базы данных</string>

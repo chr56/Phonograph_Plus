@@ -101,17 +101,19 @@
     <string name="this_month">Este mes</string>
     <string name="this_year">Este año</string>
     <string name="equalizer">Ecualizador</string>
+    <string name="pref_header_appearance">Apariencia</string>
     <string name="pref_header_colors">Colores</string>
     <string name="pref_header_content">Contenido</string>
     <string name="pref_header_lyrics">Letras</string>
     <string name="pref_header_now_playing_screen">Reproducción actual</string>
-    <string name="pref_title_general_theme">Tema general</string>
     <string name="pref_header_audio">Audio</string>
     <string name="pref_header_player_behaviour">Comportamiento del reproductor</string>
     <string name="pref_header_library">Biblioteca</string>
     <string name="pref_header_images">Imágenes</string>
     <string name="pref_header_playlists">Listas de reproducción</string>
     <string name="pref_header_notification">Notificación</string>
+    <string name="pref_header_compatibility">Compatibilidad</string>
+    <string name="pref_title_general_theme">Tema general</string>
     <string name="pref_title_player_style">Estilo principal del reproductor</string>
     <string name="pref_title_navigation_bar">Barra de navegación coloreada</string>
     <string name="pref_title_app_shortcuts">Atajos coloreados de la aplicación</string>
@@ -296,7 +298,6 @@
     <string name="direction_open_folder_with_saf">Ahora, por favor seleccione la carpeta que contiene los archivos con los que desea operar</string>
     <string name="direction_open_file_with_saf">Ahora, por favor seleccione el archivo con el que desea operar</string>
     <string name="file_incorrect">¡El archivo es incorrecto!</string>
-    <string name="pref_header_appearance">Apariencia</string>
     <string name="pref_title_reset_home_pages_tab_config">Restablecer todas las pestañas</string>
     <string name="pref_summary_reset_home_pages_tab_config">Todas las categorías de las librerías se restablecerían a los valores predeterminados.</string>
     <string name="are_you_sure">¿Estás seguro?</string>
@@ -311,7 +312,6 @@
     <string name="music_tags">Etiquetas</string>
     <string name="file">Archivo</string>
     <string name="folder">Carpeta</string>
-    <string name="pref_header_compatibility">Compatibilidad</string>
     <string name="pref_title_use_legacy_favorite_playlist_impl">Utilizar mecanismo de lista de reproducción favorito antiguo</string>
     <string name="pref_summary_use_legacy_favorite_playlist_impl">Si lo activa, la aplicación guardará canciones favoritas en una lista de reproducción m3u en Storage en lugar de guardar canciones favoritas en la base de datos interna de la aplicación. Puedes exportar la lista manualmente..)</string>
     <string name="databases">Bases de datos</string>

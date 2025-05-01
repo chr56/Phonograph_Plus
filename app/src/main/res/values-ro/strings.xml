@@ -80,11 +80,11 @@
     <string name="equalizer">Egalizator</string>
     <string name="pref_header_colors">Culori</string>
     <string name="pref_header_now_playing_screen">Redare acum</string>
-    <string name="pref_title_general_theme">Temă generală</string>
     <string name="pref_header_library">Bibliotecă</string>
     <string name="pref_header_images">Imagini</string>
     <string name="pref_header_playlists">Liste de redare</string>
     <string name="pref_header_notification">Notificare</string>
+    <string name="pref_title_general_theme">Temă generală</string>
     <string name="pref_title_navigation_bar">Bară de navigare colorată</string>
     <string name="pref_title_app_shortcuts">Comenzi rapide colorate</string>
     <string name="pref_title_auto_download_metadata">Descărcare automată metadate</string>

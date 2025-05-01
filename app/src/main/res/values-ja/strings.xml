@@ -94,17 +94,19 @@
     <string name="this_month">今月</string>
     <string name="this_year">今年</string>
     <string name="equalizer">イコライザー</string>
+    <string name="pref_header_appearance">外観</string>
     <string name="pref_header_colors">配色</string>
     <string name="pref_header_content">コンテンツ</string>
     <string name="pref_header_lyrics">歌詞</string>
     <string name="pref_header_now_playing_screen">再生画面</string>
-    <string name="pref_title_general_theme">テーマカラー</string>
     <string name="pref_header_audio">オーディオ</string>
     <string name="pref_header_player_behaviour">プレイヤーの動作</string>
     <string name="pref_header_library">ライブラリ</string>
     <string name="pref_header_images">画像</string>
     <string name="pref_header_playlists">プレイリスト</string>
     <string name="pref_header_notification">通知</string>
+    <string name="pref_header_compatibility">互換性</string>
+    <string name="pref_title_general_theme">テーマカラー</string>
     <string name="pref_title_player_style">メインプレーヤーのスタイル</string>
     <string name="pref_title_navigation_bar">ナビゲーションバーに色を付ける</string>
     <string name="pref_title_app_shortcuts">アプリのショートカットに色を付ける</string>
@@ -278,7 +280,6 @@
     <string name="direction_open_folder_with_saf">操作したいファイルを含むフォルダを選択してください</string>
     <string name="direction_open_file_with_saf">操作したいファイルを選択してください</string>
     <string name="file_incorrect">ファイルが正しくありません!</string>
-    <string name="pref_header_appearance">外観</string>
     <string name="pref_title_reset_home_pages_tab_config">すべてのカテゴリタブをリセット</string>
     <string name="pref_summary_reset_home_pages_tab_config">すべてのライブラリのカテゴリがデフォルトにリセットされます。</string>
     <string name="are_you_sure">よろしいですか?</string>
@@ -292,7 +293,6 @@
     <string name="lyricist">作詞家</string>
     <string name="music_tags">音楽タグ</string>
     <string name="file">ファイル</string>
-    <string name="pref_header_compatibility">互換性</string>
     <string name="pref_title_use_legacy_favorite_playlist_impl">旧式のお気に入りプレイリストフォーマットを使用する</string>
     <string name="pref_summary_use_legacy_favorite_playlist_impl">有効にすると、お気に入り曲をアプリ内部のデータベースではなく、ストレージ上のm3uプレイリストに保存します。 (手動でリストをエクスポートできます)</string>
     <string name="databases">データベース</string>

@@ -105,13 +105,13 @@
     <string name="pref_header_content">محتوى</string>
     <string name="pref_header_lyrics">كلمات الاغنية</string>
     <string name="pref_header_now_playing_screen">يتم تشغيله الآن</string>
-    <string name="pref_title_general_theme">التنسيق العام</string>
     <string name="pref_header_audio">الصوت</string>
     <string name="pref_header_player_behaviour">سلوك المشغل</string>
     <string name="pref_header_library">المكتبة</string>
     <string name="pref_header_images">الصور</string>
     <string name="pref_header_playlists">قوائم التشغيل</string>
     <string name="pref_header_notification">الإشعار</string>
+    <string name="pref_title_general_theme">التنسيق العام</string>
     <string name="pref_title_player_style">نمط المشغل الرئيسي</string>
     <string name="pref_title_navigation_bar">شريط تنقل ملون</string>
     <string name="pref_title_app_shortcuts">اختصارات تطبيق ملونة</string>

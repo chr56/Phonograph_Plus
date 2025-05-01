@@ -102,17 +102,19 @@
     <string name="this_month">Ten miesiąc</string>
     <string name="this_year">Ten rok</string>
     <string name="equalizer">Korektor</string>
+    <string name="pref_header_appearance">Wygląd</string>
     <string name="pref_header_colors">Kolory</string>
     <string name="pref_header_content">Zawartość</string>
     <string name="pref_header_lyrics">Teksty</string>
     <string name="pref_header_now_playing_screen">Teraz odtwarzane</string>
-    <string name="pref_title_general_theme">Styl tła motywu</string>
     <string name="pref_header_audio">Dźwięk</string>
     <string name="pref_header_player_behaviour">Zachowanie odtwarzacza</string>
     <string name="pref_header_library">Biblioteka</string>
     <string name="pref_header_images">Obrazy</string>
     <string name="pref_header_playlists">Lista odtwarzania</string>
     <string name="pref_header_notification">Powiadomienie</string>
+    <string name="pref_header_compatibility">Zgodność</string>
+    <string name="pref_title_general_theme">Styl tła motywu</string>
     <string name="pref_title_player_style">Styl głównego odtwarzacza</string>
     <string name="pref_title_navigation_bar">Kolorowy pasek nawigacji</string>
     <string name="pref_title_app_shortcuts">Kolorowe skróty aplikacji</string>
@@ -297,7 +299,6 @@
     <string name="direction_open_folder_with_saf">Teraz wybierz katalog zawierający pliki, z którymi chcesz pracować</string>
     <string name="direction_open_file_with_saf">Teraz wybierz plik, z którym chcesz pracować</string>
     <string name="file_incorrect">Plik jest nieprawidłowy!</string>
-    <string name="pref_header_appearance">Wygląd</string>
     <string name="pref_title_reset_home_pages_tab_config">Resetuj wszystkie karty</string>
     <string name="pref_summary_reset_home_pages_tab_config">Wszystkie kategorie bibliotek zostaną przywrócone do ustawień domyślnych.</string>
     <string name="are_you_sure">Na pewno?</string>
@@ -312,7 +313,6 @@
     <string name="music_tags">Znaczniki muzyczne</string>
     <string name="file">Plik</string>
     <string name="folder">Katalog</string>
-    <string name="pref_header_compatibility">Zgodność</string>
     <string name="pref_title_use_legacy_favorite_playlist_impl">Używaj starszego mechanizmu ulubionych list odtwarzania</string>
     <string name="pref_summary_use_legacy_favorite_playlist_impl">Po włączeniu tej opcji aplikacja będzie zapisywać ulubione utwory na liście odtwarzania m3u w pamięci masowej, zamiast zapisywać ulubione utwory w wewnętrznej bazie danych aplikacji (listę można wyeksportować ręcznie).</string>
     <string name="databases">Bazy danych</string>

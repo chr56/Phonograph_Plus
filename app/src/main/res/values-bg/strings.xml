@@ -74,9 +74,9 @@
     <string name="equalizer">Еквилайзер</string>
     <string name="pref_header_colors">Цветове</string>
     <string name="pref_header_now_playing_screen">Текуща песен</string>
-    <string name="pref_title_general_theme">Главна тема</string>
     <string name="pref_header_audio">Аудио</string>
     <string name="pref_header_images">Изображения</string>
+    <string name="pref_title_general_theme">Главна тема</string>
     <string name="pref_title_navigation_bar">Оцветени навигационни бутони</string>
     <string name="pref_title_app_shortcuts">Оцветяване на бутоните</string>
     <string name="pref_title_colored_notification">Оцвети известията</string>

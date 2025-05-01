@@ -85,12 +85,12 @@
     <string name="equalizer">Bộ lọc âm thanh</string>
     <string name="pref_header_colors">Màu sắc</string>
     <string name="pref_header_now_playing_screen">Đang phát</string>
-    <string name="pref_title_general_theme">Chủ đề chung</string>
     <string name="pref_header_audio">Âm thanh</string>
     <string name="pref_header_library">Thư viện</string>
     <string name="pref_header_images">Hình ảnh</string>
     <string name="pref_header_playlists">Danh sách nhạc</string>
     <string name="pref_header_notification">Thông báo</string>
+    <string name="pref_title_general_theme">Chủ đề chung</string>
     <string name="pref_title_navigation_bar">Màu thanh điều hướng</string>
     <string name="pref_title_app_shortcuts">Màu sắc biểu tượng ứng dụng</string>
     <string name="pref_title_auto_download_metadata">Tự động tải xuống siêu dữ liệu</string>

@@ -100,17 +100,19 @@
     <string name="this_month">Este mês</string>
     <string name="this_year">Este ano</string>
     <string name="equalizer">Equalizador</string>
+    <string name="pref_header_appearance">Aparência</string>
     <string name="pref_header_colors">Cores</string>
     <string name="pref_header_content">Conteúdo</string>
     <string name="pref_header_lyrics">Letras</string>
     <string name="pref_header_now_playing_screen">A reproduzir</string>
-    <string name="pref_title_general_theme">Tema geral</string>
     <string name="pref_header_audio">Áudio</string>
     <string name="pref_header_player_behaviour">Comportamento do reprodutor</string>
     <string name="pref_header_library">Biblioteca</string>
     <string name="pref_header_images">Imagens</string>
     <string name="pref_header_playlists">Listas de reprodução</string>
     <string name="pref_header_notification">Notificação</string>
+    <string name="pref_header_compatibility">Compatibilidade</string>
+    <string name="pref_title_general_theme">Tema geral</string>
     <string name="pref_title_player_style">Estilo principal do reprodutor</string>
     <string name="pref_title_navigation_bar">Barra de navegação colorida</string>
     <string name="pref_title_app_shortcuts">Atalhos da aplicação coloridos</string>
@@ -295,7 +297,6 @@
     <string name="direction_open_folder_with_saf">Agora selecione a pasta que contém os ficheiros com os quais gostaria de trabalhar</string>
     <string name="direction_open_file_with_saf">Agora selecione o ficheiro com que pretende trabalhar</string>
     <string name="file_incorrect">O ficheiro é incorreto!</string>
-    <string name="pref_header_appearance">Aparência</string>
     <string name="pref_title_reset_home_pages_tab_config">Repor todas as abas</string>
     <string name="pref_summary_reset_home_pages_tab_config">Todas as categorias de bibliotecas serão repostas para o predefinido.</string>
     <string name="are_you_sure">Tem certeza?</string>
@@ -310,7 +311,6 @@
     <string name="music_tags">Etiquetas de música</string>
     <string name="file">Ficheiro</string>
     <string name="folder">Pasta</string>
-    <string name="pref_header_compatibility">Compatibilidade</string>
     <string name="pref_title_use_legacy_favorite_playlist_impl">Utilizar o mecanismo de lista de reprodução favorita antigo</string>
     <string name="pref_summary_use_legacy_favorite_playlist_impl">Se ativar esta opção, a aplicação guardará as músicas favoritas numa lista de reprodução m3u no armazenamento do dispositivo, em vez de guardar as músicas favoritas na base de dados interna da aplicação (pode exportar a lista manualmente).</string>
     <string name="databases">Bases de dados</string>

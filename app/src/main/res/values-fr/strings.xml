@@ -101,17 +101,19 @@
     <string name="this_month">Ce mois</string>
     <string name="this_year">Cette année</string>
     <string name="equalizer">Égaliseur</string>
+    <string name="pref_header_appearance">Apparence</string>
     <string name="pref_header_colors">Couleurs</string>
     <string name="pref_header_content">Contenu</string>
     <string name="pref_header_lyrics">Paroles</string>
     <string name="pref_header_now_playing_screen">Lecture en cours</string>
-    <string name="pref_title_general_theme">Thème général</string>
     <string name="pref_header_audio">Audio</string>
     <string name="pref_header_player_behaviour">Comportement du lecteur</string>
     <string name="pref_header_library">Bibliothèque</string>
     <string name="pref_header_images">Images</string>
     <string name="pref_header_playlists">Listes de lecture</string>
     <string name="pref_header_notification">Notification</string>
+    <string name="pref_header_compatibility">Compatibilité</string>
+    <string name="pref_title_general_theme">Thème général</string>
     <string name="pref_title_player_style">Style du lecteur principal</string>
     <string name="pref_title_navigation_bar">Barre de navigation colorée</string>
     <string name="pref_title_app_shortcuts">Raccourcis d\'application colorés</string>
@@ -296,7 +298,6 @@
     <string name="direction_open_folder_with_saf">Maintenant, veuillez sélectionner le dossier contenant les fichiers avec lesquels vous souhaitez interagir</string>
     <string name="direction_open_file_with_saf">Maintenant, veuillez sélectionner le fichier avec lequel vous souhaitez interagir</string>
     <string name="file_incorrect">Le fichier est incorrect !</string>
-    <string name="pref_header_appearance">Apparence</string>
     <string name="pref_title_reset_home_pages_tab_config">Réinitialiser tous les onglets</string>
     <string name="pref_summary_reset_home_pages_tab_config">Toutes les catégories de la bibliothèque seront réinitialisées à la valeur par défaut.</string>
     <string name="are_you_sure">Êtes-vous sûr ?</string>
@@ -311,7 +312,6 @@
     <string name="music_tags">Tags musicaux</string>
     <string name="file">Fichier</string>
     <string name="folder">Dossier</string>
-    <string name="pref_header_compatibility">Compatibilité</string>
     <string name="pref_title_use_legacy_favorite_playlist_impl">Utiliser l\'ancien système de playlist favorite</string>
     <string name="pref_summary_use_legacy_favorite_playlist_impl">Si activé, l\'application sauvegardera les morceaux favoris dans une playlist m3u dans le stockage de l\'appareil au lieu de les enregistrer dans la base de données interne de l\'application. (Vous pouvez exporter la liste manuellement.)</string>
     <string name="databases">Bases de données </string>

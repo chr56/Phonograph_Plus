@@ -95,17 +95,19 @@
     <string name="this_month">1 kuukausi</string>
     <string name="this_year">1 vuosi</string>
     <string name="equalizer">Taajuuskorjain</string>
+    <string name="pref_header_appearance">Ulkoasu</string>
     <string name="pref_header_colors">Värit</string>
     <string name="pref_header_content">Sisältö</string>
     <string name="pref_header_lyrics">Sanoitukset</string>
     <string name="pref_header_now_playing_screen">Toistetaan parhaillaan</string>
-    <string name="pref_title_general_theme">Yleinen teema</string>
     <string name="pref_header_audio">Ääni</string>
     <string name="pref_header_player_behaviour">Soittimen toiminta</string>
     <string name="pref_header_library">Kirjasto</string>
     <string name="pref_header_images">Kuvat</string>
     <string name="pref_header_playlists">Soittolistat</string>
     <string name="pref_header_notification">Ilmoitukset</string>
+    <string name="pref_header_compatibility">Yhteensopivuus</string>
+    <string name="pref_title_general_theme">Yleinen teema</string>
     <string name="pref_title_player_style">Soittimen tyyli</string>
     <string name="pref_title_navigation_bar">Värillinen navigaatiopalkki</string>
     <string name="pref_title_app_shortcuts">Värilliset sovelluksen pikavalinnat</string>
@@ -269,7 +271,6 @@
     <string name="sort_order_date_modified">Muokkauspäivä</string>
     <string name="loading">Ladataan</string>
     <string name="file_incorrect">Tiedosto on virheellinen!</string>
-    <string name="pref_header_appearance">Ulkoasu</string>
     <string name="pref_title_reset_home_pages_tab_config">Nollaa kaikki välilehdet</string>
     <string name="pref_summary_reset_home_pages_tab_config">Kaikki kirjaston välilehdet palautettaisiin oletusarvoisiksi.</string>
     <string name="are_you_sure">Oletko varma?</string>
@@ -283,7 +284,6 @@
     <string name="lyricist">Sanoittaja</string>
     <string name="music_tags">Musiikki Tunnisteet</string>
     <string name="file">Tiedosto</string>
-    <string name="pref_header_compatibility">Yhteensopivuus</string>
     <string name="pref_title_use_legacy_favorite_playlist_impl">Käytä vanhaa suosikki soittolista mekanismia.</string>
     <string name="pref_summary_use_legacy_favorite_playlist_impl">Jos tämä on käytössä, sovellus tallentaa suosikkikappaleet m3u-soittolistalle tallennustilaan sen sijaan, että ne tallennettaisiin sovelluksen sisäiseen tietokantaan.</string>
     <string name="databases">Tietokannat</string>

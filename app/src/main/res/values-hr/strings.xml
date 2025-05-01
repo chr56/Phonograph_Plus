@@ -84,12 +84,12 @@
     <string name="equalizer">Ekvalizator</string>
     <string name="pref_header_colors">Boje</string>
     <string name="pref_header_now_playing_screen">Trenutna reprodukcija</string>
-    <string name="pref_title_general_theme">Općenita tema</string>
     <string name="pref_header_audio">Zvuk</string>
     <string name="pref_header_library">Biblioteka</string>
     <string name="pref_header_images">Slike</string>
     <string name="pref_header_playlists">Popisi naslova</string>
     <string name="pref_header_notification">Obavijest</string>
+    <string name="pref_title_general_theme">Općenita tema</string>
     <string name="pref_title_navigation_bar">Obojena navigacijska traka</string>
     <string name="pref_title_app_shortcuts">Obojani prečaci</string>
     <string name="pref_title_auto_download_metadata">Automatski preuzmi meta podatke</string>

@@ -108,10 +108,18 @@
     <string name="pref_category_notification">Értesítés</string>
     <string name="pref_category_advanced">Speciális</string>
     <string name="pref_category_updates">Frissítések</string>
+    <string name="pref_header_appearance">Megjelenés</string>
     <string name="pref_header_colors">Színek</string>
     <string name="pref_header_content">Tartalom</string>
     <string name="pref_header_lyrics">Dalszöveg</string>
     <string name="pref_header_now_playing_screen">Most játszott</string>
+    <string name="pref_header_audio">Hang</string>
+    <string name="pref_header_player_behaviour">Lejátszó viselkedése</string>
+    <string name="pref_header_library">Médiatár</string>
+    <string name="pref_header_images">Képek</string>
+    <string name="pref_header_playlists">Lejátszási listák</string>
+    <string name="pref_header_notification">Értesítés</string>
+    <string name="pref_header_compatibility">Kompatibilitás</string>
     <string name="pref_title_now_playing_screen_style">Most játszott képernyő stílusa</string>
     <string name="pref_title_player_controller_style">Most játszott képernyő lejátszásvezérlőjének stílusa</string>
     <string name="player_controller_style_classic">Klasszikus</string>
@@ -130,12 +138,6 @@
     <string name="player_controller_function_queue_mode_alternative">Keverés/ismétlés</string>
     <string name="pref_title_display_modes_with_queue">Ismétlés és keverés gombok megjelenítése a lejátszási sor eszköztárában</string>
     <string name="pref_title_general_theme">Általános téma</string>
-    <string name="pref_header_audio">Hang</string>
-    <string name="pref_header_player_behaviour">Lejátszó viselkedése</string>
-    <string name="pref_header_library">Médiatár</string>
-    <string name="pref_header_images">Képek</string>
-    <string name="pref_header_playlists">Lejátszási listák</string>
-    <string name="pref_header_notification">Értesítés</string>
     <string name="pref_title_player_style">Fő lejátszó stílusa</string>
     <string name="pref_title_navigation_bar">Színezett navigációs sáv</string>
     <string name="pref_title_app_shortcuts">Színezett alkalmazás-parancsikonok</string>
@@ -320,7 +322,6 @@
     <string name="direction_open_folder_with_saf">Most válassza ki azt a fájlmappát, amely azokat a fájlokat tartalmazza, amelyekkel dolgozni szeretne</string>
     <string name="direction_open_file_with_saf">Most válassza ki azt a fájlt, amellyel dolgozni szeretne</string>
     <string name="file_incorrect">A fájl helytelen!</string>
-    <string name="pref_header_appearance">Megjelenés</string>
     <string name="pref_title_reset_home_pages_tab_config">Összes lap visszaállítása</string>
     <string name="pref_summary_reset_home_pages_tab_config">Az összes médiatár-kategória vissza lesz állítva az alapértelmezettre.</string>
     <string name="are_you_sure">Biztos benne?</string>
@@ -335,7 +336,6 @@
     <string name="music_tags">Zenei címkék</string>
     <string name="file">Fájl</string>
     <string name="folder">Mappa</string>
-    <string name="pref_header_compatibility">Kompatibilitás</string>
     <string name="pref_title_use_legacy_favorite_playlist_impl">Örökölt kedvenc lejátszási lista mechanizmus használata</string>
     <string name="pref_summary_use_legacy_favorite_playlist_impl">Ha ezt engedélyezi, akkor az alkalmazás a kedvenc dalokat egy m3u lejátszási listába menti a tárhelyen, ahelyett hogy a kedvenc dalokat az alkalmazás belső adatbázisába mentené. (A listát kézzel is exportálhatja.)</string>
     <string name="databases">Adatbázisok</string>

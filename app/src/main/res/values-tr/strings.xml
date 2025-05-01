@@ -96,17 +96,19 @@
     <string name="this_month">Bu ay</string>
     <string name="this_year">Bu yıl</string>
     <string name="equalizer">Ekolayzer</string>
+    <string name="pref_header_appearance">Görünüm</string>
     <string name="pref_header_colors">Renkler</string>
     <string name="pref_header_content">İçerik</string>
     <string name="pref_header_lyrics">Şarkı sözleri</string>
     <string name="pref_header_now_playing_screen">Şuan çalınan</string>
-    <string name="pref_title_general_theme">Genel tema</string>
     <string name="pref_header_audio">Ses</string>
     <string name="pref_header_player_behaviour">Oynatıcı Davranışı</string>
     <string name="pref_header_library">Kitaplık</string>
     <string name="pref_header_images">Görüntüler</string>
     <string name="pref_header_playlists">Çalma listeleri</string>
     <string name="pref_header_notification">Bildirim</string>
+    <string name="pref_header_compatibility">Uyumluluk</string>
+    <string name="pref_title_general_theme">Genel tema</string>
     <string name="pref_title_player_style">Ana Oynatıcı Stili</string>
     <string name="pref_title_navigation_bar">Renkli gezinme çubuğu</string>
     <string name="pref_title_app_shortcuts">Renkli uygulama kısayolları</string>
@@ -281,7 +283,6 @@
     <string name="direction_open_folder_with_saf">Şimdi kullanmak istediğiniz dosyaların olduğu klasörü seçiniz.</string>
     <string name="direction_open_file_with_saf">Şimdi lütfen kullanmak istediğiniz dosyayı seçiniz.</string>
     <string name="file_incorrect">Dosya yanlış!</string>
-    <string name="pref_header_appearance">Görünüm</string>
     <string name="pref_title_reset_home_pages_tab_config">Tüm sekmeleri sıfırla</string>
     <string name="pref_summary_reset_home_pages_tab_config">Tüm kitaplık kategorileri varsayılana sıfırlanır.</string>
     <string name="are_you_sure">Emin misin?</string>
@@ -295,7 +296,6 @@
     <string name="lyricist">Söz Yazarı</string>
     <string name="music_tags">Müzik Etiketleri</string>
     <string name="file">Dosya</string>
-    <string name="pref_header_compatibility">Uyumluluk</string>
     <string name="pref_title_use_legacy_favorite_playlist_impl">Eski favori oynatma listesi sistemini kullan</string>
     <string name="pref_summary_use_legacy_favorite_playlist_impl">Bu ayar aktifleştirildiğinde uygulama favori şarkıları kendi veritabanı yerine depolamanızdaki bir m3u dosyasına kaydedecek. (Bu listeyi manuel olarak da dışarı aktarabilirsiniz)</string>
     <string name="databases">Veritabanları</string>

@@ -85,12 +85,12 @@
     <string name="equalizer">Ισοσταθμιστής</string>
     <string name="pref_header_colors">Χρώματα</string>
     <string name="pref_header_now_playing_screen">Παίζει τώρα</string>
-    <string name="pref_title_general_theme">Γενικό θέμα</string>
     <string name="pref_header_audio">Ήχος</string>
     <string name="pref_header_library">Βιβλιοθήκη</string>
     <string name="pref_header_images">Εικόνες</string>
     <string name="pref_header_playlists">Λίστες αναπαραγωγής</string>
     <string name="pref_header_notification">Ειδοποιήσεις</string>
+    <string name="pref_title_general_theme">Γενικό θέμα</string>
     <string name="pref_title_navigation_bar">Έγχρωμη μπάρα πλοήγησης</string>
     <string name="pref_title_app_shortcuts">Χρωματιστές συντομεύσεις εφαρμογής</string>
     <string name="pref_title_auto_download_metadata">Αυτόματο κατέβασμα metadata</string>

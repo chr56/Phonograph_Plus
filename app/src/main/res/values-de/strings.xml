@@ -101,17 +101,19 @@
     <string name="this_month">Diesen Monat</string>
     <string name="this_year">Dieses Jahr</string>
     <string name="equalizer">Equalizer</string>
+    <string name="pref_header_appearance">Erscheinungsbild</string>
     <string name="pref_header_colors">Farben</string>
     <string name="pref_header_content">Inhalt</string>
     <string name="pref_header_lyrics">Songtext</string>
     <string name="pref_header_now_playing_screen">Aktuelle Wiedergabe</string>
-    <string name="pref_title_general_theme">Generelles Design</string>
     <string name="pref_header_audio">Ton</string>
     <string name="pref_header_player_behaviour">Player-Verhalten</string>
     <string name="pref_header_library">Bibliothek</string>
     <string name="pref_header_images">Bilder</string>
     <string name="pref_header_playlists">Wiedergabelisten</string>
     <string name="pref_header_notification">Benachrichtigung</string>
+    <string name="pref_header_compatibility">Kompatibilität</string>
+    <string name="pref_title_general_theme">Generelles Design</string>
     <string name="pref_title_player_style">Stil der Player-Seite</string>
     <string name="pref_title_navigation_bar">Farbige Navigationsleiste</string>
     <string name="pref_title_app_shortcuts">Farbige App-Shortcuts</string>
@@ -296,7 +298,6 @@
     <string name="direction_open_folder_with_saf">Wähle den Dateiordner mit den Dateien, mit denen du arbeiten möchtest</string>
     <string name="direction_open_file_with_saf">Wähle die Datei aus, mit der du arbeiten möchtest</string>
     <string name="file_incorrect">Datei ist nicht korrekt!</string>
-    <string name="pref_header_appearance">Erscheinungsbild</string>
     <string name="pref_title_reset_home_pages_tab_config">Alle Tabs zurücksetzen</string>
     <string name="pref_summary_reset_home_pages_tab_config">Alle Mediathekskategorien werden auf Standard zurückgesetzt.</string>
     <string name="are_you_sure">Bist du sicher?</string>
@@ -311,7 +312,6 @@
     <string name="music_tags">Musik-Tags</string>
     <string name="file">Datei</string>
     <string name="folder">Verzeichnis</string>
-    <string name="pref_header_compatibility">Kompatibilität</string>
     <string name="pref_title_use_legacy_favorite_playlist_impl">Altes Lieblings-Wiedergabelisten Verfahren verwenden</string>
     <string name="pref_summary_use_legacy_favorite_playlist_impl">Wenn aktiviert, speichert die App Lieblingssongs in einer m3u Wiedergabeliste im Dateispeicher, anstatt Lieblingssongs in der internen Datenbank der App zu speichern (Du kannst die Liste manuell exportieren).</string>
     <string name="databases">Datenbanken</string>
