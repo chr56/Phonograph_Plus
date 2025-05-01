@@ -1,8 +1,8 @@
 # **Version Guide**: Which Version to Download?
 
-**_RL;DR_**: If you are a user of Android 7~10, use `Legacy`; If not, use `Modern`.
+**_RL;DR_**: If you are a user of Android 7~10, use `Legacy`; If not, use `Modern`. Besides, `Fdroid` is exactly identical with apk on Fdroid; ignore it.  
 
-Currently, we have two channel (`Stable` Channel and `Preview` Channel), and two distinct Variants:
+Currently, we have three channel (`Stable` Channel, `Preview` Channel, and `Fdroid` Channel that is identical on F-droid), and two distinct Variants:
 
 - `Modern`
 - `Legacy`

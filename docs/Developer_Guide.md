@@ -4,7 +4,7 @@ This document describes the overview of this project for developers.
 
 See also [Build Instruction](./Build_Instructions.md).
 
-_Last Update: 2025.03.05_
+_Last Update: 2025.05.01_
 
 ## Toolchain & Dependencies
 
@@ -17,9 +17,9 @@ Please refer [libs.versions.toml](../gradle/libs.versions.toml) for all the libr
 **Toolchain**
 
 - Gradlew `8.12.1`, requiring JDK `17`
-- `Android Gradle Plugin` `8.8.2`
+- `Android Gradle Plugin` `8.9.2`
 - Android SDK `35`
-- kotlin for JVM(Android) `2.1.10`
+- kotlin for JVM(Android) `2.1.20`
 
 **Libraries**
 
@@ -46,6 +46,7 @@ And, there are two default `BuildType`s (`debug`/`release`), and all `release` s
 | Dimension `purpose`[^2] | Extra Package Name Suffix |                   Usage                   | Note             |
 |:-----------------------:|:-------------------------:|:-----------------------------------------:|------------------|
 |        `stable`         |         _(None)_          | **Stable** & **LTS**<br/> channel release |                  |
+|        `fdroid`         |         _(None)_          |  **Fdroid** _reproducible build_ release  | base on `stable` |
 |        `preview`        |        `.preview`         |     **Preview**<br/> channel release      |                  |
 |       `checkout`        |        `.checkout`        |         (`Github Action` Build )          | for locating bug |
 
