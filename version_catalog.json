@@ -1,6 +1,54 @@
 {
   "versions": [
     {
+      "channel": "stable",
+      "versionName": "1.9.5",
+      "versionCode": 1095,
+      "date": 1746057600,
+      "link": [
+        {
+          "name": "Github Release (Website)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.9.5"
+        },
+        {
+          "name": "Github Release Modern Variant APK (File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v1.9.5/PhonographPlus_1.9.5_ModernStableRelease.apk"
+        },
+        {
+          "name": "Github Release Legacy Variant APK(File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v1.9.5/PhonographPlus_1.9.5_LegacyStableRelease.apk"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>修复 加载不存在文件时崩溃</li><li>修改 页面显示设置图标</li></ol>",
+        "en": "<ol><li>Fix: crash when loading lyric for nonexistent file</li><li>Modify: update icon for page display settings</li></ol>"
+      }
+    },
+    {
+      "channel": "preview",
+      "versionName": "1.10.0-dev3",
+      "versionCode": 1096,
+      "date": 1746061200,
+      "link": [
+        {
+          "name": "Github Release (Website)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.10.0-dev3"
+        },
+        {
+          "name": "Github Release Modern Variant APK (File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.10.0-dev3/PhonographPlus_1.10.0-dev3_ModernPreviewRelease.apk"
+        },
+        {
+          "name": "Github Release Legacy Variant APK(File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.10.0-dev3/PhonographPlus_1.10.0-dev3_LegacyPreviewRelease.apk"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>修复 内部数据库更新问题 [1.10.0-dev2]</li><li>修复 切换随机播放模式时偶尔会随机更改封面</li><li>修复 通知上的快进和快退失效</li><li>修复 主播放器中主色调变化动画</li><li>改进 重新组织分类设置项目，并使用二级页面</li><li>改进 添加“起始目录”设置的入口，展开路径过滤器设置</li><li>改进 重新设计主播放器，支持更灵活样式选择和支持自定义按钮</li><li>改进 主播放器播放队列顶部附近添加随机模式和循环模式按钮</li><li>修改 将播放队列相关菜单项移播放队列顶部菜单</li><li>修改 禁止从 v1.7.0 之前的版本升级，警告从 v1.8.4 之前的版本升级</li><li>翻译 更新 匈牙利语 (Balázs Úr & Balázs Meskó)</li><li>开发 更新依赖, 更新 Kotlin 至 2.1.20, 更新 AGP 至 8.9.2</li></ol>",
+        "en": "<ol><li>Fix: issues of internal database updating [1.10.0-dev2]</li><li>Fix: random changing artwork occasionally when toggling shuffle mode</li><li>Fix: forward and rewind from notification</li><li>Fix: broken color animation in Main Player</li><li>Improve: reorganize items in Settings, support secondary pages</li><li>Improve: add entrance of Start Directory settings, flatten path filter settings</li><li>Improve: slightly redesign Main Player, with more flexible styles and more customizable buttons</li><li>Improve: add shuffle mode and repeat mode buttons near to Playing Queue header in Main Player</li><li>Modify: move relative menu items to Playing Queue menu in Main Player</li><li>Modify: forbid upgrading from prior to v1.7.0 & warn upgrading from prior to v1.8.4</li><li>Translation: update Hungarian (by Balázs Úr & Balázs Meskó)</li><li>Development: update dependencies, upgrade Kotlin to 2.1.20, upgrade AGP to 8.9.2</li></ol>"
+      }
+    },
+    {
       "channel": "preview",
       "versionName": "1.10.0-dev2",
       "versionCode": 1095,
@@ -46,30 +94,6 @@
       "releaseNote": {
         "zh-cn": "<ol><li>修复 在文件夹页面中更改排序顺序后偶尔内容不正确</li><li>修复 加载不存在的文件歌词时崩溃</li><li>移除 选项 图片预加载</li><li>修改 页码显示设置显示图标</li><li>改进 提高图像加载性能</li><li>改进 支持文件夹页面的自定义网格大小和布局</li><li>开发 清理代码</li></ol>",
         "en": "<ol><li>Fix: occasionally incorrect folder content after changing sort order in Folders Page</li><li>Fix: crash when loading lyric for nonexistent file</li><li>Remove: preference Preload Images</li><li>Modify: replace icon for display page settings</li><li>Improvement: improve performance of image loading</li><li>Improvement: support custom grid size and layout for Folders Page</li><li>Development: cleanup codes</li></ol>"
-      }
-    },
-    {
-      "channel": "stable",
-      "versionName": "1.9.4",
-      "versionCode": 1094,
-      "date": 1742440000,
-      "link": [
-        {
-          "name": "Github Release (Website)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.9.4"
-        },
-        {
-          "name": "Github Release Modern Variant APK (File Download Link)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v1.9.4/PhonographPlus_1.9.4_ModernStableRelease.apk"
-        },
-        {
-          "name": "Github Release Legacy Variant APK(File Download Link)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v1.9.4/PhonographPlus_1.9.4_LegacyStableRelease.apk"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>修复 加载部分文件图片时出现的大量内部错误通知</li><li>修复 在某些情况下替换播放队列后可能崩溃</li></ol>",
-        "en": "<ol><li>Fix: flooding internal error notifications, due to image loading for certain files</li><li>Fix: possible crashes after replacing playing queue on some circumstance</li></ol>"
       }
     }
   ]
