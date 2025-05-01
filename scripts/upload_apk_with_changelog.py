@@ -35,6 +35,7 @@ def collect_files(relative_root, files_names: list) -> list[InputMediaDocument]:
 
     input_media_documents = []
     for i, filename in enumerate(sorted(files_names, reverse=True)):
+        if "Fdroid" in filename: continue
         if i == len(files_names) - 1:
             current_date = escape_markdown(datetime.now().strftime("%Y.%m.%d"))
             version_name = escape_markdown(VERSION)
