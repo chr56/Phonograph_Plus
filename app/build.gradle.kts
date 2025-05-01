@@ -108,6 +108,13 @@ android {
 
             isDefault = true
         }
+        // F-droid special variant, base on Stable, for reproducibility
+        create("fdroid") {
+            dimension = "channel"
+            matchingFallbacks.add("stable")
+
+            resValue("string", "app_name", appName)
+        }
         // for checkout to locate a bug and ci etc.
         create("checkout") {
             dimension = "channel"
@@ -186,6 +193,13 @@ android {
 
 androidPublish {
     nameStyle = listOf(NameSegment.VersionName, NameSegment.Favor)
+}
+
+tasks.whenTaskAdded {
+    // disable due to reproducible build issues
+    if (name.contains("Fdroid") && name.contains("ArtProfile")) {
+        enabled = false
+    }
 }
 
 /**
