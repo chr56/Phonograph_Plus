@@ -69,7 +69,7 @@ object EventHub {
     abstract class LifeCycleEventReceiver(context: Context, event: String) :
             EventReceiver(event), DefaultLifecycleObserver {
 
-        private val localBroadcastManager = localBroadcastManager(context)
+        private val localBroadcastManager by lazy { localBroadcastManager(context) }
 
         override fun onCreate(owner: LifecycleOwner) {
             localBroadcastManager.registerReceiver(this, IntentFilter(event))
