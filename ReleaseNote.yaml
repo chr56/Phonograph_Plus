@@ -1,21 +1,21 @@
-version: "1.9.5"
+version: "1.9.5.1"
 channel: "STABLE"
 versionCode: 1095
-timestamp: 1746057600
+timestamp: 1746093000
 notes:
   en:
     highlights: [ ]
     items:
-      - "Fix: crash when loading lyric for nonexistent file"
-      - "Modify: update icon for page display settings"
-      - "Translation: update Hungarian (by Balázs Úr & Balázs Meskó)"
+      - "Note: this is a small patch on the build process, trying to fix a F-droid reproducible build issue; actual source code remains identical with v1.9.5, no need to upgrade"
+      - "Development: disable baseline profiles"
+      - "Development: upgrade AGP to 8.9.2"
 
   zh:
     highlights: [ ]
     items:
-      - "修复 加载不存在文件时崩溃"
-      - "修改 页面显示设置图标"
-      - "翻译 更新 匈牙利语 (Balázs Úr & Balázs Meskó)"
+      - "提示 该版系关于构建过程的补丁，旨在解决 F-Droid 可重现构建问题；实际源码与 v1.9.5 无异，无升级必要"
+      - "开发 禁用 baseline profiles"
+      - "开发 升级 AGP 至 8.9.2"
 
-previousVersion: "1.9.4"
+previousVersion: "1.9.5"
 previousChannel: "STABLE"
