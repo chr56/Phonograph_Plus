@@ -181,6 +181,13 @@ androidPublish {
     nameStyle = listOf(NameSegment.VersionName, NameSegment.Favor)
 }
 
+tasks.whenTaskAdded {
+    // disable due to reproducible build issues
+    if (name.contains("ArtProfile")) {
+        enabled = false
+    }
+}
+
 /**
  * Now, this project is using [VersionCatalog] (./gradle/libs.versions.toml)
  */
