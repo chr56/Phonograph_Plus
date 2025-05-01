@@ -14,6 +14,7 @@ import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.model.time.Duration
 import player.phonograph.model.time.TimeIntervalCalculationMode
+import player.phonograph.model.ui.GeneralTheme
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.model.ui.NowPlayingScreenStyle
 import util.theme.materials.MaterialColor
@@ -31,7 +32,7 @@ object Keys {
 
     // Appearance
     val theme
-        get() = PrimitiveKey<String>(stringPK("theme")) { THEME_AUTO_LIGHTBLACK }
+        get() = PrimitiveKey<String>(stringPK("theme")) { GeneralTheme.THEME_AUTO_LIGHTBLACK }
 
     val _homeTabConfigJson
         get() = PrimitiveKey<String>(stringPK("home_tab_config")) { "" }

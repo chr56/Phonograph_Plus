@@ -4,13 +4,13 @@
 
 package player.phonograph.ui.compose
 
+import player.phonograph.model.ui.GeneralTheme.Companion.THEME_AUTO_LIGHTBLACK
+import player.phonograph.model.ui.GeneralTheme.Companion.THEME_AUTO_LIGHTDARK
+import player.phonograph.model.ui.GeneralTheme.Companion.THEME_BLACK
+import player.phonograph.model.ui.GeneralTheme.Companion.THEME_DARK
+import player.phonograph.model.ui.GeneralTheme.Companion.THEME_LIGHT
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
-import player.phonograph.settings.THEME_AUTO_LIGHTBLACK
-import player.phonograph.settings.THEME_AUTO_LIGHTDARK
-import player.phonograph.settings.THEME_BLACK
-import player.phonograph.settings.THEME_DARK
-import player.phonograph.settings.THEME_LIGHT
 import player.phonograph.settings.ThemeSetting
 import player.phonograph.util.theme.accentColorFlow
 import player.phonograph.util.theme.primaryColorFlow

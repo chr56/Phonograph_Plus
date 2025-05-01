@@ -10,13 +10,9 @@ import lib.phonograph.misc.ColorPalette
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.appshortcuts.DynamicShortcutManager
+import player.phonograph.model.ui.GeneralTheme
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
-import player.phonograph.settings.THEME_AUTO_LIGHTBLACK
-import player.phonograph.settings.THEME_AUTO_LIGHTDARK
-import player.phonograph.settings.THEME_BLACK
-import player.phonograph.settings.THEME_DARK
-import player.phonograph.settings.THEME_LIGHT
 import player.phonograph.settings.ThemeSetting
 import player.phonograph.ui.modules.setting.components.BooleanPreference
 import player.phonograph.ui.modules.setting.components.ColorPreference
@@ -63,11 +59,11 @@ fun PreferenceScreenAppearance() {
             ListPreference(
                 key = Keys.theme,
                 optionsValues = listOf(
-                    THEME_AUTO_LIGHTBLACK,
-                    THEME_AUTO_LIGHTDARK,
-                    THEME_LIGHT,
-                    THEME_BLACK,
-                    THEME_DARK,
+                    GeneralTheme.THEME_AUTO_LIGHTBLACK,
+                    GeneralTheme.THEME_AUTO_LIGHTDARK,
+                    GeneralTheme.THEME_LIGHT,
+                    GeneralTheme.THEME_BLACK,
+                    GeneralTheme.THEME_DARK,
                 ),
                 optionsValuesLocalized = listOf(
                     R.string.theme_name_auto_lightblack,

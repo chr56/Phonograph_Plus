@@ -18,12 +18,11 @@ import player.phonograph.model.pages.Pages
 import player.phonograph.model.pages.PagesConfig
 import player.phonograph.model.service.ACTION_EXIT_OR_STOP
 import player.phonograph.model.service.ShuffleMode
+import player.phonograph.model.ui.GeneralTheme
 import player.phonograph.repo.loader.Songs
 import player.phonograph.service.MusicService
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
-import player.phonograph.settings.THEME_AUTO_LIGHTBLACK
-import player.phonograph.settings.THEME_AUTO_LIGHTDARK
 import player.phonograph.ui.dialogs.DatabaseMaintenanceDialog
 import player.phonograph.ui.modules.auxiliary.AboutActivity
 import player.phonograph.ui.modules.explorer.PathSelectorContractTool
@@ -92,7 +91,7 @@ fun setupDrawerMenu(
         // normal items
         val groupIds = intArrayOf(0, 1, 2, 3)
         val theme = Setting(context)[Keys.theme].data
-        if (theme != THEME_AUTO_LIGHTBLACK && theme != THEME_AUTO_LIGHTDARK) {
+        if (theme != GeneralTheme.THEME_AUTO_LIGHTBLACK && theme != GeneralTheme.THEME_AUTO_LIGHTDARK) {
             menuItem {
                 groupId = groupIds[1]
                 itemId = R.id.action_theme_toggle
