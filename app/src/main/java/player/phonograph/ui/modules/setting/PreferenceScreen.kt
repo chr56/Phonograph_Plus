@@ -19,18 +19,7 @@ import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.windowInsetsBottomHeight
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
@@ -56,6 +45,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import android.content.Context
+import android.content.res.Resources
 import kotlinx.coroutines.launch
 
 
@@ -70,11 +60,16 @@ private const val PAGE_ADVANCED = "advanced"
 private const val PAGE_UPDATES = "updates"
 
 @Composable
-fun PhonographPreferenceScreen(onBackPressedDispatcher: OnBackPressedDispatcher) {
+fun PhonographPreferenceScreen(
+    onBackPressedDispatcher: OnBackPressedDispatcher,
+    onUpdateTitle: (String) -> Unit,
+) {
     val lifecycleOwner = LocalLifecycleOwner.current
+    val context = LocalContext.current
 
     var currentPage by rememberSaveable(key = "page") { mutableStateOf<String>(PAGE_HOME) }
     LaunchedEffect(currentPage) {
+        onUpdateTitle(localize(context.resources, currentPage))
         if (currentPage != PAGE_HOME) {
             onBackPressedDispatcher.addCallback(lifecycleOwner, true) {
                 remove()
@@ -165,6 +160,19 @@ private fun SettingCategory(
 private fun animation(reverse: Boolean): ContentTransform = ContentTransform(
     targetContentEnter = slideInHorizontally { if (reverse) -it else it },
     initialContentExit = slideOutHorizontally { if (reverse) it else -it },
+)
+
+
+private fun localize(resources: Resources, page: Page): String = resources.getString(
+    when (page) {
+        PAGE_APPEARANCE   -> R.string.pref_category_appearance
+        PAGE_CONTENT      -> R.string.pref_category_content
+        PAGE_BEHAVIOUR    -> R.string.pref_category_behaviour
+        PAGE_NOTIFICATION -> R.string.pref_category_notification
+        PAGE_ADVANCED     -> R.string.pref_category_advanced
+        PAGE_UPDATES      -> R.string.pref_category_updates
+        else              -> R.string.action_settings
+    }
 )
 
 @Composable

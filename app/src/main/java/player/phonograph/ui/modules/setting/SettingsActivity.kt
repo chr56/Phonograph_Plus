@@ -44,8 +44,10 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -78,13 +80,12 @@ class SettingsActivity : ComposeActivity(),
             val scaffoldState = rememberScaffoldState()
             PhonographTheme {
                 SystemBarsPadded {
+                    var title by remember { mutableStateOf(resources.getString(R.string.action_settings)) }
                     Scaffold(
                         scaffoldState = scaffoldState,
                         topBar = {
                             TopAppBar(
-                                title = {
-                                    Text(stringResource(R.string.action_settings))
-                                },
+                                title = { Text(title) },
                                 navigationIcon = {
                                     Icon(
                                         Icons.AutoMirrored.Default.ArrowBack, null,
@@ -111,7 +112,7 @@ class SettingsActivity : ComposeActivity(),
                     ) {
                         Box(Modifier.padding(it)) {
                             val state = remember { dropMenuState }
-                            PhonographPreferenceScreen(onBackPressedDispatcher)
+                            PhonographPreferenceScreen(onBackPressedDispatcher) { title = it }
                             Box(modifier = Modifier.align(Alignment.TopEnd)) {
                                 DropdownMenu(expanded = state.value, onDismissRequest = { state.value = false }) {
                                     Menu()
