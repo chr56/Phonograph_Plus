@@ -83,7 +83,7 @@ class PlaylistEditorItemMenuProvider(
             titleRes(R.string.move_to_bottom)
             onClick {
                 activity.lifecycleScope.launch(Dispatchers.IO) {
-                    adapter.moveSong(bindingAdapterPosition, adapter.size())
+                    adapter.moveSong(bindingAdapterPosition, adapter.size() - 1)
                 }
                 true
             }
