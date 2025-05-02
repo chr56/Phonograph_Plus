@@ -8,6 +8,8 @@ notes:
     items:
       - "Fix: occasionally incorrect folder content after changing sort order in Folders Page"
       - "Fix: random changing artwork occasionally when toggling shuffle mode"
+      - "Fix: no response of Playlist Detail multi-selection menu"
+      - "Fix: edge-to-edge in Settings and horizontal Main Player"
       - "Fix: forward and rewind from notification"
       - "Fix: broken color animation in Main Player"
       - "Improve: improve performance of image loading"
@@ -29,6 +31,8 @@ notes:
     items:
       - "修复 在文件夹页面中更改排序顺序后偶尔内容不正确"
       - "修复 切换随机播放模式时偶尔会随机更改封面"
+      - "修复 播放列表详情中多选菜单无响应的问题"
+      - "修复 设置和横版主播放器边到边界面问题"
       - "修复 通知上的快进和快退失效"
       - "修复 主播放器中主色调变化动画"
       - "改进 提高图像加载性能"
