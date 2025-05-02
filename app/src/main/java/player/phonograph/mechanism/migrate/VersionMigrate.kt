@@ -59,6 +59,7 @@ object MigrationManager {
                 migrate(LegacyDetailDialogMigration())
                 migrate(PlaylistFilesOperationBehaviourMigration())
                 migrate(ColoredSystemBarsMigration())
+                migrate(PreloadImagesMigration())
                 migrate(NowPlayingScreenMigration())
             }
 
@@ -139,6 +140,12 @@ private class ColoredSystemBarsMigration : Migration(introduced = 1086) {
     override fun doMigrate(context: Context) {
         removePreference(context, DeprecatedPreference.ColoredSystemBars.COLORED_NAVIGATION_BAR)
         removePreference(context, DeprecatedPreference.ColoredSystemBars.COLORED_STATUSBAR)
+    }
+}
+
+private class PreloadImagesMigration : Migration(introduced = 1100) {
+    override fun doMigrate(context: Context) {
+        removePreference(context, DeprecatedPreference.PreloadImages.PRELOAD_IMAGES)
     }
 }
 
@@ -276,6 +283,11 @@ object DeprecatedPreference {
     object ColoredSystemBars {
         const val COLORED_STATUSBAR = "colored_statusbar"
         const val COLORED_NAVIGATION_BAR = "colored_navigation_bar"
+    }
+
+    // "remove since 1100"
+    object PreloadImages {
+        const val PRELOAD_IMAGES = "preload_images"
     }
 
     // "refactored since 1100"
