@@ -30,6 +30,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import kotlin.random.Random
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 object DetailToolbarMenuProviders {
@@ -450,7 +451,7 @@ object DetailToolbarMenuProviders {
                 menuItem(title = getString(R.string.action_tag_editor)) { //id = R.id.action_tag_editor
                     showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                     onClick {
-                        context.lifecycleScope.launch {
+                        context.lifecycleScope.launch(Dispatchers.IO) {
                             val paths = PlaylistProcessors.reader(item).allSongs(context).map { it.data }
                             MultiTagBrowserActivity.launch(context, ArrayList(paths))
                         }
