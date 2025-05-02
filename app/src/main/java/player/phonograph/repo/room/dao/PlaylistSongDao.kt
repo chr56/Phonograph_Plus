@@ -29,11 +29,13 @@ abstract class PlaylistSongDao {
     @Transaction
     @RewriteQueriesToDropUnusedColumns
     @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
-    @Query("SELECT * FROM ${MediastoreSongEntity.TABLE_NAME} " +
-            "INNER JOIN ${PlaylistSongEntity.TABLE_NAME} " +
-            "ON ${MediastoreSongEntity.TABLE_NAME}.${PlaylistSongEntity.Columns.MEDIASTORE_ID} = ${PlaylistSongEntity.TABLE_NAME}.${MediastoreSongEntity.Columns.ID} " +
-            "WHERE ${PlaylistSongEntity.Columns.PLAYLIST_ID} =:playlistId " +
-            "ORDER BY ${PlaylistSongEntity.Columns.POSITION} ASC")
+    @Query(
+        "SELECT * FROM ${MediastoreSongEntity.TABLE_NAME} " +
+                "INNER JOIN ${PlaylistSongEntity.TABLE_NAME} " +
+                "ON ${MediastoreSongEntity.TABLE_NAME}.${PlaylistSongEntity.Columns.MEDIASTORE_ID} = ${PlaylistSongEntity.TABLE_NAME}.${MediastoreSongEntity.Columns.ID} " +
+                "WHERE ${PlaylistSongEntity.Columns.PLAYLIST_ID} =:playlistId " +
+                "ORDER BY ${PlaylistSongEntity.Columns.POSITION} ASC"
+    )
     abstract fun songs(playlistId: Long): List<PlaylistMediastoreSongEntity?>
 
     @Query("SELECT * FROM ${PlaylistSongEntity.TABLE_NAME} WHERE ${PlaylistSongEntity.Columns.PLAYLIST_ID} =:id")
@@ -91,16 +93,20 @@ abstract class PlaylistSongDao {
         if (from == to) return true
         val targetEntity = at(playlistId, from)
         return if (targetEntity != null) {
-            val songEntity = targetEntity.copy(position = to)
+            update(targetEntity.copy(position = -1))
 
-            val range = if (from < to) from + 1 until to else to + 1 until from
+            val range = if (from < to) {
+                from + 1..to // down
+            } else {
+                to..from - 1 // up
+            }
             val delta = if (from < to) -1 else +1
             for (position in range) {
                 val entity = at(playlistId, position)
                 if (entity != null) update(entity.copy(position = entity.position + delta))
             }
 
-            update(songEntity.copy(position = to))
+            update(targetEntity.copy(position = to))
             true
         } else {
             false
