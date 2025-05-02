@@ -87,8 +87,6 @@ object Keys {
         get() = CompositeKey<ImageSourceConfig>(CoilImageSourcePreferenceProvider)
     val imageCache
         get() = PrimitiveKey<Boolean>(booleanPK("image_cache")) { false }
-    val preloadImages
-        get() = PrimitiveKey<Boolean>(booleanPK("preload_images")) { true }
     //</editor-fold>
 
     //<editor-fold desc="Interactions">
