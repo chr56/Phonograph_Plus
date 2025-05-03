@@ -41,7 +41,7 @@ class VersionJsonOutput(versionJsonFile: File, private val releaseNote: ReleaseN
                     url = String.format(GITHUB_DOWNLOAD_LINK, tag, version, variant(TargetVariant.MODERN))
                 ),
                 VersionJsonItem.Link(
-                    name = "Github Release Legacy Variant APK(File Download Link)",
+                    name = "Github Release Legacy Variant APK (File Download Link)",
                     url = String.format(GITHUB_DOWNLOAD_LINK, tag, version, variant(TargetVariant.LEGACY))
                 ),
             ),
