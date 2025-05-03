@@ -44,11 +44,6 @@
 
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.lyrics.LyricsLoader { public <methods>; }
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.migrate.Migration { public void doMigrate(android.content.Context); }
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.backup.* extends player.phonograph.mechanism.backup.BackupItem {
- 	*** getKey();
- 	boolean import(java.io.InputStream,android.content.Context);
- 	java.io.InputStream data(android.content.Context);
-}
 
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.metadata.* extends player.phonograph.mechanism.metadata.MetadataExtractor { public <methods>; }
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.metadata.* extends player.phonograph.mechanism.metadata.TagReader { public *** read(...); }
