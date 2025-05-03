@@ -5,20 +5,21 @@
 package player.phonograph.mechanism.backup
 
 import okio.BufferedSink
+import okio.Source
+import okio.buffer
+import okio.sink
 import okio.source
 import player.phonograph.util.file.createOrOverrideFile
 import player.phonograph.util.file.moveFile
 import player.phonograph.util.reportError
 import player.phonograph.util.text.currentTimestamp
-import player.phonograph.util.transferToOutputStream
 import player.phonograph.util.warning
 import android.content.Context
 import java.io.File
-import java.io.InputStream
 
 object DatabaseManger {
 
-    fun exportDatabase(sink: BufferedSink, dbName: String, context: Context): Boolean {
+    fun export(context: Context, sink: BufferedSink, dbName: String): Boolean {
         val databaseFile = context.getDatabasePath(dbName) ?: return false
         return if (databaseFile.isFile && databaseFile.length() > 0) {
             sink.writeAll(databaseFile.source())
@@ -29,8 +30,8 @@ object DatabaseManger {
         }
     }
 
-    fun importDatabase(inputStream: InputStream, dbName: String, context: Context): Boolean {
-        return try {
+    fun import(context: Context, source: Source, dbName: String): Boolean =
+        try {
             // mahe cache
             val cacheDir = File(context.externalCacheDir ?: context.cacheDir, "Backup_${currentTimestamp()}")
             if (cacheDir.exists()) {
@@ -38,7 +39,7 @@ object DatabaseManger {
             } else {
                 cacheDir.mkdirs()
             }
-            importDatabaseImpl(inputStream, dbName, context, cacheDir)
+            importDatabaseImpl(source, dbName, context, cacheDir)
             cacheDir.delete()
             true
         } catch (e: Exception) {
@@ -46,10 +47,9 @@ object DatabaseManger {
             e.printStackTrace()
             false
         }
-    }
 
     private fun importDatabaseImpl(
-        inputStream: InputStream,
+        source: Source,
         dbName: String,
         context: Context,
         cacheDir: File,
@@ -58,13 +58,14 @@ object DatabaseManger {
         val tmpFile = File(cacheDir, dbName).createOrOverrideFile()
 
         // copy from stream
-        tmpFile.outputStream().use { fileOutputStream ->
-            inputStream.transferToOutputStream(fileOutputStream)
+        tmpFile.sink().buffer().use { buffer ->
+            buffer.writeAll(source)
         }
 
         // move
         moveFile(from = tmpFile, to = context.getDatabasePath(dbName))
 
+        // dlete
         tmpFile.delete()
     }
 

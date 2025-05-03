@@ -6,6 +6,8 @@ package player.phonograph.mechanism.backup
 
 import lib.storage.textparser.ExternalFilePathParser
 import okio.BufferedSink
+import okio.Source
+import okio.buffer
 import org.koin.core.context.GlobalContext
 import player.phonograph.R
 import player.phonograph.mechanism.event.EventHub
@@ -31,7 +33,6 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import java.io.IOException
-import java.io.InputStream
 
 object DatabaseDataManger {
 
@@ -66,8 +67,8 @@ object DatabaseDataManger {
         }
     }
 
-    fun importPathFilter(context: Context, inputStream: InputStream): Boolean {
-        val rawString = inputStream.reader().use { it.readText() }
+    fun importPathFilter(context: Context, source: Source): Boolean {
+        val rawString = source.buffer().use { bufferedSource -> bufferedSource.readUtf8() }
         return parseJson(rawString, "PathFilter") { json ->
             importPathFilter(context, json, true)
         }
@@ -128,8 +129,8 @@ object DatabaseDataManger {
         }
     }
 
-    fun importPlayingQueues(context: Context, inputStream: InputStream): Boolean {
-        val rawString = inputStream.reader().use { it.readText() }
+    fun importPlayingQueues(context: Context, source: Source): Boolean {
+        val rawString = source.buffer().use { bufferedSource -> bufferedSource.readUtf8() }
         return parseJson(rawString, "PlayingQueues") { json ->
             importPlayingQueues(context, json)
         }
@@ -216,8 +217,8 @@ object DatabaseDataManger {
         return null
     }
 
-    fun importFavorites(context: Context, inputStream: InputStream): Boolean {
-        val rawString = inputStream.reader().use { it.readText() }
+    fun importFavorites(context: Context, source: Source): Boolean {
+        val rawString = source.buffer().use { bufferedSource -> bufferedSource.readUtf8() }
         return parseJson(rawString, "Favorites") { json ->
             importFavorites(context, json, true)
         }

@@ -5,6 +5,9 @@
 package player.phonograph.mechanism
 
 import okio.BufferedSink
+import okio.Source
+import okio.buffer
+import okio.source
 import player.phonograph.App
 import player.phonograph.BuildConfig.VERSION_CODE
 import player.phonograph.R
@@ -35,7 +38,6 @@ import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import java.io.FileInputStream
-import java.io.InputStream
 
 object SettingDataManager {
 
@@ -71,13 +73,13 @@ object SettingDataManager {
     fun importSetting(uri: Uri, context: Context): Boolean {
         return context.contentResolver.openFileDescriptor(uri, "r")?.use {
             FileInputStream(it.fileDescriptor).use { stream ->
-                loadSettings(stream, context)
+                loadSettings(stream.source(), context)
             }
         } ?: false
     }
 
-    fun importSetting(inputStream: InputStream, context: Context): Boolean =
-        loadSettings(inputStream, context)
+    fun importSetting(context: Context, source: Source): Boolean =
+        loadSettings(source, context)
 
     private fun serializedPref(context: Context, prefs: Map<Preferences.Key<*>, Any?>): SettingExport {
         val content = JsonObject(
@@ -103,11 +105,9 @@ object SettingDataManager {
     }
 
 
-    private fun loadSettings(inputStream: InputStream, context: Context): Boolean = try {
+    private fun loadSettings(source: Source, context: Context): Boolean = try {
 
-        val rawString: String = inputStream.use { stream ->
-            stream.bufferedReader().use { it.readText() }
-        }
+        val rawString = source.buffer().use { bufferedSource -> bufferedSource.readUtf8() }
 
         val rawJson = parser.decodeFromString<SettingExport>(rawString)
 

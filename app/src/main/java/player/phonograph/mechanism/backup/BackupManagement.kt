@@ -6,6 +6,10 @@ package player.phonograph.mechanism.backup
 
 import okio.Buffer
 import okio.BufferedSink
+import okio.Path.Companion.toOkioPath
+import okio.Source
+import okio.buffer
+import okio.source
 import player.phonograph.BuildConfig
 import player.phonograph.R
 import player.phonograph.mechanism.SettingDataManager
@@ -20,22 +24,21 @@ import player.phonograph.model.backup.BackupItem.PlayingQueuesBackup
 import player.phonograph.model.backup.BackupItem.SettingBackup
 import player.phonograph.model.backup.BackupItem.SongPlayCountDatabaseBackup
 import player.phonograph.model.backup.BackupManifestFile
-import player.phonograph.repo.database.DatabaseConstants
-import player.phonograph.util.file.createOrOverrideFile
+import player.phonograph.repo.database.DatabaseConstants.FAVORITE_DB
+import player.phonograph.repo.database.DatabaseConstants.HISTORY_DB
+import player.phonograph.repo.database.DatabaseConstants.MUSIC_PLAYBACK_STATE_DB
+import player.phonograph.repo.database.DatabaseConstants.PATH_FILTER
+import player.phonograph.repo.database.DatabaseConstants.SONG_PLAY_COUNT_DB
 import player.phonograph.util.text.currentTimestamp
-import player.phonograph.util.transferToOutputStream
 import player.phonograph.util.warning
-import player.phonograph.util.zip.ZipUtil.addToZipFile
-import player.phonograph.util.zip.ZipUtil.extractZipFile
+import player.phonograph.util.zip.ZipUtil.extractDirectory
+import player.phonograph.util.zip.ZipUtil.zipDirectory
 import android.content.Context
 import android.content.res.Resources
 import kotlinx.serialization.json.Json
 import java.io.File
-import java.io.FileInputStream
 import java.io.InputStream
 import java.io.OutputStream
-import java.util.zip.ZipInputStream
-import java.util.zip.ZipOutputStream
 
 object Backup {
 
@@ -74,16 +77,11 @@ object Backup {
             config: List<BackupItem>,
             targetOutputStream: OutputStream,
         ) {
-
             val (session, tmpDir) = SessionManger.newSession(context)
 
             exportBackupToDirectory(context, config, tmpDir)
 
-            ZipOutputStream(targetOutputStream).use { zip ->
-                tmpDir.listFiles()?.forEach {
-                    addToZipFile(zip, it, it.name)
-                }
-            }
+            zipDirectory(targetOutputStream, tmpDir)
 
             SessionManger.terminateSession(session)
         }
@@ -96,66 +94,54 @@ object Backup {
         ) {
             val timestamp = currentTimestamp()
 
-            val fileList = mutableMapOf<BackupItem, String>() // track files added
+            val files = mutableMapOf<BackupItem, String>() // track files added
+
+            val destinationPath = destination.toOkioPath()
+            val fs = okio.FileSystem.SYSTEM
 
             // export backups
             for (item in config) {
                 val filename = "${item.key}.${item.type.suffix}"
                 val exported = read(context, item)
                 if (exported != null) {
-                    val file = File(destination, filename).createOrOverrideFile()
-                    file.outputStream().use { outputStream ->
-                        exported.use { inputStream ->
-                            inputStream.transferToOutputStream(outputStream)
-                        }
+                    val path = destinationPath / filename
+                    fs.write(path, mustCreate = true) {
+                        exported.use { writeAll(it) }
                     }
-                    fileList[item] = filename
+                    files[item] = filename
                 } else {
                     warning(TAG, "No content to export for ${item.key}")
                 }
             }
 
             // generate manifest file
-            val manifestFile = File(destination, BackupManifestFile.BACKUP_MANIFEST_FILENAME).createOrOverrideFile()
-            manifestFile.outputStream().bufferedWriter().use {
-                val manifest =
-                    BackupManifestFile(timestamp, fileList, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE)
-                val raw = parser.encodeToString(manifest)
-                it.write(raw)
-                it.flush()
+            val manifestPath = destinationPath / BackupManifestFile.BACKUP_MANIFEST_FILENAME
+            fs.write(manifestPath, mustCreate = true) {
+                val manifest = BackupManifestFile(timestamp, files, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE)
+                val content = parser.encodeToString(manifest)
+                writeUtf8(content)
+            }
+
+        }
+
+        private suspend fun read(context: Context, item: BackupItem): Buffer? = buffer {
+            when (item) {
+                SettingBackup                    -> SettingDataManager.exportSettings(it, context)
+                PathFilterBackup                 -> DatabaseDataManger.exportPathFilter(it, context)
+                FavoriteBackup                   -> DatabaseDataManger.exportFavorites(it, context)
+                PlayingQueuesBackup              -> DatabaseDataManger.exportPlayingQueues(it, context)
+                FavoriteDatabaseBackup           -> DatabaseManger.export(context, it, FAVORITE_DB)
+                PathFilterDatabaseBackup         -> DatabaseManger.export(context, it, PATH_FILTER)
+                HistoryDatabaseBackup            -> DatabaseManger.export(context, it, HISTORY_DB)
+                SongPlayCountDatabaseBackup      -> DatabaseManger.export(context, it, SONG_PLAY_COUNT_DB)
+                MusicPlaybackStateDatabaseBackup -> DatabaseManger.export(context, it, MUSIC_PLAYBACK_STATE_DB)
             }
         }
 
-        private suspend fun fromSink(block: suspend (BufferedSink) -> Boolean): InputStream? {
+        private suspend fun buffer(block: suspend (BufferedSink) -> Boolean): Buffer? {
             val buffer = Buffer()
             val result = block(buffer)
-            return if (result) buffer.inputStream() else null
-        }
-
-        private suspend fun read(context: Context, item: BackupItem): InputStream? = when (item) {
-            SettingBackup                    -> fromSink { SettingDataManager.exportSettings(it, context) }
-            PathFilterBackup                 -> fromSink { DatabaseDataManger.exportPathFilter(it, context) }
-            FavoriteBackup                   -> fromSink { DatabaseDataManger.exportFavorites(it, context) }
-            PlayingQueuesBackup              -> fromSink { DatabaseDataManger.exportPlayingQueues(it, context) }
-            FavoriteDatabaseBackup           -> fromSink {
-                DatabaseManger.exportDatabase(it, DatabaseConstants.FAVORITE_DB, context)
-            }
-
-            PathFilterDatabaseBackup         -> fromSink {
-                DatabaseManger.exportDatabase(it, DatabaseConstants.PATH_FILTER, context)
-            }
-
-            HistoryDatabaseBackup            -> fromSink {
-                DatabaseManger.exportDatabase(it, DatabaseConstants.HISTORY_DB, context)
-            }
-
-            SongPlayCountDatabaseBackup      -> fromSink {
-                DatabaseManger.exportDatabase(it, DatabaseConstants.SONG_PLAY_COUNT_DB, context)
-            }
-
-            MusicPlaybackStateDatabaseBackup -> fromSink {
-                DatabaseManger.exportDatabase(it, DatabaseConstants.MUSIC_PLAYBACK_STATE_DB, context)
-            }
+            return if (result) buffer else null
         }
 
     }
@@ -171,9 +157,7 @@ object Backup {
         ): Long {
             val (session, tmpDir) = SessionManger.newSession(context)
 
-            ZipInputStream(sourceInputStream).use { zipIn ->
-                extractZipFile(zipIn, tmpDir)
-            }
+            extractDirectory(sourceInputStream, tmpDir)
 
             return session
         }
@@ -201,45 +185,31 @@ object Backup {
             val selected = manifest.files.filterKeys { it in content }
             for ((item, relativePath) in selected) {
                 onUpdateProgress(displayName(item, context.resources))
-                FileInputStream(File(tmpDir, relativePath)).use { inputStream ->
-                    import(context, inputStream, item)
+                File(tmpDir, relativePath).source().use { souce ->
+                    import(context, souce, item)
                 }
             }
         }
 
-        private fun import(context: Context, inputStream: InputStream, item: BackupItem): Boolean {
-            return when (item) {
-                SettingBackup                    -> SettingDataManager.importSetting(inputStream, context)
-                PathFilterBackup                 -> DatabaseDataManger.importPathFilter(context, inputStream)
-                FavoriteBackup                   -> DatabaseDataManger.importFavorites(context, inputStream)
-                PlayingQueuesBackup              -> DatabaseDataManger.importPlayingQueues(context, inputStream)
-
-                FavoriteDatabaseBackup           ->
-                    DatabaseManger.importDatabase(inputStream, DatabaseConstants.FAVORITE_DB, context)
-
-                PathFilterDatabaseBackup         ->
-                    DatabaseManger.importDatabase(inputStream, DatabaseConstants.PATH_FILTER, context)
-
-                HistoryDatabaseBackup            ->
-                    DatabaseManger.importDatabase(inputStream, DatabaseConstants.HISTORY_DB, context)
-
-                SongPlayCountDatabaseBackup      ->
-                    DatabaseManger.importDatabase(inputStream, DatabaseConstants.SONG_PLAY_COUNT_DB, context)
-
-                MusicPlaybackStateDatabaseBackup ->
-                    DatabaseManger.importDatabase(inputStream, DatabaseConstants.MUSIC_PLAYBACK_STATE_DB, context)
-            }
+        private fun import(context: Context, source: Source, item: BackupItem): Boolean = when (item) {
+            SettingBackup                    -> SettingDataManager.importSetting(context, source)
+            PathFilterBackup                 -> DatabaseDataManger.importPathFilter(context, source)
+            FavoriteBackup                   -> DatabaseDataManger.importFavorites(context, source)
+            PlayingQueuesBackup              -> DatabaseDataManger.importPlayingQueues(context, source)
+            FavoriteDatabaseBackup           -> DatabaseManger.import(context, source, FAVORITE_DB)
+            PathFilterDatabaseBackup         -> DatabaseManger.import(context, source, PATH_FILTER)
+            HistoryDatabaseBackup            -> DatabaseManger.import(context, source, HISTORY_DB)
+            SongPlayCountDatabaseBackup      -> DatabaseManger.import(context, source, SONG_PLAY_COUNT_DB)
+            MusicPlaybackStateDatabaseBackup -> DatabaseManger.import(context, source, MUSIC_PLAYBACK_STATE_DB)
         }
 
-        fun endImportBackupFromArchive(
-            session: Long,
-        ) {
+        fun endImportBackupFromArchive(session: Long) {
             SessionManger.terminateSession(session)
         }
 
         private fun decodeManifest(inputFile: File): BackupManifestFile {
-            val manifestFile = inputFile.inputStream().bufferedReader().use {
-                val raw = it.readText()
+            val manifestFile = inputFile.source().buffer().use {
+                val raw = it.readUtf8()
                 parser.decodeFromString<BackupManifestFile>(raw)
             }
             return manifestFile
