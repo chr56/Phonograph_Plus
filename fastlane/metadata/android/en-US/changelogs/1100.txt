@@ -1,0 +1,9 @@
+<b>1.10.0(1100) 2025.05.04</b>
+- Fix: randomly changing artwork occasionally when toggling shuffle mode
+- Fix: edge-to-edge in Settings and horizontal Main Player
+- Fix: forward and rewind from notification
+- Fix: broken color animation in Main Player
+- Improve: improve performance of image loading
+- Improve: reorganize items in Settings, support secondary pages
+- Improve: redesign Main Player, with more flexible styles and customizable buttons
+...(Visit project homepage to see full changelogs)

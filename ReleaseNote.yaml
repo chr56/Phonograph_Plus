@@ -1,25 +1,53 @@
-version: "1.10.0-dev4"
-channel: "PREVIEW"
-versionCode: 1097
-timestamp: 1746188000
+version: "1.10.0"
+channel: "STABLE"
+versionCode: 1100
+timestamp: 1746324000
 notes:
   en:
     highlights: [ ]
     items:
-      - "Improve: update titles for secondary pages in Settings [1.10.0-dev3]"
-      - "Fix: crash when opening Playlist Detail and more [1.10.0-dev3]"
-      - "Fix: crash when move an item to bottom in Playlist Detail [1.10.0-dev2]"
-      - "Fix: issues of reordering items in Playlist Detail [1.10.0-dev2]"
+      - "Fix: randomly changing artwork occasionally when toggling shuffle mode"
       - "Fix: no response of Playlist Detail multi-selection menu"
+      - "Fix: occasionally incorrect folder content after changing sort order in Folders Page"
+      - "Fix: edge-to-edge in Settings and horizontal Main Player"
+      - "Fix: forward and rewind from notification"
+      - "Fix: broken color animation in Main Player"
+      - "Improve: improve performance of image loading"
+      - "Improve: support custom grid size and layout for Folders Page"
+      - "Improve: reorganize items in Settings, support secondary pages"
+      - "Improve: add entrance of Start Directory settings, flatten path filter settings"
+      - "Improve: slightly redesign Main Player, with more flexible styles and more customizable buttons"
+      - "Improve: add shuffle mode and repeat mode buttons near to Playing Queue header in Main Player"
+      - "Modify: move relative menu items to Playing Queue menu in Main Player"
+      - "Modify: forbid upgrading from prior to v1.7.0 & warn upgrading from prior to v1.8.4"
+      - "New: experimental playlists in internal database (no guarantee of its availability and compatibility in future till it reaches a stable state)"
+      - "Remove: preference Preload Images"
+      - "Translation: update Polish (by cooky), Hungarian (by Balázs Úr & Balázs Meskó)"
+      - "Development: update dependencies, upgrade Kotlin to 2.1.20, upgrade AGP to 8.9.2"
+      - "Development: cleanup codes"
 
   zh:
     highlights: [ ]
     items:
-      - "改进 二级设置页面的标题更新 [1.10.0-dev3]"
-      - "修复 打开播放列表详情等界面时崩溃 [1.10.0-dev3]"
-      - "修复 播放列表详情中将项目移至底部时崩溃 [1.10.0-dev2]"
-      - "修复 播放列表详情中对项目重新排序项目行为异常 [1.10.0-dev2]"
+      - "修复 切换随机播放模式时偶尔会随机更改封面"
       - "修复 播放列表详情中多选菜单无响应的问题"
+      - "修复 在文件夹页面中更改排序顺序后偶尔内容不正确"
+      - "修复 设置和横版主播放器边到边界面问题"
+      - "修复 通知上的快进和快退失效"
+      - "修复 主播放器中主色调变化动画"
+      - "改进 提高图像加载性能"
+      - "改进 支持文件夹页面的自定义网格大小和布局"
+      - "改进 重新组织分类设置项目，并使用二级页面"
+      - "改进 添加“起始目录”设置的入口，展开路径过滤器设置"
+      - "改进 重新设计主播放器，支持更灵活样式选择和支持自定义按钮"
+      - "改进 主播放器播放队列顶部附近添加随机模式和循环模式按钮"
+      - "修改 将播放队列相关菜单项移播放队列顶部菜单"
+      - "修改 禁止从 v1.7.0 之前的版本升级，警告从 v1.8.4 之前的版本升级"
+      - "新增 实验性基于内部数据库存储的播放列表 (在宣告稳定前，不保证其可用性和兼容性)"
+      - "移除 选项 图片预加载"
+      - "翻译 更新 波兰语 (cooky), 匈牙利语 (Balázs Úr & Balázs Meskó)"
+      - "开发 更新依赖, 更新 Kotlin 至 2.1.20, 更新 AGP 至 8.9.2"
+      - "开发 清理代码"
 
-previousVersion: "1.10.0-dev3"
-previousChannel: "PREVIEW"
+previousVersion: "1.9.5"
+previousChannel: "STABLE"
