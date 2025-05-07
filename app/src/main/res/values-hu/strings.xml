@@ -111,6 +111,8 @@
     <string name="pref_header_appearance">Megjelenés</string>
     <string name="pref_header_colors">Színek</string>
     <string name="pref_header_content">Tartalom</string>
+    <string name="pref_header_path_filter">Útvonalszűrő</string>
+    <string name="pref_header_interactions">Interakciók</string>
     <string name="pref_header_lyrics">Dalszöveg</string>
     <string name="pref_header_now_playing_screen">Most játszott</string>
     <string name="pref_header_audio">Hang</string>
@@ -118,10 +120,13 @@
     <string name="pref_header_library">Médiatár</string>
     <string name="pref_header_images">Képek</string>
     <string name="pref_header_playlists">Lejátszási listák</string>
+    <string name="pref_header_files">Fájlok</string>
     <string name="pref_header_notification">Értesítés</string>
     <string name="pref_header_compatibility">Kompatibilitás</string>
     <string name="pref_title_now_playing_screen_style">Most játszott képernyő stílusa</string>
     <string name="pref_title_player_controller_style">Most játszott képernyő lejátszásvezérlőjének stílusa</string>
+    <string name="pref_title_start_directory">Kezdőkönyvtár</string>
+    <string name="pref_summary_start_directory">Az alapértelmezett könyvtár a fájlok tallózásakor.</string>
     <string name="player_controller_style_classic">Klasszikus</string>
     <string name="player_controller_style_flat">Lapos</string>
     <string name="player_controller_designate_button_functions">Lejátszásvezérlő funkciója – %1$s</string>
