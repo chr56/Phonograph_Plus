@@ -16,8 +16,8 @@ import lib.storage.launcher.IOpenFileStorageAccessible
 import lib.storage.launcher.OpenDocumentContract
 import lib.storage.launcher.OpenFileStorageAccessDelegate
 import player.phonograph.R
-import player.phonograph.mechanism.SettingDataManager
 import player.phonograph.mechanism.backup.Backup
+import player.phonograph.settings.Setting
 import player.phonograph.ui.basis.ComposeActivity
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.DropDownMenuContent
@@ -56,8 +56,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import android.content.Context
 import android.os.Bundle
+import android.widget.Toast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.io.FileInputStream
 
 class SettingsActivity : ComposeActivity(),
@@ -148,8 +150,14 @@ class SettingsActivity : ComposeActivity(),
                 negativeButton(android.R.string.cancel)
                 positiveButton(R.string.clear_all_preference) { dialog ->
                     dialog.dismiss()
-                    SettingDataManager.clearAllPreference()
-                    Reboot.reboot(context)
+                    runBlocking {
+                        if (Setting(context).clearAll()) {
+                            Toast.makeText(context, R.string.success, Toast.LENGTH_SHORT).show()
+                            Reboot.reboot(context)
+                        } else {
+                            Toast.makeText(context, R.string.failed, Toast.LENGTH_SHORT).show()
+                        }
+                    }
                 }
                 cancelOnTouchOutside(true)
                 getActionButton(WhichButton.POSITIVE).updateTextColor(MaterialColor.Red._A700.asColor)

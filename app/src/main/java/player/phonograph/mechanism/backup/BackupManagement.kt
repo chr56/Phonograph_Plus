@@ -172,7 +172,7 @@ object Backup {
             }
         }
 
-        fun executeImport(
+        suspend fun executeImport(
             context: Context,
             session: Long,
             content: Iterable<BackupItem>,
@@ -191,8 +191,8 @@ object Backup {
             }
         }
 
-        private fun import(context: Context, source: Source, item: BackupItem): Boolean = when (item) {
-            SettingBackup                    -> SettingDataManager.importSetting(context, source)
+        private suspend fun import(context: Context, source: Source, item: BackupItem): Boolean = when (item) {
+            SettingBackup                    -> SettingDataManager.importSettings(context, source)
             PathFilterBackup                 -> DatabaseDataManger.importPathFilter(context, source)
             FavoriteBackup                   -> DatabaseDataManger.importFavorites(context, source)
             PlayingQueuesBackup              -> DatabaseDataManger.importPlayingQueues(context, source)
