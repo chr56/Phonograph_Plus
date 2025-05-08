@@ -8,6 +8,7 @@ import com.triggertrap.seekarc.SeekArc
 import lib.phonograph.view.CheckBoxX
 import player.phonograph.App
 import player.phonograph.R
+import player.phonograph.model.time.Duration
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.util.SleepTimer
 import player.phonograph.settings.Keys
@@ -25,6 +26,7 @@ import android.os.CountDownTimer
 import android.os.SystemClock
 import android.widget.FrameLayout
 import android.widget.TextView
+import android.widget.Toast
 
 /**
  * @author Karim Abou Zeid (kabouzeid), chr_56<modify>
@@ -48,10 +50,11 @@ class SleepTimerDialog : DialogFragment() {
             }
             .setView(R.layout.dialog_sleep_timer)
             .create().apply {
-                timerUpdater = TimerUpdater()
+                val duration = SleepTimer.timerElapsedTime() - SystemClock.elapsedRealtime()
+                timerUpdater = TimerUpdater(duration.coerceAtLeast(0))
                 setOnShowListener {
                     tintAlertDialogButtons(it as AlertDialog)
-                    if (SleepTimer.instance().hasTimer()) timerUpdater.start()
+                    if (SleepTimer.hasTimer()) timerUpdater.start()
                 }
             }
 
@@ -74,7 +77,19 @@ class SleepTimerDialog : DialogFragment() {
 
         val minutesToQuit = progress.toLong()
         val shouldFinishLastSong = Setting(service)[Keys.sleepTimerFinishMusic].data
-        SleepTimer.instance().setTimer(service, minutesToQuit, shouldFinishLastSong)
+        if (SleepTimer.setTimer(service, minutesToQuit, shouldFinishLastSong)) {
+            Toast.makeText(
+                service,
+                getString(R.string.sleep_timer_set, minutesToQuit),
+                Toast.LENGTH_SHORT
+            ).show()
+        } else {
+            Toast.makeText(
+                service,
+                getString(R.string.failed),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
     private fun cancelTimer() {
@@ -84,7 +99,19 @@ class SleepTimerDialog : DialogFragment() {
             return
         }
 
-        SleepTimer.instance().cancelTimer(service)
+        if (SleepTimer.cancelTimer(service)) {
+            Toast.makeText(
+                service,
+                getString(R.string.sleep_timer_canceled),
+                Toast.LENGTH_SHORT
+            ).show()
+        } else {
+            Toast.makeText(
+                service,
+                getString(R.string.failed),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
     private fun showDisconnectedDialog() {
@@ -147,10 +174,7 @@ class SleepTimerDialog : DialogFragment() {
     /**
      * A CountDownTimer to update UI
      */
-    private inner class TimerUpdater : CountDownTimer(
-        Setting(requireContext())[Keys.nextSleepTimerElapsedRealTime].data - SystemClock.elapsedRealtime(),
-        1000
-    ) {
+    private inner class TimerUpdater(duration: Long) : CountDownTimer(duration, 1000) {
         override fun onTick(millisUntilFinished: Long) {
             setNegativeButtonText(millisUntilFinished)
         }
@@ -162,7 +186,7 @@ class SleepTimerDialog : DialogFragment() {
         private fun setNegativeButtonText(time: Long) {
             val text = requireContext().getString(R.string.cancel_current_timer).plus(
                 if (MusicPlayerRemote.isServiceConnected) {
-                    if (time > 0 && SleepTimer.instance().hasTimer()) "(${readableDuration(time)})" else ""
+                    if (time > 0 && SleepTimer.hasTimer()) "(${readableDuration(time)})" else ""
                 } else {
                     requireContext().getString(R.string.service_disconnected)
                 }
