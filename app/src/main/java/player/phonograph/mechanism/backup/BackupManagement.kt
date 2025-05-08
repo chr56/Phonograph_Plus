@@ -4,15 +4,11 @@
 
 package player.phonograph.mechanism.backup
 
-import okio.Buffer
-import okio.BufferedSink
 import okio.Path.Companion.toOkioPath
-import okio.Source
 import okio.buffer
 import okio.source
 import player.phonograph.BuildConfig
 import player.phonograph.R
-import player.phonograph.mechanism.SettingDataManager
 import player.phonograph.model.backup.BackupItem
 import player.phonograph.model.backup.BackupItem.FavoriteBackup
 import player.phonograph.model.backup.BackupItem.FavoriteDatabaseBackup
@@ -23,6 +19,7 @@ import player.phonograph.model.backup.BackupItem.PathFilterDatabaseBackup
 import player.phonograph.model.backup.BackupItem.PlayingQueuesBackup
 import player.phonograph.model.backup.BackupItem.SettingBackup
 import player.phonograph.model.backup.BackupItem.SongPlayCountDatabaseBackup
+import player.phonograph.model.backup.BackupItemExecutor
 import player.phonograph.model.backup.BackupManifestFile
 import player.phonograph.repo.database.DatabaseConstants.FAVORITE_DB
 import player.phonograph.repo.database.DatabaseConstants.HISTORY_DB
@@ -70,6 +67,18 @@ object Backup {
         }
     }
 
+    private fun executor(item: BackupItem): BackupItemExecutor? = when (item) {
+        SettingBackup                    -> SettingsDataBackupItemExecutor
+        PathFilterBackup                 -> PathFilterDataBackupItemExecutor
+        FavoriteBackup                   -> FavoritesDataBackupItemExecutor
+        PlayingQueuesBackup              -> PlayingQueuesDataBackupItemExecutor
+        FavoriteDatabaseBackup           -> RawDatabaseBackupItemExecutor(FAVORITE_DB)
+        PathFilterDatabaseBackup         -> RawDatabaseBackupItemExecutor(PATH_FILTER)
+        HistoryDatabaseBackup            -> RawDatabaseBackupItemExecutor(HISTORY_DB)
+        SongPlayCountDatabaseBackup      -> RawDatabaseBackupItemExecutor(SONG_PLAY_COUNT_DB)
+        MusicPlaybackStateDatabaseBackup -> RawDatabaseBackupItemExecutor(MUSIC_PLAYBACK_STATE_DB)
+    }
+
     object Export {
 
         suspend fun exportBackupToArchive(
@@ -101,9 +110,17 @@ object Backup {
 
             // export backups
             for (item in config) {
-                val filename = "${item.key}.${item.type.suffix}"
-                val exported = read(context, item)
+
+                val executor = executor(item)
+                val exported = if (executor != null) {
+                    executor.export(context)
+                } else {
+                    warning(TAG, "$item could not be exported!")
+                    null
+                }
+
                 if (exported != null) {
+                    val filename = "${item.key}.${item.type.suffix}"
                     val path = destinationPath / filename
                     fs.write(path, mustCreate = true) {
                         exported.use { writeAll(it) }
@@ -122,26 +139,6 @@ object Backup {
                 writeUtf8(content)
             }
 
-        }
-
-        private suspend fun read(context: Context, item: BackupItem): Buffer? = buffer {
-            when (item) {
-                SettingBackup                    -> SettingDataManager.exportSettings(it, context)
-                PathFilterBackup                 -> DatabaseDataManger.exportPathFilter(it, context)
-                FavoriteBackup                   -> DatabaseDataManger.exportFavorites(it, context)
-                PlayingQueuesBackup              -> DatabaseDataManger.exportPlayingQueues(it, context)
-                FavoriteDatabaseBackup           -> DatabaseManger.export(context, it, FAVORITE_DB)
-                PathFilterDatabaseBackup         -> DatabaseManger.export(context, it, PATH_FILTER)
-                HistoryDatabaseBackup            -> DatabaseManger.export(context, it, HISTORY_DB)
-                SongPlayCountDatabaseBackup      -> DatabaseManger.export(context, it, SONG_PLAY_COUNT_DB)
-                MusicPlaybackStateDatabaseBackup -> DatabaseManger.export(context, it, MUSIC_PLAYBACK_STATE_DB)
-            }
-        }
-
-        private suspend fun buffer(block: suspend (BufferedSink) -> Boolean): Buffer? {
-            val buffer = Buffer()
-            val result = block(buffer)
-            return if (result) buffer else null
         }
 
     }
@@ -186,21 +183,11 @@ object Backup {
             for ((item, relativePath) in selected) {
                 onUpdateProgress(displayName(item, context.resources))
                 File(tmpDir, relativePath).source().use { souce ->
-                    import(context, souce, item)
+
+                    val executor = executor(item)
+                    executor?.import(context, souce) ?: warning(TAG, "Could not import $item")
                 }
             }
-        }
-
-        private suspend fun import(context: Context, source: Source, item: BackupItem): Boolean = when (item) {
-            SettingBackup                    -> SettingDataManager.importSettings(context, source)
-            PathFilterBackup                 -> DatabaseDataManger.importPathFilter(context, source)
-            FavoriteBackup                   -> DatabaseDataManger.importFavorites(context, source)
-            PlayingQueuesBackup              -> DatabaseDataManger.importPlayingQueues(context, source)
-            FavoriteDatabaseBackup           -> DatabaseManger.import(context, source, FAVORITE_DB)
-            PathFilterDatabaseBackup         -> DatabaseManger.import(context, source, PATH_FILTER)
-            HistoryDatabaseBackup            -> DatabaseManger.import(context, source, HISTORY_DB)
-            SongPlayCountDatabaseBackup      -> DatabaseManger.import(context, source, SONG_PLAY_COUNT_DB)
-            MusicPlaybackStateDatabaseBackup -> DatabaseManger.import(context, source, MUSIC_PLAYBACK_STATE_DB)
         }
 
         fun endImportBackupFromArchive(session: Long) {
