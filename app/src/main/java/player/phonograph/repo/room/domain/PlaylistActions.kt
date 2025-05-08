@@ -41,10 +41,11 @@ object PlaylistActions {
     fun createPlaylist(
         database: MusicDatabase,
         name: String,
+        dateAdded: Long = currentTimestamp(),
+        dateModified: Long = currentTimestamp(),
     ): Long {
         val playlistDao = database.PlaylistDao()
-        val timestamp = currentTimestamp()
-        return playlistDao.insert(PlaylistEntity(name = name, dateAdded = timestamp, dateModified = timestamp))
+        return playlistDao.insert(PlaylistEntity(name = name, dateAdded = dateAdded, dateModified = dateModified))
     }
 
     fun renamePlaylist(
@@ -136,6 +137,22 @@ object PlaylistActions {
             false
         }.also {
             EventHub.sendEvent(App.instance, EventHub.EVENT_PLAYLISTS_CHANGED)
+        }
+    }
+
+    fun importPlaylist(
+        database: MusicDatabase,
+        name: String,
+        songs: Collection<Song>,
+        dateAdded: Long,
+        dateModified: Long,
+    ): Boolean {
+        val id = createPlaylist(database, name, dateAdded = dateAdded, dateModified = dateModified)
+        return if (id > 0) {
+            EventHub.sendEvent(App.instance, EventHub.EVENT_PLAYLISTS_CHANGED)
+            amendPlaylist(database, id, songs) == songs.size
+        } else {
+            false
         }
     }
 

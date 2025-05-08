@@ -13,6 +13,7 @@ import player.phonograph.model.backup.BackupItem
 import player.phonograph.model.backup.BackupItem.FavoriteBackup
 import player.phonograph.model.backup.BackupItem.FavoriteDatabaseBackup
 import player.phonograph.model.backup.BackupItem.HistoryDatabaseBackup
+import player.phonograph.model.backup.BackupItem.InternalPlaylistsBackup
 import player.phonograph.model.backup.BackupItem.MusicPlaybackStateDatabaseBackup
 import player.phonograph.model.backup.BackupItem.PathFilterBackup
 import player.phonograph.model.backup.BackupItem.PathFilterDatabaseBackup
@@ -42,6 +43,7 @@ object Backup {
     val ALL_BACKUP_CONFIG =
         listOf(
             SettingBackup, FavoriteBackup, PathFilterBackup, PlayingQueuesBackup,
+            InternalPlaylistsBackup,
             FavoriteDatabaseBackup,
             PathFilterDatabaseBackup,
             HistoryDatabaseBackup,
@@ -59,6 +61,7 @@ object Backup {
             PathFilterBackup                 -> getString(R.string.path_filter)
             FavoriteBackup                   -> getString(R.string.favorites)
             PlayingQueuesBackup              -> getString(R.string.label_playing_queue)
+            InternalPlaylistsBackup          -> getString(R.string.database_playlists)
             FavoriteDatabaseBackup           -> "[${getString(R.string.databases)}] ${getString(R.string.favorites)}"
             PathFilterDatabaseBackup         -> "[${getString(R.string.databases)}] ${getString(R.string.path_filter)}"
             HistoryDatabaseBackup            -> "[${getString(R.string.databases)}] ${getString(R.string.history)}"
@@ -72,6 +75,7 @@ object Backup {
         PathFilterBackup                 -> PathFilterDataBackupItemExecutor
         FavoriteBackup                   -> FavoritesDataBackupItemExecutor
         PlayingQueuesBackup              -> PlayingQueuesDataBackupItemExecutor
+        InternalPlaylistsBackup          -> InternalDatabasePlaylistsDataBackupItemExecutor
         FavoriteDatabaseBackup           -> RawDatabaseBackupItemExecutor(FAVORITE_DB)
         PathFilterDatabaseBackup         -> RawDatabaseBackupItemExecutor(PATH_FILTER)
         HistoryDatabaseBackup            -> RawDatabaseBackupItemExecutor(HISTORY_DB)

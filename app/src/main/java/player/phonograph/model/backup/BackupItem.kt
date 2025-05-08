@@ -50,18 +50,21 @@ sealed class BackupItem(
         const val KEY_PATH_FILTER = "path_filter"
         const val KEY_FAVORITES = "favorite"
         const val KEY_PLAYING_QUEUES = "playing_queues"
+        const val KEY_INTERNAL_PLAYLISTS = "internal_playlists"
+
+        const val PREFIX_DATABASE = "database_"
         const val KEY_DATABASE_FAVORITE = "database_favorite"
         const val KEY_DATABASE_PATH_FILTER = "database_path_filter"
         const val KEY_DATABASE_HISTORY = "database_history"
         const val KEY_DATABASE_SONG_PLAY_COUNT = "database_song_play_count"
         const val KEY_DATABASE_MUSIC_PLAYBACK_STATE = "database_music_playback_state"
-        const val PREFIX_DATABASE = "database_"
 
         private fun fromKey(key: String): BackupItem? = when (key) {
             KEY_SETTING                       -> SettingBackup
             KEY_PATH_FILTER                   -> PathFilterBackup
             KEY_FAVORITES                     -> FavoriteBackup
             KEY_PLAYING_QUEUES                -> PlayingQueuesBackup
+            KEY_INTERNAL_PLAYLISTS            -> InternalPlaylistsBackup
             KEY_DATABASE_FAVORITE             -> FavoriteDatabaseBackup
             KEY_DATABASE_PATH_FILTER          -> PathFilterDatabaseBackup
             KEY_DATABASE_HISTORY              -> HistoryDatabaseBackup
@@ -75,6 +78,7 @@ sealed class BackupItem(
     object PathFilterBackup : BackupItem(KEY_PATH_FILTER, Type.JSON)
     object FavoriteBackup : BackupItem(KEY_FAVORITES, Type.JSON)
     object PlayingQueuesBackup : BackupItem(KEY_PLAYING_QUEUES, Type.JSON)
+    object InternalPlaylistsBackup : BackupItem(KEY_INTERNAL_PLAYLISTS, Type.JSON)
 
     object FavoriteDatabaseBackup : BackupItem(KEY_DATABASE_FAVORITE, Type.DATABASE)
     object PathFilterDatabaseBackup : BackupItem(KEY_DATABASE_PATH_FILTER, Type.DATABASE)

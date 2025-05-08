@@ -14,6 +14,8 @@ import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.Song
 import player.phonograph.model.backup.BackupItemExecutor
 import player.phonograph.model.backup.ExportedFavorites
+import player.phonograph.model.backup.ExportedInternalPlaylist
+import player.phonograph.model.backup.ExportedInternalPlaylists
 import player.phonograph.model.backup.ExportedPathFilter
 import player.phonograph.model.backup.ExportedPlayingQueue
 import player.phonograph.model.backup.ExportedPlaylist
@@ -24,6 +26,9 @@ import player.phonograph.repo.database.store.FavoritesStore
 import player.phonograph.repo.database.store.PathFilterStore
 import player.phonograph.repo.loader.Songs
 import player.phonograph.repo.mediastore.MediaStorePlaylists
+import player.phonograph.repo.room.MusicDatabase
+import player.phonograph.repo.room.domain.PlaylistActions
+import player.phonograph.repo.room.domain.RoomPlaylists
 import player.phonograph.service.queue.MusicPlaybackQueueStore
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.settings.Setting
@@ -246,6 +251,41 @@ object FavoritesDataBackupItemExecutor : JsonDataBackupItemExecutor() {
         if (databasePlaylist != null) return databasePlaylist
 
         return null
+    }
+}
+
+object InternalDatabasePlaylistsDataBackupItemExecutor : JsonDataBackupItemExecutor() {
+    override suspend fun export(context: Context): Buffer? {
+        val playlists =
+            RoomPlaylists.all(context).map { playlist ->
+                ExportedInternalPlaylist(
+                    playlist.name,
+                    RoomPlaylists.songs(context, playlist.location).map { exportSong(it.song) },
+                    playlist.dateAdded,
+                    playlist.dateModified
+                )
+            }
+        val exported = ExportedInternalPlaylists(ExportedInternalPlaylists.VERSION, playlists)
+        return write(ExportedInternalPlaylists.serializer(), exported, "InternalDatabasePlaylists")
+    }
+
+    override suspend fun import(context: Context, source: Source): Boolean {
+        val imported = read(ExportedInternalPlaylists.serializer(), source, "InternalDatabasePlaylists")
+        return if (imported != null) {
+            for (playlist in imported.playlists) {
+                PlaylistActions.importPlaylist(
+                    MusicDatabase.koinInstance,
+                    playlist.name,
+                    playlist.songs.mapNotNull { importSong(it, context) },
+                    playlist.dateAdded,
+                    playlist.dateModified,
+                )
+            }
+            EventHub.sendEvent(context, EventHub.EVENT_PLAYLISTS_CHANGED)
+            true
+        } else {
+            false
+        }
     }
 }
 
