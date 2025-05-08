@@ -52,7 +52,7 @@ class SpeedControlDialog : DialogFragment() {
 
 
         speedData.value = service.speed // init
-        observe(viewLifecycleOwner.lifecycle, speedData) { speed ->
+        observe(lifecycle, speedData) { speed ->
             binding.speedSeeker.progress = calculateProcess(speed)
             binding.speed.setText(String.format(null, "%.2f", speed))
         }
