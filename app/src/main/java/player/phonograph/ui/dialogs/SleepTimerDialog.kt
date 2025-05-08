@@ -15,6 +15,7 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.tintAlertDialogButtons
+import player.phonograph.util.theme.tintButtons
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import android.app.Dialog
@@ -24,6 +25,7 @@ import android.os.CountDownTimer
 import android.os.SystemClock
 import android.widget.FrameLayout
 import android.widget.TextView
+import android.widget.Toast
 
 /**
  * @author Karim Abou Zeid (kabouzeid), chr_56<modify>
@@ -47,10 +49,11 @@ class SleepTimerDialog : DialogFragment() {
             }
             .setView(R.layout.dialog_sleep_timer)
             .create().apply {
-                timerUpdater = TimerUpdater()
+                val duration = SleepTimer.timerElapsedTime() - SystemClock.elapsedRealtime()
+                timerUpdater = TimerUpdater(duration.coerceAtLeast(0))
                 setOnShowListener {
                     tintAlertDialogButtons(it as AlertDialog)
-                    if (SleepTimer.instance().hasTimer()) timerUpdater.start()
+                    if (SleepTimer.hasTimer()) timerUpdater.start()
                 }
             }
 
@@ -66,18 +69,54 @@ class SleepTimerDialog : DialogFragment() {
 
     private fun startTimer() {
         val service = MusicPlayerRemote.musicService
-        require(service != null)
+        if (service == null) {
+            showDisconnectedDialog()
+            return
+        }
 
         val minutesToQuit = progress.toLong()
         val shouldFinishLastSong = Setting(service)[Keys.sleepTimerFinishMusic].data
-        SleepTimer.instance().setTimer(service, minutesToQuit, shouldFinishLastSong)
+        if (SleepTimer.setTimer(service, minutesToQuit, shouldFinishLastSong)) {
+            Toast.makeText(
+                service,
+                getString(R.string.sleep_timer_set, minutesToQuit),
+                Toast.LENGTH_SHORT
+            ).show()
+        } else {
+            Toast.makeText(
+                service,
+                getString(R.string.failed),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
     private fun cancelTimer() {
         val service = MusicPlayerRemote.musicService
-        require(service != null)
+        if (service == null) {
+            showDisconnectedDialog()
+            return
+        }
 
-        SleepTimer.instance().cancelTimer(service)
+        if (SleepTimer.cancelTimer(service)) {
+            Toast.makeText(
+                service,
+                getString(R.string.sleep_timer_canceled),
+                Toast.LENGTH_SHORT
+            ).show()
+        } else {
+            Toast.makeText(
+                service,
+                getString(R.string.failed),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
+    private fun showDisconnectedDialog() {
+        AlertDialog.Builder(requireContext())
+            .setMessage(R.string.service_disconnected)
+            .create().tintButtons()
     }
 
     private fun setupMainView(alertDialog: AlertDialog) {
@@ -134,10 +173,7 @@ class SleepTimerDialog : DialogFragment() {
     /**
      * A CountDownTimer to update UI
      */
-    private inner class TimerUpdater : CountDownTimer(
-        Setting(requireContext())[Keys.nextSleepTimerElapsedRealTime].data - SystemClock.elapsedRealtime(),
-        1000
-    ) {
+    private inner class TimerUpdater(duration: Long) : CountDownTimer(duration, 1000) {
         override fun onTick(millisUntilFinished: Long) {
             setNegativeButtonText(millisUntilFinished)
         }
@@ -148,9 +184,11 @@ class SleepTimerDialog : DialogFragment() {
 
         private fun setNegativeButtonText(time: Long) {
             val text = requireContext().getString(R.string.cancel_current_timer).plus(
-                MusicPlayerRemote.musicService?.let {
-                    if (time > 0 && SleepTimer.instance().hasTimer()) "(${getReadableDurationString(time)})" else ""
-                } ?: "(N/A)"
+                if (MusicPlayerRemote.isServiceConnected) {
+                    if (time > 0 && SleepTimer.hasTimer()) "(${getReadableDurationString(time)})" else ""
+                } else {
+                    requireContext().getString(R.string.service_disconnected)
+                }
             )
             dialog.getButton(DialogInterface.BUTTON_NEGATIVE)?.text = text
         }
