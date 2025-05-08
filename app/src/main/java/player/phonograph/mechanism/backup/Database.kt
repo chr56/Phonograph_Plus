@@ -5,6 +5,7 @@
 package player.phonograph.mechanism.backup
 
 import okio.BufferedSink
+import okio.IOException
 import okio.Source
 import okio.buffer
 import okio.sink
@@ -32,42 +33,23 @@ object DatabaseManger {
 
     fun import(context: Context, source: Source, dbName: String): Boolean =
         try {
-            // mahe cache
             val cacheDir = File(context.externalCacheDir ?: context.cacheDir, "Backup_${currentTimestamp()}")
-            if (cacheDir.exists()) {
+            synchronized(cacheDir) {
+                // make cache directory
+                if (cacheDir.exists()) cacheDir.delete() else cacheDir.mkdirs()
+                // make temporary file
+                val temp = File(cacheDir, dbName).createOrOverrideFile()
+                temp.sink().buffer().use { buffer -> buffer.writeAll(source) }
+                // move and replace
+                moveFile(from = temp, to = context.getDatabasePath(dbName))
+                temp.delete()
                 cacheDir.delete()
-            } else {
-                cacheDir.mkdirs()
             }
-            importDatabaseImpl(source, dbName, context, cacheDir)
-            cacheDir.delete()
             true
-        } catch (e: Exception) {
+        } catch (e: IOException) {
             reportError(e, TAG, "Failed import database $dbName")
-            e.printStackTrace()
             false
         }
-
-    private fun importDatabaseImpl(
-        source: Source,
-        dbName: String,
-        context: Context,
-        cacheDir: File,
-    ) {
-
-        val tmpFile = File(cacheDir, dbName).createOrOverrideFile()
-
-        // copy from stream
-        tmpFile.sink().buffer().use { buffer ->
-            buffer.writeAll(source)
-        }
-
-        // move
-        moveFile(from = tmpFile, to = context.getDatabasePath(dbName))
-
-        // dlete
-        tmpFile.delete()
-    }
 
     private const val TAG = "DatabaseManger"
 }
