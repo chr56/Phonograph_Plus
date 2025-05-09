@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-<!--    <string name="app_name" translatable="false">Phonograph</string>-->
-
     <string name="karim_abou_zeid" translatable="false">Karim Abou Zeid</string>
     <string name="aidan_follestad" translatable="false">Aidan Follestad</string>
     <string name="maarten_corpel" translatable="false">Maarten Corpel</string>
@@ -34,21 +32,13 @@
     </string>
 
 
-    <string name="grid_size_1">1</string>
-    <string name="grid_size_2">2</string>
-    <string name="grid_size_3">3</string>
-    <string name="grid_size_4">4</string>
-    <string name="grid_size_5">5</string>
-    <string name="grid_size_6">6</string>
-    <string name="grid_size_7">7</string>
-    <string name="grid_size_8">8</string>
-
-    <!--  special app keys  -->
-    <string name="preference_key_click_behavior" translatable="false">click_behavior</string>
-    <string name="preference_key_app_language" translatable="false">app_language</string>
-    <string name="preference_key_blacklist" translatable="false">blacklist</string>
-    <string name="preference_key_home_tab_config" translatable="false">home_tab_config</string>
-    <string name="preference_key_now_playing_screen" translatable="false">now_playing_screen</string>
-    <string name="preference_key_image_source_config" translatable="false">image_source_config</string>
+    <string name="grid_size_1" translatable="false">1</string>
+    <string name="grid_size_2" translatable="false">2</string>
+    <string name="grid_size_3" translatable="false">3</string>
+    <string name="grid_size_4" translatable="false">4</string>
+    <string name="grid_size_5" translatable="false">5</string>
+    <string name="grid_size_6" translatable="false">6</string>
+    <string name="grid_size_7" translatable="false">7</string>
+    <string name="grid_size_8" translatable="false">8</string>
 
 </resources>
