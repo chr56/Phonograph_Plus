@@ -157,6 +157,8 @@
     <string name="pref_title_remember_shuffle">Remember shuffle</string>
     <string name="no_equalizer">No equalizer found.</string>
     <string name="no_audio_ID">Play a song first, then try again.</string>
+    <string name="style_card">Card</string>
+    <string name="style_flat">Flat</string>
     <string name="delete_action">Delete</string>
     <string name="clear_action">Clear</string>
     <string name="remove_action">Remove</string>

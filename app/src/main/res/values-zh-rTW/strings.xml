@@ -157,6 +157,8 @@
     <string name="pref_title_remember_shuffle">記住隨機播放</string>
     <string name="no_equalizer">找不到等化器</string>
     <string name="no_audio_ID">請先播放一首歌後再重試一遍。</string>
+    <string name="style_card">卡片</string>
+    <string name="style_flat">扁平</string>
     <string name="delete_action">刪除</string>
     <string name="clear_action">清除</string>
     <string name="remove_action">移除</string>

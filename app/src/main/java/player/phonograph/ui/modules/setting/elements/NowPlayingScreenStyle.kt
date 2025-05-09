@@ -66,8 +66,8 @@ private fun PlayerBaseStyle(
     val styles = remember { PlayerBaseStyle.entries }
     val names = styles.map {
         when (it) {
-            PlayerBaseStyle.CARD -> stringResource(R.string.card)
-            PlayerBaseStyle.FLAT -> stringResource(R.string.flat)
+            PlayerBaseStyle.CARD -> stringResource(R.string.style_card)
+            PlayerBaseStyle.FLAT -> stringResource(R.string.style_flat)
         }
     }
 

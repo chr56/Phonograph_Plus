@@ -14,9 +14,6 @@
     <string name="git_hub" translatable="false">GitHub</string>
     <string name="twitter" translatable="false">Twitter</string>
 
-    <string name="card" translatable="false">Card</string>
-    <string name="flat" translatable="false">Flat</string>
-
     <string name="license_dialog_style" translatable="false">
         body {
             background-color: #{bg-color};

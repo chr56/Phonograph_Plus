@@ -157,6 +157,8 @@
     <string name="pref_title_remember_shuffle">记住随机播放开关</string>
     <string name="no_equalizer">没有找到均衡器</string>
     <string name="no_audio_ID">请在播放歌曲后再次尝试此操作</string>
+    <string name="style_card">卡片</string>
+    <string name="style_flat">扁平</string>
     <string name="delete_action">删除</string>
     <string name="clear_action">清空</string>
     <string name="remove_action">移除</string>
