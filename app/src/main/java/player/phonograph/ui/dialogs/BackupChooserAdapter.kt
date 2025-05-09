@@ -4,9 +4,9 @@
 
 package player.phonograph.ui.dialogs
 
+import player.phonograph.mechanism.backup.Backup
+import player.phonograph.model.backup.BackupItem
 import player.phonograph.ui.adapter.SortableListAdapter
-import player.phonograph.mechanism.backup.ALL_BACKUP_CONFIG
-import player.phonograph.mechanism.backup.BackupItem
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +14,7 @@ import android.widget.TextView
 
 class BackupChooserAdapter(
     private val config: List<BackupItem>,
-    private val all: List<BackupItem> = ALL_BACKUP_CONFIG,
+    private val all: List<BackupItem> = Backup.ALL_BACKUP_CONFIG,
 ) : SortableListAdapter<BackupItem>() {
 
     override fun fetchDataset(): SortableList<BackupItem> {
@@ -34,7 +34,8 @@ class BackupChooserAdapter(
 
     override fun onBindContentView(contentView: View, holder: ViewHolder) {
         require(contentView is TextView) { "Receive ${contentView.javaClass.name}" }
-        contentView.text = dataset.items[holder.bindingAdapterPosition].content.displayName(contentView.resources)
+        val item: BackupItem = dataset.items[holder.bindingAdapterPosition].content
+        contentView.text = Backup.displayName(item, contentView.resources)
     }
 
     val currentConfig: List<BackupItem>

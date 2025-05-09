@@ -6,6 +6,7 @@ package player.phonograph.settings
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
 import android.content.Context
 
@@ -19,6 +20,16 @@ class Setting(context: Context) {
             is PrimitiveKey<T> -> PrimitivePreference(key, dataStore)
             is CompositeKey<T> -> CompositePreference(key, dataStore)
         }
+
+    /**
+     * This would **CLEAR ALL SETTINGS**!
+     */
+    suspend fun clearAll(): Boolean = try {
+        dataStore.edit { it.clear() }
+        true
+    } catch (_: Exception) {
+        false
+    }
 
     companion object {
 

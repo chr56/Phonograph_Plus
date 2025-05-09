@@ -6,10 +6,10 @@ import lib.phonograph.dialog.alertDialog
 import lib.phonograph.misc.Reboot
 import player.phonograph.R
 import player.phonograph.databinding.ActivityCrashBinding
-import player.phonograph.mechanism.SettingDataManager
 import player.phonograph.model.CrashReport
 import player.phonograph.model.CrashReport.Constant.CRASH_TYPE_CORRUPTED_DATA
 import player.phonograph.model.CrashReport.Constant.CRASH_TYPE_INTERNAL_ERROR
+import player.phonograph.settings.Setting
 import player.phonograph.ui.basis.ToolbarActivity
 import player.phonograph.ui.modules.setting.SettingsActivity
 import player.phonograph.util.text.currentDate
@@ -48,6 +48,7 @@ import android.widget.Toast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.io.File
 
 class CrashActivity : ToolbarActivity() {
@@ -157,8 +158,14 @@ class CrashActivity : ToolbarActivity() {
                         neutralButton(android.R.string.cancel)
                         positiveButton(R.string.clear_all_preference) { dialog ->
                             dialog.dismiss()
-                            SettingDataManager.clearAllPreference()
-                            Reboot.reboot(context)
+                            runBlocking {
+                                if (Setting(context).clearAll()) {
+                                    Toast.makeText(context, R.string.success, Toast.LENGTH_SHORT).show()
+                                    Reboot.reboot(context)
+                                } else {
+                                    Toast.makeText(context, R.string.failed, Toast.LENGTH_SHORT).show()
+                                }
+                            }
                         }
                         builder.setCancelable(true)
                     }

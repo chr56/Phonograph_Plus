@@ -4,81 +4,147 @@
 
 package player.phonograph.mechanism.backup
 
+import okio.Path.Companion.toOkioPath
+import okio.buffer
+import okio.source
 import player.phonograph.BuildConfig
-import player.phonograph.util.file.createOrOverrideFile
+import player.phonograph.R
+import player.phonograph.model.backup.BackupItem
+import player.phonograph.model.backup.BackupItem.FavoriteBackup
+import player.phonograph.model.backup.BackupItem.FavoriteDatabaseBackup
+import player.phonograph.model.backup.BackupItem.HistoryDatabaseBackup
+import player.phonograph.model.backup.BackupItem.InternalPlaylistsBackup
+import player.phonograph.model.backup.BackupItem.MusicPlaybackStateDatabaseBackup
+import player.phonograph.model.backup.BackupItem.PathFilterBackup
+import player.phonograph.model.backup.BackupItem.PathFilterDatabaseBackup
+import player.phonograph.model.backup.BackupItem.PlayingQueuesBackup
+import player.phonograph.model.backup.BackupItem.SettingBackup
+import player.phonograph.model.backup.BackupItem.SongPlayCountDatabaseBackup
+import player.phonograph.model.backup.BackupItemExecutor
+import player.phonograph.model.backup.BackupManifestFile
+import player.phonograph.repo.database.DatabaseConstants.FAVORITE_DB
+import player.phonograph.repo.database.DatabaseConstants.HISTORY_DB
+import player.phonograph.repo.database.DatabaseConstants.MUSIC_PLAYBACK_STATE_DB
+import player.phonograph.repo.database.DatabaseConstants.PATH_FILTER
+import player.phonograph.repo.database.DatabaseConstants.SONG_PLAY_COUNT_DB
 import player.phonograph.util.text.currentTimestamp
-import player.phonograph.util.transferToOutputStream
 import player.phonograph.util.warning
-import player.phonograph.util.zip.ZipUtil.addToZipFile
-import player.phonograph.util.zip.ZipUtil.extractZipFile
+import player.phonograph.util.zip.ZipUtil.extractDirectory
+import player.phonograph.util.zip.ZipUtil.zipDirectory
 import android.content.Context
+import android.content.res.Resources
 import kotlinx.serialization.json.Json
 import java.io.File
-import java.io.FileInputStream
 import java.io.InputStream
 import java.io.OutputStream
-import java.util.zip.ZipInputStream
-import java.util.zip.ZipOutputStream
 
 object Backup {
 
+    val ALL_BACKUP_CONFIG =
+        listOf(
+            SettingBackup, FavoriteBackup, PathFilterBackup, PlayingQueuesBackup,
+            InternalPlaylistsBackup,
+            FavoriteDatabaseBackup,
+            PathFilterDatabaseBackup,
+            HistoryDatabaseBackup,
+            SongPlayCountDatabaseBackup,
+            MusicPlaybackStateDatabaseBackup,
+        )
+
+    val ENABLE_BACKUP_CONFIG = listOf(
+        SettingBackup, FavoriteBackup, PathFilterBackup, PlayingQueuesBackup,
+    )
+
+    fun displayName(backupItem: BackupItem, resources: Resources): CharSequence = with(resources) {
+        when (backupItem) {
+            SettingBackup                    -> getString(R.string.action_settings)
+            PathFilterBackup                 -> getString(R.string.path_filter)
+            FavoriteBackup                   -> getString(R.string.favorites)
+            PlayingQueuesBackup              -> getString(R.string.label_playing_queue)
+            InternalPlaylistsBackup          -> getString(R.string.database_playlists)
+            FavoriteDatabaseBackup           -> "[${getString(R.string.databases)}] ${getString(R.string.favorites)}"
+            PathFilterDatabaseBackup         -> "[${getString(R.string.databases)}] ${getString(R.string.path_filter)}"
+            HistoryDatabaseBackup            -> "[${getString(R.string.databases)}] ${getString(R.string.history)}"
+            SongPlayCountDatabaseBackup      -> "[${getString(R.string.databases)}] ${getString(R.string.my_top_tracks)}"
+            MusicPlaybackStateDatabaseBackup -> "[${getString(R.string.databases)}] ${getString(R.string.label_playing_queue)}"
+        }
+    }
+
+    private fun executor(item: BackupItem): BackupItemExecutor? = when (item) {
+        SettingBackup                    -> SettingsDataBackupItemExecutor
+        PathFilterBackup                 -> PathFilterDataBackupItemExecutor
+        FavoriteBackup                   -> FavoritesDataBackupItemExecutor
+        PlayingQueuesBackup              -> PlayingQueuesDataBackupItemExecutor
+        InternalPlaylistsBackup          -> InternalDatabasePlaylistsDataBackupItemExecutor
+        FavoriteDatabaseBackup           -> RawDatabaseBackupItemExecutor(FAVORITE_DB)
+        PathFilterDatabaseBackup         -> RawDatabaseBackupItemExecutor(PATH_FILTER)
+        HistoryDatabaseBackup            -> RawDatabaseBackupItemExecutor(HISTORY_DB)
+        SongPlayCountDatabaseBackup      -> RawDatabaseBackupItemExecutor(SONG_PLAY_COUNT_DB)
+        MusicPlaybackStateDatabaseBackup -> RawDatabaseBackupItemExecutor(MUSIC_PLAYBACK_STATE_DB)
+    }
+
     object Export {
 
-        fun exportBackupToArchive(
+        suspend fun exportBackupToArchive(
             context: Context,
             config: List<BackupItem>,
             targetOutputStream: OutputStream,
         ) {
-
             val (session, tmpDir) = SessionManger.newSession(context)
 
             exportBackupToDirectory(context, config, tmpDir)
 
-            ZipOutputStream(targetOutputStream).use { zip ->
-                tmpDir.listFiles()?.forEach {
-                    addToZipFile(zip, it, it.name)
-                }
-            }
+            zipDirectory(targetOutputStream, tmpDir)
 
             SessionManger.terminateSession(session)
         }
 
 
-        private fun exportBackupToDirectory(
+        private suspend fun exportBackupToDirectory(
             context: Context,
             config: List<BackupItem>,
             destination: File,
         ) {
             val timestamp = currentTimestamp()
 
-            val fileList = mutableMapOf<BackupItem, String>() // track files added
+            val files = mutableMapOf<BackupItem, String>() // track files added
+
+            val destinationPath = destination.toOkioPath()
+            val fs = okio.FileSystem.SYSTEM
 
             // export backups
             for (item in config) {
-                val filename = "${item.key}.${item.type.suffix}"
-                val exported = item.data(context)
+
+                val executor = executor(item)
+                val exported = if (executor != null) {
+                    executor.export(context)
+                } else {
+                    warning(TAG, "$item could not be exported!")
+                    null
+                }
+
                 if (exported != null) {
-                    val file = File(destination, filename).createOrOverrideFile()
-                    file.outputStream().use { outputStream ->
-                        exported.use { inputStream ->
-                            inputStream.transferToOutputStream(outputStream)
-                        }
+                    val filename = "${item.key}.${item.type.suffix}"
+                    val path = destinationPath / filename
+                    fs.write(path, mustCreate = true) {
+                        exported.use { writeAll(it) }
                     }
-                    fileList[item] = filename
+                    files[item] = filename
                 } else {
                     warning(TAG, "No content to export for ${item.key}")
                 }
             }
 
             // generate manifest file
-            val manifestFile = File(destination, ManifestFile.BACKUP_MANIFEST_FILENAME).createOrOverrideFile()
-            manifestFile.outputStream().bufferedWriter().use {
-                val manifest = ManifestFile(timestamp, fileList, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE)
-                val raw = parser.encodeToString(manifest)
-                it.write(raw)
-                it.flush()
+            val manifestPath = destinationPath / BackupManifestFile.BACKUP_MANIFEST_FILENAME
+            fs.write(manifestPath, mustCreate = true) {
+                val manifest = BackupManifestFile(timestamp, files, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE)
+                val content = parser.encodeToString(manifest)
+                writeUtf8(content)
             }
+
         }
+
     }
 
     object Import {
@@ -92,16 +158,14 @@ object Backup {
         ): Long {
             val (session, tmpDir) = SessionManger.newSession(context)
 
-            ZipInputStream(sourceInputStream).use { zipIn ->
-                extractZipFile(zipIn, tmpDir)
-            }
+            extractDirectory(sourceInputStream, tmpDir)
 
             return session
         }
 
-        fun readManifest(session: Long): ManifestFile? {
+        fun readManifest(session: Long): BackupManifestFile? {
             val tmpDir = SessionManger.sessionDirectory(session)
-            val manifestFile = File(tmpDir, ManifestFile.BACKUP_MANIFEST_FILENAME)
+            val manifestFile = File(tmpDir, BackupManifestFile.BACKUP_MANIFEST_FILENAME)
             return when {
                 manifestFile.exists() -> decodeManifest(manifestFile)
                 tmpDir != null        -> guessManifest(tmpDir)
@@ -109,7 +173,7 @@ object Backup {
             }
         }
 
-        fun executeImport(
+        suspend fun executeImport(
             context: Context,
             session: Long,
             content: Iterable<BackupItem>,
@@ -121,28 +185,28 @@ object Backup {
             // filter
             val selected = manifest.files.filterKeys { it in content }
             for ((item, relativePath) in selected) {
-                onUpdateProgress(item.displayName(context.resources))
-                FileInputStream(File(tmpDir, relativePath)).use { inputStream ->
-                    item.import(inputStream, context)
+                onUpdateProgress(displayName(item, context.resources))
+                File(tmpDir, relativePath).source().use { souce ->
+
+                    val executor = executor(item)
+                    executor?.import(context, souce) ?: warning(TAG, "Could not import $item")
                 }
             }
         }
 
-        fun endImportBackupFromArchive(
-            session: Long,
-        ) {
+        fun endImportBackupFromArchive(session: Long) {
             SessionManger.terminateSession(session)
         }
 
-        private fun decodeManifest(inputFile: File): ManifestFile {
-            val manifestFile = inputFile.inputStream().bufferedReader().use {
-                val raw = it.readText()
-                parser.decodeFromString<ManifestFile>(raw)
+        private fun decodeManifest(inputFile: File): BackupManifestFile {
+            val manifestFile = inputFile.source().buffer().use {
+                val raw = it.readUtf8()
+                parser.decodeFromString<BackupManifestFile>(raw)
             }
             return manifestFile
         }
 
-        private fun guessManifest(dir: File): ManifestFile? {
+        private fun guessManifest(dir: File): BackupManifestFile? {
             require(dir.isDirectory)
             val files = dir.list()
             if (files != null && files.isNotEmpty()) {
@@ -152,11 +216,12 @@ object Backup {
                         when {
                             fileName.endsWith(BackupItem.Type.DATABASE.suffix) -> { // special for database
                                 if (fileName.endsWith(item.type.suffix, true) &&
-                                    fileName.contains(item.key.removePrefix(PREFIX_DATABASE), true)
+                                    fileName.contains(item.key.removePrefix(BackupItem.PREFIX_DATABASE), true)
                                 ) {
                                     map[item] = fileName
                                 }
                             }
+
                             else                                               -> {
                                 if (fileName.endsWith(item.type.suffix, true) &&
                                     fileName.contains(item.key, true)
@@ -168,7 +233,7 @@ object Backup {
                     }
 
                 }
-                return ManifestFile(dir.lastModified(), map, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE)
+                return BackupManifestFile(dir.lastModified(), map, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE)
             }
             warning(TAG, "Couldn't analysis the content of this backup")
             return null

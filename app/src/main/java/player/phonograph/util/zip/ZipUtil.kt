@@ -4,6 +4,7 @@
 
 package player.phonograph.util.zip
 
+import okio.IOException
 import player.phonograph.util.reportError
 import android.util.Log
 import java.io.BufferedInputStream
@@ -11,11 +12,29 @@ import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
+import java.io.InputStream
+import java.io.OutputStream
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
 
 object ZipUtil {
+
+    fun zipDirectory(destination: OutputStream, directory: File): Boolean {
+        val files = directory.listFiles() ?: return false
+        return try {
+            ZipOutputStream(destination).use { target ->
+                for (file in files) {
+                    addToZipFile(target, file, file.name)
+                }
+            }
+            true
+        } catch (e: IOException) {
+            reportError(e, "ZipUtil", "Failed to zip $destination")
+            false
+        }
+
+    }
 
     fun addToZipFile(destination: ZipOutputStream, file: File, entryName: String): Boolean {
         runCatching {
@@ -30,17 +49,30 @@ object ZipUtil {
                 }
             } else {
                 reportError(
-                    IllegalStateException(), "ZopUtil",
+                    IllegalStateException(), "ZipUtil",
                     "File ${file.name} is not a file"
                 )
             }
         }.let {
             if (it.isFailure) reportError(
                 it.exceptionOrNull() ?: Exception(),
-                "ZopUtil",
+                "ZipUtil",
                 "Failed to add ${file.name} to current archive file ($destination)"
             )
             return it.isSuccess
+        }
+    }
+
+
+    fun extractDirectory(sourceInputStream: InputStream, directory: File): Boolean {
+        return try {
+            ZipInputStream(sourceInputStream).use { zipIn ->
+                extractZipFile(zipIn, directory)
+            }
+            true
+        } catch (e: Exception) {
+            reportError(e, "ZipUtil", "Failed to extract $sourceInputStream to $directory")
+            false
         }
     }
 
@@ -60,7 +92,7 @@ object ZipUtil {
                         }
                     }
                 } else {
-                    Log.w("ZopUtil", "${this.name} is directory!!")
+                    Log.w("ZipUtil", "${this.name} is directory!!")
                 }
             }
         }
