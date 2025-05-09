@@ -69,6 +69,7 @@ class CardPlayerFragment : AbsPlayerFragment() {
 
         view.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
             override fun onGlobalLayout() {
+                if (_viewBinding == null) return // for somehow, especially settings changed, view is still not ready
                 view.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 impl.applyWindowInsect()
                 fixPanelNestedScrolling()
