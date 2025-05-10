@@ -35,6 +35,7 @@ import player.phonograph.util.text.totalDuration
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.primaryColor
 import player.phonograph.util.theme.updateSystemBarsColor
+import player.phonograph.util.ui.applyWindowInsetsAsBottomView
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import util.theme.color.primaryTextColor
 import util.theme.color.secondaryTextColor
@@ -130,6 +131,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvider
         with(viewBinding.recyclerView) {
             layoutManager = linearLayoutManager
             adapter = songAdapter
+            applyWindowInsetsAsBottomView()
         }
         // Links
         viewBinding.artistText.setOnClickListener {

@@ -13,6 +13,7 @@ import player.phonograph.model.sort.SortMode
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.util.observe
 import player.phonograph.util.theme.accentColor
+import player.phonograph.util.ui.applyWindowInsetsAsBottomView
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
@@ -54,6 +55,7 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>> : AbsPanelPage() {
         layoutManager = GridLayoutManager(requireContext(), displayConfig.gridSize)
         binding.recyclerView.layoutManager = layoutManager
         binding.recyclerView.setUpFastScrollRecyclerViewColor(context, accentColor())
+        binding.recyclerView.applyWindowInsetsAsBottomView()
         binding.refreshContainer.apply {
             setColorSchemeColors(accentColor())
             setDistanceToTriggerSync(480)

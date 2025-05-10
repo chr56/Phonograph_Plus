@@ -33,6 +33,7 @@ import player.phonograph.util.text.readableDuration
 import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.primaryColor
+import player.phonograph.util.ui.applyWindowInsetsAsBottomView
 import player.phonograph.util.ui.hideKeyboard
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import player.phonograph.util.ui.showKeyboard
@@ -188,6 +189,7 @@ class PlaylistDetailActivity :
                 override fun onFastScrollStop() {}
             }
         )
+        binding.recyclerView.applyWindowInsetsAsBottomView()
         // Adapter
         adapter = PlaylistSongDisplayAdapter(
             this,

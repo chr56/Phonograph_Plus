@@ -113,12 +113,23 @@ class CrashActivity : ToolbarActivity() {
                 Toast.LENGTH_SHORT
             ).show()
         }
+        // Paddings
+        ViewCompat.setOnApplyWindowInsetsListener(binding.scrollview) { view, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars())
+            view.setPadding(
+                view.paddingLeft,
+                view.paddingTop,
+                view.paddingRight,
+                insets.bottom
+            )
+            windowInsets
+        }
         ViewCompat.setOnApplyWindowInsetsListener(binding.copyToClipboard) { view, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars())
             view.updateLayoutParams<MarginLayoutParams> {
                 bottomMargin = insets.bottom
             }
-            WindowInsetsCompat.CONSUMED
+            windowInsets
         }
 
         // save crash report

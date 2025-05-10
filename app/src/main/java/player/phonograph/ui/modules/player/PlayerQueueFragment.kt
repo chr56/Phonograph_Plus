@@ -37,6 +37,7 @@ import player.phonograph.util.theme.themeFooterColor
 import player.phonograph.util.theme.themeIconColor
 import player.phonograph.util.theme.tintButtons
 import player.phonograph.util.ui.PHONOGRAPH_ANIM_TIME
+import player.phonograph.util.ui.applyWindowInsetsAsBottomView
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import player.phonograph.util.ui.textColorTransitionAnimator
 import util.theme.color.darkenColor
@@ -139,6 +140,8 @@ class PlayerQueueFragment : AbsMusicServiceFragment() {
 
         binding.currentSong.root.visibility = if (!argumentDisplayCurrentSong) View.GONE else View.VISIBLE
         binding.queueTopShadow.visibility = if (!argumentWithShadow) View.GONE else View.VISIBLE
+
+        binding.playerRecyclerView.applyWindowInsetsAsBottomView()
 
         observeState()
     }

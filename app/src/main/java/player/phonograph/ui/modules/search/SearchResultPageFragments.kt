@@ -24,6 +24,7 @@ import player.phonograph.ui.adapter.PlaylistBasicDisplayPresenter
 import player.phonograph.ui.adapter.QueueSongBasicDisplayPresenter
 import player.phonograph.ui.adapter.SongBasicDisplayPresenter
 import player.phonograph.util.observe
+import player.phonograph.util.ui.applyWindowInsetsAsBottomView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -71,6 +72,7 @@ abstract class SearchResultPageFragment<T> : Fragment() {
                 // hideSoftKeyboard() //todo
                 false
             }
+            recyclerView.applyWindowInsetsAsBottomView()
         }
         observe(targetFlow()) { data ->
             binding.empty.visibility = if (data.isEmpty()) View.VISIBLE else View.GONE

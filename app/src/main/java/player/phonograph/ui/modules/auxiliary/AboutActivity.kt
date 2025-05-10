@@ -22,6 +22,7 @@ import player.phonograph.util.reportError
 import player.phonograph.util.theme.nightMode
 import player.phonograph.util.theme.primaryColor
 import player.phonograph.util.theme.updateSystemBarsColor
+import player.phonograph.util.ui.applyWindowInsetsAsBottomView
 import util.theme.color.darkenColor
 import util.theme.view.toolbar.setToolbarColor
 import androidx.annotation.Keep
@@ -116,6 +117,8 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
         setUpToolbar()
         setUpAppVersion()
         setUpOnClickListeners()
+
+        binding.scrollview.applyWindowInsetsAsBottomView()
     }
 
     private fun setUpToolbar() {
@@ -173,10 +176,11 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
 
     override fun onClick(v: View) {
         when (v) {
-            changelog -> {
+            changelog                                                        -> {
                 ChangelogDialog.create().show(supportFragmentManager, "CHANGELOG_DIALOG")
             }
-            checkUpgrade -> {
+
+            checkUpgrade                                                     -> {
                 lifecycleScope.launch(Dispatchers.Unconfined) {
                     Update.checkUpdate { versionCatalog: VersionCatalog, upgradable: Boolean ->
                         if (upgradable) {
@@ -192,56 +196,72 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
                     }
                 }
             }
-            licenses -> {
+
+            licenses                                                         -> {
                 showLicenseDialog()
             }
-            intro -> {
+
+            intro                                                            -> {
                 startActivity(Intent(this, PhonographIntroActivity::class.java))
             }
-            followOnTwitter -> {
+
+            followOnTwitter                                                  -> {
                 openUrl(TWITTER)
             }
-            forkOnGitHub -> {
+
+            forkOnGitHub                                                     -> {
                 openUrl(GITHUB)
             }
-            visitWebsite -> {
+
+            visitWebsite                                                     -> {
                 openUrl(WEBSITE)
             }
-            reportBugs -> {
+
+            reportBugs                                                       -> {
                 ReportIssueDialog().show(supportFragmentManager, "ReportIssueDialog")
             }
-            writeAnEmail -> {
+
+            writeAnEmail                                                     -> {
                 val intent = Intent(Intent.ACTION_SENDTO)
                 intent.data = Uri.parse("mailto:contact@kabouzeid.com")
                 intent.putExtra(Intent.EXTRA_EMAIL, "contact@kabouzeid.com")
                 intent.putExtra(Intent.EXTRA_SUBJECT, "Phonograph")
                 startActivity(Intent.createChooser(intent, "E-Mail"))
             }
-            translate -> {
+
+            translate                                                        -> {
                 openUrl(TRANSLATE)
             }
-            aidanFollestadGitHub -> {
+
+            aidanFollestadGitHub                                             -> {
                 openUrl(AIDAN_FOLLESTAD_GITHUB)
             }
-            michaelCookWebsite -> {
+
+            michaelCookWebsite                                               -> {
                 openUrl(MICHAEL_COOK_WEBSITE)
             }
-            maartenCorpelWebsite -> {
+
+            maartenCorpelWebsite                                             -> {
                 openUrl(MAARTEN_CORPEL_WEBSITE)
             }
-            maartenCorpelTwitter -> {
+
+            maartenCorpelTwitter                                             -> {
                 openUrl(MAARTEN_CORPEL_TWITTER)
             }
-            aleksandarTesicTwitter -> {
+
+            aleksandarTesicTwitter                                           -> {
                 openUrl(ALEKSANDAR_TESIC_TWITTER)
             }
-            eugeneCheungGitHub -> {
+
+            eugeneCheungGitHub                                               -> {
                 openUrl(EUGENE_CHEUNG_GITHUB)
             }
-            eugeneCheungWebsite -> {
+
+            eugeneCheungWebsite                                              -> {
                 openUrl(EUGENE_CHEUNG_WEBSITE)
             }
-            adrianTwitter -> {
+
+            adrianTwitter                                                    -> {
                 openUrl(ADRIAN_TWITTER)
             }
 
@@ -268,14 +288,18 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
         val notices = try {
             NoticesProcessor.readNotices(this)
         } catch (e: Exception) {
-            reportError(e,"NoticesProcessor", "Failed to read notices")
+            reportError(e, "NoticesProcessor", "Failed to read notices")
             return
         }
         LicensesDialog.Builder(this).setNotices(notices).setTitle(R.string.licenses)
-            .setNoticesCssStyle(getString(R.string.license_dialog_style).replace("{bg-color}",
-                    if (nightMode) "424242" else "ffffff")
-                .replace("{text-color}", if (nightMode) "ffffff" else "000000")
-                .replace("{license-bg-color}", if (nightMode) "535353" else "eeeeee")).setIncludeOwnLicense(true).build().show()
+            .setNoticesCssStyle(
+                getString(R.string.license_dialog_style).replace(
+                    "{bg-color}",
+                    if (nightMode) "424242" else "ffffff"
+                )
+                    .replace("{text-color}", if (nightMode) "ffffff" else "000000")
+                    .replace("{license-bg-color}", if (nightMode) "535353" else "eeeeee")
+            ).setIncludeOwnLicense(true).build().show()
     }
 
     companion object {

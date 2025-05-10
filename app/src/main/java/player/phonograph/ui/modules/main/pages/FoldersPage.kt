@@ -24,6 +24,7 @@ import player.phonograph.ui.adapter.SongBasicDisplayPresenter
 import player.phonograph.ui.adapter.SongCollectionBasicDisplayPresenter
 import player.phonograph.util.observe
 import player.phonograph.util.theme.accentColor
+import player.phonograph.util.ui.applyWindowInsetsAsBottomView
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.viewModels
@@ -85,6 +86,7 @@ class FoldersPage : AbsPanelPage() {
         layoutManager = GridLayoutManager(requireContext(), folderPageDisplayConfig.gridSize)
         binding.recyclerView.layoutManager = layoutManager
         binding.recyclerView.setUpFastScrollRecyclerViewColor(requireContext(), accentColor())
+        binding.recyclerView.applyWindowInsetsAsBottomView()
 
         binding.refreshContainer.apply {
             setColorSchemeColors(accentColor())

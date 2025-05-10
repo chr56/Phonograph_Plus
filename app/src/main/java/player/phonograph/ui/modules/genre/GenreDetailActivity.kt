@@ -24,6 +24,7 @@ import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
 import player.phonograph.util.parcelable
 import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.primaryColor
+import player.phonograph.util.ui.applyWindowInsetsAsBottomView
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import util.theme.color.primaryTextColor
 import util.theme.view.menu.tintOverflowButtonColor
@@ -101,6 +102,7 @@ class GenreDetailActivity : AbsSlidingMusicPanelActivity(),
             adapter = this@GenreDetailActivity.adapter
         }
         binding.recyclerView.setUpFastScrollRecyclerViewColor(this, accentColor())
+        binding.recyclerView.applyWindowInsetsAsBottomView()
         adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onChanged() {
                 super.onChanged()

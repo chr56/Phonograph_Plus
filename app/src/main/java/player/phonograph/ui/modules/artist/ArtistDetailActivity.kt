@@ -43,6 +43,7 @@ import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.primaryColor
 import player.phonograph.util.theme.themeFooterColor
 import player.phonograph.util.theme.updateSystemBarsColor
+import player.phonograph.util.ui.applyWindowInsetsAsBottomView
 import util.theme.color.primaryTextColor
 import util.theme.color.secondaryTextColor
 import util.theme.color.toolbarTitleColor
@@ -124,6 +125,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvide
         with(viewBinding.songsRecycleView) {
             adapter = songAdapter
             layoutManager = LinearLayoutManager(this@ArtistDetailActivity, VERTICAL, false)
+            applyWindowInsetsAsBottomView()
         }
 
         albumAdapter = ArtistAlbumDisplayAdapter(this, ArtistAlbumDisplayPresenter(false))

@@ -17,6 +17,7 @@ import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import player.phonograph.util.theme.tintButtons
+import player.phonograph.util.ui.applyWindowInsetsAsBottomView
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import util.theme.color.primaryTextColor
 import androidx.activity.OnBackPressedCallback
@@ -108,6 +109,7 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
         adapter = createAdapter()
         layoutManager = LinearLayoutManager(activity)
         binding.recyclerView.setUpFastScrollRecyclerViewColor(requireContext(), accentColor)
+        binding.recyclerView.applyWindowInsetsAsBottomView()
 
         binding.recyclerView.apply {
             layoutManager = this@AbsFilesExplorerFragment.layoutManager
