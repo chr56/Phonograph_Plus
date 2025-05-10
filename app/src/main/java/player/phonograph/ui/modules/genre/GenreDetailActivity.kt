@@ -21,10 +21,12 @@ import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayPresenter
 import player.phonograph.ui.adapter.SongBasicDisplayPresenter
 import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
+import player.phonograph.util.observe
 import player.phonograph.util.parcelable
 import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.primaryColor
-import player.phonograph.util.ui.applyWindowInsetsAsBottomView
+import player.phonograph.util.ui.BottomViewWindowInsetsController
+import player.phonograph.util.ui.applyControllableWindowInsetsAsBottomView
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import util.theme.color.primaryTextColor
 import util.theme.view.menu.tintOverflowButtonColor
@@ -56,7 +58,7 @@ class GenreDetailActivity : AbsSlidingMusicPanelActivity(),
     override val openFileStorageAccessDelegate: OpenFileStorageAccessDelegate = OpenFileStorageAccessDelegate()
     override val openDirStorageAccessDelegate: OpenDirStorageAccessDelegate = OpenDirStorageAccessDelegate()
 
-
+    private lateinit var bottomViewWindowInsetsController: BottomViewWindowInsetsController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         genre = parseIntent(intent) ?: throw IllegalArgumentException()
@@ -102,7 +104,6 @@ class GenreDetailActivity : AbsSlidingMusicPanelActivity(),
             adapter = this@GenreDetailActivity.adapter
         }
         binding.recyclerView.setUpFastScrollRecyclerViewColor(this, accentColor())
-        binding.recyclerView.applyWindowInsetsAsBottomView()
         adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onChanged() {
                 super.onChanged()
@@ -110,6 +111,9 @@ class GenreDetailActivity : AbsSlidingMusicPanelActivity(),
             }
         })
         isRecyclerViewPrepared = true
+        // WindowInsets
+        bottomViewWindowInsetsController = binding.recyclerView.applyControllableWindowInsetsAsBottomView()
+        observe(panelViewModel.isPanelHidden) { hidden -> bottomViewWindowInsetsController.enabled = hidden }
     }
 
     private fun setUpToolBar() {

@@ -23,8 +23,10 @@ import player.phonograph.ui.adapter.DisplayPresenter
 import player.phonograph.ui.adapter.PlaylistBasicDisplayPresenter
 import player.phonograph.ui.adapter.QueueSongBasicDisplayPresenter
 import player.phonograph.ui.adapter.SongBasicDisplayPresenter
+import player.phonograph.ui.modules.panel.PanelViewModel
 import player.phonograph.util.observe
-import player.phonograph.util.ui.applyWindowInsetsAsBottomView
+import player.phonograph.util.ui.BottomViewWindowInsetsController
+import player.phonograph.util.ui.applyControllableWindowInsetsAsBottomView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -51,6 +53,10 @@ abstract class SearchResultPageFragment<T> : Fragment() {
 
     val viewModel: SearchActivityViewModel by viewModels(ownerProducer = { requireActivity() })
 
+    protected val panelViewModel: PanelViewModel by viewModels(ownerProducer = { requireActivity() })
+
+    protected lateinit var bottomViewWindowInsetsController: BottomViewWindowInsetsController
+
     protected lateinit var actualAdapter: RecyclerView.Adapter<*>
 
     protected abstract fun createAdapter(activity: AppCompatActivity): RecyclerView.Adapter<*>
@@ -72,12 +78,13 @@ abstract class SearchResultPageFragment<T> : Fragment() {
                 // hideSoftKeyboard() //todo
                 false
             }
-            recyclerView.applyWindowInsetsAsBottomView()
+            bottomViewWindowInsetsController = recyclerView.applyControllableWindowInsetsAsBottomView()
         }
         observe(targetFlow()) { data ->
             binding.empty.visibility = if (data.isEmpty()) View.VISIBLE else View.GONE
             updateDataset(data)
         }
+        observe(panelViewModel.isPanelHidden) { hidden -> bottomViewWindowInsetsController.enabled = hidden }
     }
 
     protected abstract fun targetFlow(): StateFlow<List<T>>

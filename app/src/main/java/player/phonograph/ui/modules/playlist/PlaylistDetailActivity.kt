@@ -33,7 +33,8 @@ import player.phonograph.util.text.readableDuration
 import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.primaryColor
-import player.phonograph.util.ui.applyWindowInsetsAsBottomView
+import player.phonograph.util.ui.BottomViewWindowInsetsController
+import player.phonograph.util.ui.applyControllableWindowInsetsAsBottomView
 import player.phonograph.util.ui.hideKeyboard
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import player.phonograph.util.ui.showKeyboard
@@ -83,6 +84,7 @@ class PlaylistDetailActivity :
     override val openDirStorageAccessDelegate: OpenDirStorageAccessDelegate = OpenDirStorageAccessDelegate()
     override val openFileStorageAccessDelegate: OpenFileStorageAccessDelegate = OpenFileStorageAccessDelegate()
 
+    private lateinit var bottomViewWindowInsetsController: BottomViewWindowInsetsController
 
     /* ********************
      *
@@ -189,7 +191,6 @@ class PlaylistDetailActivity :
                 override fun onFastScrollStop() {}
             }
         )
-        binding.recyclerView.applyWindowInsetsAsBottomView()
         // Adapter
         adapter = PlaylistSongDisplayAdapter(
             this,
@@ -209,6 +210,9 @@ class PlaylistDetailActivity :
             recyclerView.layoutManager = LinearLayoutManager(this)
             recyclerView.itemAnimator = RefactoredDefaultItemAnimator()
         }
+        // WindowInsets
+        bottomViewWindowInsetsController = binding.recyclerView.applyControllableWindowInsetsAsBottomView()
+        observe(panelViewModel.isPanelHidden) { hidden -> bottomViewWindowInsetsController.enabled = hidden }
     }
 
     private fun setUpDashBroad() {

@@ -6,7 +6,13 @@ package player.phonograph.ui.modules.explorer
 
 import player.phonograph.mechanism.actions.ClickActionProviders
 import player.phonograph.model.file.FileEntity
+import player.phonograph.ui.modules.panel.PanelViewModel
+import player.phonograph.util.observe
+import player.phonograph.util.ui.BottomViewWindowInsetsController
+import player.phonograph.util.ui.applyControllableWindowInsetsAsBottomView
 import androidx.fragment.app.viewModels
+import android.os.Bundle
+import android.view.View
 
 class FilesPageExplorerFragment : AbsFilesExplorerFragment<FilesPageViewModel, FilesPageAdapter>() {
 
@@ -33,5 +39,18 @@ class FilesPageExplorerFragment : AbsFilesExplorerFragment<FilesPageViewModel, F
                 }
             }
         }//todo
+
+
+    //region WindowInsets
+    private val panelViewModel: PanelViewModel by viewModels(ownerProducer = { requireActivity() })
+    private lateinit var bottomViewWindowInsetsController: BottomViewWindowInsetsController
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        bottomViewWindowInsetsController = binding.recyclerView.applyControllableWindowInsetsAsBottomView()
+        observe(panelViewModel.isPanelHidden) { hidden -> bottomViewWindowInsetsController.enabled = hidden }
+    }
+    //endregion
 
 }

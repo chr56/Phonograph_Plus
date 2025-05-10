@@ -11,10 +11,13 @@ import player.phonograph.model.Song
 import player.phonograph.model.service.ShuffleMode
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.ui.ItemLayoutStyle
+import player.phonograph.ui.modules.panel.PanelViewModel
 import player.phonograph.util.observe
 import player.phonograph.util.theme.accentColor
-import player.phonograph.util.ui.applyWindowInsetsAsBottomView
+import player.phonograph.util.ui.BottomViewWindowInsetsController
+import player.phonograph.util.ui.applyControllableWindowInsetsAsBottomView
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
@@ -50,12 +53,15 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>> : AbsPanelPage() {
         prepareAdapter()
     }
 
+    protected val panelViewModel: PanelViewModel by viewModels(ownerProducer = { requireActivity() })
+    protected lateinit var bottomViewWindowInsetsController: BottomViewWindowInsetsController
+
     private fun prepareRecyclerView() {
         val context = requireContext()
         layoutManager = GridLayoutManager(requireContext(), displayConfig.gridSize)
         binding.recyclerView.layoutManager = layoutManager
         binding.recyclerView.setUpFastScrollRecyclerViewColor(context, accentColor())
-        binding.recyclerView.applyWindowInsetsAsBottomView()
+
         binding.refreshContainer.apply {
             setColorSchemeColors(accentColor())
             setDistanceToTriggerSync(480)
@@ -63,6 +69,9 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>> : AbsPanelPage() {
             setOnRefreshListener { viewModel.loadDataset(context) }
         }
         observe(viewModel.loading) { binding.refreshContainer.isRefreshing = it }
+
+        bottomViewWindowInsetsController = binding.recyclerView.applyControllableWindowInsetsAsBottomView()
+        observe(panelViewModel.isPanelHidden) { hidden -> bottomViewWindowInsetsController.enabled = hidden }
     }
 
     protected lateinit var adapter: A

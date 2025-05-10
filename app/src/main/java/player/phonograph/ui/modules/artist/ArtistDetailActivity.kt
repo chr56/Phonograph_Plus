@@ -43,7 +43,8 @@ import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.primaryColor
 import player.phonograph.util.theme.themeFooterColor
 import player.phonograph.util.theme.updateSystemBarsColor
-import player.phonograph.util.ui.applyWindowInsetsAsBottomView
+import player.phonograph.util.ui.BottomViewWindowInsetsController
+import player.phonograph.util.ui.applyControllableWindowInsetsAsBottomView
 import util.theme.color.primaryTextColor
 import util.theme.color.secondaryTextColor
 import util.theme.color.toolbarTitleColor
@@ -79,6 +80,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvide
     override val openFileStorageAccessDelegate: OpenFileStorageAccessDelegate = OpenFileStorageAccessDelegate()
     override val openDirStorageAccessDelegate: OpenDirStorageAccessDelegate = OpenDirStorageAccessDelegate()
 
+    private lateinit var bottomViewWindowInsetsController: BottomViewWindowInsetsController
 
     private lateinit var albumAdapter: ArtistAlbumDisplayAdapter
     private lateinit var songAdapter: DisplayAdapter<Song>
@@ -125,7 +127,6 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvide
         with(viewBinding.songsRecycleView) {
             adapter = songAdapter
             layoutManager = LinearLayoutManager(this@ArtistDetailActivity, VERTICAL, false)
-            applyWindowInsetsAsBottomView()
         }
 
         albumAdapter = ArtistAlbumDisplayAdapter(this, ArtistAlbumDisplayPresenter(false))
@@ -134,6 +135,9 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvide
             layoutManager = LinearLayoutManager(this@ArtistDetailActivity, HORIZONTAL, false)
         }
         setColors(themeFooterColor(this))
+        // WindowInsets
+        bottomViewWindowInsetsController = viewBinding.songsRecycleView.applyControllableWindowInsetsAsBottomView()
+        observe(panelViewModel.isPanelHidden) { hidden -> bottomViewWindowInsetsController.enabled = hidden }
     }
 
     private fun observeData() {

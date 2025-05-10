@@ -35,7 +35,8 @@ import player.phonograph.util.text.totalDuration
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.primaryColor
 import player.phonograph.util.theme.updateSystemBarsColor
-import player.phonograph.util.ui.applyWindowInsetsAsBottomView
+import player.phonograph.util.ui.BottomViewWindowInsetsController
+import player.phonograph.util.ui.applyControllableWindowInsetsAsBottomView
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import util.theme.color.primaryTextColor
 import util.theme.color.secondaryTextColor
@@ -66,6 +67,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvider
     override val openFileStorageAccessDelegate: OpenFileStorageAccessDelegate = OpenFileStorageAccessDelegate()
     override val openDirStorageAccessDelegate: OpenDirStorageAccessDelegate = OpenDirStorageAccessDelegate()
 
+    private lateinit var bottomViewWindowInsetsController: BottomViewWindowInsetsController
 
     private lateinit var songAdapter: DisplayAdapter<Song>
     private lateinit var linearLayoutManager: LinearLayoutManager
@@ -131,7 +133,6 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvider
         with(viewBinding.recyclerView) {
             layoutManager = linearLayoutManager
             adapter = songAdapter
-            applyWindowInsetsAsBottomView()
         }
         // Links
         viewBinding.artistText.setOnClickListener {
@@ -146,6 +147,9 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvider
         viewBinding.innerAppBar.addOnOffsetChangedListener { _, verticalOffset ->
             viewBinding.recyclerView.setPaddingTop(viewBinding.innerAppBar.totalScrollRange + verticalOffset)
         }
+        // WindowInsets
+        bottomViewWindowInsetsController = viewBinding.recyclerView.applyControllableWindowInsetsAsBottomView()
+        observe(panelViewModel.isPanelHidden) { hidden -> bottomViewWindowInsetsController.enabled = hidden }
     }
 
     private fun RecyclerView.setPaddingTop(top: Int) = setPadding(paddingLeft, top, paddingRight, paddingBottom)

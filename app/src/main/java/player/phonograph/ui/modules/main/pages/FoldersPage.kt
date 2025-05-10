@@ -22,9 +22,11 @@ import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayPresenter
 import player.phonograph.ui.adapter.SongBasicDisplayPresenter
 import player.phonograph.ui.adapter.SongCollectionBasicDisplayPresenter
+import player.phonograph.ui.modules.panel.PanelViewModel
 import player.phonograph.util.observe
 import player.phonograph.util.theme.accentColor
-import player.phonograph.util.ui.applyWindowInsetsAsBottomView
+import player.phonograph.util.ui.BottomViewWindowInsetsController
+import player.phonograph.util.ui.applyControllableWindowInsetsAsBottomView
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.viewModels
@@ -81,12 +83,14 @@ class FoldersPage : AbsPanelPage() {
     private lateinit var songAdapter: DisplayAdapter<Song>
     private lateinit var layoutManager: GridLayoutManager
 
+    private val panelViewModel: PanelViewModel by viewModels(ownerProducer = { requireActivity() })
+    private lateinit var bottomViewWindowInsetsController: BottomViewWindowInsetsController
+
 
     private fun prepareRecyclerView() {
         layoutManager = GridLayoutManager(requireContext(), folderPageDisplayConfig.gridSize)
         binding.recyclerView.layoutManager = layoutManager
         binding.recyclerView.setUpFastScrollRecyclerViewColor(requireContext(), accentColor())
-        binding.recyclerView.applyWindowInsetsAsBottomView()
 
         binding.refreshContainer.apply {
             setColorSchemeColors(accentColor())
@@ -98,6 +102,9 @@ class FoldersPage : AbsPanelPage() {
                 isRefreshing = false
             }
         }
+
+        bottomViewWindowInsetsController = binding.recyclerView.applyControllableWindowInsetsAsBottomView()
+        observe(panelViewModel.isPanelHidden) { hidden -> bottomViewWindowInsetsController.enabled = hidden }
     }
 
     private fun prepareAdaptersAndData() {

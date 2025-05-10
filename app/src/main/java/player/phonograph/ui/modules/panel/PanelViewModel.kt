@@ -37,4 +37,11 @@ class PanelViewModel(
         }
     }
 
+    private val _isPanelHidden: MutableStateFlow<Boolean> = MutableStateFlow(true)
+    val isPanelHidden get() = _isPanelHidden.asStateFlow()
+
+    fun updatePanelState(hidden: Boolean) {
+        _isPanelHidden.value = hidden
+    }
+
 }

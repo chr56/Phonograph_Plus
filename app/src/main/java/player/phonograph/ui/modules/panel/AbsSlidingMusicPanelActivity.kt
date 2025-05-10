@@ -112,10 +112,19 @@ abstract class AbsSlidingMusicPanelActivity :
         }
 
         // states
-        observe(queueViewModel.queue) { queue -> hideBottomBar(queue.isEmpty() == true) }
+        observe(queueViewModel.queue) { queue -> panelViewModel.updatePanelState(hidden = queue.isEmpty()) }
         observe(panelViewModel.colorChange) { (oldColor, newColor) ->
             if (slidingUpPanelLayout.panelState == PanelState.EXPANDED) {
                 animateSystemBarsColor(oldColor, newColor)
+            }
+        }
+        observe(panelViewModel.isPanelHidden, state = Lifecycle.State.STARTED) { hidden ->
+            if (hidden) {
+                slidingUpPanelLayout.panelHeight = 0
+                requestToCollapse()
+            } else {
+                slidingUpPanelLayout.panelHeight =
+                    panelBinding.navigationBar.height + resources.getDimensionPixelSize(R.dimen.mini_player_height)
             }
         }
 
@@ -125,6 +134,11 @@ abstract class AbsSlidingMusicPanelActivity :
             view.updateLayoutParams<MarginLayoutParams> {
                 rightMargin = insets.right
                 leftMargin = insets.left
+            }
+            val hidden = panelViewModel.isPanelHidden.value
+            if (!hidden) {
+                slidingUpPanelLayout.panelHeight =
+                    panelBinding.navigationBar.height + resources.getDimensionPixelSize(R.dimen.mini_player_height)
             }
             windowInsets
         }
@@ -224,32 +238,6 @@ abstract class AbsSlidingMusicPanelActivity :
         return true
     }
 
-    var isBottomBarHidden: Boolean = false
-        private set
-
-    fun hideBottomBar(hide: Boolean) {
-        if (hide) {
-            slidingUpPanelLayout.panelHeight = 0
-            requestToCollapse()
-        } else {
-            slidingUpPanelLayout.panelHeight =
-                resources.getDimensionPixelSize(R.dimen.mini_player_height) + panelBinding.navigationBar.height
-        }
-        isBottomBarHidden = hide
-    }
-
-    override fun onServiceConnected() {
-        super.onServiceConnected()
-        if (MusicPlayerRemote.playingQueue.isNotEmpty()) {
-            slidingUpPanelLayout.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    slidingUpPanelLayout.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                    hideBottomBar(false)
-                }
-            })
-        } // don't call hideBottomBar(true) here as it causes a bug with the SlidingUpPanelLayout
-    }
-
     private fun setMiniPlayerFadingProgress(@FloatRange(from = 0.0, to = 1.0) progress: Float) {
         val alpha = 1 - progress
         panelBinding.miniPlayerFragment.also {
@@ -279,7 +267,7 @@ abstract class AbsSlidingMusicPanelActivity :
         if (playerFragment?.useTransparentStatusbar == true) Color.TRANSPARENT else color
 
     private fun actualNavigationbarColor(@ColorInt color: Int): Int =
-        if (isBottomBarHidden) translucentScrim else color
+        if (panelViewModel.isPanelHidden.value) translucentScrim else color
 
     private var animator: ValueAnimator? = null
 
