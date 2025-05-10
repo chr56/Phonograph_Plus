@@ -27,7 +27,9 @@ import player.phonograph.util.theme.getTintedDrawable
 import android.content.Context
 import android.view.Menu
 import android.view.MenuItem
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Random
 
 object MultiSelectionToolbarMenuProviders {
@@ -172,19 +174,22 @@ object MultiSelectionToolbarMenuProviders {
             true
         }
 
-    private suspend fun convertToSongs(selections: Iterable<*>, context: Context): List<Song> = selections.flatMap {
-        when (it) {
-            is Song            -> listOf(it)
-            is QueueSong       -> listOf(it.song)
-            is Album           -> Songs.album(context, it.id)
-            is Artist          -> Songs.artist(context, it.id)
-            is Genre           -> Songs.genres(context, it.id)
-            is Playlist        -> PlaylistProcessors.reader(it).allSongs(context)
-            is SongCollection  -> it.songs
-            is FileEntity      -> convertFileEntityToSong(context, it)
-            else               -> emptyList()
+    private suspend fun convertToSongs(selections: Iterable<*>, context: Context): List<Song> =
+        withContext(Dispatchers.Default) {
+            selections.flatMap {
+                when (it) {
+                    is Song           -> listOf(it)
+                    is QueueSong      -> listOf(it.song)
+                    is Album          -> Songs.album(context, it.id)
+                    is Artist         -> Songs.artist(context, it.id)
+                    is Genre          -> Songs.genres(context, it.id)
+                    is Playlist       -> PlaylistProcessors.reader(it).allSongs(context)
+                    is SongCollection -> it.songs
+                    is FileEntity     -> convertFileEntityToSong(context, it)
+                    else              -> emptyList()
+                }
+            }
         }
-    }
 
     private suspend fun convertFileEntityToSong(context: Context, fileEntity: FileEntity): List<Song> {
         return when (fileEntity) {
