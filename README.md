@@ -38,7 +38,7 @@ Phonograph Plus inherits all features from [Phonograph](https://github.com/kabou
 If you're familiar with original Phonograph, please see [Additional Features or Enhancements Compared to Original Phonograph](./docs/Feature_Comparison.md).
 
 - Light weight
-- totally offline for privacy, and AD-free
+- Offline, AD-free and privacy
 - Classic Material Design 2
 - Night mode (Light, Dark, Black) supporting automatically switching
 - Customizable theme color (primary, accent) with Monet support
@@ -48,12 +48,14 @@ If you're familiar with original Phonograph, please see [Additional Features or 
 - Flexible playback notifications that are highly customizable
 - Flexible music organization, organised by songs, artist, albums, genres and folders (flatten or treed), ordered by various orders, with
   multiple selection support, viewed in grid or list with various layout style
+- Flexible main player user interface that are highly customizable
 - Android Auto support
 - Highly customizable behaviours for clicking
 - Path filter (excluded mode or included mode)
 - Search support
 - Favorite songs support
 - File Playlist support (viewing and basic editing; also pin-able)
+- Internal Database Playlist support
 - Play history and frequency record, and last added songs by flexible time intervals
 - Enhanced audio metadata viewer and tag editor
 - App shortcut and widgets

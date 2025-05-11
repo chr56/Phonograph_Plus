@@ -34,6 +34,8 @@ Here is an incomplete list compared to original Phonograph:
 - Playback speed control.
 - Customizable click actions for songs.
 - History tracking for the playback queue.
+- Enhanced Main Player.
+- Internal Database Playlist
 - Newly designed Detail page with additional metadata such as tags.
 - Updated Tag Editor with support for various tags.
 - Android Auto compatibility.
