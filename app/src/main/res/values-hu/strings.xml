@@ -157,6 +157,8 @@
     <string name="pref_title_remember_shuffle">Keverés megjegyzése</string>
     <string name="no_equalizer">Nem található hangszínszabályzó.</string>
     <string name="no_audio_ID">Először játsszon le egy dalt, majd próbálja újra.</string>
+    <string name="style_card">Kártya</string>
+    <string name="style_flat">Lapos</string>
     <string name="delete_action">Törlés</string>
     <string name="clear_action">Törlés</string>
     <string name="remove_action">Eltávolítás</string>
