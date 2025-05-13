@@ -93,8 +93,8 @@ data class PlayerControllerStyle(
         val DEFAULT_BUTTONS: Map<@ButtonPosition Int, @FunctionType Int>
             get() = mapOf(
                 BUTTONS_PRIMARY to FUNCTION_SEEK,
-                BUTTONS_SECONDARY to FUNCTION_SWITCH,
-                BUTTONS_TERTIARY to FUNCTION_QUEUE_MODE_N,
+                BUTTONS_SECONDARY to FUNCTION_NONE,
+                BUTTONS_TERTIARY to FUNCTION_SWITCH,
             )
 
         val DEFAULT get() = PlayerControllerStyle(STYLE_CLASSIC, DEFAULT_BUTTONS)
