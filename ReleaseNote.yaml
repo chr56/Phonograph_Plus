@@ -1,45 +1,27 @@
-version: "1.8.6.LTS"
+version: "1.8.7.LTS"
 channel: "LTS"
-versionCode: 1086
-timestamp: 1740250000
+versionCode: 1087
+timestamp: 1747378800
 notes:
   en:
     highlights: [ ]
     items:
-      - "Fix: text color legibility in some dialogs in night mode (backported from v1.9.2)"
-      - "Fix: random crashes from background (backported from v1.9.1)"
-      - "Fix: possible crashes after rebooting on some devices (backported from v1.9.1)"
-      - "Fix: possible crashes after switching back from background on some devices (backported from v1.9.1)"
-      - "Fix: lrc lyrics with same timestamp would be overridden with last one (backported from v1.9.1)"
-      - "Fix: possibly some files are missing in Files tab due to sorting (backported from v1.9.1)"
-      - "Fix: possible crashes when dragging items in some circumstances (backported from v1.9.0)"
-      - "Fix: dragging playlist items but not in Edit Mode (backported from v1.9.0)"
-      - "Fix: crash when entering Tag Editor from multi-selection mode but the selection contains no song (backported from v1.9.0)"
-      - "Fix: crash after skipping from some notifications or BT devices but queue is empty (backported from v1.9.0)"
-      - "Fix: incorrect sorting order of My Top Tracks and Recently Played on some devices (backported from v1.9.0)"
-      - "Fix: missing automatic refresh in Folders tab (backported from v1.9.0)"
-      - "Improve: show bottom sliding panel in Search (backported from v1.9.0)"
-      - "Modify: change default File Playlist icon"
-      - "Development: update dependencies"
+      - "Fix: Sleep timer possibly not working on Android 14 and above (backported from v1.10.1)"
+      - "Fix: randomly change artwork occasionally when toggling shuffle mode (backported from v1.10.0)"
+      - "Fix: some abnormal behaviors when changing items display settings especially on Artist Page (backported from v1.9.3)"
+      - "Improve: performance of image loading for albums and artists (backported from v1.9.3)"
+      - "Translation: update Hungarian (by Balázs Úr & Balázs Meskó)"
+      - "Development: update dependencies, upgrade Kotlin to 2.1.20, upgrade AGP to 8.9.2"
 
   zh:
     highlights: [ ]
     items:
-      - "修复 夜间模式下部分对话框中文本颜色问题 (移植自 v1.9.2)"
-      - "修复 后台随机崩溃 (移植自 v1.9.1)"
-      - "修复 部分设备上重启后崩溃 (移植自 v1.9.1)"
-      - "修复 部分设备上从后台切换回来后崩溃 (移植自 v1.9.1)"
-      - "修复 时间戳相同的多行 lrc 歌词将被最后一行覆盖 (移植自 v1.9.1)"
-      - "修复 排序导致的文件页部分文件不显示 (移植自 v1.9.1)"
-      - "修复 某些情况下拖动列表项目时可能导致崩溃 (移植自 v1.9.0)"
-      - "修复 拖动播放列表项目却不在编辑模式下 (移植自 v1.9.0)"
-      - "修复 从多选进入标签编辑器但所选内容不含任何歌曲时崩溃 (移植自 v1.9.0)"
-      - "修复 播放队列清空后, 从某些通知或蓝牙设备切换曲目时崩溃 (移植自 v1.9.0)"
-      - "修复 部分设备上最常听的歌曲和最近播放播放列表乱序 (移植自 v1.9.0)"
-      - "修复 文件夹页缺失自动刷新 (移植自 v1.9.0)"
-      - "改进 搜索界面中显示底部播放器 (移植自 v1.9.0)"
-      - "修改 默认文件播放列表图标"
-      - "开发 更新依赖"
+      - "修复 睡眠定时器在 Android 14 及以上版本上可能失效 (移植自 v1.10.1)"
+      - "修复 切换随机播放模式时偶尔会随机更改封面 (移植自 v1.10.0)"
+      - "修复 更改项目显示设置特别是艺术家页面上时出现一些异常行为 (移植自 v1.9.3)"
+      - "改进 专辑和艺术家的图片加载速度 (移植自 v1.9.3)"
+      - "翻译 更新 匈牙利语 (Balázs Úr & Balázs Meskó)"
+      - "开发 更新依赖, 更新 Kotlin 至 2.1.20, 更新 AGP 至 8.9.2"
 
-previousVersion: "1.8.5.1"
-previousChannel: "STABLE"
+previousVersion: "1.8.6.LTS"
+previousChannel: "LTS"
