@@ -157,6 +157,8 @@
     <string name="pref_title_remember_shuffle">Memorizar aleatorização</string>
     <string name="no_equalizer">Nenhum equalizador encontrado.</string>
     <string name="no_audio_ID">Sem identificação de áudio, reproduza algo e tente novamente.</string>
+    <string name="style_card">Cartão</string>
+    <string name="style_flat">Plano</string>
     <string name="delete_action">Excluir</string>
     <string name="clear_action">Limpar</string>
     <string name="remove_action">Remover</string>
