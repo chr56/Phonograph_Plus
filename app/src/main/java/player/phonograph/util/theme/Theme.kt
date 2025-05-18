@@ -4,7 +4,6 @@
 
 package player.phonograph.util.theme
 
-import lib.phonograph.misc.MonetColor
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.model.ui.GeneralTheme
@@ -17,6 +16,7 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.PrimitiveKey
 import player.phonograph.settings.Setting
 import player.phonograph.settings.ThemeSetting
+import player.phonograph.util.ui.MonetColor
 import androidx.annotation.CheckResult
 import androidx.annotation.ColorInt
 import androidx.annotation.StyleRes

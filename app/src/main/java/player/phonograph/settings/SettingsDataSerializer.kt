@@ -5,9 +5,9 @@
 package player.phonograph.settings
 
 import player.phonograph.BuildConfig
+import player.phonograph.foundation.warning
 import player.phonograph.model.backup.ExportedSetting
 import player.phonograph.util.gitRevisionHash
-import player.phonograph.util.warning
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.floatPreferencesKey

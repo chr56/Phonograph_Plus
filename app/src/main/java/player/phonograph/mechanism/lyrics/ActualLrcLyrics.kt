@@ -6,10 +6,10 @@
 
 package player.phonograph.mechanism.lyrics
 
+import player.phonograph.foundation.warning
 import player.phonograph.model.lyrics.AbsLyrics
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.model.lyrics.LyricsSource
-import player.phonograph.util.warning
 import androidx.core.util.forEach
 import android.util.SparseArray
 import kotlinx.parcelize.Parcelize

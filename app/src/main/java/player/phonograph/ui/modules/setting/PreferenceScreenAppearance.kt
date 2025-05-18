@@ -4,12 +4,10 @@
 
 package player.phonograph.ui.modules.setting
 
-import lib.phonograph.localization.LanguageSettingDialog
-import lib.phonograph.localization.LocalizationStore
-import lib.phonograph.misc.ColorPalette
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.appshortcuts.DynamicShortcutManager
+import player.phonograph.foundation.localization.LocalizationStore
+import player.phonograph.mechanism.PhonographShortcutManager
 import player.phonograph.model.ui.GeneralTheme
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
@@ -20,9 +18,11 @@ import player.phonograph.ui.modules.setting.components.DialogPreference
 import player.phonograph.ui.modules.setting.components.ListPreference
 import player.phonograph.ui.modules.setting.components.SettingsGroup
 import player.phonograph.ui.modules.setting.dialog.HomeTabConfigDialog
+import player.phonograph.ui.modules.setting.dialog.LanguageSettingDialog
 import player.phonograph.ui.modules.setting.dialog.MaterialColorPickerDialog
 import player.phonograph.ui.modules.setting.dialog.MonetColorPickerDialog
 import player.phonograph.ui.modules.setting.dialog.NowPlayingScreenStylePreferenceDialog
+import player.phonograph.util.ui.ColorPalette
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -86,7 +86,7 @@ fun PreferenceScreenAppearance() {
                 summaryRes = R.string.pref_summary_enable_monet,
                 onCheckedChange = {
                     @SuppressLint("ObsoleteSdkInt")
-                    if (SDK_INT >= N_MR1) DynamicShortcutManager(App.instance).updateDynamicShortcuts()
+                    if (SDK_INT >= N_MR1) PhonographShortcutManager.updateDynamicShortcuts(App.instance)
                 }
             )
             ColorPreference(
@@ -105,7 +105,7 @@ fun PreferenceScreenAppearance() {
                 summaryRes = R.string.pref_summary_colored_app_shortcuts,
                 onCheckedChange = {
                     @SuppressLint("ObsoleteSdkInt")
-                    if (SDK_INT >= N_MR1) DynamicShortcutManager(App.instance).updateDynamicShortcuts()
+                    if (SDK_INT >= N_MR1) PhonographShortcutManager.updateDynamicShortcuts(App.instance)
                 }
             )
         }

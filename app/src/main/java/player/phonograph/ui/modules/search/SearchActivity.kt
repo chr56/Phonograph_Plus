@@ -7,7 +7,6 @@ package player.phonograph.ui.modules.search
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import lib.activityresultcontract.registerActivityResultLauncherDelegate
-import lib.phonograph.misc.menuProvider
 import lib.storage.launcher.CreateFileStorageAccessDelegate
 import lib.storage.launcher.ICreateFileStorageAccessible
 import lib.storage.launcher.IOpenDirStorageAccessible
@@ -28,6 +27,7 @@ import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.primaryColor
 import player.phonograph.util.theme.updateSystemBarsColor
 import player.phonograph.util.ui.hideKeyboard
+import player.phonograph.util.ui.menuProvider
 import util.theme.color.darkenColor
 import util.theme.color.primaryTextColor
 import util.theme.color.secondaryTextColor

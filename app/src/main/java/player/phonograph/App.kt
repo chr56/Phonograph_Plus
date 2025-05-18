@@ -6,8 +6,6 @@ package player.phonograph
 
 import coil.ImageLoader
 import coil.ImageLoaderFactory
-import lib.phonograph.localization.ContextLocaleDelegate
-import lib.phonograph.misc.Reboot
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.GlobalContext
@@ -15,14 +13,16 @@ import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
 import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.coil.createPhonographImageLoader
-import player.phonograph.notification.ErrorNotification
+import player.phonograph.foundation.Reboot
+import player.phonograph.foundation.localization.ContextLocaleDelegate
+import player.phonograph.foundation.notification.ErrorNotification
+import player.phonograph.foundation.startCrashActivity
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.ui.moduleViewModels
 import player.phonograph.ui.modules.auxiliary.CrashActivity
 import player.phonograph.util.concurrent.postDelayedOnceHandlerCallback
 import player.phonograph.util.debug
 import player.phonograph.util.logMetrics
-import player.phonograph.util.startCrashActivity
 import player.phonograph.util.theme.ThemeCacheUpdateDelegate
 import player.phonograph.util.theme.changeGlobalNightMode
 import player.phonograph.util.theme.checkNightMode

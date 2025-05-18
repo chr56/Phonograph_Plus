@@ -7,9 +7,10 @@ package player.phonograph.ui.modules.main
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import lib.phonograph.misc.Reboot
 import player.phonograph.ACTUAL_PACKAGE_NAME
 import player.phonograph.R
+import player.phonograph.foundation.Reboot
+import player.phonograph.foundation.reportError
 import player.phonograph.mechanism.actions.actionPlay
 import player.phonograph.mechanism.scanner.FileScanner
 import player.phonograph.mechanism.scanner.MediaStoreScanner
@@ -33,7 +34,6 @@ import player.phonograph.util.concurrent.coroutineToast
 import player.phonograph.util.concurrent.runOnMainHandler
 import player.phonograph.util.permissions.navigateToAppDetailSetting
 import player.phonograph.util.permissions.navigateToStorageSetting
-import player.phonograph.util.reportError
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import player.phonograph.util.theme.toggleTheme

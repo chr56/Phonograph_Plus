@@ -4,11 +4,11 @@
 
 package player.phonograph.service
 
-import lib.phonograph.localization.ContextLocaleDelegate
 import org.koin.android.ext.android.get
 import player.phonograph.ACTUAL_PACKAGE_NAME
 import player.phonograph.BuildConfig
-import player.phonograph.appwidgets.AppWidgetUpdateReceiver
+import player.phonograph.foundation.localization.ContextLocaleDelegate
+import player.phonograph.foundation.recordThrowable
 import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
@@ -50,11 +50,11 @@ import player.phonograph.service.player.PlayerController
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.service.queue.QueueManager.Companion.MSG_SAVE_CFG
 import player.phonograph.service.queue.QueueManager.Companion.MSG_SAVE_QUEUE
+import player.phonograph.service.util.AppWidgetUpdateReceiver
 import player.phonograph.service.util.MusicServiceUtil
 import player.phonograph.service.util.SongPlayCountHelper
 import player.phonograph.settings.Keys
 import player.phonograph.settings.SettingObserver
-import player.phonograph.util.recordThrowable
 import androidx.media.MediaBrowserServiceCompat
 import android.content.Context
 import android.content.Intent

@@ -4,12 +4,12 @@
 
 package player.phonograph.service.queue
 
+import player.phonograph.foundation.warning
 import player.phonograph.model.PlayRequest
 import player.phonograph.model.Song
 import player.phonograph.model.SongClickMode
 import player.phonograph.model.service.ShuffleMode
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.util.warning
 import kotlin.random.Random
 
 

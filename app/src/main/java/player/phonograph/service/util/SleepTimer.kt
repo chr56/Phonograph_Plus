@@ -5,11 +5,11 @@
 package player.phonograph.service.util
 
 import player.phonograph.R
+import player.phonograph.foundation.reportError
 import player.phonograph.model.service.ACTION_CANCEL_PENDING_QUIT
 import player.phonograph.model.service.ACTION_STOP_AND_QUIT_NOW
 import player.phonograph.model.service.ACTION_STOP_AND_QUIT_PENDING
 import player.phonograph.service.MusicService
-import player.phonograph.util.reportError
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context

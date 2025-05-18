@@ -6,7 +6,6 @@
 
 package player.phonograph.settings
 
-import lib.phonograph.misc.MonetColor
 import player.phonograph.model.SongClickMode
 import player.phonograph.model.coil.ImageSourceConfig
 import player.phonograph.model.file.defaultStartDirectory
@@ -19,6 +18,7 @@ import player.phonograph.model.time.TimeIntervalCalculationMode
 import player.phonograph.model.ui.GeneralTheme
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.model.ui.NowPlayingScreenStyle
+import player.phonograph.util.ui.MonetColor
 import util.theme.materials.MaterialColor
 import java.io.File
 import androidx.datastore.preferences.core.booleanPreferencesKey as booleanPK

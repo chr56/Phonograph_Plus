@@ -5,12 +5,12 @@
 package player.phonograph.ui.modules.setting
 
 import player.phonograph.R
+import player.phonograph.foundation.warning
 import player.phonograph.settings.Keys
 import player.phonograph.ui.modules.setting.components.BooleanPreference
 import player.phonograph.ui.modules.setting.components.ExternalPreference
 import player.phonograph.ui.modules.setting.components.SettingsGroup
 import player.phonograph.util.NavigationUtil
-import player.phonograph.util.warning
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

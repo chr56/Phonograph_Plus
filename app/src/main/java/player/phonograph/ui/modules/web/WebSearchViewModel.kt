@@ -22,7 +22,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context
 import android.content.Intent
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 class WebSearchViewModel : ViewModel() {
@@ -31,10 +30,10 @@ class WebSearchViewModel : ViewModel() {
 
     private val errorReporter = object : ExceptionHandler {
         override fun reportError(e: Throwable, tag: String, message: String) =
-            player.phonograph.util.reportError(e, tag, message)
+            player.phonograph.foundation.reportError(e, tag, message)
 
         override fun warning(tag: String, message: String) =
-            player.phonograph.util.warning(tag, message)
+            player.phonograph.foundation.warning(tag, message)
 
     }
 

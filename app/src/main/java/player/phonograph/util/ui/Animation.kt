@@ -18,6 +18,13 @@ import android.widget.TextView
 
 const val PHONOGRAPH_ANIM_TIME = 1000L
 
+abstract class SimpleAnimatorListener : Animator.AnimatorListener {
+    override fun onAnimationStart(animation: Animator) {}
+    override fun onAnimationEnd(animation: Animator) {}
+    override fun onAnimationCancel(animation: Animator) {}
+    override fun onAnimationRepeat(animation: Animator) {}
+}
+
 fun View.backgroundColorTransitionAnimator(
     @ColorInt startColor: Int,
     @ColorInt endColor: Int,

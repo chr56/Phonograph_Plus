@@ -202,7 +202,7 @@
             android:launchMode="singleInstance"
             android:process="player.phonograph.crash" />
         <activity
-            android:name="lib.phonograph.misc.Reboot$RebootActivity"
+            android:name=".foundation.Reboot$RebootActivity"
             android:launchMode="singleInstance"
             android:process="player.phonograph.reboot" />
 
@@ -243,7 +243,7 @@
         </receiver>
         <!-- Widgets -->
         <receiver
-            android:name=".appwidgets.AppWidgetBig"
+            android:name=".ui.appwidgets.AppWidgetBig"
             android:exported="false"
             android:label="@string/app_widget_big_name">
             <intent-filter>
@@ -255,7 +255,7 @@
                 android:resource="@xml/app_widget_big_info" />
         </receiver>
         <receiver
-            android:name=".appwidgets.AppWidgetClassic"
+            android:name=".ui.appwidgets.AppWidgetClassic"
             android:exported="false"
             android:label="@string/app_widget_classic_name">
             <intent-filter>
@@ -267,7 +267,7 @@
                 android:resource="@xml/app_widget_classic_info" />
         </receiver>
         <receiver
-            android:name=".appwidgets.AppWidgetSmall"
+            android:name=".ui.appwidgets.AppWidgetSmall"
             android:exported="false"
             android:label="@string/app_widget_small_name">
             <intent-filter>
@@ -279,7 +279,7 @@
                 android:resource="@xml/app_widget_small_info" />
         </receiver>
         <receiver
-            android:name=".appwidgets.AppWidgetCard"
+            android:name=".ui.appwidgets.AppWidgetCard"
             android:exported="false"
             android:label="@string/app_widget_card_name">
             <intent-filter>

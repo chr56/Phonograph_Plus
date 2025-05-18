@@ -8,8 +8,6 @@ import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.customView
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.vanpra.composematerialdialogs.title
-import lib.phonograph.misc.ColorPalette
-import lib.phonograph.misc.MonetColor
 import player.phonograph.R
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
@@ -18,6 +16,8 @@ import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.MonetColorPicker
 import player.phonograph.util.concurrent.lifecycleScopeOrNewOne
 import player.phonograph.util.theme.accentColoredButtonStyle
+import player.phonograph.util.ui.ColorPalette
+import player.phonograph.util.ui.MonetColor
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height

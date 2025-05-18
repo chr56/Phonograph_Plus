@@ -6,6 +6,7 @@ package player.phonograph.repo.database.store
 
 import org.koin.core.context.GlobalContext
 import player.phonograph.App
+import player.phonograph.foundation.warning
 import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.DatabasePlaylistLocation
@@ -13,7 +14,6 @@ import player.phonograph.model.playlist.FilePlaylistLocation
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.repo.database.DatabaseConstants.FAVORITE_DB
 import player.phonograph.util.text.currentTimestamp
-import player.phonograph.util.warning
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor

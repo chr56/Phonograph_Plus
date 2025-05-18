@@ -7,13 +7,13 @@ package player.phonograph.ui.modules.setting.dialog
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import player.phonograph.R
+import player.phonograph.foundation.warning
 import player.phonograph.model.pages.Pages
 import player.phonograph.model.pages.PagesConfig
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.adapter.SortableListAdapter
 import player.phonograph.util.theme.tintButtons
-import player.phonograph.util.warning
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView

@@ -5,11 +5,11 @@
 package player.phonograph.ui.dialogs
 
 import player.phonograph.App
+import player.phonograph.foundation.notification.ErrorNotification
+import player.phonograph.foundation.notification.UpgradeNotification
 import player.phonograph.mechanism.Update
 import player.phonograph.model.Song
 import player.phonograph.model.version.VersionCatalog
-import player.phonograph.notification.ErrorNotification
-import player.phonograph.notification.UpgradeNotification
 import player.phonograph.repo.mediastore.checkEmbeddedIdOverflow
 import player.phonograph.repo.mediastore.checkIdConflict
 import player.phonograph.util.concurrent.coroutineToast

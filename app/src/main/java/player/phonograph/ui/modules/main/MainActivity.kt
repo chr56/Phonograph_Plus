@@ -10,14 +10,15 @@ import lib.storage.launcher.OpenFileStorageAccessDelegate
 import player.phonograph.R
 import player.phonograph.UPGRADABLE
 import player.phonograph.VERSION_INFO
-import player.phonograph.appshortcuts.DynamicShortcutManager
 import player.phonograph.coil.loadImage
 import player.phonograph.databinding.ActivityMainBinding
 import player.phonograph.databinding.LayoutDrawerBinding
+import player.phonograph.foundation.notification.UpgradeNotification
+import player.phonograph.foundation.warning
+import player.phonograph.mechanism.PhonographShortcutManager
 import player.phonograph.mechanism.Update
 import player.phonograph.model.Song
 import player.phonograph.model.version.VersionCatalog
-import player.phonograph.notification.UpgradeNotification
 import player.phonograph.settings.Keys
 import player.phonograph.settings.PrerequisiteSetting
 import player.phonograph.settings.Setting
@@ -37,7 +38,6 @@ import player.phonograph.util.text.infoString
 import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.nightMode
 import player.phonograph.util.theme.themeIconColor
-import player.phonograph.util.warning
 import util.theme.color.primaryTextColor
 import util.theme.view.navigationview.setItemIconColors
 import util.theme.view.navigationview.setItemTextColors
@@ -263,9 +263,8 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
     private fun latelySetup() {
         // Set up dynamic shortcuts
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-            val dynamicShortcutManager = DynamicShortcutManager(this)
-            dynamicShortcutManager.initDynamicShortcuts()
-            dynamicShortcutManager.updateDynamicShortcuts()
+            PhonographShortcutManager.initDynamicShortcuts(this)
+            PhonographShortcutManager.updateDynamicShortcuts(this)
         }
         // check changelog
         checkChangelog()

@@ -22,7 +22,7 @@
         android:paddingEnd="@dimen/md_listitem_control_margin"
         tools:text="Item" />
 
-    <lib.phonograph.view.CheckBoxX
+    <player.phonograph.ui.views.AccentColorCheckBox
         android:id="@+id/checkbox"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"

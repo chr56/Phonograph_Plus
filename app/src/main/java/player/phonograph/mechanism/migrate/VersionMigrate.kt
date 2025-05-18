@@ -4,11 +4,11 @@
 
 package player.phonograph.mechanism.migrate
 
+import player.phonograph.foundation.reportError
 import player.phonograph.settings.PrerequisiteSetting
 import player.phonograph.settings.Setting
 import player.phonograph.util.currentVersionCode
 import player.phonograph.util.debug
-import player.phonograph.util.reportError
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit

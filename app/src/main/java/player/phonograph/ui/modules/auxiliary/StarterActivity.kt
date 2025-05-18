@@ -7,11 +7,7 @@ package player.phonograph.ui.modules.auxiliary
 import legacy.phonograph.MediaStoreCompat
 import org.koin.android.ext.android.get
 import player.phonograph.R
-import player.phonograph.appshortcuts.DynamicShortcutManager
-import player.phonograph.appshortcuts.DynamicShortcutManager.Companion.reportShortcutUsed
-import player.phonograph.appshortcuts.shortcuttype.LastAddedShortcutType
-import player.phonograph.appshortcuts.shortcuttype.ShuffleAllShortcutType
-import player.phonograph.appshortcuts.shortcuttype.TopTracksShortcutType
+import player.phonograph.mechanism.PhonographShortcutManager
 import player.phonograph.mechanism.SongUriParsers
 import player.phonograph.mechanism.playlist.PlaylistProcessors
 import player.phonograph.model.PlayRequest
@@ -22,6 +18,7 @@ import player.phonograph.model.playlist.DynamicPlaylists
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.service.ACTION_PLAY
 import player.phonograph.model.service.ShuffleMode
+import player.phonograph.model.ui.AppShortcutType
 import player.phonograph.repo.loader.Songs
 import player.phonograph.repo.mediastore.MediaStorePlaylists
 import player.phonograph.repo.mediastore.processQuery
@@ -43,6 +40,7 @@ import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
 import kotlin.random.Random
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 
 class StarterActivity : AppCompatActivity() {
@@ -57,14 +55,17 @@ class StarterActivity : AppCompatActivity() {
             debug {
                 Log.d("Starter", "ShortCut Mode")
             }
-            processShortCut(launcherIntent.extras?.getInt(SHORTCUT_TYPE) ?: SHORTCUT_TYPE_NONE)
+            val shortcutType = launcherIntent.extras?.getString(SHORTCUT_TYPE, null)
+            if (shortcutType != null) {
+                processShortcut(shortcutType)
+            }
             finish()
         } else {
             debug {
                 Log.d("Starter", "Normal Mode")
             }
             if (SDK_INT >= N_MR1) {
-                DynamicShortcutManager(this).updateDynamicShortcuts()
+                PhonographShortcutManager.updateDynamicShortcuts(this)
             }
             processFrontGroundMode(launcherIntent)
         }
@@ -179,33 +180,27 @@ class StarterActivity : AppCompatActivity() {
         return null
     }
 
-
-    private fun processShortCut(shortcutType: Int) {
+    private fun processShortcut(shortcutType: String) {
+        val type = AppShortcutType.from(shortcutType)
         var shuffleMode = ShuffleMode.NONE
-        val playlist: Playlist = when (shortcutType) {
-            SHORTCUT_TYPE_SHUFFLE_ALL -> {
-                reportShortcutUsed(this, ShuffleAllShortcutType.id)
-                shuffleMode = ShuffleMode.SHUFFLE
-                DynamicPlaylists.random(resources)
-            }
+        val playlist: Playlist = when (type) {
+            AppShortcutType.ShuffleAllShortcut ->
+                DynamicPlaylists.random(resources).also { shuffleMode = ShuffleMode.SHUFFLE }
 
-            SHORTCUT_TYPE_TOP_TRACKS  -> {
-                reportShortcutUsed(this, TopTracksShortcutType.id)
+            AppShortcutType.TopTracksShortcut  ->
                 DynamicPlaylists.myTopTrack(resources)
-            }
 
-            SHORTCUT_TYPE_LAST_ADDED  -> {
-                reportShortcutUsed(this, LastAddedShortcutType.id)
+            AppShortcutType.LastAddedShortcut  ->
                 DynamicPlaylists.lastAdded(resources)
-            }
 
-            else                      -> return
+            else                               -> return
         }
 
-        runBlocking {
-            val songs = PlaylistProcessors.reader(playlist).allSongs(this@StarterActivity)
-            play(songs, shuffleMode)
-        }
+        val songs =
+            runBlocking(Dispatchers.IO) { PlaylistProcessors.reader(playlist).allSongs(this@StarterActivity) }
+        play(songs, shuffleMode)
+
+        if (SDK_INT >= N_MR1) PhonographShortcutManager.reportShortcutUsed(this, type.id)
     }
 
     private fun play(songs: List<Song>, shuffleMode: ShuffleMode) {
@@ -252,11 +247,7 @@ class StarterActivity : AppCompatActivity() {
         }
 
         const val EXTRA_SHORTCUT_MODE = "player.phonograph.SHORTCUT_MODE"
-        const val SHORTCUT_TYPE = "player.phonograph.appshortcuts.ShortcutType"
-        const val SHORTCUT_TYPE_SHUFFLE_ALL = 0
-        const val SHORTCUT_TYPE_TOP_TRACKS = 1
-        const val SHORTCUT_TYPE_LAST_ADDED = 2
-        const val SHORTCUT_TYPE_NONE = 3
+        const val SHORTCUT_TYPE = "player.phonograph.appshortcuts.SHORTCUT_TYPE"
     }
 
 }

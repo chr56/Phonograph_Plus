@@ -8,10 +8,10 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import lib.storage.launcher.ICreateFileStorageAccessible
 import player.phonograph.R
+import player.phonograph.foundation.reportError
 import player.phonograph.mechanism.backup.Backup
 import player.phonograph.mechanism.backup.Backup.ALL_BACKUP_CONFIG
 import player.phonograph.mechanism.backup.Backup.ENABLE_BACKUP_CONFIG
-import player.phonograph.util.reportError
 import player.phonograph.util.text.currentDate
 import player.phonograph.util.text.dateTimeSuffixCompat
 import player.phonograph.util.theme.tintButtons

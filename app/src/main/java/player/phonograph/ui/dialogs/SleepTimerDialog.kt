@@ -5,14 +5,13 @@
 package player.phonograph.ui.dialogs
 
 import com.triggertrap.seekarc.SeekArc
-import lib.phonograph.view.CheckBoxX
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.model.time.Duration
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.util.SleepTimer
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
+import player.phonograph.ui.views.AccentColorCheckBox
 import player.phonograph.util.text.readableDuration
 import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.tintAlertDialogButtons
@@ -153,7 +152,7 @@ class SleepTimerDialog : DialogFragment() {
 
         // init views : set checkBox basing on preference
         alertDialog
-            .findViewById<CheckBoxX>(R.id.should_finish_last_song)!!// To remember settings last use sleep-timer
+            .findViewById<AccentColorCheckBox>(R.id.should_finish_last_song)!!// To remember settings last use sleep-timer
             .apply {
                 isChecked = Setting(context)[Keys.sleepTimerFinishMusic].data
                 setOnCheckedChangeListener { _, isChecked ->

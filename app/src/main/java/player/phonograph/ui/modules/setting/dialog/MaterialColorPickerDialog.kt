@@ -6,12 +6,12 @@ package player.phonograph.ui.modules.setting.dialog
 
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.color.colorChooser
-import lib.phonograph.misc.ColorPalette
 import player.phonograph.R
-import player.phonograph.appshortcuts.DynamicShortcutManager
+import player.phonograph.mechanism.PhonographShortcutManager
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.util.theme.tintButtons
+import player.phonograph.util.ui.ColorPalette
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
 import android.annotation.SuppressLint
@@ -74,7 +74,7 @@ class MaterialColorPickerDialog : DialogFragment() {
             ColorPalette.Variant.Accent  -> Setting(context)[Keys.selectedAccentColor].data = color
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-            DynamicShortcutManager(context).updateDynamicShortcuts()
+            PhonographShortcutManager.updateDynamicShortcuts(context)
         }
     }
 

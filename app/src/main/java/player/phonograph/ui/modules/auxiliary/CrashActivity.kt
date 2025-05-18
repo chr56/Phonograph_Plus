@@ -2,10 +2,9 @@ package player.phonograph.ui.modules.auxiliary
 
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
-import lib.phonograph.dialog.alertDialog
-import lib.phonograph.misc.Reboot
 import player.phonograph.R
 import player.phonograph.databinding.ActivityCrashBinding
+import player.phonograph.foundation.Reboot
 import player.phonograph.model.CrashReport
 import player.phonograph.model.CrashReport.Constant.CRASH_TYPE_CORRUPTED_DATA
 import player.phonograph.model.CrashReport.Constant.CRASH_TYPE_INTERNAL_ERROR
@@ -18,6 +17,7 @@ import player.phonograph.util.text.getDeviceInfo
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.systemDarkmode
 import player.phonograph.util.theme.updateSystemBarsColor
+import player.phonograph.util.ui.alertDialog
 import util.theme.color.primaryTextColor
 import util.theme.materials.MaterialColor
 import util.theme.view.toolbar.setToolbarColor

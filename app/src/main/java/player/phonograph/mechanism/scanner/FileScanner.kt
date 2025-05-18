@@ -4,10 +4,10 @@
 
 package player.phonograph.mechanism.scanner
 
+import player.phonograph.foundation.reportError
 import player.phonograph.model.DirectoryInfo
 import player.phonograph.util.file.mimeTypeIs
 import player.phonograph.util.file.safeGetCanonicalPath
-import player.phonograph.util.reportError
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
 import java.io.File

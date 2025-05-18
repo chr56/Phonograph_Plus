@@ -28,6 +28,7 @@ import org.jaudiotagger.tag.vorbiscomment.VorbisCommentTag
 import org.jaudiotagger.tag.wav.WavInfoTag
 import org.jaudiotagger.tag.wav.WavTag
 import player.phonograph.R
+import player.phonograph.foundation.reportError
 import player.phonograph.mechanism.metadata.JAudioTaggerMetadata.Field
 import player.phonograph.model.Song
 import player.phonograph.model.metadata.AudioMetadata
@@ -37,7 +38,6 @@ import player.phonograph.model.metadata.FileProperties
 import player.phonograph.model.metadata.Metadata
 import player.phonograph.model.metadata.MusicMetadata
 import player.phonograph.model.metadata.MusicTagFormat
-import player.phonograph.util.reportError
 import android.content.Context
 import android.os.Handler
 import android.os.Looper

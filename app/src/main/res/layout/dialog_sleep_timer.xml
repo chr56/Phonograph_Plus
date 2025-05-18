@@ -32,7 +32,7 @@
 
     </FrameLayout>
 
-    <lib.phonograph.view.CheckBoxX
+    <player.phonograph.ui.views.AccentColorCheckBox
         android:id="@+id/should_finish_last_song"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

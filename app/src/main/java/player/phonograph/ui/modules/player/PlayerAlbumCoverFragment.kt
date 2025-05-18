@@ -2,7 +2,6 @@ package player.phonograph.ui.modules.player
 
 import coil.request.Disposable
 import coil.request.Parameters
-import lib.phonograph.misc.SimpleAnimatorListener
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import player.phonograph.App
 import player.phonograph.R
@@ -24,6 +23,7 @@ import player.phonograph.util.observe
 import player.phonograph.util.parcelable
 import player.phonograph.util.theme.themeFooterColor
 import player.phonograph.util.ui.PHONOGRAPH_ANIM_TIME
+import player.phonograph.util.ui.SimpleAnimatorListener
 import androidx.annotation.MainThread
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -47,7 +47,6 @@ import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
-import kotlin.getValue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

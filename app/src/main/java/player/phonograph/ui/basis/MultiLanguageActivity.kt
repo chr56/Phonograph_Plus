@@ -3,8 +3,8 @@
  */
 package player.phonograph.ui.basis
 
-import lib.phonograph.localization.LocalizationStore
-import lib.phonograph.localization.LocalizationUtil
+import player.phonograph.foundation.localization.LocalizationStore
+import player.phonograph.foundation.localization.LocalizationUtil
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat

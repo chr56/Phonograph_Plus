@@ -25,12 +25,12 @@ import org.jaudiotagger.tag.vorbiscomment.VorbisCommentFieldKey
 import org.jaudiotagger.tag.vorbiscomment.VorbisCommentTag
 import org.jaudiotagger.tag.vorbiscomment.VorbisCommentTagField
 import org.jaudiotagger.tag.wav.WavTag
+import player.phonograph.foundation.reportError
 import player.phonograph.mechanism.metadata.JAudioTaggerMetadata.Field
 import player.phonograph.model.metadata.Metadata
 import player.phonograph.model.metadata.Metadata.EmptyField
 import player.phonograph.model.metadata.Metadata.MultipleField
 import player.phonograph.model.metadata.Metadata.PlainStringField
-import player.phonograph.util.reportError
 import java.io.UnsupportedEncodingException
 
 

@@ -3,7 +3,6 @@ package player.phonograph.ui.modules.artist
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import lib.activityresultcontract.registerActivityResultLauncherDelegate
-import lib.phonograph.misc.menuProvider
 import lib.storage.launcher.CreateFileStorageAccessDelegate
 import lib.storage.launcher.ICreateFileStorageAccessible
 import lib.storage.launcher.IOpenDirStorageAccessible
@@ -45,6 +44,7 @@ import player.phonograph.util.theme.themeFooterColor
 import player.phonograph.util.theme.updateSystemBarsColor
 import player.phonograph.util.ui.BottomViewWindowInsetsController
 import player.phonograph.util.ui.applyControllableWindowInsetsAsBottomView
+import player.phonograph.util.ui.menuProvider
 import util.theme.color.primaryTextColor
 import util.theme.color.secondaryTextColor
 import util.theme.color.toolbarTitleColor

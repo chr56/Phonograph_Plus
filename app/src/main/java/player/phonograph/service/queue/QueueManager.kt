@@ -4,12 +4,12 @@
 
 package player.phonograph.service.queue
 
+import player.phonograph.foundation.recordThrowable
 import player.phonograph.model.Song
 import player.phonograph.model.service.QueueObserver
 import player.phonograph.model.service.RepeatMode
 import player.phonograph.model.service.ShuffleMode
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.util.recordThrowable
 import android.app.Application
 import android.content.Context
 import android.os.Handler

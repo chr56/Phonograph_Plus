@@ -6,6 +6,8 @@ package player.phonograph.service
 
 import org.koin.core.context.GlobalContext
 import player.phonograph.R
+import player.phonograph.foundation.reportError
+import player.phonograph.foundation.warning
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.model.service.MusicServiceConnection
@@ -13,11 +15,10 @@ import player.phonograph.model.service.PlayerState
 import player.phonograph.model.service.PlayerStateObserver
 import player.phonograph.model.service.RepeatMode
 import player.phonograph.model.service.ShuffleMode
+import player.phonograph.service.MusicPlayerRemote.musicService
 import player.phonograph.service.MusicService.MusicBinder
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.util.debug
-import player.phonograph.util.reportError
-import player.phonograph.util.warning
 import androidx.activity.ComponentActivity
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.withStarted

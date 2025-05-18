@@ -4,8 +4,8 @@
 
 package player.phonograph.settings
 
-import lib.phonograph.misc.MonetColor
 import player.phonograph.util.theme.parseToStyleRes
+import player.phonograph.util.ui.MonetColor
 import androidx.annotation.CheckResult
 import androidx.annotation.ColorInt
 import androidx.annotation.StyleRes

@@ -6,11 +6,11 @@ package player.phonograph.ui.dialogs
 
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
-import lib.phonograph.misc.Reboot
 import player.phonograph.R
+import player.phonograph.foundation.Reboot
+import player.phonograph.foundation.reportError
 import player.phonograph.mechanism.backup.Backup
 import player.phonograph.settings.PrerequisiteSetting
-import player.phonograph.util.reportError
 import player.phonograph.util.theme.tintButtons
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment

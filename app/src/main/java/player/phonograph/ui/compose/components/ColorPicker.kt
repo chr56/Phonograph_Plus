@@ -4,7 +4,7 @@
 
 package player.phonograph.ui.compose.components
 
-import lib.phonograph.misc.ColorPalette
+import player.phonograph.util.ui.ColorPalette
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

@@ -9,13 +9,13 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import lib.activityresultcontract.registerActivityResultLauncherDelegate
-import lib.phonograph.misc.Reboot
 import lib.storage.launcher.CreateFileStorageAccessDelegate
 import lib.storage.launcher.ICreateFileStorageAccessible
 import lib.storage.launcher.IOpenFileStorageAccessible
 import lib.storage.launcher.OpenDocumentContract
 import lib.storage.launcher.OpenFileStorageAccessDelegate
 import player.phonograph.R
+import player.phonograph.foundation.Reboot
 import player.phonograph.mechanism.backup.Backup
 import player.phonograph.settings.Setting
 import player.phonograph.ui.basis.ComposeActivity

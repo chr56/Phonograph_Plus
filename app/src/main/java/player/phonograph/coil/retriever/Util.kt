@@ -7,7 +7,7 @@ package player.phonograph.coil.retriever
 import coil.size.Size
 import coil.size.isOriginal
 import coil.size.pxOrElse
-import player.phonograph.util.reportError
+import player.phonograph.foundation.reportError
 import androidx.core.graphics.BitmapCompat
 import androidx.core.graphics.toRectF
 import android.graphics.Bitmap

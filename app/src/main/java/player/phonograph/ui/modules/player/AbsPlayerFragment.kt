@@ -8,6 +8,7 @@ import lib.storage.launcher.IOpenFileStorageAccessible
 import lib.storage.launcher.OpenDocumentContract
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import player.phonograph.R
+import player.phonograph.foundation.warning
 import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.model.ui.NowPlayingScreenStyle
@@ -33,7 +34,6 @@ import player.phonograph.util.ui.PHONOGRAPH_ANIM_TIME
 import player.phonograph.util.ui.backgroundColorTransitionAnimator
 import player.phonograph.util.ui.isLandscape
 import player.phonograph.util.ui.setupValueAnimator
-import player.phonograph.util.warning
 import util.theme.color.primaryTextColor
 import util.theme.color.secondaryTextColor
 import util.theme.color.toolbarIconColor

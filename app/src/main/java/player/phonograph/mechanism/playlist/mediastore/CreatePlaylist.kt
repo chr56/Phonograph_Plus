@@ -6,13 +6,13 @@ package player.phonograph.mechanism.playlist.mediastore
 
 import legacy.phonograph.MediaStoreCompat.Audio.PlaylistsColumns
 import player.phonograph.App
+import player.phonograph.foundation.warning
 import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.Song
 import player.phonograph.util.MEDIASTORE_VOLUME_EXTERNAL
 import player.phonograph.util.mediastoreUriPlaylists
 import player.phonograph.util.text.currentDate
 import player.phonograph.util.text.dateTimeSuffixCompat
-import player.phonograph.util.warning
 import android.content.ContentValues
 import android.content.Context
 import android.net.Uri

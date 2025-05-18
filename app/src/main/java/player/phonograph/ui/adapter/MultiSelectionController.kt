@@ -4,14 +4,11 @@
 
 package player.phonograph.ui.adapter
 
-import lib.phonograph.cab.ToolbarCab
-import lib.phonograph.cab.ToolbarCab.Companion.STATUS_ACTIVE
-import lib.phonograph.cab.initToolbarCab
 import player.phonograph.R
+import player.phonograph.foundation.reportError
 import player.phonograph.mechanism.actions.MultiSelectionToolbarMenuProviders
 import player.phonograph.model.ui.PaletteColorProvider
 import player.phonograph.util.debug
-import player.phonograph.util.reportError
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.primaryColor
 import util.theme.color.darkenColor
@@ -79,7 +76,7 @@ class MultiSelectionController<I>(
 
 
     val isInQuickSelectMode: Boolean
-        get() = enable && cab != null && cab?.status == STATUS_ACTIVE
+        get() = enable && cab != null && cab?.status == ToolbarCab.STATUS_ACTIVE
 
     fun selectAll() {
         _selected.clear()
@@ -184,7 +181,7 @@ class MultiSelectionController<I>(
                     _cab
                 } else {
                     _cab = try {
-                        initToolbarCab(activity, targetId, inflatedId).apply { prepare() }
+                        ToolbarCab.initToolbarCab(activity, targetId, inflatedId).apply { prepare() }
                     } catch (e: IllegalStateException) {
                         reportError(e, TAG, "Failed to create cab")
                         null

@@ -9,6 +9,8 @@ import lib.storage.launcher.IOpenFileStorageAccessible
 import lib.storage.launcher.OpenDocumentContract
 import player.phonograph.R
 import player.phonograph.databinding.DialogLyricsBinding
+import player.phonograph.foundation.reportError
+import player.phonograph.foundation.warning
 import player.phonograph.mechanism.lyrics.ActualTextLyrics
 import player.phonograph.model.lyrics.AbsLyrics
 import player.phonograph.model.lyrics.LrcLyrics
@@ -20,14 +22,12 @@ import player.phonograph.settings.Setting
 import player.phonograph.ui.modules.player.LyricsViewModel
 import player.phonograph.util.component.MusicProgressUpdateDelegate
 import player.phonograph.util.observe
-import player.phonograph.util.reportError
 import player.phonograph.util.text.lyricsTimestamp
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import player.phonograph.util.theme.primaryColor
 import player.phonograph.util.theme.themeFooterColor
 import player.phonograph.util.ui.applyLargeDialog
-import player.phonograph.util.warning
 import util.theme.color.lightenColor
 import util.theme.color.primaryTextColor
 import util.theme.color.secondaryTextColor

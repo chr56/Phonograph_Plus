@@ -3,10 +3,10 @@
  */
 package player.phonograph.service.queue
 
+import player.phonograph.foundation.warning
 import player.phonograph.model.Song
 import player.phonograph.repo.database.DatabaseConstants
 import player.phonograph.repo.mediastore.internal.intoSongs
-import player.phonograph.util.warning
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase

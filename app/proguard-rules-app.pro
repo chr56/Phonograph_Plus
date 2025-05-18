@@ -2,15 +2,8 @@
 #  Phonograph
 #
 
--keep class lib.phonograph.view.** {*;}
 -keep class player.phonograph.ui.views.** {*;}
 -keep class player.phonograph.model.** {public <fields>;}
-
--keepclassmembernames class lib.phonograph.misc.RestResult { <methods>; }
--keepclassmembernames class lib.phonograph.misc.RestResult$Success { <methods>; }
--keepclassmembernames class lib.phonograph.misc.RestResult$RemoteError { <methods>; }
--keepclassmembernames class lib.phonograph.misc.RestResult$ParseError { <methods>; }
--keepclassmembernames class lib.phonograph.misc.RestResult$NetworkError { <methods>; }
 
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.adapter.DisplayPresenter { public <methods>; }
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.adapter.DisplayAdapter { protected <methods>; }

@@ -9,9 +9,9 @@ import com.github.chr56.android.menu_dsl.menuItem
 import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import lib.phonograph.misc.menuProvider
 import player.phonograph.R
 import player.phonograph.databinding.FragmentHomeBinding
+import player.phonograph.foundation.reportError
 import player.phonograph.model.pages.Pages
 import player.phonograph.model.pages.PagesConfig
 import player.phonograph.settings.Keys
@@ -30,10 +30,10 @@ import player.phonograph.ui.modules.search.SearchActivity
 import player.phonograph.util.debug
 import player.phonograph.util.logMetrics
 import player.phonograph.util.observe
-import player.phonograph.util.reportError
 import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.primaryColor
+import player.phonograph.util.ui.menuProvider
 import util.theme.color.primaryTextColor
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources

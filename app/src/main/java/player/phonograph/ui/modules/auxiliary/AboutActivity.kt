@@ -1,10 +1,10 @@
 package player.phonograph.ui.modules.auxiliary
 
 import de.psdev.licensesdialog.LicensesDialog
-import lib.phonograph.misc.NoticesProcessor
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.databinding.ActivityAboutBinding
+import player.phonograph.foundation.reportError
 import player.phonograph.mechanism.Update
 import player.phonograph.model.version.VersionCatalog
 import player.phonograph.settings.Keys
@@ -18,7 +18,7 @@ import player.phonograph.util.currentChannel
 import player.phonograph.util.currentVariant
 import player.phonograph.util.currentVersionName
 import player.phonograph.util.gitRevisionHash
-import player.phonograph.util.reportError
+import player.phonograph.util.text.NoticesProcessor
 import player.phonograph.util.theme.nightMode
 import player.phonograph.util.theme.primaryColor
 import player.phonograph.util.theme.updateSystemBarsColor

@@ -222,10 +222,10 @@ class LastFmDialog : ComposeViewDialogFragment() {
         companion object {
             private val errorReporter = object : AbsClientDelegate.ExceptionHandler {
                 override fun reportError(e: Throwable, tag: String, message: String) =
-                    player.phonograph.util.reportError(e, tag, message)
+                    player.phonograph.foundation.reportError(e, tag, message)
 
                 override fun warning(tag: String, message: String) =
-                    player.phonograph.util.warning(tag, message)
+                    player.phonograph.foundation.warning(tag, message)
 
             }
         }

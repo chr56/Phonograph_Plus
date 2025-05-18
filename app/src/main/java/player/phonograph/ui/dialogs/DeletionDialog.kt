@@ -6,7 +6,6 @@ package player.phonograph.ui.dialogs
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.vanpra.composematerialdialogs.title
-import lib.phonograph.dialog.alertDialog
 import player.phonograph.R
 import player.phonograph.mechanism.lyrics.LyricsLoader
 import player.phonograph.model.Song
@@ -21,6 +20,7 @@ import player.phonograph.util.parcelableArrayList
 import player.phonograph.util.permissions.StoragePermissionChecker
 import player.phonograph.util.permissions.navigateToStorageSetting
 import player.phonograph.util.theme.accentColoredButtonStyle
+import player.phonograph.util.ui.alertDialog
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints

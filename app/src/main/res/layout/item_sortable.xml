@@ -16,7 +16,7 @@
     android:paddingRight="@dimen/md_dialog_frame_margin"
     tools:gravity="start|center_vertical">
 
-    <lib.phonograph.view.CheckBoxX
+    <player.phonograph.ui.views.AccentColorCheckBox
         android:id="@+id/checkbox"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"

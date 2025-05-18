@@ -4,8 +4,8 @@
 
 package player.phonograph.ui.modules.tag.util
 
+import player.phonograph.foundation.warning
 import player.phonograph.model.Song
-import player.phonograph.util.warning
 import android.content.Context
 import android.net.Uri
 import java.io.File

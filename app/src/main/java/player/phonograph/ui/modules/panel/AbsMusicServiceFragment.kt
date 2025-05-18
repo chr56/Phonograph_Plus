@@ -1,12 +1,11 @@
 package player.phonograph.ui.modules.panel
 
-import player.phonograph.util.warning
+import player.phonograph.foundation.warning
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import android.content.Context
 import android.os.Bundle
 import android.view.View
-import kotlin.getValue
 
 /**
  * Fragments that supports receiving service binding events.

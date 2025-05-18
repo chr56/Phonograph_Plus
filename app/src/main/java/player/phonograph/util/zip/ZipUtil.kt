@@ -5,7 +5,7 @@
 package player.phonograph.util.zip
 
 import okio.IOException
-import player.phonograph.util.reportError
+import player.phonograph.foundation.reportError
 import android.util.Log
 import java.io.BufferedInputStream
 import java.io.BufferedOutputStream

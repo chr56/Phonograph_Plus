@@ -5,13 +5,13 @@
 package player.phonograph.repo.mediastore.internal
 
 import legacy.phonograph.MediaStoreCompat
+import player.phonograph.foundation.recordThrowable
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.util.MEDIASTORE_VOLUME_EXTERNAL
 import player.phonograph.util.mediastoreUriSongs
-import player.phonograph.util.recordThrowable
 import android.content.Context
 import android.database.Cursor
 import android.provider.BaseColumns

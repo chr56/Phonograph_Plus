@@ -5,6 +5,7 @@
 package player.phonograph.util.ui
 
 import androidx.annotation.ColorInt
+import androidx.core.view.MenuProvider
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.DialogFragment
@@ -18,6 +19,9 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.RippleDrawable
 import android.graphics.drawable.StateListDrawable
 import android.os.Build
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.Window
 
@@ -72,5 +76,23 @@ fun applyLargeDialog(dialogWindows: Window, activityWindows: Window, ratio: Floa
     dialogWindows.attributes = dialogWindows.attributes.apply {
         width = (activityWindows.decorView.width * ratio).toInt()
         height = (activityWindows.decorView.height * ratio).toInt()
+    }
+}
+
+fun menuProvider(block: (Menu) -> Unit): MenuProvider {
+    return object : MenuProvider {
+
+        override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) = block.invoke(menu)
+
+        override fun onMenuItemSelected(menuItem: MenuItem): Boolean = false
+    }
+}
+
+fun menuProvider(block: (Menu) -> Unit, callback: (MenuItem) -> Boolean): MenuProvider {
+    return object : MenuProvider {
+
+        override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) = block.invoke(menu)
+
+        override fun onMenuItemSelected(menuItem: MenuItem): Boolean = callback(menuItem)
     }
 }

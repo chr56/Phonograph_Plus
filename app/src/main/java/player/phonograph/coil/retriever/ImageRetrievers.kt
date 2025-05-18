@@ -16,11 +16,11 @@ import coil.size.pxOrElse
 import okio.Path.Companion.toOkioPath
 import okio.buffer
 import okio.source
+import player.phonograph.foundation.recordThrowable
 import player.phonograph.mechanism.metadata.JAudioTaggerExtractor
 import player.phonograph.util.debug
 import player.phonograph.util.mediaStoreUriAlbumArt
 import player.phonograph.util.mediastoreUriAlbum
-import player.phonograph.util.recordThrowable
 import androidx.annotation.IntDef
 import android.annotation.SuppressLint
 import android.content.Context
