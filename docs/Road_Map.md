@@ -1,34 +1,21 @@
 # **Development Plan (or Road Map?)** & **TO-DO list**
 
-_Last Update: 2025.04.04_
+_Last Update: 2025.05.21_
 
 ## Independent Database by Jetpack Room
 
-Use AndroidX Room to build an audio database:
-
+Use AndroidX Room to build an audio media library database:
 
 This part is currently work-in-progress.
-See branch `room` or `database`
-
-- [x] Prepare Jetpack Room
+See branch `room-database`
 
 #### Stage 1 MediaStore Cache/Mirror
 
-- [x] Table same as MediaStore
-
-- [x] Manually refreshing
-
-- [ ] Automatically sync with MediaStore
-
+_(Completed!)_
 
 #### Stage 2 Database Playlist
 
-- [x] Table for Playlists and Playlist Songs
-
-- [x] Playlist operations
-
-- [x] Database Playlist UI
-
+_(Completed!)_
 
 #### Stage 3 Database Favorites
 
@@ -84,7 +71,7 @@ See branch `room` or `database`
 
 Disassemble project into small Gradle modules. This part is currently preparing.
 
-- [ ] Reorganize current package hierarchy
+- [x] Reorganize current package hierarchy
 
 - [ ] extract base module `api`
 
@@ -172,25 +159,15 @@ Integrate with native decoder like `ffmpeg` or `Symphonia`.
 
 - [ ] Reproducible Builds
 
-## Refactor Main Player UI
+## Enhance Main Player UI
 
-This is for simplifying player fragments and related fragments, including:
+This is for simplifying player fragments and related fragments.
 
-#### Refactoring
+- [x] flexible Now Playing Screen styles
 
-- [ ] simplify layout
+- [x] support for fast-forward/fast-rewind by seconds
 
-- [ ] reduce fragments complexity
-
-- [ ] fully MVVM architecture or MVI architecture
-
-#### Enhancements
-
-- [ ] flexible Now Playing Screen
-
-- [ ] more Now Playing Screen
-
-- [ ] support for fast-forward/fast-rewind by seconds
+- [ ] more Now Playing Screen styles
 
 - [ ] enhance SlidingMusicBar (Tentative, possibly canceled)
 
