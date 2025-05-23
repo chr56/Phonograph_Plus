@@ -10,7 +10,7 @@ import player.phonograph.model.Song
 import player.phonograph.model.playlist.DatabasePlaylistLocation
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.PlaylistLocation
-import player.phonograph.repo.loader.IPlaylists
+import player.phonograph.model.repo.loader.IPlaylists
 import player.phonograph.repo.room.MusicDatabase
 import player.phonograph.repo.room.converter.MediastoreSongConverter
 import player.phonograph.repo.room.dao.PlaylistDao

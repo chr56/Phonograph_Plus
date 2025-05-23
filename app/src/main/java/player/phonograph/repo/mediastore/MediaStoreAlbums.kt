@@ -4,7 +4,7 @@
 
 package player.phonograph.repo.mediastore
 
-import player.phonograph.repo.loader.IAlbums
+import player.phonograph.model.repo.loader.IAlbums
 import player.phonograph.repo.mediastore.loaders.AlbumLoader
 import player.phonograph.repo.mediastore.loaders.ArtistAlbumLoader
 import android.content.Context

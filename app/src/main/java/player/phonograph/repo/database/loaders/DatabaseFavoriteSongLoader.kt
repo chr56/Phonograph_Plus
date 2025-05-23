@@ -7,8 +7,8 @@ package player.phonograph.repo.database.loaders
 import lib.storage.textparser.ExternalFilePathParser
 import player.phonograph.R
 import player.phonograph.model.Song
+import player.phonograph.model.repo.loader.IFavoriteSongs
 import player.phonograph.repo.database.store.FavoritesStore
-import player.phonograph.repo.loader.IFavoriteSongs
 import player.phonograph.repo.loader.Songs
 import android.content.Context
 

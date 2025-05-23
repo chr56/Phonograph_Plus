@@ -6,7 +6,7 @@ package player.phonograph.repo.mediastore
 
 import player.phonograph.model.Genre
 import player.phonograph.model.Song
-import player.phonograph.repo.loader.IGenres
+import player.phonograph.model.repo.loader.IGenres
 import player.phonograph.repo.mediastore.loaders.GenreLoader
 import android.content.Context
 

@@ -5,6 +5,7 @@
 package player.phonograph
 
 import org.koin.dsl.module
+import player.phonograph.model.repo.loader.IFavoritePlaylists
 import player.phonograph.repo.database.loaders.DatabaseFavoritePlaylistLoader
 import player.phonograph.repo.database.loaders.DatabaseFavoriteSongLoader
 import player.phonograph.repo.database.loaders.RecentlyPlayedTracksLoader
@@ -13,7 +14,6 @@ import player.phonograph.repo.database.store.FavoritesStore
 import player.phonograph.repo.database.store.HistoryStore
 import player.phonograph.repo.database.store.PathFilterStore
 import player.phonograph.repo.database.store.SongPlayCountStore
-import player.phonograph.repo.loader.IFavoritePlaylists
 import player.phonograph.repo.mediastore.loaders.PlaylistFavoriteSongLoader
 import player.phonograph.repo.room.MusicDatabase
 import player.phonograph.service.queue.MusicPlaybackQueueStore

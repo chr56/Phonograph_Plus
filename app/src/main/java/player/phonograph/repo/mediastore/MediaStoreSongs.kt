@@ -5,7 +5,7 @@
 package player.phonograph.repo.mediastore
 
 import player.phonograph.model.Song
-import player.phonograph.repo.loader.ISongs
+import player.phonograph.model.repo.loader.ISongs
 import player.phonograph.repo.mediastore.loaders.AlbumSongLoader
 import player.phonograph.repo.mediastore.loaders.ArtistSongLoader
 import player.phonograph.repo.mediastore.loaders.GenreLoader

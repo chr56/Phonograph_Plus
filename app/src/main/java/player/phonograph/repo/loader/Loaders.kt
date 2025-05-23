@@ -5,10 +5,16 @@
 package player.phonograph.repo.loader
 
 import org.koin.core.context.GlobalContext
+import player.phonograph.model.repo.loader.IAlbums
+import player.phonograph.model.repo.loader.IArtists
+import player.phonograph.model.repo.loader.IFavoritePlaylists
+import player.phonograph.model.repo.loader.IFavoriteSongs
+import player.phonograph.model.repo.loader.IGenres
+import player.phonograph.model.repo.loader.IPlaylists
+import player.phonograph.model.repo.loader.ISongs
 import player.phonograph.repo.mediastore.MediaStoreAlbums
 import player.phonograph.repo.mediastore.MediaStoreArtists
 import player.phonograph.repo.mediastore.MediaStoreGenres
-import player.phonograph.repo.mediastore.MediaStorePlaylists
 import player.phonograph.repo.mediastore.MediaStoreSongs
 
 object Albums : IAlbums by MediaStoreAlbums

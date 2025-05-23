@@ -5,7 +5,7 @@
 package player.phonograph.repo.mediastore
 
 import player.phonograph.model.Artist
-import player.phonograph.repo.loader.IArtists
+import player.phonograph.model.repo.loader.IArtists
 import player.phonograph.repo.mediastore.loaders.ArtistLoader
 import android.content.Context
 

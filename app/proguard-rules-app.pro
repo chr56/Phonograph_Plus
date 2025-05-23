@@ -20,7 +20,7 @@
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.modules.player.** { protected <methods>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.modules.** extends androidx.lifecycle.ViewModel {public <methods>;}
 
--keepclassmembernames,allowoptimization,allowshrinking interface player.phonograph.repo.loader.IFavoriteSongs { public <methods>; }
+-keepclassmembernames,allowoptimization,allowshrinking interface player.phonograph.model.repo.loader.IFavoriteSongs { public <methods>; }
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.repo.mediastore.internal.QueryKt { public query*(...); }
 
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.service.MusicService { public <methods>;public <fields>; }

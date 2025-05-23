@@ -10,6 +10,7 @@ import player.phonograph.model.playlist.FilePlaylistLocation
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.PlaylistLocation
 import player.phonograph.model.playlist.VirtualPlaylistLocation
+import player.phonograph.model.repo.loader.IPlaylists
 import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.mediastore.MediaStorePlaylists
 import player.phonograph.repo.room.domain.RoomPlaylists

@@ -1,8 +1,8 @@
 /*
- *  Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2025 chr_56
  */
 
-package player.phonograph.repo.loader
+package player.phonograph.model.repo.loader
 
 import player.phonograph.model.Genre
 import player.phonograph.model.Song

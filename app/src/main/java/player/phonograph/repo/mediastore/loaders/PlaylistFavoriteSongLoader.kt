@@ -11,7 +11,7 @@ import player.phonograph.mechanism.playlist.mediastore.createPlaylistViaMediasto
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylistLocation
 import player.phonograph.model.playlist.Playlist
-import player.phonograph.repo.loader.IFavoriteSongs
+import player.phonograph.model.repo.loader.IFavoriteSongs
 import player.phonograph.repo.mediastore.MediaStorePlaylists
 import player.phonograph.util.concurrent.coroutineToast
 import android.content.Context
