@@ -4,12 +4,17 @@
 
 package player.phonograph.repo.room.converter
 
+import player.phonograph.R
 import player.phonograph.model.Song
+import player.phonograph.model.playlist.DatabasePlaylistLocation
+import player.phonograph.model.playlist.Playlist
 import player.phonograph.repo.room.entity.MediastoreSongEntity
+import player.phonograph.repo.room.entity.PlaylistEntity
 import androidx.room.TypeConverter
 
-object MediastoreSongConverter {
+object EntityConverter {
 
+    //region Songs
     @TypeConverter
     fun fromSongModel(song: Song): MediastoreSongEntity = MediastoreSongEntity(
         mediastorId = song.id,
@@ -45,4 +50,17 @@ object MediastoreSongConverter {
         albumArtistName = entity.albumArtist,
         composer = entity.composer,
     )
+    //endregion
+
+    //region Playlist
+    @TypeConverter
+    fun toPlaylist(playlist: PlaylistEntity): Playlist =
+        Playlist(
+            name = playlist.name,
+            location = DatabasePlaylistLocation(playlist.id),
+            dateAdded = playlist.dateAdded,
+            dateModified = playlist.dateModified,
+            iconRes = R.drawable.ic_queue_music_white_24dp
+        )
+    //endregion
 }

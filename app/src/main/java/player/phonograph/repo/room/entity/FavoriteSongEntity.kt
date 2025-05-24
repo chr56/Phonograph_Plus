@@ -9,25 +9,16 @@ import androidx.room.Entity
 import androidx.room.Index
 
 @Entity(
-    tableName = FavoriteSongEntity.Columns.TABLE_NAME,
-    primaryKeys = [FavoriteSongEntity.Columns.ID],
+    tableName = Tables.FAVORITE_SONGS,
+    primaryKeys = [Columns.MEDIASTORE_ID],
     indices = [
-        Index(value = [FavoriteSongEntity.Columns.ID]),
-        Index(value = [FavoriteSongEntity.Columns.PATH]),
+        Index(value = [Columns.MEDIASTORE_ID]),
+        Index(value = [Columns.PATH]),
     ]
 )
 data class FavoriteSongEntity(
-    @ColumnInfo(name = ID) val mediastoreId: Long,
-    @ColumnInfo(name = PATH) val path: String,
-    @ColumnInfo(name = TITLE) val title: String,
-    @ColumnInfo(name = DATE_ADDED) val date: Long,
-) {
-    companion object Columns {
-        const val TABLE_NAME = "favorite_songs"
-
-        const val ID = "_id"
-        const val PATH = "path"
-        const val TITLE = "title"
-        const val DATE_ADDED = "date_added"
-    }
-}
+    @ColumnInfo(name = Columns.MEDIASTORE_ID) val mediastoreId: Long,
+    @ColumnInfo(name = Columns.PATH) val path: String,
+    @ColumnInfo(name = Columns.TITLE) val title: String,
+    @ColumnInfo(name = Columns.DATE_ADDED) val date: Long,
+)

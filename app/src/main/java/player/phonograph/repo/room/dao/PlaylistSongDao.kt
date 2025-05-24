@@ -4,11 +4,11 @@
 
 package player.phonograph.repo.room.dao
 
-import player.phonograph.repo.room.entity.MediastoreSongEntity
-import player.phonograph.repo.room.entity.PlaylistEntity
-import player.phonograph.repo.room.entity.PlaylistMediastoreSongEntity
+import player.phonograph.repo.room.entity.Columns
 import player.phonograph.repo.room.entity.PlaylistSongEntity
-import player.phonograph.repo.room.entity.PlaylistWithSongsEntity
+import player.phonograph.repo.room.entity.Tables
+import player.phonograph.repo.room.entity.derived.PlaylistMediastoreSongEntity
+import player.phonograph.repo.room.entity.derived.PlaylistWithSongsEntity
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -22,7 +22,7 @@ import androidx.room.Update
 abstract class PlaylistSongDao {
 
     @Transaction
-    @Query("SELECT * FROM ${PlaylistEntity.TABLE_NAME} WHERE ${PlaylistEntity.Columns.ID} =:id")
+    @Query("SELECT * FROM ${Tables.PLAYLISTS} WHERE ${Columns.PLAYLIST_ID} =:id")
     abstract fun playlist(id: Long): PlaylistWithSongsEntity?
 
 
@@ -30,45 +30,45 @@ abstract class PlaylistSongDao {
     @RewriteQueriesToDropUnusedColumns
     @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
     @Query(
-        "SELECT * FROM ${MediastoreSongEntity.TABLE_NAME} " +
-                "INNER JOIN ${PlaylistSongEntity.TABLE_NAME} " +
-                "ON ${MediastoreSongEntity.TABLE_NAME}.${PlaylistSongEntity.Columns.MEDIASTORE_ID} = ${PlaylistSongEntity.TABLE_NAME}.${MediastoreSongEntity.Columns.ID} " +
-                "WHERE ${PlaylistSongEntity.Columns.PLAYLIST_ID} =:playlistId " +
-                "ORDER BY ${PlaylistSongEntity.Columns.POSITION} ASC"
+        "SELECT * FROM ${Tables.MEDIASTORE_SONGS} " +
+                "INNER JOIN ${Tables.PLAYLIST_SONGS} " +
+                "ON ${Tables.MEDIASTORE_SONGS}.${Columns.MEDIASTORE_ID} = ${Tables.PLAYLIST_SONGS}.${Columns.MEDIASTORE_ID} " +
+                "WHERE ${Columns.PLAYLIST_ID} =:playlistId " +
+                "ORDER BY ${Columns.POSITION} ASC"
     )
     abstract fun songs(playlistId: Long): List<PlaylistMediastoreSongEntity?>
 
-    @Query("SELECT * FROM ${PlaylistSongEntity.TABLE_NAME} WHERE ${PlaylistSongEntity.Columns.PLAYLIST_ID} =:id")
+    @Query("SELECT * FROM ${Tables.PLAYLIST_SONGS} WHERE ${Columns.PLAYLIST_ID} =:id")
     abstract fun rawQuery(id: Long): List<PlaylistSongEntity>
 
     @Query(
-        "SELECT COALESCE(COUNT(${PlaylistSongEntity.Columns.ID}), 0) " +
-                "FROM ${PlaylistSongEntity.TABLE_NAME} " +
-                "WHERE ${PlaylistSongEntity.Columns.PLAYLIST_ID} = :playlistId"
+        "SELECT COALESCE(COUNT(${Columns.PLAYLIST_SONG_ID}), 0) " +
+                "FROM ${Tables.PLAYLIST_SONGS} " +
+                "WHERE ${Columns.PLAYLIST_ID} = :playlistId"
     )
     abstract fun size(playlistId: Long): Int
 
     @Query(
-        "SELECT COALESCE(MAX(${PlaylistSongEntity.Columns.POSITION}), -1) " +
-                "FROM ${PlaylistSongEntity.TABLE_NAME} " +
-                "WHERE ${PlaylistSongEntity.Columns.PLAYLIST_ID} = :playlistId"
+        "SELECT COALESCE(MAX(${Columns.POSITION}), -1) " +
+                "FROM ${Tables.PLAYLIST_SONGS} " +
+                "WHERE ${Columns.PLAYLIST_ID} = :playlistId"
     )
     abstract fun maximumIndexOf(playlistId: Long): Int
 
 
     @Query(
-        "SELECT COALESCE(COUNT(${PlaylistSongEntity.Columns.ID}), 0) " +
-                "FROM ${PlaylistSongEntity.TABLE_NAME} " +
-                "WHERE ${PlaylistSongEntity.Columns.PLAYLIST_ID} = :playlistId " +
-                "AND ${PlaylistSongEntity.Columns.MEDIASTORE_ID} = :songId "
+        "SELECT COALESCE(COUNT(${Columns.PLAYLIST_SONG_ID}), 0) " +
+                "FROM ${Tables.PLAYLIST_SONGS} " +
+                "WHERE ${Columns.PLAYLIST_ID} = :playlistId " +
+                "AND ${Columns.MEDIASTORE_ID} = :songId "
     )
     abstract fun count(playlistId: Long, songId: Long): Int
 
 
     @Query(
-        "SELECT * FROM ${PlaylistSongEntity.TABLE_NAME} " +
-                "WHERE ${PlaylistSongEntity.Columns.PLAYLIST_ID} = :playlistId " +
-                "AND ${PlaylistSongEntity.Columns.POSITION} = :position"
+        "SELECT * FROM ${Tables.PLAYLIST_SONGS} " +
+                "WHERE ${Columns.PLAYLIST_ID} = :playlistId " +
+                "AND ${Columns.POSITION} = :position"
     )
     protected abstract fun at(playlistId: Long, position: Int): PlaylistSongEntity?
 

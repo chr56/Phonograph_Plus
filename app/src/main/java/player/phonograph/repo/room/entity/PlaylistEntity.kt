@@ -10,27 +10,16 @@ import androidx.room.PrimaryKey
 
 
 @Entity(
-    tableName = PlaylistEntity.TABLE_NAME
+    tableName = Tables.PLAYLISTS
 )
 data class PlaylistEntity(
-    @ColumnInfo(name = Columns.ID)
+    @ColumnInfo(name = Columns.PLAYLIST_ID)
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
-    @ColumnInfo(name = Columns.NAME)
+    @ColumnInfo(name = Columns.PLAYLIST_NAME)
     val name: String = "",
     @ColumnInfo(name = Columns.DATE_ADDED)
     val dateAdded: Long = 0,
     @ColumnInfo(name = Columns.DATE_MODIFIED)
     val dateModified: Long = 0,
-) {
-    object Columns {
-        const val ID = "playlist_id"
-        const val NAME = "playlist_name"
-        const val DATE_ADDED = "date_added"
-        const val DATE_MODIFIED = "date_modified"
-    }
-
-    companion object {
-        const val TABLE_NAME = "playlists"
-    }
-}
+)

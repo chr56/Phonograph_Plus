@@ -9,29 +9,18 @@ import androidx.room.Entity
 import androidx.room.Index
 
 @Entity(
-    tableName = FavoritePlaylistEntity.Columns.TABLE_NAME,
-    primaryKeys = [FavoritePlaylistEntity.Columns.ID, FavoritePlaylistEntity.Columns.TYPE],
+    tableName = Tables.FAVORITE_PLAYLISTS,
+    primaryKeys = [Columns.PRIMARY_ID, Columns.TYPE],
     indices = [
-        Index(value = [FavoritePlaylistEntity.Columns.ID, FavoritePlaylistEntity.Columns.TYPE]),
-        Index(value = [FavoritePlaylistEntity.Columns.SUB_ID, FavoritePlaylistEntity.Columns.DATA]),
+        Index(value = [Columns.PRIMARY_ID, Columns.TYPE]),
+        Index(value = [Columns.SUB_ID, Columns.LOCATION]),
     ]
 )
 data class FavoritePlaylistEntity(
-    @ColumnInfo(name = ID) val id: Long,
-    @ColumnInfo(name = TYPE) val type: Int,
-    @ColumnInfo(name = SUB_ID) val sub: Long,
-    @ColumnInfo(name = DATA) val data: String,
-    @ColumnInfo(name = TITLE) val title: String,
-    @ColumnInfo(name = DATE_ADDED) val date: Long,
-) {
-    companion object Columns {
-        const val TABLE_NAME = "favorite_playlists"
-
-        const val ID = "primary_id"
-        const val TYPE = "type"
-        const val SUB_ID = "sub_id"
-        const val DATA = "location"
-        const val TITLE = "title"
-        const val DATE_ADDED = "date_added"
-    }
-}
+    @ColumnInfo(name = Columns.PRIMARY_ID) val id: Long,
+    @ColumnInfo(name = Columns.TYPE) val type: Int,
+    @ColumnInfo(name = Columns.SUB_ID) val sub: Long,
+    @ColumnInfo(name = Columns.LOCATION) val data: String,
+    @ColumnInfo(name = Columns.TITLE) val title: String,
+    @ColumnInfo(name = Columns.DATE_ADDED) val date: Long,
+)

@@ -8,16 +8,10 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 
 @Entity(
-    tableName = Metadata.TABLE_NAME,
-    primaryKeys = [Metadata.KEY]
+    tableName = Tables.METADATA,
+    primaryKeys = [Columns.METADATA_KEY]
 )
 data class Metadata(
-    @ColumnInfo(name = KEY) val key: String,
-    @ColumnInfo(name = VALUE) val value: String,
-) {
-    companion object Constants {
-        const val TABLE_NAME = "metadata"
-        const val KEY = "key"
-        const val VALUE = "value"
-    }
-}
+    @ColumnInfo(name = Columns.METADATA_KEY) val key: String,
+    @ColumnInfo(name = Columns.METADATA_VALUE) val value: String,
+)

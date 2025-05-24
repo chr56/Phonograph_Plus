@@ -8,7 +8,7 @@ import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.mediastore.MediaStoreSongs
-import player.phonograph.repo.room.converter.MediastoreSongConverter
+import player.phonograph.repo.room.converter.EntityConverter
 import android.content.Context
 import android.content.Intent
 import kotlinx.coroutines.CoroutineScope
@@ -60,7 +60,7 @@ object DatabaseUtil {
             }
 
         if (shouldRefresh) {
-            mediaStoreSongDao.refresh(songsMediastore.map(MediastoreSongConverter::fromSongModel))
+            mediaStoreSongDao.refresh(songsMediastore.map(EntityConverter::fromSongModel))
         }
 
     }

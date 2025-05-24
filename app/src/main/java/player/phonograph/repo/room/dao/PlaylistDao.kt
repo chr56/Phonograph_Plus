@@ -4,7 +4,9 @@
 
 package player.phonograph.repo.room.dao
 
+import player.phonograph.repo.room.entity.Columns
 import player.phonograph.repo.room.entity.PlaylistEntity
+import player.phonograph.repo.room.entity.Tables
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -15,10 +17,10 @@ import androidx.room.Update
 @Dao
 abstract class PlaylistDao {
 
-    @Query("SELECT * from ${PlaylistEntity.TABLE_NAME}")
+    @Query("SELECT * from ${Tables.PLAYLISTS}")
     abstract fun all(): List<PlaylistEntity>
 
-    @Query("SELECT * from ${PlaylistEntity.TABLE_NAME} WHERE ${PlaylistEntity.Columns.ID} =:id")
+    @Query("SELECT * from ${Tables.PLAYLISTS} WHERE ${Columns.PLAYLIST_ID} =:id")
     abstract fun id(id: Long): PlaylistEntity?
 
     @Insert
