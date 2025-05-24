@@ -69,18 +69,6 @@
     <string name="action_shuffle_playlist">Izmiješaj popis naslova</string>
     <string name="action_clear_playing_queue">Očisti red čekanja</string>
     <string name="action_save_playing_queue">Spremi red čekanja</string>
-    <string name="light_theme_name">Svijetla</string>
-    <string name="dark_theme_name">Tamna</string>
-    <string name="black_theme_name">Crna (AMOLED)</string>
-    <string name="always">Uvijek</string>
-    <string name="only_on_wifi">Samo na Wifi-ju</string>
-    <string name="never">Nikad</string>
-    <string name="today">Danas</string>
-    <string name="past_seven_days">Prošlih 7 dana</string>
-    <string name="past_three_months">Prošla 3 mjeseca</string>
-    <string name="this_week">Ovaj tjedan</string>
-    <string name="this_month">Ovaj mjesec</string>
-    <string name="this_year">Ova godina</string>
     <string name="equalizer">Ekvalizator</string>
     <string name="pref_header_colors">Boje</string>
     <string name="pref_header_now_playing_screen">Trenutna reprodukcija</string>
@@ -92,7 +80,6 @@
     <string name="pref_title_general_theme">Općenita tema</string>
     <string name="pref_title_navigation_bar">Obojena navigacijska traka</string>
     <string name="pref_title_app_shortcuts">Obojani prečaci</string>
-    <string name="pref_title_auto_download_metadata">Automatski preuzmi meta podatke</string>
     <string name="pref_title_colored_notification">Obojene obavijesti</string>
     <string name="pref_title_classic_notification">Klasični dizajn obavijesti</string>
     <string name="pref_title_gapless_playback">Reprodukcija bez prekida</string>
@@ -134,8 +121,6 @@
     <string name="history">Nedavno reproducirano</string>
     <string name="my_top_tracks">Najslušanije</string>
     <string name="remove_cover">Ukloni omot</string>
-    <string name="download_from_last_fm">Skini s lokacije Last.fm</string>
-    <string name="pick_from_local_storage">Odaberi s pohrane uređaja</string>
     <string name="web_search">Web pretraga</string>
     <string name="action_sleep_timer">Tajmer za spavanje</string>
     <string name="action_set">Postavi</string>
@@ -172,8 +157,6 @@
     <string name="welcome_to_phonograph">Dobrodošli u Phonograph, prekrasan i lagan glazbeni player za Android. </string>
     <string name="folders">Mape</string>
     <string name="failed_to_save_playlist">Popis naslova nije spremljen (%s).</string>
-    <string name="saved_x_playlists_to_x">%1$d popisa naslova je spremljeno u %2$s.</string>
-    <string name="saved_x_playlists_to_x_failed_to_save_x">%1$d popisa naslova je spremljeno u %2$s, %3$d nije uspješno spremljeno.</string>
     <string name="nothing_to_scan">Nema ništa za skeniranje.</string>
     <string name="scanned_files">Skenirano %1$d od %2$d datoteka</string>
     <string name="could_not_scan_files">Nije moguće skenirati %d datoteka.</string>
@@ -182,7 +165,6 @@
     <string name="app_widget_classic_name">Phonograph - Klasični</string>
     <string name="app_widget_small_name">Phonograph - Mali</string>
     <string name="app_widget_card_name">Phonograph - Kartica</string>
-    <string name="report_an_issue">Prijavi poteškoću</string>
     <string name="title">Naslov</string>
     <string name="description">Opis</string>
     <string name="device_info">Informacije o uređaju</string>

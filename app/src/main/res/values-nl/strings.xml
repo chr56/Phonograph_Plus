@@ -65,20 +65,6 @@
     <string name="action_shuffle_playlist">Shuffle afspeellijst</string>
     <string name="action_clear_playing_queue">Leeg afspeelwachtrij</string>
     <string name="action_save_playing_queue">Afspeelwachtrij opslaan</string>
-    <string name="light_theme_name">Licht</string>
-    <string name="dark_theme_name">Donker</string>
-    <string name="black_theme_name">Zwart (AMOLED)</string>
-    <string name="always">Altijd</string>
-    <string name="only_on_wifi">Alleen over wifi</string>
-    <string name="never">Nooit</string>
-    <string name="today">Vandaag</string>
-    <string name="past_seven_days">Afgelopen 7 dagen</string>
-    <string name="past_fourteen_days">Afgelopen 14 dagen</string>
-    <string name="past_one_month">Afgelopen maand</string>
-    <string name="past_three_months">Afgelopen 3 maanden</string>
-    <string name="this_week">Deze week</string>
-    <string name="this_month">Deze maand</string>
-    <string name="this_year">Dit jaar</string>
     <string name="pref_header_colors">Kleuren</string>
     <string name="pref_header_now_playing_screen">Afspeelscherm</string>
     <string name="pref_header_library">Bibliotheek</string>
@@ -88,7 +74,6 @@
     <string name="pref_title_general_theme">Algemeen thema</string>
     <string name="pref_title_navigation_bar">Gekleurde navigatiebalk</string>
     <string name="pref_title_app_shortcuts">Gekleurde app-snelkoppelingen</string>
-    <string name="pref_title_auto_download_metadata">Metadata autom. downloaden</string>
     <string name="pref_title_colored_notification">Gekleurde melding</string>
     <string name="pref_title_classic_notification">Klassieke meldingsweergave</string>
     <string name="pref_title_gapless_playback">Afspelen zonder pauzes</string>
@@ -130,8 +115,6 @@
     <string name="history">Geschiedenis</string>
     <string name="my_top_tracks">Mijn top nummers</string>
     <string name="remove_cover">Verwijder albumhoes</string>
-    <string name="download_from_last_fm">Download van last.fm</string>
-    <string name="pick_from_local_storage">Kies uit lokale opslag</string>
     <string name="web_search">Zoek op het web</string>
     <string name="action_sleep_timer">Slaaptimer</string>
     <string name="action_set">Zet</string>
@@ -168,8 +151,6 @@
     <string name="folders">Mappen</string>
     <string name="theme_switch">Thema wisselen</string>
     <string name="failed_to_save_playlist">Opslaan van afspeellijst (%s) mislukt.</string>
-    <string name="saved_x_playlists_to_x">%1$d afspeellijsten opgeslagen in %2$s.</string>
-    <string name="saved_x_playlists_to_x_failed_to_save_x">%1$d afspeellijsten opgeslagen in %2$s, opslaan van %3$d mislukt.</string>
     <string name="nothing_to_scan">Niets te scannen.</string>
     <string name="scanned_files">%1$d van de %2$d bestanden gescand.</string>
     <string name="could_not_scan_files">Kan %d bestanden niet scannen.</string>
@@ -178,7 +159,6 @@
     <string name="app_widget_classic_name">Phonograph - Klassiek</string>
     <string name="app_widget_small_name">Phonograph - Klein</string>
     <string name="app_widget_card_name">Phonograph - Kaart</string>
-    <string name="report_an_issue">Rapporteer een probleem</string>
     <string name="title">Titel</string>
     <string name="description">Omschrijving</string>
     <string name="device_info">Apparaat info</string>
@@ -211,7 +191,6 @@
     <string name="dialog_ringtone_message">Sta Phonograph toe om audioinstellingen te wijzigen</string>
     <string name="perf_title_fixed_tab_layout">Alle tabbladen vastzetten</string>
     <string name="pref_summary_fixed_tab_layout">De tabbladen bovenin zullen niet bladerbaar zijn, ze krijgen een titel zonder enige marge.</string>
-    <string name="auto_mode_on">Auto Modes is ingeschakeld, schakel deze uit en probeer het opnieuw!</string>
     <string name="add_blacklist">Wil je dit aan de zwarte lijst toevoegen?</string>
     <string name="other_information">Overige</string>
     <string name="more_actions">Meer</string>

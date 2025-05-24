@@ -70,18 +70,6 @@
     <string name="action_shuffle_playlist">Přehrát playlist náhodně</string>
     <string name="action_clear_playing_queue">Vyčistit frontu přehrávání</string>
     <string name="action_save_playing_queue">Uložit frontu přehrávání</string>
-    <string name="light_theme_name">Světlý</string>
-    <string name="dark_theme_name">Tmavý</string>
-    <string name="black_theme_name">Černý (AMOLED)</string>
-    <string name="always">Vždy</string>
-    <string name="only_on_wifi">Jenom na Wi-Fi</string>
-    <string name="never">Nikdy</string>
-    <string name="today">Dnes</string>
-    <string name="past_seven_days">Posledních 7 dní</string>
-    <string name="past_three_months">Poslední 3 měsíce</string>
-    <string name="this_week">Tento týden</string>
-    <string name="this_month">Tento měsíc</string>
-    <string name="this_year">Tento rok</string>
     <string name="equalizer">Ekvalizér</string>
     <string name="pref_header_colors">Barvy</string>
     <string name="pref_header_now_playing_screen">Právě hraje</string>
@@ -93,7 +81,6 @@
     <string name="pref_title_general_theme">Motiv</string>
     <string name="pref_title_navigation_bar">Barevné záhlaví</string>
     <string name="pref_title_app_shortcuts">Barevné zkratky aplikace</string>
-    <string name="pref_title_auto_download_metadata">Automaticky stahovat metadata</string>
     <string name="pref_title_colored_notification">Barevné notifikace</string>
     <string name="pref_title_classic_notification">Klasický vzhled oznámení</string>
     <string name="pref_title_gapless_playback">Přehrávání bez mezer</string>
@@ -135,8 +122,6 @@
     <string name="history">Nedávno přehrané</string>
     <string name="my_top_tracks">Moje nejposlouchanější skladby </string>
     <string name="remove_cover">Odstranit obal</string>
-    <string name="download_from_last_fm">Stáhnout z Last.fm</string>
-    <string name="pick_from_local_storage">Vybrat z místního úložiště</string>
     <string name="web_search">Najít na webu</string>
     <string name="action_sleep_timer">Určit ukončení přehrávání</string>
     <string name="action_set">Nastavit</string>
@@ -173,8 +158,6 @@
     <string name="welcome_to_phonograph">Vítejte ve Phonographu, krásném a lehkém přehrávači pro Android. </string>
     <string name="folders">Složky </string>
     <string name="failed_to_save_playlist">Chyba v uložení playlistu (%s).</string>
-    <string name="saved_x_playlists_to_x">Uloženo %1$d playlistů do %2$s.</string>
-    <string name="saved_x_playlists_to_x_failed_to_save_x">Uloženo %1$d playlistů do %2$s, nepodařilo se uložit %3$d.</string>
     <string name="nothing_to_scan">Nic ke skenování.</string>
     <string name="scanned_files">Naskenováno %1$d z %2$d souborů.</string>
     <string name="could_not_scan_files">Nelze skenovat %d souborů.</string>
@@ -183,7 +166,6 @@
     <string name="app_widget_classic_name">Phonograph - Klasický</string>
     <string name="app_widget_small_name">Phonograph - Malý</string>
     <string name="app_widget_card_name">Phonograph - Karta</string>
-    <string name="report_an_issue">Nahlásit problém</string>
     <string name="title">Název</string>
     <string name="description">Popis</string>
     <string name="device_info">Informace o zařízení</string>

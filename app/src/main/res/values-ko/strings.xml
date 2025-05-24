@@ -71,17 +71,6 @@
     <string name="action_shuffle_playlist">재생 목록 랜덤 재생</string>
     <string name="action_clear_playing_queue">재생 대기열 비우기</string>
     <string name="action_save_playing_queue">재생 대기열 저장</string>
-    <string name="light_theme_name">밝은 테마</string>
-    <string name="dark_theme_name">어두운 테마</string>
-    <string name="black_theme_name">검정 테마 (AMOLED)</string>
-    <string name="always">항상</string>
-    <string name="only_on_wifi">Wi-Fi 환경에서만</string>
-    <string name="never">사용 안 함</string>
-    <string name="today">오늘</string>
-    <string name="past_three_months">지난 3개월</string>
-    <string name="this_week">이번 주</string>
-    <string name="this_month">이번 달</string>
-    <string name="this_year">올해</string>
     <string name="equalizer">이퀄라이저</string>
     <string name="pref_header_colors">색상</string>
     <string name="pref_header_now_playing_screen">지금 재생 중</string>
@@ -93,7 +82,6 @@
     <string name="pref_title_general_theme">전체 테마</string>
     <string name="pref_title_navigation_bar">내비게이션 바 색상 틴트</string>
     <string name="pref_title_app_shortcuts">앱 바로가기 색칠</string>
-    <string name="pref_title_auto_download_metadata">메타데이터 자동 다운로드</string>
     <string name="pref_title_colored_notification">알림 색상 틴트</string>
     <string name="pref_title_classic_notification">클래식 알림 디자인</string>
     <string name="pref_title_gapless_playback">갭리스 재생</string>
@@ -134,8 +122,6 @@
     <string name="history">재생 기록</string>
     <string name="my_top_tracks">많이 재생한 트랙</string>
     <string name="remove_cover">앨범 커버 제거</string>
-    <string name="download_from_last_fm">Last.fm에서 다운로드</string>
-    <string name="pick_from_local_storage">내부 저장소에서 선택</string>
     <string name="web_search">웹 검색</string>
     <string name="action_sleep_timer">수면 타이머</string>
     <string name="action_set">설정</string>
@@ -172,8 +158,6 @@
     <string name="welcome_to_phonograph">Android를 위한 아름답고 가벼운 음악 플레이어인 Phonograph에 오신 것을 환영합니다.</string>
     <string name="folders">폴더</string>
     <string name="failed_to_save_playlist">재생 목록을 저장하는 과정에서 오류가 발생했습니다. (%s)</string>
-    <string name="saved_x_playlists_to_x">%1$d 재생목록을 %2$s에 저장함.</string>
-    <string name="saved_x_playlists_to_x_failed_to_save_x">%1$d 재생목록을 %2$s에 저장함 / %3$d 저장 실패</string>
     <string name="nothing_to_scan">스캔할 내용이 없습니다.</string>
     <string name="scanned_files">%2$d 개 중 %1$d 개 파일 스캔</string>
     <string name="could_not_scan_files">%d 개 파일을 스캔하지 못했습니다.</string>
@@ -182,7 +166,6 @@
     <string name="app_widget_classic_name">Phonograph - 클래식</string>
     <string name="app_widget_small_name">Phonograph - 소형</string>
     <string name="app_widget_card_name">Phonograph - 카드</string>
-    <string name="report_an_issue">버그 제보</string>
     <string name="title">제목</string>
     <string name="description">설명</string>
     <string name="device_info">기기 정보</string>

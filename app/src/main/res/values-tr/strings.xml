@@ -80,21 +80,6 @@
     <string name="action_shuffle_playlist">Çalma listesini karıştır</string>
     <string name="action_clear_playing_queue">Çalma sırasını temizle</string>
     <string name="action_save_playing_queue">Çalma sırasını kaydet</string>
-    <string name="light_theme_name">Açık</string>
-    <string name="dark_theme_name">Koyu</string>
-    <string name="black_theme_name">Siyah (AMOLED)</string>
-    <string name="auto_theme_name">Otomatik</string>
-    <string name="always">Her zaman</string>
-    <string name="only_on_wifi">Yalnızca Wİ-Fİ</string>
-    <string name="never">Asla</string>
-    <string name="today">Bugün</string>
-    <string name="past_seven_days">Son 7 gün</string>
-    <string name="past_fourteen_days">Son 14 gün</string>
-    <string name="past_one_month">Geçen ay</string>
-    <string name="past_three_months">Son 3 ay</string>
-    <string name="this_week">Bu hafta</string>
-    <string name="this_month">Bu ay</string>
-    <string name="this_year">Bu yıl</string>
     <string name="equalizer">Ekolayzer</string>
     <string name="pref_header_appearance">Görünüm</string>
     <string name="pref_header_colors">Renkler</string>
@@ -112,7 +97,6 @@
     <string name="pref_title_player_style">Ana Oynatıcı Stili</string>
     <string name="pref_title_navigation_bar">Renkli gezinme çubuğu</string>
     <string name="pref_title_app_shortcuts">Renkli uygulama kısayolları</string>
-    <string name="pref_title_auto_download_metadata">Otomatik indirilen meta veriler</string>
     <string name="pref_title_colored_notification">Renkli bildirim</string>
     <string name="pref_title_classic_notification">Klasik bildirim tasarımı</string>
     <string name="pref_title_gapless_playback">Aralıksız çalma</string>
@@ -154,8 +138,6 @@
     <string name="history">Son çalınanlar</string>
     <string name="my_top_tracks">En iyi parçalarım</string>
     <string name="remove_cover">Albüm kapağını kaldır</string>
-    <string name="download_from_last_fm">Last.fm\'den indir</string>
-    <string name="pick_from_local_storage">Dahili hafızadan al</string>
     <string name="web_search">İnternette ara</string>
     <string name="action_sleep_timer">Uyku zamanlayıcı</string>
     <string name="action_set">Ayarla</string>
@@ -194,8 +176,6 @@
     <string name="files">Dosyalar</string>
     <string name="theme_switch">Tema değiştir</string>
     <string name="failed_to_save_playlist">(%s) çalma listesine kaydetme başarısız.</string>
-    <string name="saved_x_playlists_to_x">%1$d oynatma listesini %2$s konumuna kaydedildi.</string>
-    <string name="saved_x_playlists_to_x_failed_to_save_x">%1$d oynatma listesini %2$s konumuna kaydedildi, %3$d kaydedilemedi.</string>
     <string name="nothing_to_scan">Taranacak bir şey yok</string>
     <string name="scanned_files">%1$d - %2$d dosya taranıyor.</string>
     <string name="could_not_scan_files">%d dosya taranamadı.</string>
@@ -204,7 +184,6 @@
     <string name="app_widget_classic_name">Phonograph - Klasik</string>
     <string name="app_widget_small_name">Phonograph - Küçük</string>
     <string name="app_widget_card_name">Phonograph - Kart</string>
-    <string name="report_an_issue">Sorun bildir</string>
     <string name="title">Başlık</string>
     <string name="description">Açıklama</string>
     <string name="device_info">Cihaz bilgisi</string>
@@ -241,7 +220,6 @@
     <string name="dialog_ringtone_message">Phonograph\'ın ses ayarlarını değiştirmesine izin ver</string>
     <string name="perf_title_fixed_tab_layout">Bütün sekmeleri sabitle</string>
     <string name="pref_summary_fixed_tab_layout">Yukarıdaki sekmeler kaydırılabilir olmayacak, ancak boşluk olmadan bölünebilecekler.</string>
-    <string name="auto_mode_on">Otomatik Mod açık, lütfen kapatın ve tekrar deneyin!</string>
     <string name="add_blacklist">Bunu kara listeye eklemek ister misin?</string>
     <string name="minutes_short">%1$d dk</string>
     <string name="other_information">Diğer</string>
@@ -283,15 +261,11 @@
     <string name="direction_open_folder_with_saf">Şimdi kullanmak istediğiniz dosyaların olduğu klasörü seçiniz.</string>
     <string name="direction_open_file_with_saf">Şimdi lütfen kullanmak istediğiniz dosyayı seçiniz.</string>
     <string name="file_incorrect">Dosya yanlış!</string>
-    <string name="pref_title_reset_home_pages_tab_config">Tüm sekmeleri sıfırla</string>
-    <string name="pref_summary_reset_home_pages_tab_config">Tüm kitaplık kategorileri varsayılana sıfırlanır.</string>
     <string name="are_you_sure">Emin misin?</string>
     <string name="original_author">Orijinal Yazar</string>
     <string name="plus_author">Phonograph Plus\'un Geliştiricisi</string>
     <string name="misc">Diğer</string>
     <string name="comment">Yorum</string>
-    <string name="pref_title_use_legacy_detail_dialog">Eski detay menüsünü kullan</string>
-    <string name="pref_summary_use_legacy_detail_dialog">Detaylar sayfası yerine eski şarkı detayı menüsünü kullan</string>
     <string name="composer">Besteci</string>
     <string name="lyricist">Söz Yazarı</string>
     <string name="music_tags">Müzik Etiketleri</string>
@@ -357,7 +331,6 @@
     <string name="delete_with_lyrics">Şarkı sözleriyle birlikte sil</string>
     <string name="excluded_paths">Hariç Tutulan Yollar</string>
     <string name="included_paths">Kapsanan Yollar</string>
-    <string name="swith_mode">Mod değiştir</string>
     <string name="path_filter">Kaynak Filtresi</string>
     <string name="mode_flag_goto_position_first">Eğer anlık sıralamayla aynıysa, seçilen şarkının yerini değiştir</string>
     <string name="mode_flag_play_queue_if_empty">Eğer anlık sıralama boş ise doğrudan sıralamayı oynat</string>

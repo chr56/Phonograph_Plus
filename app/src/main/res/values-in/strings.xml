@@ -71,21 +71,6 @@
     <string name="action_shuffle_playlist">Putar daftar putar secara acak</string>
     <string name="action_clear_playing_queue">Kosongkan antrean yang sedang diputar</string>
     <string name="action_save_playing_queue">Menyimpan antrian yang diputar</string>
-    <string name="light_theme_name">Terang</string>
-    <string name="dark_theme_name">Gelap</string>
-    <string name="black_theme_name">Hitam (AMOLED)</string>
-    <string name="auto_theme_name">Otomatis</string>
-    <string name="always">Selalu</string>
-    <string name="only_on_wifi">Hanya pada Wi-Fi</string>
-    <string name="never">Tidak pernah</string>
-    <string name="today">Hari ini</string>
-    <string name="past_seven_days">7 hari terakhir</string>
-    <string name="past_fourteen_days">14 hari terakhir</string>
-    <string name="past_one_month">Sebulan yang lalu</string>
-    <string name="past_three_months">3 bulan terakhir</string>
-    <string name="this_week">Minggu ini</string>
-    <string name="this_month">Bulan ini</string>
-    <string name="this_year">Tahun ini</string>
     <string name="equalizer">Ekualiser</string>
     <string name="pref_header_appearance">Penampilan</string>
     <string name="pref_header_colors">Warna</string>
@@ -99,7 +84,6 @@
     <string name="pref_title_general_theme">Tema umum</string>
     <string name="pref_title_navigation_bar">Alat Navigasi Berwarna</string>
     <string name="pref_title_app_shortcuts">Pintasan Berwarna</string>
-    <string name="pref_title_auto_download_metadata">Otomatis mengunduh metadata</string>
     <string name="pref_title_colored_notification">Notifikasi berwarna</string>
     <string name="pref_title_classic_notification">Desain notifikasi klasik</string>
     <string name="pref_title_gapless_playback">Pemutaran tanpa jeda</string>
@@ -141,8 +125,6 @@
     <string name="history">Diputar baru-baru ini</string>
     <string name="my_top_tracks">Sering Diputar</string>
     <string name="remove_cover">Hapus sampul</string>
-    <string name="download_from_last_fm">Unduh dari Last.fm</string>
-    <string name="pick_from_local_storage">Ambil dari penyimpanan lokal</string>
     <string name="web_search">Pencarian web</string>
     <string name="action_sleep_timer">Pewaktu tidur</string>
     <string name="action_set">Atur</string>
@@ -180,8 +162,6 @@
     <string name="folders">Map-map</string>
     <string name="theme_switch">Ubah tema</string>
     <string name="failed_to_save_playlist">Gagal untuk menyimpan daftar putar (%s).</string>
-    <string name="saved_x_playlists_to_x">%1$d daftar putar disimpan ke %2$s.</string>
-    <string name="saved_x_playlists_to_x_failed_to_save_x">%1$d daftar putar disimpan ke %2$s, gagal menyimpan %3$d.</string>
     <string name="nothing_to_scan">Tidak ada untuk di pindai.</string>
     <string name="scanned_files">%1$d dari %2$d berkas terpindai.</string>
     <string name="could_not_scan_files">Tidak dapat memindai %d berkas.</string>
@@ -190,7 +170,6 @@
     <string name="app_widget_classic_name">Phonograph - Klasik</string>
     <string name="app_widget_small_name">Phonograph - Kecil</string>
     <string name="app_widget_card_name">Kartu - Phonograph</string>
-    <string name="report_an_issue">Laporkan masalah</string>
     <string name="title">Judul</string>
     <string name="description">Deskripsi</string>
     <string name="device_info">Info Perangkat</string>
@@ -224,7 +203,6 @@
     <string name="dialog_ringtone_message">Izinkan phonograph mengubah pengaturan audio</string>
     <string name="perf_title_fixed_tab_layout">Perbaiki semua tab</string>
     <string name="pref_summary_fixed_tab_layout">Tab di atas tidak dapat digulir, tetapi memutari ubin tanpa batas apapun.</string>
-    <string name="auto_mode_on">Mode otomatis sedang dihidupkan, silahkan matikan dan mulai lagi!</string>
     <string name="add_blacklist">Apakah Anda ingin menambahkan ke daftar hitam?</string>
     <string name="minutes_short">%1$d menit</string>
     <string name="other_information">Lainnya</string>
@@ -262,8 +240,6 @@
     <string name="direction_open_folder_with_saf">Sekarang, silahkan pilih folder file yang berisi file yang anda ingin operasikan </string>
     <string name="direction_open_file_with_saf">Sekarang, silahkan pilih file yang anda ingin operasikan </string>
     <string name="file_incorrect">File tidak benar!</string>
-    <string name="pref_title_reset_home_pages_tab_config">Atur ulang semua tab</string>
-    <string name="pref_summary_reset_home_pages_tab_config">Semua kategori pustaka akan di atur ulang ke bawaan.</string>
     <string name="are_you_sure">Apakah Anda yakin?</string>
     <string name="original_author">Pembuat Asli</string>
     <string name="plus_author">Pembuat dari Phonograph Plus</string>

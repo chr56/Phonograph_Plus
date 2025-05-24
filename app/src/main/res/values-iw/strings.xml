@@ -72,18 +72,6 @@
     <string name="action_shuffle_playlist">ערבב רשימת השמעה</string>
     <string name="action_clear_playing_queue">איפוס תור השמעה</string>
     <string name="action_save_playing_queue">שמור תור פעיל</string>
-    <string name="light_theme_name">בהיר</string>
-    <string name="dark_theme_name">כהה</string>
-    <string name="black_theme_name">שחור (AMOLED)</string>
-    <string name="always">תמיד</string>
-    <string name="only_on_wifi">רק עם WI-FI</string>
-    <string name="never">אף פעם</string>
-    <string name="today">היום</string>
-    <string name="past_seven_days">7 הימים האחרונים</string>
-    <string name="past_three_months">שלשה חודשים האחרונים</string>
-    <string name="this_week">השבוע</string>
-    <string name="this_month">החודש</string>
-    <string name="this_year">השנה</string>
     <string name="equalizer">אקוולייזר</string>
     <string name="pref_header_colors">צבעים</string>
     <string name="pref_header_now_playing_screen">מנגן כעת</string>
@@ -95,7 +83,6 @@
     <string name="pref_title_general_theme">ערכת נושא כללית</string>
     <string name="pref_title_navigation_bar">סרגל ניווט צבעוני</string>
     <string name="pref_title_app_shortcuts">קיצורי אפליקציה צבעוניים</string>
-    <string name="pref_title_auto_download_metadata">הורד מידע שיר אוטומטית</string>
     <string name="pref_title_colored_notification">התראה צבעונית</string>
     <string name="pref_title_classic_notification">עיצוב התראה קלאיסי</string>
     <string name="pref_title_gapless_playback">ניגון ללא מרווחים בין השירים</string>
@@ -137,8 +124,6 @@
     <string name="history">הושמע לאחרונה</string>
     <string name="my_top_tracks">השירים המובילים שלי</string>
     <string name="remove_cover">הסרת עטיפה</string>
-    <string name="download_from_last_fm">הורדה מ-Last.fm</string>
-    <string name="pick_from_local_storage">בחר מאחסון מקומי</string>
     <string name="web_search">חיפוש באינטרנט</string>
     <string name="action_sleep_timer">טיימר לשינה</string>
     <string name="action_set">קבע</string>
@@ -175,8 +160,6 @@
     <string name="welcome_to_phonograph">ברוכים הבאים ל-Phonograph, נגן מוזיקה קל ויפה ל-Android. </string>
     <string name="folders">תיקיות</string>
     <string name="failed_to_save_playlist">לא ניתן היה לשמור את רשימת ההשמעה (%s)</string>
-    <string name="saved_x_playlists_to_x">נשמרו %1$d רשימות השמעה ל-%2$s.</string>
-    <string name="saved_x_playlists_to_x_failed_to_save_x">נשמרו %1$d רשימות השמעה ל-%2$s. לא ניתן היה לשמור %3$d.</string>
     <string name="nothing_to_scan">אין כלום לסרוק.</string>
     <string name="scanned_files">נסרקו %1$d מתוך %2$d קבצים.</string>
     <string name="could_not_scan_files">לא ניתן היה לסרוק %d קבצים.</string>
@@ -185,7 +168,6 @@
     <string name="app_widget_classic_name">Phonograph - קלאסי</string>
     <string name="app_widget_small_name">Phonograph - קטן</string>
     <string name="app_widget_card_name">Phonograph - כרטיס</string>
-    <string name="report_an_issue">דווח על בעיה</string>
     <string name="title">כותרת</string>
     <string name="description">תיאור</string>
     <string name="device_info">מידע על המכשיר</string>

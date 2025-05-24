@@ -65,12 +65,6 @@
     <string name="action_shuffle_artist">Разбъркай артист</string>
     <string name="action_shuffle_playlist">Разбъркай този плейлист</string>
     <string name="action_clear_playing_queue">Изчисти списъкът с възпроизвеждащи се песни</string>
-    <string name="light_theme_name">Светъл изглед</string>
-    <string name="dark_theme_name">Тъмен изглед</string>
-    <string name="black_theme_name">Черен изглед (AMOLED дисплеи)</string>
-    <string name="always">Винаги</string>
-    <string name="only_on_wifi">Само чрез Wi-Fi</string>
-    <string name="never">Никога</string>
     <string name="equalizer">Еквилайзер</string>
     <string name="pref_header_colors">Цветове</string>
     <string name="pref_header_now_playing_screen">Текуща песен</string>
@@ -111,8 +105,6 @@
     <string name="history">История</string>
     <string name="my_top_tracks">Моите топ песни</string>
     <string name="remove_cover">Премахни обложка</string>
-    <string name="download_from_last_fm">Изтегли от Last.fm</string>
-    <string name="pick_from_local_storage">Избери от телефон</string>
     <string name="web_search">Уеб търсене</string>
     <string name="action_sleep_timer">Таймер за заспиване</string>
     <string name="action_set">Задай</string>
@@ -155,7 +147,6 @@
     <string name="app_widget_big_name">Phonograph - Голям</string>
     <string name="app_widget_classic_name">Phonograph - Класически</string>
     <string name="app_widget_small_name">Phonograph - Малък</string>
-    <string name="report_an_issue">Съобщете за проблем</string>
     <string name="title">Заглавие</string>
     <string name="description">Описание</string>
     <string name="device_info">Информация за устройството</string>

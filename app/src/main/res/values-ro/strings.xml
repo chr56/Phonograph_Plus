@@ -66,17 +66,6 @@
     <string name="action_shuffle_playlist">Amestecare listă de redare</string>
     <string name="action_clear_playing_queue">Golește lista de redare</string>
     <string name="action_save_playing_queue">Salvați lista de redare</string>
-    <string name="light_theme_name">Light (Alb)</string>
-    <string name="dark_theme_name">Dark (Negru)</string>
-    <string name="black_theme_name">Negru (AMOLED)</string>
-    <string name="always">Mereu</string>
-    <string name="only_on_wifi">Doar cu Wi-Fi</string>
-    <string name="never">Niciodată</string>
-    <string name="today">Astăzi</string>
-    <string name="past_three_months">Ultimele 3 luni</string>
-    <string name="this_week">Săptămâna aceasta</string>
-    <string name="this_month">Luna aceasta</string>
-    <string name="this_year">Anul acesta</string>
     <string name="equalizer">Egalizator</string>
     <string name="pref_header_colors">Culori</string>
     <string name="pref_header_now_playing_screen">Redare acum</string>
@@ -87,7 +76,6 @@
     <string name="pref_title_general_theme">Temă generală</string>
     <string name="pref_title_navigation_bar">Bară de navigare colorată</string>
     <string name="pref_title_app_shortcuts">Comenzi rapide colorate</string>
-    <string name="pref_title_auto_download_metadata">Descărcare automată metadate</string>
     <string name="pref_title_colored_notification">Notificare colorată</string>
     <string name="pref_title_classic_notification">Design clasic de notificare</string>
     <string name="pref_title_gapless_playback">Redare fără întreruperi</string>
@@ -128,8 +116,6 @@
     <string name="history">Istoric</string>
     <string name="my_top_tracks">Melodiile mele favorite</string>
     <string name="remove_cover">Ștergeți coperta</string>
-    <string name="download_from_last_fm">Descărcați de la Last.fm</string>
-    <string name="pick_from_local_storage">Alegeți din stocarea locală</string>
     <string name="web_search">Căutare pe Web</string>
     <string name="action_sleep_timer">Cronometru pentru somn</string>
     <string name="action_set">Setează</string>
@@ -166,8 +152,6 @@
     <string name="welcome_to_phonograph">Bine ați venit la Phonograph, un player muzical frumos și ușor pentru Android. </string>
     <string name="folders">Dosare</string>
     <string name="failed_to_save_playlist">Salvarea listei de redare (%s) a eșuat.</string>
-    <string name="saved_x_playlists_to_x">Au fost salvate %1$d liste de redare în %2$s.</string>
-    <string name="saved_x_playlists_to_x_failed_to_save_x">Au fost salvate %1$d liste de redare în %2$s, salvarea %3$d eșuând.</string>
     <string name="nothing_to_scan">Nimic de scanat.</string>
     <string name="scanned_files">Scanate %1$d din %2$d fişiere.</string>
     <string name="could_not_scan_files">Nu s-au putut scana %d fişiere.</string>
@@ -175,7 +159,6 @@
     <string name="app_widget_big_name">Phonograph - Mare</string>
     <string name="app_widget_classic_name">Phonograph - Clasic</string>
     <string name="app_widget_small_name">Phonograph - Mic</string>
-    <string name="report_an_issue">Raportați o problemă</string>
     <string name="title">Titlu</string>
     <string name="description">Descriere</string>
     <string name="device_info">Informaţii dispozitiv</string>

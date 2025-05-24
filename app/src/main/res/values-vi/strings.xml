@@ -70,18 +70,6 @@
     <string name="action_shuffle_playlist">Trộn danh sách nhạc</string>
     <string name="action_clear_playing_queue">Dọn hàng đợi phát</string>
     <string name="action_save_playing_queue">Lưu hàng đợi phát</string>
-    <string name="light_theme_name">Sáng</string>
-    <string name="dark_theme_name">Tối</string>
-    <string name="black_theme_name">Đen (AMOLED)</string>
-    <string name="always">Luôn luôn</string>
-    <string name="only_on_wifi">Chỉ dùng Wi-Fi</string>
-    <string name="never">Không bao giờ</string>
-    <string name="today">Hôm nay</string>
-    <string name="past_seven_days">7 ngày qua</string>
-    <string name="past_three_months">3 tháng qua</string>
-    <string name="this_week">Tuần này</string>
-    <string name="this_month">Tháng này</string>
-    <string name="this_year">Năm nay</string>
     <string name="equalizer">Bộ lọc âm thanh</string>
     <string name="pref_header_colors">Màu sắc</string>
     <string name="pref_header_now_playing_screen">Đang phát</string>
@@ -93,7 +81,6 @@
     <string name="pref_title_general_theme">Chủ đề chung</string>
     <string name="pref_title_navigation_bar">Màu thanh điều hướng</string>
     <string name="pref_title_app_shortcuts">Màu sắc biểu tượng ứng dụng</string>
-    <string name="pref_title_auto_download_metadata">Tự động tải xuống siêu dữ liệu</string>
     <string name="pref_title_colored_notification">Màu thông báo</string>
     <string name="pref_title_classic_notification">Thiết kế thông báo cổ điển</string>
     <string name="pref_title_gapless_playback">Phát lại quãng lặng</string>
@@ -135,8 +122,6 @@
     <string name="history">Phát gần đây</string>
     <string name="my_top_tracks">Bài hát hàng đầu</string>
     <string name="remove_cover">Di chuyển bìa</string>
-    <string name="download_from_last_fm">Tải về từ Last.fm</string>
-    <string name="pick_from_local_storage">Chọn từ bộ nhớ máy</string>
     <string name="web_search">Tìm kiếm trên Web</string>
     <string name="action_sleep_timer">Hẹn giờ ngủ</string>
     <string name="action_set">Đặt</string>
@@ -173,8 +158,6 @@
     <string name="welcome_to_phonograph">Chào mừng bạn đến Phonograph, một máy nghe nhạc đẹp và nhẹ cho Android.</string>
     <string name="folders">Thư mục</string>
     <string name="failed_to_save_playlist">Không thể lưu danh sách nhạc (%s).</string>
-    <string name="saved_x_playlists_to_x">Đã lưu danh sách %1$d thành %2$s.</string>
-    <string name="saved_x_playlists_to_x_failed_to_save_x">Đã lưu danh sách %1$d thành %2$s, lỗi khi lưu %3$d.</string>
     <string name="nothing_to_scan">Không có gì để quét.</string>
     <string name="scanned_files">Đã quét %1$d của %2$d tập tin.</string>
     <string name="could_not_scan_files">Không thể quét %d tập tin.</string>
@@ -183,7 +166,6 @@
     <string name="app_widget_classic_name">Phonograph - Cổ điển</string>
     <string name="app_widget_small_name">Phonograph - Nhỏ</string>
     <string name="app_widget_card_name">Phonograph - Thẻ</string>
-    <string name="report_an_issue">Báo cáo một vấn đề</string>
     <string name="title">Tiêu đề</string>
     <string name="description">Mô tả</string>
     <string name="device_info">Thông tin thiết bị</string>

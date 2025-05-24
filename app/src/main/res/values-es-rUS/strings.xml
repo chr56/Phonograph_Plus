@@ -71,17 +71,6 @@
     <string name="action_shuffle_playlist">Reproducción aleatoria de la lista de reproducción</string>
     <string name="action_clear_playing_queue">Limpiar cola de reproducción</string>
     <string name="action_save_playing_queue">Guardar cola de reproducción</string>
-    <string name="light_theme_name">Claro</string>
-    <string name="dark_theme_name">Oscuro</string>
-    <string name="black_theme_name">Negro (AMOLED)</string>
-    <string name="always">Siempre</string>
-    <string name="only_on_wifi">Sólo con WiFi</string>
-    <string name="never">Nunca</string>
-    <string name="today">Hoy</string>
-    <string name="this_week">Esta semana</string>
-    <string name="this_month">Este mes</string>
-    <string name="past_three_months">Últimos 3 meses</string>
-    <string name="this_year">Este año</string>
     <string name="equalizer">Ecualizador</string>
     <string name="pref_header_colors">Colores</string>
     <string name="pref_header_now_playing_screen">Reproduciendo ahora</string>
@@ -93,7 +82,6 @@
     <string name="pref_header_notification">Notificación</string>
     <string name="pref_title_navigation_bar">Barra de navegación coloreada</string>
     <string name="pref_title_app_shortcuts">Accesos directos coloreados</string>
-    <string name="pref_title_auto_download_metadata">Auto descargar metadata</string>
     <string name="pref_title_colored_notification">Notificación coloreada</string>
     <string name="pref_title_classic_notification">Diseño de notificación clásico</string>
     <string name="pref_title_gapless_playback">Reproducción sin pausas</string>
@@ -134,8 +122,6 @@
     <string name="history">Historial</string>
     <string name="my_top_tracks">Más reproducidas</string>
     <string name="remove_cover">Eliminar carátula</string>
-    <string name="download_from_last_fm">Descargar de Last.fm</string>
-    <string name="pick_from_local_storage">Seleccionar del almacenamiento interno</string>
     <string name="web_search">Buscar en Internet</string>
     <string name="action_sleep_timer">Temporizador de apagado</string>
     <string name="action_set">Fijar</string>
@@ -172,7 +158,6 @@
     <string name="welcome_to_phonograph">"Bienvenido a Phonograph, un reproductor de música hermoso y ligero para Android."</string>
     <string name="folders">Carpetas</string>
     <string name="failed_to_save_playlist">No se pudo guardar lista de reproducción (%s).</string>
-    <string name="saved_x_playlists_to_x">%1$d de %2$s listas de reproducción guardadas.</string>
     <string name="nothing_to_scan">Nada para escanear.</string>
     <string name="scanned_files">%1$d de %2$d archivos escaneados.</string>
     <string name="could_not_scan_files">No se pudieron escanear los archivos %d.</string>
@@ -181,7 +166,6 @@
     <string name="app_widget_classic_name">Phonograph - Clásico</string>
     <string name="app_widget_small_name">Phonograph - Pequeño</string>
     <string name="app_widget_card_name">Phonograph - Tarjeta</string>
-    <string name="report_an_issue">Informar sobre un problema</string>
     <string name="title">Título</string>
     <string name="description">Descripción</string>
     <string name="device_info">Información del dispositivo</string>

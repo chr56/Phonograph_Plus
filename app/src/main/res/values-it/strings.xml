@@ -80,21 +80,6 @@
     <string name="action_shuffle_playlist">Riproduzione casuale playlist</string>
     <string name="action_clear_playing_queue">Svuota coda di riproduzione</string>
     <string name="action_save_playing_queue">Salva la coda di riproduzione</string>
-    <string name="light_theme_name">Chiaro</string>
-    <string name="dark_theme_name">Scuro</string>
-    <string name="black_theme_name">Nero (AMOLED)</string>
-    <string name="auto_theme_name">Automatico</string>
-    <string name="always">Sempre</string>
-    <string name="only_on_wifi">Solo se connessi a Wi-Fi</string>
-    <string name="never">Mai</string>
-    <string name="today">Oggi</string>
-    <string name="past_seven_days">Ultimi 7 giorni</string>
-    <string name="past_fourteen_days">Ultimi 14 giorni</string>
-    <string name="past_one_month">Ultimo mese</string>
-    <string name="past_three_months">Ultimi 3 mesi</string>
-    <string name="this_week">Questa settimana</string>
-    <string name="this_month">Questo mese</string>
-    <string name="this_year">Quest\'anno</string>
     <string name="equalizer">Equalizzatore</string>
     <string name="pref_header_appearance">Aspetto</string>
     <string name="pref_header_colors">Colori</string>
@@ -112,7 +97,6 @@
     <string name="pref_title_player_style">Stile del lettore principale</string>
     <string name="pref_title_navigation_bar">Barra di navigazione colorata</string>
     <string name="pref_title_app_shortcuts">Scorciatoie app colorate</string>
-    <string name="pref_title_auto_download_metadata">Ottieni automaticamente i metadati</string>
     <string name="pref_title_colored_notification">Notifica colorata</string>
     <string name="pref_title_classic_notification">Design di notifica classico</string>
     <string name="pref_title_gapless_playback">Riproduzione senza intervalli</string>
@@ -154,8 +138,6 @@
     <string name="history">Ascoltati di recente</string>
     <string name="my_top_tracks">I miei brani migliori</string>
     <string name="remove_cover">Rimuovi copertina</string>
-    <string name="download_from_last_fm">Scarica da Last.fm</string>
-    <string name="pick_from_local_storage">Scegli dai tuoi file.</string>
     <string name="web_search">Cerca sul web</string>
     <string name="action_sleep_timer">Timer di spegnimento</string>
     <string name="action_set">Imposta</string>
@@ -194,8 +176,6 @@
     <string name="files">File</string>
     <string name="theme_switch">Cambia tema</string>
     <string name="failed_to_save_playlist">Salvataggio playlist fallito (%s).</string>
-    <string name="saved_x_playlists_to_x">Salvate %1$d playlist in %2$s.</string>
-    <string name="saved_x_playlists_to_x_failed_to_save_x">Salvate %1$d playlist in %2$s, %3$d non salvato.</string>
     <string name="nothing_to_scan">Nulla da scansionare.</string>
     <string name="scanned_files">Scansione effettuata per %1$d su %2$d file.</string>
     <string name="could_not_scan_files">Non è stato possibile effettuare la scansione di %d file.</string>
@@ -204,7 +184,6 @@
     <string name="app_widget_classic_name">Phonograph - Classico</string>
     <string name="app_widget_small_name">Phonograph - Piccolo</string>
     <string name="app_widget_card_name">Phonograph - Scheda</string>
-    <string name="report_an_issue">Segnala un problema</string>
     <string name="title">Titolo</string>
     <string name="description">Descrizione</string>
     <string name="device_info">Informazioni dispositivo</string>
@@ -241,7 +220,6 @@
     <string name="dialog_ringtone_message">Consenti a Phonograph di modificare le impostazioni audio</string>
     <string name="perf_title_fixed_tab_layout">Fissa tutte le schede</string>
     <string name="pref_summary_fixed_tab_layout">Le schede in alto non saranno scrollabili, ma verranno affiancate senza alcun margine.</string>
-    <string name="auto_mode_on">La modalità automatica è attiva, si prega di disattivarla e riprovare!</string>
     <string name="add_blacklist">Vuoi aggiungerlo alla lista nera?</string>
     <string name="minutes_short">%1$d min</string>
     <string name="other_information">Altro</string>
@@ -292,15 +270,11 @@
     <string name="direction_open_folder_with_saf">Ora, seleziona la cartella contenente i file con cui desideri operare</string>
     <string name="direction_open_file_with_saf">Ora, seleziona il file con cui desideri operare</string>
     <string name="file_incorrect">Il file non è corretto!</string>
-    <string name="pref_title_reset_home_pages_tab_config">Reimposta tutte le schede</string>
-    <string name="pref_summary_reset_home_pages_tab_config">Tutte le categorie della libreria verrebbero ripristinate ai valori predefiniti.</string>
     <string name="are_you_sure">Sei sicuro?</string>
     <string name="original_author">Autore originale</string>
     <string name="plus_author">L\'autore di Phonograph Plus</string>
     <string name="misc">Varie</string>
     <string name="comment">Commento</string>
-    <string name="pref_title_use_legacy_detail_dialog">Usa la finestra dei dettagli legacy</string>
-    <string name="pref_summary_use_legacy_detail_dialog">Usa la vecchia finestra di dettaglio del brano anziché la pagina di dettaglio</string>
     <string name="composer">Compositore</string>
     <string name="lyricist">Testo</string>
     <string name="music_tags">Etichette Musica</string>
@@ -376,7 +350,6 @@
     <string name="delete_with_lyrics">Elimina con i testi</string>
     <string name="excluded_paths">Percorsi Esclusi</string>
     <string name="included_paths">Percorsi Inclusi</string>
-    <string name="swith_mode">Cambia modalità</string>
     <string name="path_filter">Filtro Percorso</string>
     <string name="path_filter_excluded_mode">Modalità Esclusione</string>
     <string name="path_filter_included_mode">Modalità Inclusione</string>
