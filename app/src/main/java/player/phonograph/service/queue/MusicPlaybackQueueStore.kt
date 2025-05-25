@@ -3,7 +3,7 @@
  */
 package player.phonograph.service.queue
 
-import player.phonograph.foundation.warning
+import player.phonograph.foundation.error.warning
 import player.phonograph.model.Song
 import player.phonograph.repo.database.DatabaseConstants
 import player.phonograph.repo.mediastore.internal.intoSongs
@@ -20,7 +20,7 @@ import android.provider.MediaStore.Audio.AudioColumns
  *
  * This keeps track of the music playback and history state of the playback service
  */
-class MusicPlaybackQueueStore(context: Context?) : SQLiteOpenHelper(
+class MusicPlaybackQueueStore(val context: Context) : SQLiteOpenHelper(
     context, DatabaseConstants.MUSIC_PLAYBACK_STATE_DB, null, VERSION
 ) {
 
@@ -35,6 +35,7 @@ class MusicPlaybackQueueStore(context: Context?) : SQLiteOpenHelper(
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         warning(
+            context,
             "MusicPlaybackQueueStore",
             "Upgrade from an already unsupported version ($oldVersion) to the version ($newVersion) , Playing Queue cleaned"
         )
@@ -45,6 +46,7 @@ class MusicPlaybackQueueStore(context: Context?) : SQLiteOpenHelper(
 
     override fun onDowngrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         warning(
+            context,
             "MusicPlaybackQueueStore",
             "Downgrade from the version ($newVersion) to an unsupported version ($oldVersion) , Playing Queue cleaned"
         )

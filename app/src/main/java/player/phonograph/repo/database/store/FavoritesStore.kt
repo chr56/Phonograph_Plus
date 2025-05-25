@@ -6,7 +6,7 @@ package player.phonograph.repo.database.store
 
 import org.koin.core.context.GlobalContext
 import player.phonograph.App
-import player.phonograph.foundation.warning
+import player.phonograph.foundation.error.warning
 import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.DatabasePlaylistLocation
@@ -20,7 +20,7 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
-class FavoritesStore(context: Context) :
+class FavoritesStore(val context: Context) :
         SQLiteOpenHelper(context, FAVORITE_DB, null, VERSION) {
 
     override fun onCreate(db: SQLiteDatabase) {
@@ -29,7 +29,7 @@ class FavoritesStore(context: Context) :
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        warning(FAVORITE_DB, "Can not upgrade database `favorite.db` from $oldVersion to $newVersion ")
+        warning(context, FAVORITE_DB, "Can not upgrade database `favorite.db` from $oldVersion to $newVersion ")
         onCreate(db)
     }
 

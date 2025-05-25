@@ -8,7 +8,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import lib.storage.launcher.ICreateFileStorageAccessible
 import player.phonograph.R
-import player.phonograph.foundation.reportError
+import player.phonograph.foundation.error.warning
 import player.phonograph.mechanism.backup.Backup
 import player.phonograph.mechanism.backup.Backup.ALL_BACKUP_CONFIG
 import player.phonograph.mechanism.backup.Backup.ENABLE_BACKUP_CONFIG
@@ -65,7 +65,7 @@ class BackupExportDialog : DialogFragment() {
                                     Backup.Export.exportBackupToArchive(host, selected, outputStream)
                                     true
                                 } catch (e: Exception) {
-                                    reportError(e, TAG, host.getString(R.string.failed))
+                                    warning(host, TAG, host.getString(R.string.failed), e)
                                     false
                                 }
                             withContext(Dispatchers.Main) {

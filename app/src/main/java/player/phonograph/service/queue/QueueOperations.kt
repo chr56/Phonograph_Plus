@@ -4,7 +4,8 @@
 
 package player.phonograph.service.queue
 
-import player.phonograph.foundation.warning
+import player.phonograph.App
+import player.phonograph.foundation.error.warning
 import player.phonograph.model.PlayRequest
 import player.phonograph.model.Song
 import player.phonograph.model.SongClickMode
@@ -32,7 +33,7 @@ fun swapQueue(queueHolder: QueueHolder, newQueue: List<Song>, newPosition: Int) 
             }
         }
     } else {
-        warning(TAG, "Illegal queue or position")
+        warning(App.instance, TAG, "Illegal queue or position")
     }
 }
 
@@ -112,6 +113,7 @@ fun removeSongAt(queueHolder: QueueHolder, position: Int) {
             )
         } else {
             warning(
+                App.instance,
                 TAG,
                 "Removing a song at position $position, but out-ranged (${original.originalPlayingQueue.size})"
             )
@@ -154,7 +156,7 @@ fun moveSong(queueHolder: QueueHolder, from: Int, to: Int) {
     if (from == to) return
     val range = queueHolder.originalPlayingQueue.indices
     if (from !in range || to !in range) {
-        warning(TAG, "Warning: from $from to $to is outrage ")
+        warning(App.instance, TAG, "Warning: from $from to $to is outrage ")
         return
     }
     // start moving

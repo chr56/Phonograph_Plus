@@ -9,7 +9,7 @@ import okio.buffer
 import okio.source
 import player.phonograph.BuildConfig
 import player.phonograph.R
-import player.phonograph.foundation.warning
+import player.phonograph.foundation.error.warning
 import player.phonograph.model.backup.BackupItem
 import player.phonograph.model.backup.BackupItem.FavoriteBackup
 import player.phonograph.model.backup.BackupItem.FavoriteDatabaseBackup
@@ -119,7 +119,7 @@ object Backup {
                 val exported = if (executor != null) {
                     executor.export(context)
                 } else {
-                    warning(TAG, "$item could not be exported!")
+                    warning(context, TAG, "$item could not be exported!")
                     null
                 }
 
@@ -131,7 +131,7 @@ object Backup {
                     }
                     files[item] = filename
                 } else {
-                    warning(TAG, "No content to export for ${item.key}")
+                    warning(context, TAG, "No content to export for ${item.key}")
                 }
             }
 
@@ -163,12 +163,12 @@ object Backup {
             return session
         }
 
-        fun readManifest(session: Long): BackupManifestFile? {
+        fun readManifest(context: Context, session: Long): BackupManifestFile? {
             val tmpDir = SessionManger.sessionDirectory(session)
             val manifestFile = File(tmpDir, BackupManifestFile.BACKUP_MANIFEST_FILENAME)
             return when {
                 manifestFile.exists() -> decodeManifest(manifestFile)
-                tmpDir != null        -> guessManifest(tmpDir)
+                tmpDir != null        -> guessManifest(context, tmpDir)
                 else                  -> null
             }
         }
@@ -180,16 +180,16 @@ object Backup {
             onUpdateProgress: (CharSequence) -> Unit,
         ) {
             val tmpDir = SessionManger.sessionDirectory(session)
-            val manifest = readManifest(session)
+            val manifest = readManifest(context, session)
             require(manifest != null) { "No Manifest!" }
             // filter
             val selected = manifest.files.filterKeys { it in content }
             for ((item, relativePath) in selected) {
                 onUpdateProgress(displayName(item, context.resources))
-                File(tmpDir, relativePath).source().use { souce ->
+                File(tmpDir, relativePath).source().use { source ->
 
                     val executor = executor(item)
-                    executor?.import(context, souce) ?: warning(TAG, "Could not import $item")
+                    executor?.import(context, source) ?: warning(context, TAG, "Could not import $item")
                 }
             }
         }
@@ -206,7 +206,7 @@ object Backup {
             return manifestFile
         }
 
-        private fun guessManifest(dir: File): BackupManifestFile? {
+        private fun guessManifest(context: Context, dir: File): BackupManifestFile? {
             require(dir.isDirectory)
             val files = dir.list()
             if (files != null && files.isNotEmpty()) {
@@ -235,7 +235,7 @@ object Backup {
                 }
                 return BackupManifestFile(dir.lastModified(), map, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE)
             }
-            warning(TAG, "Couldn't analysis the content of this backup")
+            warning(context, TAG, "Couldn't analysis the content of this backup")
             return null
         }
 

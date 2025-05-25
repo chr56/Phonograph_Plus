@@ -4,7 +4,7 @@
 
 package player.phonograph.service.queue
 
-import player.phonograph.foundation.recordThrowable
+import player.phonograph.foundation.error.record
 import player.phonograph.model.Song
 import player.phonograph.model.service.QueueObserver
 import player.phonograph.model.service.RepeatMode
@@ -42,7 +42,7 @@ class QueueManager(val context: Application) {
     private fun validQueueChanges(context: Context, queueHolder: QueueHolder): Boolean = try {
         queueHolder.valid(context)
     } catch (e: Throwable) {
-        recordThrowable(context, TAG, e)  // validation is optional
+        record(context, e, TAG)  // validation is optional
         false
     }
 

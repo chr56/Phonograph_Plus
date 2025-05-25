@@ -28,7 +28,7 @@ import org.jaudiotagger.tag.vorbiscomment.VorbisCommentTag
 import org.jaudiotagger.tag.wav.WavInfoTag
 import org.jaudiotagger.tag.wav.WavTag
 import player.phonograph.R
-import player.phonograph.foundation.reportError
+import player.phonograph.foundation.error.warning
 import player.phonograph.mechanism.metadata.JAudioTaggerMetadata.Field
 import player.phonograph.model.Song
 import player.phonograph.model.metadata.AudioMetadata
@@ -70,7 +70,7 @@ object JAudioTaggerExtractor : MetadataExtractor {
 
             val audioPropertyFields = readAudioProperties(audioFile.audioHeader)
             val tagFormat = readTagFormat(audioFile)
-            val musicMetadata = readMusicMetadata(audioFile)
+            val musicMetadata = readMusicMetadata(context, audioFile)
             return AudioMetadata(
                 fileProperties = FileProperties(fileName, filePath, fileSize),
                 audioProperties = audioPropertyFields,
@@ -78,7 +78,7 @@ object JAudioTaggerExtractor : MetadataExtractor {
                 musicMetadata = musicMetadata,
             )
         } catch (e: Exception) {
-            reportError(e, TAG, analyzeException(e, songFile))
+            warning(context, TAG, analyzeException(e, songFile), e)
             return null
         }
     }
@@ -96,7 +96,7 @@ object JAudioTaggerExtractor : MetadataExtractor {
         )
     }
 
-    private fun readMusicMetadata(audioFile: AudioFile): MusicMetadata {
+    private fun readMusicMetadata(context: Context, audioFile: AudioFile): MusicMetadata {
         val fields = audioFile.tag ?: return EmptyMusicMetadata
         // Generic
         val genericTagFields: Map<FieldKey, Metadata.Field> =
@@ -107,7 +107,7 @@ object JAudioTaggerExtractor : MetadataExtractor {
                     if (value != null) key to value else null
                 }.toMap()
             } catch (e: Exception) {
-                reportError(e, TAG, "Failed to read all tags for ${audioFile.file.absolutePath}")
+                warning(context, TAG, "Failed to read all tags for ${audioFile.file.absolutePath}", e)
                 emptyMap()
             }
         // all
@@ -126,7 +126,7 @@ object JAudioTaggerExtractor : MetadataExtractor {
                     else                -> emptyMap()
                 }
             } catch (e: Exception) {
-                reportError(e, TAG, "Failed to read all tags for ${audioFile.file.absolutePath}")
+                warning(context, TAG, "Failed to read all tags for ${audioFile.file.absolutePath}", e)
                 emptyMap()
             }
 

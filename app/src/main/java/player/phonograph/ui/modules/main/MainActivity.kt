@@ -13,8 +13,8 @@ import player.phonograph.VERSION_INFO
 import player.phonograph.coil.loadImage
 import player.phonograph.databinding.ActivityMainBinding
 import player.phonograph.databinding.LayoutDrawerBinding
+import player.phonograph.foundation.error.warning
 import player.phonograph.foundation.notification.UpgradeNotification
-import player.phonograph.foundation.warning
 import player.phonograph.mechanism.PhonographShortcutManager
 import player.phonograph.mechanism.Update
 import player.phonograph.model.Song
@@ -228,7 +228,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
 
     private fun checkUpdate() {
         if (!PrerequisiteSetting.instance(this).introShown) {
-            warning(TAG, "Upgrade check was blocked, because AppIntro not shown (auto check requires user opt-in)!")
+            warning(this, TAG, "Upgrade check was blocked, because AppIntro not shown (auto check requires user opt-in)!")
             return
         }
         lifecycleScope.launch(SupervisorJob()) {

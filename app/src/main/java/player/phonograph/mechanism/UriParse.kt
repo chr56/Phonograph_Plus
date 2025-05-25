@@ -5,7 +5,7 @@
 package player.phonograph.mechanism
 
 import lib.storage.documentProviderUriAbsolutePath
-import player.phonograph.foundation.reportError
+import player.phonograph.foundation.error.warning
 import player.phonograph.model.Song
 import player.phonograph.repo.loader.Songs
 import player.phonograph.util.asList
@@ -96,9 +96,9 @@ private fun queryFilePath(context: Context, uri: Uri): String? {
             }
         }
     } catch (e: SecurityException) {
-        reportError(e, TAG, "Permission issue, can not locate $uri, please check storage access permissions")
+        warning(context, TAG, "Permission issue, can not locate $uri, please check storage access permissions", e)
     } catch (e: Exception) {
-        reportError(e, TAG, "Failed parse $uri")
+        warning(context, TAG, "Failed parse $uri", e)
     }
     return null
 }

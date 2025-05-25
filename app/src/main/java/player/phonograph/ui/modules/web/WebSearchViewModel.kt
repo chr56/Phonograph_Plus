@@ -14,6 +14,7 @@ import mms.musicbrainz.MusicBrainzClientDelegate
 import mms.musicbrainz.MusicBrainzRecording
 import mms.musicbrainz.MusicBrainzRelease
 import mms.musicbrainz.MusicBrainzReleaseGroup
+import player.phonograph.App
 import player.phonograph.USER_AGENT
 import player.phonograph.ui.compose.Navigator
 import androidx.appcompat.app.AppCompatActivity.RESULT_CANCELED
@@ -30,10 +31,10 @@ class WebSearchViewModel : ViewModel() {
 
     private val errorReporter = object : ExceptionHandler {
         override fun reportError(e: Throwable, tag: String, message: String) =
-            player.phonograph.foundation.reportError(e, tag, message)
+            player.phonograph.foundation.error.warning(App.instance, tag, message, e)
 
         override fun warning(tag: String, message: String) =
-            player.phonograph.foundation.warning(tag, message)
+            player.phonograph.foundation.error.warning(App.instance, tag, message)
 
     }
 

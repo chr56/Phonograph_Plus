@@ -4,10 +4,11 @@
 
 package player.phonograph.mechanism.scanner
 
-import player.phonograph.foundation.reportError
+import player.phonograph.foundation.error.warning
 import player.phonograph.model.DirectoryInfo
 import player.phonograph.util.file.mimeTypeIs
 import player.phonograph.util.file.safeGetCanonicalPath
+import android.content.Context
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
 import java.io.File
@@ -22,6 +23,7 @@ object FileScanner {
     private const val TAG = "FileScanner"
 
     suspend fun listPaths(
+        context: Context,
         directoryInfos: DirectoryInfo,
         recursive: Boolean = false,
     ): Array<String>? = coroutineScope {
@@ -46,7 +48,7 @@ object FileScanner {
                 arrayOf(safeGetCanonicalPath(directoryInfos.file))
             }
         } catch (e: Exception) {
-            reportError(e, TAG, "Fail to Load files!")
+            warning(context, TAG, "Fail to Load files!", e)
             null
         }
     }

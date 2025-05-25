@@ -5,7 +5,7 @@
 package player.phonograph.ui.adapter
 
 import player.phonograph.R
-import player.phonograph.foundation.reportError
+import player.phonograph.foundation.error.warning
 import player.phonograph.mechanism.actions.MultiSelectionToolbarMenuProviders
 import player.phonograph.model.ui.PaletteColorProvider
 import player.phonograph.util.debug
@@ -183,7 +183,7 @@ class MultiSelectionController<I>(
                     _cab = try {
                         ToolbarCab.initToolbarCab(activity, targetId, inflatedId).apply { prepare() }
                     } catch (e: IllegalStateException) {
-                        reportError(e, TAG, "Failed to create cab")
+                        warning(activity, TAG, "Failed to create cab", e)
                         null
                     }
                     _cab

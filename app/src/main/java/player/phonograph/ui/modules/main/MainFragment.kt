@@ -11,7 +11,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import player.phonograph.R
 import player.phonograph.databinding.FragmentHomeBinding
-import player.phonograph.foundation.reportError
+import player.phonograph.foundation.error.warning
 import player.phonograph.model.pages.Pages
 import player.phonograph.model.pages.PagesConfig
 import player.phonograph.settings.Keys
@@ -193,7 +193,7 @@ class MainFragment : Fragment() {
             try {
                 binding.pager.currentItem = page
             } catch (e: Exception) {
-                reportError(e, "MainFragment", "Failed to select page $page")
+                warning(requireContext(), "MainFragment", "Failed to select page $page", e)
             }
         }
 

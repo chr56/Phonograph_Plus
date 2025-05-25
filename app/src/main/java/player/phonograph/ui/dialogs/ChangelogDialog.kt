@@ -3,8 +3,8 @@ package player.phonograph.ui.dialogs
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import player.phonograph.R
+import player.phonograph.foundation.error.warning
 import player.phonograph.foundation.localization.LocalizationStore
-import player.phonograph.foundation.reportError
 import player.phonograph.settings.PrerequisiteSetting
 import player.phonograph.util.currentVersionCode
 import player.phonograph.util.text.changelogCSS
@@ -38,7 +38,7 @@ class ChangelogDialog : DialogFragment() {
             } catch (e: InflateException) {
                 val msg =
                     "This device doesn't support web view, which is necessary to view the change log. It is missing a system component."
-                reportError(e, "ChangelogDialog", msg)
+                warning(requireContext(), "ChangelogDialog", msg, e)
                 return MaterialDialog(requireActivity())
                     .title(android.R.string.dialog_alert_title)
                     .message(text = msg)

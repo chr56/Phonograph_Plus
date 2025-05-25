@@ -11,7 +11,7 @@ import lib.storage.launcher.SAFActivityResultContracts.chooseFileViaSAF
 import lib.storage.textparser.DocumentUriPathParser
 import lib.storage.textparser.ExternalFilePathParser
 import player.phonograph.R
-import player.phonograph.foundation.warning
+import player.phonograph.foundation.error.warning
 import player.phonograph.util.concurrent.coroutineToast
 import android.content.Context
 import android.net.Uri
@@ -140,7 +140,7 @@ private suspend fun notifyErrorDocumentUri(context: Context, filePath: String, d
         append("Actual:$actualPath\n")
     }
     coroutineToast(context, context.getString(R.string.err_file_incorrect))
-    warning(TAG, message)
+    warning(context, TAG, message)
 }
 
 private suspend fun notifyErrorChildDocumentUri(context: Context, childDocumentUri: Uri) {
@@ -156,7 +156,7 @@ private suspend fun notifyErrorChildDocumentUri(context: Context, childDocumentU
         }
     }
     coroutineToast(context, context.getString(R.string.err_file_incorrect))
-    warning(TAG, message)
+    warning(context, TAG, message)
 }
 
 /**

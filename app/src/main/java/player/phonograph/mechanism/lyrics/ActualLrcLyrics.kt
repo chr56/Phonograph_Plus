@@ -6,7 +6,8 @@
 
 package player.phonograph.mechanism.lyrics
 
-import player.phonograph.foundation.warning
+import player.phonograph.App
+import player.phonograph.foundation.error.warning
 import player.phonograph.model.lyrics.AbsLyrics
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.model.lyrics.LyricsSource
@@ -64,6 +65,7 @@ data class ActualLrcLyrics(
         if (totalTime != -1L) { // -1 means " no length info in lyrics"
             if (timestamp >= totalTime) {
                 warning(
+                    App.instance,
                     "LrcLyrics",
                     "TimeStamp is over the total lyrics length: lyrics might be mismatched, please check up."
                 )

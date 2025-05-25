@@ -4,7 +4,7 @@ import de.psdev.licensesdialog.LicensesDialog
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.databinding.ActivityAboutBinding
-import player.phonograph.foundation.reportError
+import player.phonograph.foundation.error.warning
 import player.phonograph.mechanism.Update
 import player.phonograph.model.version.VersionCatalog
 import player.phonograph.settings.Keys
@@ -288,7 +288,7 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
         val notices = try {
             NoticesProcessor.readNotices(this)
         } catch (e: Exception) {
-            reportError(e, "NoticesProcessor", "Failed to read notices")
+            warning(this, "NoticesProcessor", "Failed to read notices", e)
             return
         }
         LicensesDialog.Builder(this).setNotices(notices).setTitle(R.string.label_licenses)

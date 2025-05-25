@@ -6,7 +6,7 @@ package player.phonograph.ui.modules.tag
 
 import lib.storage.launcher.ICreateFileStorageAccessible
 import player.phonograph.R
-import player.phonograph.foundation.warning
+import player.phonograph.foundation.error.warning
 import player.phonograph.mechanism.metadata.DefaultMetadataExtractor
 import player.phonograph.mechanism.metadata.JAudioTaggerExtractor
 import player.phonograph.mechanism.metadata.JAudioTaggerMetadata
@@ -196,12 +196,12 @@ class TagBrowserActivityViewModel : AbsMetadataViewModel() {
                                     image.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
                                 }
                             } else {
-                                warning(TAG, "Failed to open File")
+                                warning(activity, TAG, "Failed to open File")
                             }
                         }
                     }
                 } else {
-                    warning(TAG, "Failed to create File")
+                    warning(activity, TAG, "Failed to create File")
                 }
             }
         }

@@ -6,8 +6,8 @@ package player.phonograph.repo.database.store
 
 import org.koin.core.context.GlobalContext
 import player.phonograph.R
+import player.phonograph.foundation.error.warning
 import player.phonograph.foundation.notification.BackgroundNotification
-import player.phonograph.foundation.reportError
 import player.phonograph.repo.database.DatabaseConstants
 import player.phonograph.repo.database.store.SongPlayCountStore.SongPlayCountColumns.Companion.ID
 import player.phonograph.repo.database.store.SongPlayCountStore.SongPlayCountColumns.Companion.LAST_UPDATED_WEEK_INDEX
@@ -26,7 +26,7 @@ import kotlin.math.min
  * This database tracks the number of play counts for an individual song.  This is used to drive
  * the top played tracks as well as the playlist images
  */
-class SongPlayCountStore(context: Context) :
+class SongPlayCountStore(val context: Context) :
         SQLiteOpenHelper(context, DatabaseConstants.SONG_PLAY_COUNT_DB, null, VERSION), Cleanable {
 
     /** number of weeks since epoch time **/
@@ -227,7 +227,7 @@ class SongPlayCountStore(context: Context) :
             }
             database.setTransactionSuccessful()
         } catch (e: Exception) {
-            reportError(e, this::class.java.simpleName, "Failed to update song play count in SongPlayCountDatabase (songId=$id)")
+            warning(context, this::class.java.simpleName, "Failed to update song play count in SongPlayCountDatabase (songId=$id)", e)
         } finally {
             cursor.close()
             database.endTransaction()
@@ -313,7 +313,7 @@ class SongPlayCountStore(context: Context) :
                             )
                     } while (cursor.moveToNext())
                 } catch (e: Exception) {
-                    reportError(e, this::class.java.simpleName, "Failed to recalculate score!")
+                    warning(context, this::class.java.simpleName, "Failed to recalculate score!", e)
                 } finally {
                     BackgroundNotification.remove(NOTIFICATION_ID)
                 }

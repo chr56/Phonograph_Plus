@@ -7,7 +7,8 @@ package player.phonograph.coil.retriever
 import coil.size.Size
 import coil.size.isOriginal
 import coil.size.pxOrElse
-import player.phonograph.foundation.reportError
+import player.phonograph.App
+import player.phonograph.foundation.error.warning
 import androidx.core.graphics.BitmapCompat
 import androidx.core.graphics.toRectF
 import android.graphics.Bitmap
@@ -46,7 +47,7 @@ fun Bitmap.cropAndScaleTo(size: Size): Bitmap {
                     Canvas(it).drawBitmap(this, matrix, null)
                 }
             } catch (e: Exception) {
-                reportError(e, "BitmapResize", "Failed to resize $this using Matrix Scale: ")
+                warning(App.instance, "BitmapResize", "Failed to resize $this using Matrix Scale: ", e)
                 throw e
             }
         } else {

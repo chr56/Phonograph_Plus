@@ -9,8 +9,7 @@ import lib.storage.launcher.IOpenFileStorageAccessible
 import lib.storage.launcher.OpenDocumentContract
 import player.phonograph.R
 import player.phonograph.databinding.DialogLyricsBinding
-import player.phonograph.foundation.reportError
-import player.phonograph.foundation.warning
+import player.phonograph.foundation.error.warning
 import player.phonograph.mechanism.lyrics.ActualTextLyrics
 import player.phonograph.model.lyrics.AbsLyrics
 import player.phonograph.model.lyrics.LrcLyrics
@@ -212,7 +211,7 @@ class LyricsDialog : DialogFragment() {
                 }
             }
         } else {
-            warning("Lyrics", "Can not open file from $activity")
+            warning(activity, "Lyrics", "Can not open file from $activity")
         }
     }
     //endregion
@@ -305,7 +304,7 @@ class LyricsDialog : DialogFragment() {
                 linearLayoutManager.startSmoothScroll(scroller)
             }
         } catch (e: Exception) {
-            reportError(e, "LyricsScroll", "Failed to scroll to $position")
+            warning(requireContext(), "LyricsScroll", "Failed to scroll to $position", e)
         }
     }
 

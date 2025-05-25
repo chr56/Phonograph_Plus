@@ -4,7 +4,8 @@
 
 package player.phonograph.repo.database.store
 
-import player.phonograph.foundation.reportError
+import player.phonograph.App
+import player.phonograph.foundation.error.warning
 import player.phonograph.util.debug
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log
@@ -40,7 +41,7 @@ fun gc(database: SQLiteDatabase, tableName: String, columnName: String, locked: 
         }
         database.setTransactionSuccessful()
     } catch (e: Exception) {
-        reportError(e, tableName, "Failed to clean up")
+        warning(App.instance, tableName, "Failed to clean up", e)
     } finally {
         database.endTransaction()
     }

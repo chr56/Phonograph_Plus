@@ -7,37 +7,13 @@ package player.phonograph.service
 import org.koin.android.ext.android.get
 import player.phonograph.ACTUAL_PACKAGE_NAME
 import player.phonograph.BuildConfig
+import player.phonograph.foundation.error.record
+import player.phonograph.foundation.error.warning
 import player.phonograph.foundation.localization.ContextLocaleDelegate
-import player.phonograph.foundation.recordThrowable
 import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
-import player.phonograph.model.service.ACTION_CANCEL_PENDING_QUIT
-import player.phonograph.model.service.ACTION_CONNECT_WIDGETS
-import player.phonograph.model.service.ACTION_EXIT_OR_STOP
-import player.phonograph.model.service.ACTION_FAST_FORWARD
-import player.phonograph.model.service.ACTION_FAST_REWIND
-import player.phonograph.model.service.ACTION_FAV
-import player.phonograph.model.service.ACTION_NEXT
-import player.phonograph.model.service.ACTION_PAUSE
-import player.phonograph.model.service.ACTION_PLAY
-import player.phonograph.model.service.ACTION_PREVIOUS
-import player.phonograph.model.service.ACTION_REPEAT
-import player.phonograph.model.service.ACTION_SHUFFLE
-import player.phonograph.model.service.ACTION_STOP_AND_QUIT_NOW
-import player.phonograph.model.service.ACTION_STOP_AND_QUIT_PENDING
-import player.phonograph.model.service.ACTION_TOGGLE_PAUSE
-import player.phonograph.model.service.EVENT_META_CHANGED
-import player.phonograph.model.service.EVENT_PLAY_STATE_CHANGED
-import player.phonograph.model.service.EVENT_QUEUE_CHANGED
-import player.phonograph.model.service.EVENT_REPEAT_MODE_CHANGED
-import player.phonograph.model.service.EVENT_SHUFFLE_MODE_CHANGED
-import player.phonograph.model.service.MusicServiceStatus
-import player.phonograph.model.service.PlayerState
-import player.phonograph.model.service.PlayerStateObserver
-import player.phonograph.model.service.QueueObserver
-import player.phonograph.model.service.RepeatMode
-import player.phonograph.model.service.ShuffleMode
+import player.phonograph.model.service.*
 import player.phonograph.repo.browser.MediaBrowserDelegate
 import player.phonograph.repo.database.store.HistoryStore
 import player.phonograph.repo.loader.FavoriteSongs
@@ -247,6 +223,7 @@ class MusicService : MediaBrowserServiceCompat(),
             false
         }
     } catch (e: Exception) {
+        warning(this, "MusicService", "Failed to seek to $targetMilli", e)
         false
     }
 
@@ -447,7 +424,7 @@ class MusicService : MediaBrowserServiceCompat(),
         return try {
             MediaBrowserDelegate.onGetRoot(this, clientPackageName, clientUid, rootHints)
         } catch (e: Throwable) {
-            recordThrowable(this, javaClass.name, e)
+            record(this, e, javaClass.name)
             null
         }
     }
@@ -459,7 +436,7 @@ class MusicService : MediaBrowserServiceCompat(),
             val mediaItems = try {
                 MediaBrowserDelegate.listChildren(parentId, context)
             } catch (e: Throwable) {
-                recordThrowable(context, javaClass.name, e)
+                record(context, e, javaClass.name)
                 MediaBrowserDelegate.error(context)
             }
             result.sendResult(ArrayList(mediaItems))

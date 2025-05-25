@@ -4,7 +4,7 @@
 
 package player.phonograph.repo.mediastore.internal
 
-import player.phonograph.foundation.reportError
+import player.phonograph.foundation.error.warning
 import player.phonograph.model.Album
 import player.phonograph.model.Song
 import player.phonograph.model.sort.SortMode
@@ -52,13 +52,17 @@ fun createAlbum(id: Long, songs: List<Song>): Album {
     }
 }
 
-suspend fun generateArtistAlbums(songs: List<Song>): List<Album> =
-    catalogAlbums(songs, SortMode(SortRef.YEAR, false)).await()
+suspend fun generateArtistAlbums(context: Context, songs: List<Song>): List<Album> =
+    catalogAlbums(context, songs, SortMode(SortRef.YEAR, false)).await()
 
 suspend fun generateAlbums(context: Context, songs: List<Song>): List<Album> =
-    catalogAlbums(songs, Setting(context)[Keys.albumSortMode].read()).await()
+    catalogAlbums(context, songs, Setting(context)[Keys.albumSortMode].read()).await()
 
-private suspend fun catalogAlbums(songs: List<Song>, sortMode: SortMode): Deferred<List<Album>> = coroutineScope {
+private suspend fun catalogAlbums(
+    context: Context,
+    songs: List<Song>,
+    sortMode: SortMode,
+): Deferred<List<Album>> = coroutineScope {
     async {
 
         var completed = false
@@ -66,7 +70,7 @@ private suspend fun catalogAlbums(songs: List<Song>, sortMode: SortMode): Deferr
         val flow = flow {
             for (song in songs) emit(song)
         }.catch { e ->
-            reportError(e, TAG_ALBUM, "Fail to load albums")
+            warning(context, TAG_ALBUM, "Fail to load albums", e)
         }
 
         // AlbumID <-> List of song
@@ -97,7 +101,7 @@ private suspend fun catalogAlbums(songs: List<Song>, sortMode: SortMode): Deferr
         }.flowOn(Dispatchers.Default).map { (id, list) ->
             createAlbum(id, list)
         }.catch { e ->
-            reportError(e, TAG_ALBUM, "Fail to load albums")
+            warning(context, TAG_ALBUM, "Fail to load albums", e)
         }.toList().sortAllAlbums(sortMode)
     }
 }

@@ -8,8 +8,7 @@ import legacy.phonograph.MediaStoreCompat
 import legacy.phonograph.MediaStoreCompat.Audio.Playlists
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.foundation.reportError
-import player.phonograph.foundation.warning
+import player.phonograph.foundation.error.warning
 import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.Song
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
@@ -152,7 +151,7 @@ suspend fun moveItemViaMediastore(
         // context.contentResolver.notifyChange(getPlaylistUris(context, playlistId), null)
         res
     } catch (e: Exception) {
-        reportError(e, TAG, "Failed to reorder playlist ($playlistId: $from -> $to)")
+        warning(context, TAG, "Failed to reorder playlist ($playlistId: $from -> $to)", e)
         false
     }
 }
@@ -185,7 +184,7 @@ suspend fun deletePlaylistsViaMediastore(
         context.resources.getQuantityString(R.plurals.msg_deletion_result, playlistIds.size, success, playlistIds.size)
     )
     if (failList.isNotEmpty())
-        warning(TAG, failList.fold("Failed to delete playlist(id):") { acc, s -> "$acc, $s" })
+        warning(context, TAG, failList.fold("Failed to delete playlist(id):") { acc, s -> "$acc, $s" })
 
     EventHub.sendEvent(App.instance, EventHub.EVENT_PLAYLISTS_CHANGED)
     failList.toLongArray()

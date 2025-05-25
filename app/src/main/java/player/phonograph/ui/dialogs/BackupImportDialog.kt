@@ -8,7 +8,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import player.phonograph.R
 import player.phonograph.foundation.Reboot
-import player.phonograph.foundation.reportError
+import player.phonograph.foundation.error.warning
 import player.phonograph.mechanism.backup.Backup
 import player.phonograph.settings.PrerequisiteSetting
 import player.phonograph.util.theme.tintButtons
@@ -37,10 +37,13 @@ class BackupImportDialog : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
-        sessionId = arguments?.getLong(KEY_SESSION) ?: throw IllegalArgumentException("No session id!")
+        sessionId = arguments?.getLong(KEY_SESSION)
+            ?: throw IllegalArgumentException("No session id!")
 
         // read manifest
-        val manifest = Backup.Import.readManifest(sessionId) ?: throw IllegalArgumentException("No Manifest found!")
+        val manifest = Backup.Import.readManifest(requireActivity(), sessionId)
+            ?: throw IllegalArgumentException("No Manifest found!")
+
         val contained = manifest.files.map { it.key }
 
         // setup view
@@ -84,7 +87,7 @@ class BackupImportDialog : DialogFragment() {
                             PrerequisiteSetting.instance(host).introShown = true // no more intro if imported
                             true
                         } catch (e: Exception) {
-                            reportError(e, TAG, host.getString(R.string.failed))
+                            warning(host, TAG, host.getString(R.string.failed), e)
                             false
                         } finally {
                             terminateBackup()

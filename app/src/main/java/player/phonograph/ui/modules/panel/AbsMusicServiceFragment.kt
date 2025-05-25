@@ -1,6 +1,6 @@
 package player.phonograph.ui.modules.panel
 
-import player.phonograph.foundation.warning
+import player.phonograph.foundation.error.warning
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import android.content.Context
@@ -26,7 +26,7 @@ abstract class AbsMusicServiceFragment : Fragment(), MusicServiceEventListener {
             attachedContext = context
         } else {
             warning(
-                javaClass.simpleName,
+                context, javaClass.simpleName,
                 "Parent ${context.javaClass.simpleName} is not `${AbsMusicServiceActivity::class.java.simpleName}`!"
             )
         }

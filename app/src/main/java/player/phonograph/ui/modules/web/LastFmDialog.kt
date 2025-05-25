@@ -19,6 +19,7 @@ import mms.lastfm.LastFmClientDelegate
 import mms.lastfm.LastFmModel
 import mms.lastfm.LastFmTrackResponse
 import mms.lastfm.TrackResult
+import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.USER_AGENT
 import player.phonograph.model.Album
@@ -222,10 +223,10 @@ class LastFmDialog : ComposeViewDialogFragment() {
         companion object {
             private val errorReporter = object : AbsClientDelegate.ExceptionHandler {
                 override fun reportError(e: Throwable, tag: String, message: String) =
-                    player.phonograph.foundation.reportError(e, tag, message)
+                    player.phonograph.foundation.error.warning(App.instance, tag, message, e)
 
                 override fun warning(tag: String, message: String) =
-                    player.phonograph.foundation.warning(tag, message)
+                    player.phonograph.foundation.error.warning(App.instance, tag, message)
 
             }
         }

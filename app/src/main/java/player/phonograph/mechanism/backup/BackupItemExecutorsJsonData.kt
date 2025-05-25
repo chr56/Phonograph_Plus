@@ -10,8 +10,7 @@ import okio.Source
 import okio.buffer
 import org.koin.core.context.GlobalContext
 import player.phonograph.R
-import player.phonograph.foundation.reportError
-import player.phonograph.foundation.warning
+import player.phonograph.foundation.error.warning
 import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.Song
 import player.phonograph.model.backup.BackupItemExecutor
@@ -55,34 +54,34 @@ sealed class JsonDataBackupItemExecutor : BackupItemExecutor {
         }
     }
 
-    protected fun <T> write(serializer: KSerializer<T>, item: T, name: String): Buffer? = try {
+    protected fun <T> write(context: Context, serializer: KSerializer<T>, item: T, name: String): Buffer? = try {
         val content = try {
             format.encodeToString(serializer, item)
         } catch (e: SerializationException) {
-            reportError(e, TAG, "Failed to serialize $name!")
+            warning(context, TAG, "Failed to serialize $name!", e)
             null
         }
         if (content != null && content.isNotEmpty()) {
             Buffer().apply { writeString(content, Charsets.UTF_8) }
         } else {
-            warning(TAG, "No content for exporting $name!")
+            warning(context, TAG, "No content for exporting $name!")
             null
         }
     } catch (e: IOException) {
-        reportError(e, TAG, "Failed to export $name!")
+        warning(context, TAG, "Failed to export $name!", e)
         null
     }
 
-    protected fun <T> read(serializer: KSerializer<T>, source: Source, name: String): T? = try {
+    protected fun <T> read(context: Context, serializer: KSerializer<T>, source: Source, name: String): T? = try {
         val rawString = source.buffer().use { bufferedSource -> bufferedSource.readUtf8() }
         try {
             format.decodeFromString(serializer, rawString)
         } catch (e: SerializationException) {
-            reportError(e, TAG, "Failed to read $name Backup!")
+            warning(context, TAG, "Failed to read $name Backup!", e)
             null
         }
     } catch (e: IOException) {
-        reportError(e, TAG, "Failed to import $name!")
+        warning(context, TAG, "Failed to import $name!", e)
         null
     }
 
@@ -102,7 +101,7 @@ object SettingsDataBackupItemExecutor : JsonDataBackupItemExecutor() {
                 writeString(content, Charsets.UTF_8)
             }
         } catch (e: Exception) {
-            reportError(e, TAG, "Failed to convert SharedPreferences to Json")
+            warning(context, TAG, "Failed to convert SharedPreferences to Json", e)
             null
         }
 
@@ -114,14 +113,14 @@ object SettingsDataBackupItemExecutor : JsonDataBackupItemExecutor() {
 
         val json = rawJson.content
         if (rawJson.formatVersion < ExportedSetting.VERSION) {
-            warning(TAG, "This file is using legacy format")
+            warning(context, TAG, "This file is using legacy format")
         }
 
 
         val content = try {
             SettingsDataSerializer(format, context).deserialize(json)
         } catch (e: SerializationException) {
-            reportError(e, TAG, "Failed to deserialize setting.")
+            warning(context, TAG, "Failed to deserialize setting.", e)
             emptyArray()
         }
         Setting(context).dataStore.edit { preferences ->
@@ -130,7 +129,7 @@ object SettingsDataBackupItemExecutor : JsonDataBackupItemExecutor() {
 
         true
     } catch (e: Exception) {
-        reportError(e, TAG, "Failed to import Setting")
+        warning(context, TAG, "Failed to import Setting", e)
         false
     }
 
@@ -144,11 +143,11 @@ object PathFilterDataBackupItemExecutor : JsonDataBackupItemExecutor() {
         val blacklist = db.blacklistPaths
 
         val exported = ExportedPathFilter(ExportedPathFilter.VERSION, whitelist, blacklist)
-        return write(ExportedPathFilter.serializer(), exported, "PathFilter")
+        return write(context, ExportedPathFilter.serializer(), exported, "PathFilter")
     }
 
     override suspend fun import(context: Context, source: Source): Boolean {
-        val imported = read(ExportedPathFilter.serializer(), source, "PathFilter")
+        val imported = read(context, ExportedPathFilter.serializer(), source, "PathFilter")
         return if (imported != null) {
             val db = PathFilterStore.get()
             synchronized(db) {
@@ -172,11 +171,11 @@ object PlayingQueuesDataBackupItemExecutor : JsonDataBackupItemExecutor() {
         val playingQueue = db.savedPlayingQueue.map(::exportSong)
 
         val exported = ExportedPlayingQueue(ExportedPlayingQueue.VERSION, playingQueue, originalPlayingQueue)
-        return write(ExportedPlayingQueue.serializer(), exported, "PlayingQueues")
+        return write(context, ExportedPlayingQueue.serializer(), exported, "PlayingQueues")
     }
 
     override suspend fun import(context: Context, source: Source): Boolean {
-        val imported = read(ExportedPlayingQueue.serializer(), source, "PlayingQueues")
+        val imported = read(context, ExportedPlayingQueue.serializer(), source, "PlayingQueues")
 
         return if (imported != null) {
             val db = GlobalContext.get().get<MusicPlaybackQueueStore>()
@@ -206,11 +205,11 @@ object FavoritesDataBackupItemExecutor : JsonDataBackupItemExecutor() {
 
 
         val exported = ExportedFavorites(ExportedFavorites.VERSION, songs, playlists)
-        return write(ExportedFavorites.serializer(), exported, "Favorites")
+        return write(context, ExportedFavorites.serializer(), exported, "Favorites")
     }
 
     override suspend fun import(context: Context, source: Source): Boolean {
-        val imported = read(ExportedFavorites.serializer(), source, "Favorites")
+        val imported = read(context, ExportedFavorites.serializer(), source, "Favorites")
 
         return if (imported != null) {
             val db = FavoritesStore.get()
@@ -266,11 +265,11 @@ object InternalDatabasePlaylistsDataBackupItemExecutor : JsonDataBackupItemExecu
                 )
             }
         val exported = ExportedInternalPlaylists(ExportedInternalPlaylists.VERSION, playlists)
-        return write(ExportedInternalPlaylists.serializer(), exported, "InternalDatabasePlaylists")
+        return write(context, ExportedInternalPlaylists.serializer(), exported, "InternalDatabasePlaylists")
     }
 
     override suspend fun import(context: Context, source: Source): Boolean {
-        val imported = read(ExportedInternalPlaylists.serializer(), source, "InternalDatabasePlaylists")
+        val imported = read(context, ExportedInternalPlaylists.serializer(), source, "InternalDatabasePlaylists")
         return if (imported != null) {
             for (playlist in imported.playlists) {
                 PlaylistActions.importPlaylist(

@@ -16,7 +16,7 @@ import player.phonograph.coil.model.AlbumImage
 import player.phonograph.coil.model.ArtistImage
 import player.phonograph.coil.model.LoaderTarget
 import player.phonograph.coil.model.SongImage
-import player.phonograph.foundation.recordThrowable
+import player.phonograph.foundation.error.record
 import player.phonograph.util.file.createOrOverrideFileRecursive
 import androidx.core.graphics.drawable.toBitmapOrNull
 import android.content.Context
@@ -88,7 +88,7 @@ class CacheStore(val context: Context) {
                     }
                 }
             } catch (e: Exception) {
-                recordThrowable(context, TAG, e)
+                record(context, e, TAG)
             }
         }
 
@@ -112,7 +112,7 @@ class CacheStore(val context: Context) {
                         dataSource = DataSource.DISK
                     )
                 } catch (e: Exception) {
-                    recordThrowable(context, TAG, e)
+                    record(context, e, TAG)
                     null
                 }
             } else {

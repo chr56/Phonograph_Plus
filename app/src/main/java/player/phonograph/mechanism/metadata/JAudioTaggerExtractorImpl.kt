@@ -25,7 +25,8 @@ import org.jaudiotagger.tag.vorbiscomment.VorbisCommentFieldKey
 import org.jaudiotagger.tag.vorbiscomment.VorbisCommentTag
 import org.jaudiotagger.tag.vorbiscomment.VorbisCommentTagField
 import org.jaudiotagger.tag.wav.WavTag
-import player.phonograph.foundation.reportError
+import player.phonograph.App
+import player.phonograph.foundation.error.warning
 import player.phonograph.mechanism.metadata.JAudioTaggerMetadata.Field
 import player.phonograph.model.metadata.Metadata
 import player.phonograph.model.metadata.Metadata.EmptyField
@@ -126,7 +127,7 @@ object ID3v2Readers {
                     Field(id, id, field, null)
                 }
             } catch (e: TagException) {
-                reportError(e, "ID3v2Reader", "Failed to process Frame $frame")
+                warning(App.instance, "ID3v2Reader", "Failed to process Frame $frame", e)
                 Field(id, id, PlainStringField(frame.toString()), null)
             }
 

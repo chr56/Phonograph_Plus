@@ -16,7 +16,7 @@ import coil.size.pxOrElse
 import okio.Path.Companion.toOkioPath
 import okio.buffer
 import okio.source
-import player.phonograph.foundation.recordThrowable
+import player.phonograph.foundation.error.record
 import player.phonograph.mechanism.metadata.JAudioTaggerExtractor
 import player.phonograph.util.debug
 import player.phonograph.util.mediaStoreUriAlbumArt
@@ -93,7 +93,7 @@ object ImageRetrievers {
                     if (e is FileNotFoundException) {
                         debug { Log.v("loadThumbnail", "File not available ($uri)!") }
                     } else {
-                        recordThrowable(context, "loadThumbnail", e)
+                        record(context, e, "loadThumbnail")
                     }
                     null
                 }

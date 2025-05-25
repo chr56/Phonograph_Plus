@@ -7,7 +7,7 @@ package player.phonograph.mechanism.playlist.saf
 import legacy.phonograph.MediaStoreCompat.Audio.Playlists
 import lib.storage.launcher.IOpenFileStorageAccessible
 import player.phonograph.R
-import player.phonograph.foundation.warning
+import player.phonograph.foundation.error.warning
 import player.phonograph.mechanism.playlist.m3u.M3UWriter
 import player.phonograph.model.Song
 import player.phonograph.util.PLAYLIST_MIME_TYPE
@@ -55,7 +55,7 @@ suspend fun appendToPlaylistViaSAF(
             coroutineToast(context, context.getString(R.string.success))
         }
     } catch (e: IOException) {
-        warning(TAG, "Failed write playlist via uri: $uri (from file $playlistPath)")
+        warning(context, TAG, "Failed write playlist via uri: $uri (from file $playlistPath)")
         coroutineToast(context, context.getString(R.string.err_failed_to_save_playlist, playlistPath))
     }
 }

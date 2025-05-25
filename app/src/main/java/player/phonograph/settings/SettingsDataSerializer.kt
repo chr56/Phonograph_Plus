@@ -4,8 +4,9 @@
 
 package player.phonograph.settings
 
+import player.phonograph.App
 import player.phonograph.BuildConfig
-import player.phonograph.foundation.warning
+import player.phonograph.foundation.error.warning
 import player.phonograph.model.backup.ExportedSetting
 import player.phonograph.util.gitRevisionHash
 import androidx.datastore.preferences.core.Preferences
@@ -67,12 +68,12 @@ class SettingsDataSerializer(private val format: StringFormat, context: Context)
                             else -> throw IllegalStateException("unsupported type $type")
                         }
                     } else {
-                        warning(TAG, "in key $jsonKey value $content is glitch")
+                        warning(App.instance, TAG, "in key $jsonKey value $content is glitch")
                         null
                     }
                 }
             } else {
-                warning(TAG, "unexpected element")
+                warning(App.instance, TAG, "unexpected element")
                 null
             }
         }.toTypedArray()

@@ -4,7 +4,7 @@
 
 package player.phonograph.ui.modules.tag.util
 
-import player.phonograph.foundation.warning
+import player.phonograph.foundation.error.warning
 import player.phonograph.model.Song
 import android.content.Context
 import android.net.Uri
@@ -27,7 +27,7 @@ fun createCacheFile(context: Context, name: String, uri: Uri): File {
                 }
             }
         } else {
-            warning("Cache", "Can not open selected file! (uri: $uri)")
+            warning(context, "Cache", "Can not open selected file! (uri: $uri)")
         }
     }
     cacheFile.deleteOnExit()

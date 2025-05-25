@@ -5,9 +5,9 @@
 package player.phonograph.service
 
 import org.koin.core.context.GlobalContext
+import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.foundation.reportError
-import player.phonograph.foundation.warning
+import player.phonograph.foundation.error.warning
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.model.service.MusicServiceConnection
@@ -65,7 +65,7 @@ object MusicPlayerRemote {
                 // start service
                 contextWrapper.startService(Intent(contextWrapper, MusicService::class.java))
             } catch (e: Exception) {
-                reportError(e, TAG, "Failed to start service")
+                warning(activity, TAG, "Failed to start service", e)
             }
 
             val serviceConnection = MusicServiceConnectionImpl(callback)
@@ -82,7 +82,7 @@ object MusicPlayerRemote {
                 mConnectionMap[contextWrapper] = serviceConnection
                 ServiceToken(contextWrapper)
             } else {
-                warning(TAG, "Failed to start MusicService")
+                warning(activity, TAG, "Failed to start MusicService")
                 null
             }
         }
@@ -300,11 +300,11 @@ object MusicPlayerRemote {
         shuffleMode: ShuffleMode?,
     ): Boolean {
         if (queue.isEmpty()) {
-            warning(TAG, "Summited Queue is empty")
+            warning(App.instance, TAG, "Summited Queue is empty")
             return false
         }
         if (startPosition !in queue.indices) {
-            warning(TAG, "Start position ($startPosition) is out ranged (total: ${queue.size})")
+            warning(App.instance, TAG, "Start position ($startPosition) is out ranged (total: ${queue.size})")
             return false
         }
 

@@ -5,7 +5,8 @@
 package player.phonograph.util.zip
 
 import okio.IOException
-import player.phonograph.foundation.reportError
+import player.phonograph.App
+import player.phonograph.foundation.error.warning
 import android.util.Log
 import java.io.BufferedInputStream
 import java.io.BufferedOutputStream
@@ -30,7 +31,7 @@ object ZipUtil {
             }
             true
         } catch (e: IOException) {
-            reportError(e, "ZipUtil", "Failed to zip $destination")
+            warning(App.instance, "ZipUtil", "Failed to zip $destination", e)
             false
         }
 
@@ -48,16 +49,14 @@ object ZipUtil {
                     }
                 }
             } else {
-                reportError(
-                    IllegalStateException(), "ZipUtil",
-                    "File ${file.name} is not a file"
-                )
+                warning(App.instance, "ZipUtil", "File ${file.name} is not a file")
             }
         }.let {
-            if (it.isFailure) reportError(
-                it.exceptionOrNull() ?: Exception(),
+            if (it.isFailure) warning(
+                App.instance,
                 "ZipUtil",
-                "Failed to add ${file.name} to current archive file ($destination)"
+                "Failed to add ${file.name} to current archive file ($destination)",
+                it.exceptionOrNull()
             )
             return it.isSuccess
         }
@@ -71,7 +70,7 @@ object ZipUtil {
             }
             true
         } catch (e: Exception) {
-            reportError(e, "ZipUtil", "Failed to extract $sourceInputStream to $directory")
+            warning(App.instance, "ZipUtil", "Failed to extract $sourceInputStream to $directory", e)
             false
         }
     }

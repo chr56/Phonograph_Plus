@@ -7,8 +7,7 @@ package player.phonograph.coil
 import coil.Coil
 import coil.request.ImageRequest
 import coil.target.Target
-import player.phonograph.foundation.reportError
-import player.phonograph.foundation.warning
+import player.phonograph.foundation.error.warning
 import player.phonograph.util.MEDIASTORE_VOLUME_EXTERNAL
 import player.phonograph.util.file.createOrOverrideFileRecursive
 import player.phonograph.util.mediastoreUriArtists
@@ -90,7 +89,7 @@ class CustomArtistImageStore private constructor(context: Context) {
                         private val name = artistName
 
                         override fun onError(error: Drawable?) {
-                            warning(TAG, "Failed to load this image $source for $artistName")
+                            warning(context, TAG, "Failed to load this image $source for $artistName")
                         }
 
                         override fun onSuccess(result: Drawable) {
@@ -118,7 +117,7 @@ class CustomArtistImageStore private constructor(context: Context) {
                     true
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    reportError(e, TAG, "Can not save custom image for $artistName")
+                    warning(context, TAG, "Can not save custom image for $artistName", e)
                     false
                 }
                 if (success) {
@@ -129,7 +128,7 @@ class CustomArtistImageStore private constructor(context: Context) {
                         context.contentResolver.notifyChange(mediastoreUriArtists(MEDIASTORE_VOLUME_EXTERNAL), null)
                     } catch (e: Exception) {
                         e.printStackTrace()
-                        reportError(e, TAG, "Failed to update custom image $artistName")
+                        warning(context, TAG, "Failed to update custom image $artistName", e)
                     }
                 }
             }
@@ -147,7 +146,7 @@ class CustomArtistImageStore private constructor(context: Context) {
                 // trigger media store changed to force artist image reload
             } catch (e: Exception) {
                 e.printStackTrace()
-                reportError(e, TAG, "Failed to reset xustom artist image of$artistName")
+                warning(context, TAG, "Failed to reset xustom artist image of$artistName", e)
             }
         }
     }

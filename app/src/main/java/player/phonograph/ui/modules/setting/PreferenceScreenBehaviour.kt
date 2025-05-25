@@ -5,7 +5,6 @@
 package player.phonograph.ui.modules.setting
 
 import player.phonograph.R
-import player.phonograph.foundation.warning
 import player.phonograph.settings.Keys
 import player.phonograph.ui.modules.setting.components.BooleanPreference
 import player.phonograph.ui.modules.setting.components.ExternalPreference
@@ -102,8 +101,6 @@ private fun EqualizerSetting() {
     ) {
         if (activity != null) {
             NavigationUtil.openEqualizer(activity)
-        } else {
-            warning("Equalizer", "can not open Equalizer Setting")
         }
     }
 }

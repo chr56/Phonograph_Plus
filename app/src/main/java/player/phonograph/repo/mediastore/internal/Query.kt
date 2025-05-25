@@ -5,7 +5,7 @@
 package player.phonograph.repo.mediastore.internal
 
 import legacy.phonograph.MediaStoreCompat
-import player.phonograph.foundation.recordThrowable
+import player.phonograph.foundation.error.record
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Keys
@@ -87,7 +87,7 @@ fun queryAudio(
     } catch (e: SecurityException) {
         null
     } catch (e: IllegalArgumentException) {
-        recordThrowable(context, TAG, e)
+        record(context, e, TAG)
         null
     }
 }

@@ -4,7 +4,7 @@
 
 package player.phonograph.mechanism.migrate
 
-import player.phonograph.foundation.reportError
+import player.phonograph.foundation.error.warning
 import player.phonograph.settings.PrerequisiteSetting
 import player.phonograph.settings.Setting
 import player.phonograph.util.currentVersionCode
@@ -68,7 +68,7 @@ object MigrationManager {
             PrerequisiteSetting.instance(context).previousVersion = to // todo
 
         } catch (e: Exception) {
-            reportError(e, TAG, "Failed to migrate")
+            warning(context, TAG, "Failed to migrate", e)
             return CODE_UNKNOWN_ERROR
         }
 
@@ -180,7 +180,7 @@ private fun removePreference(context: Context, keyName: String) {
             }
         }
     } catch (e: Exception) {
-        reportError(e, TAG, "Failed to remove legacy preference item `$keyName` via datastore")
+        warning(context, TAG, "Failed to remove legacy preference item `$keyName` via datastore", e)
     }
 }
 

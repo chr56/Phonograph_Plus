@@ -6,8 +6,8 @@ package player.phonograph.mechanism.metadata.edit
 
 import player.phonograph.App
 import player.phonograph.R
+import player.phonograph.foundation.error.warning
 import player.phonograph.foundation.notification.BackgroundNotification
-import player.phonograph.foundation.warning
 import player.phonograph.mechanism.scanner.MediaStoreScanner
 import player.phonograph.model.metadata.EditAction
 import android.content.Context
@@ -44,7 +44,7 @@ abstract class AudioMetadataEditor(
             }
             // notify user
             BackgroundNotification.remove(TAG_EDITOR_NOTIFICATION_CODE)
-            if (logs.isNotEmpty()) warning(LOG_TAG, logs.joinToString(separator = "\n"))
+            if (logs.isNotEmpty()) warning(context, LOG_TAG, logs.joinToString(separator = "\n"))
             yield()
             // refresh media store
             val paths = songFiles.map { it.path }.toTypedArray()

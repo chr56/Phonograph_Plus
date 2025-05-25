@@ -4,7 +4,7 @@
 
 package player.phonograph.repo.mediastore.internal
 
-import player.phonograph.foundation.reportError
+import player.phonograph.foundation.error.warning
 import player.phonograph.model.Artist
 import player.phonograph.model.Song
 import player.phonograph.model.sort.SortMode
@@ -27,9 +27,13 @@ import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.yield
 
 suspend fun generateArtists(context: Context, songs: List<Song>): List<Artist> =
-    catalogArtists(songs, Setting(context)[Keys.artistSortMode].read()).await()
+    catalogArtists(context, songs, Setting(context)[Keys.artistSortMode].read()).await()
 
-private suspend fun catalogArtists(songs: List<Song>, sortMode: SortMode): Deferred<List<Artist>> = coroutineScope {
+private suspend fun catalogArtists(
+    context: Context,
+    songs: List<Song>,
+    sortMode: SortMode,
+): Deferred<List<Artist>> = coroutineScope {
     async {
 
         var completed = false
@@ -37,7 +41,7 @@ private suspend fun catalogArtists(songs: List<Song>, sortMode: SortMode): Defer
         val flow = flow {
             for (song in songs) emit(song)
         }.catch { e ->
-            reportError(e, TAG_ARTIST, "Fail to load artists")
+            warning(context, TAG_ARTIST, "Fail to load artists", e)
         }
 
         // artistID <-> List of songs which are grouped by album
@@ -95,7 +99,7 @@ private suspend fun catalogArtists(songs: List<Song>, sortMode: SortMode): Defer
             }.map { (id, list) ->
                 createAlbum(id, list)
             }.catch { e ->
-                reportError(e, TAG_ARTIST, "Fail to load artists")
+                warning(context, TAG_ARTIST, "Fail to load artists", e)
             }.toList()
 
             Artist(
@@ -105,7 +109,7 @@ private suspend fun catalogArtists(songs: List<Song>, sortMode: SortMode): Defer
                 songCount = albumList.fold(0) { acc, album -> acc + album.songCount }
             )
         }.catch { e ->
-            reportError(e, TAG_ARTIST, "Fail to load artists")
+            warning(context, TAG_ARTIST, "Fail to load artists", e)
         }.toList().sortAllArtist(sortMode)
     }
 }

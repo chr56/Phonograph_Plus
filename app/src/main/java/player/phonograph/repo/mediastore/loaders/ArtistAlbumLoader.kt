@@ -15,7 +15,7 @@ import android.provider.MediaStore.Audio.AudioColumns
 object ArtistAlbumLoader {
     suspend fun id(context: Context, artistId: Long): List<Album> =
         querySongs(context, "${AudioColumns.ARTIST_ID}=?", arrayOf(artistId.toString()), null)
-            .intoSongs().let { generateArtistAlbums(it) }
+            .intoSongs().let { generateArtistAlbums(context, it) }
 
     suspend fun Artist.allAlbums(context: Context): List<Album> = id(context, id)
 

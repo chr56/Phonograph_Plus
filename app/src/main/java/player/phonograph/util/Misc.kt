@@ -15,8 +15,7 @@
 package player.phonograph.util
 
 import player.phonograph.BuildConfig.DEBUG
-import player.phonograph.foundation.reportError
-import player.phonograph.foundation.warning
+import player.phonograph.foundation.error.warning
 import player.phonograph.model.Song
 import androidx.core.content.FileProvider
 import androidx.fragment.app.FragmentActivity
@@ -114,10 +113,10 @@ fun openOutputStreamSafe(context: Context, uri: Uri, mode: String): OutputStream
     try {
         @SuppressLint("Recycle")
         val outputStream = context.contentResolver.openOutputStream(uri, mode)
-        if (outputStream == null) warning("UriUtil", "Failed to open ${uri.path}")
+        if (outputStream == null) warning(context, "UriUtil", "Failed to open ${uri.path}")
         outputStream
     } catch (e: FileNotFoundException) {
-        reportError(e, "UriUtil", "File Not found (${uri.path})")
+        warning(context, "UriUtil", "File Not found (${uri.path})", e)
         null
     }
 
@@ -143,7 +142,7 @@ fun shareFileIntent(context: Context, song: Song): Intent {
             .setType("audio/*")
     } catch (e: IllegalArgumentException) {
         // the path is most likely not like /storage/emulated/0/... but something like /storage/28C7-75B0/...
-        reportError(e, "Share", "Physical external SD card is not fully support!")
+        warning(context, "Share", "Physical external SD card is not fully support!", e)
         Intent()
     }
 }

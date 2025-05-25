@@ -7,7 +7,6 @@ package player.phonograph.ui.modules.setting.dialog
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import player.phonograph.R
-import player.phonograph.foundation.warning
 import player.phonograph.model.pages.Pages
 import player.phonograph.model.pages.PagesConfig
 import player.phonograph.settings.Keys
@@ -83,8 +82,9 @@ class HomeTabConfigDialog : DialogFragment() {
 
 
         override fun fetchDataset(): SortableList<String> {
-            val all = PagesConfig.DEFAULT_CONFIG.toMutableSet()
-            all.removeAll(pagesConfig.tabs.toSet()).report("Strange PageConfig: $pagesConfig")
+            val all = PagesConfig.DEFAULT_CONFIG.toMutableSet().apply {
+                removeAll(pagesConfig.tabs.toSet())
+            }
             val visible = pagesConfig.map { SortableList.Item(it, true) }
             val invisible = all.toList().map { SortableList.Item(it, false) }
             return SortableList(visible + invisible)
@@ -108,10 +108,6 @@ class HomeTabConfigDialog : DialogFragment() {
 
         companion object {
             private const val TAG = "PageTabConfigAdapter"
-            private fun Boolean.report(msg: String): Boolean {
-                if (!this) warning(TAG, msg)
-                return this
-            }
         }
     }
 }

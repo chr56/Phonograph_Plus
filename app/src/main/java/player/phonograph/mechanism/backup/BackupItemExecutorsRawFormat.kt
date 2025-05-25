@@ -9,8 +9,7 @@ import okio.Source
 import okio.buffer
 import okio.sink
 import okio.source
-import player.phonograph.foundation.reportError
-import player.phonograph.foundation.warning
+import player.phonograph.foundation.error.warning
 import player.phonograph.model.backup.BackupItemExecutor
 import player.phonograph.util.file.createOrOverrideFile
 import player.phonograph.util.file.moveFile
@@ -28,7 +27,7 @@ class RawDatabaseBackupItemExecutor(val databaseName: String) : BackupItemExecut
                 writeAll(databaseFile.source())
             }
         } else {
-            warning(TAG, "Empty database $databaseName to export")
+            warning(context, TAG, "Empty database $databaseName to export")
             null
         }
     }
@@ -49,7 +48,7 @@ class RawDatabaseBackupItemExecutor(val databaseName: String) : BackupItemExecut
             }
             true
         } catch (e: IOException) {
-            reportError(e, TAG, "Failed import database $databaseName")
+            warning(context, TAG, "Failed import database $databaseName", e)
             false
         }
 

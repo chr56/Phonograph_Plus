@@ -5,7 +5,7 @@
 package player.phonograph.mechanism.playlist.saf
 
 import player.phonograph.App
-import player.phonograph.foundation.reportError
+import player.phonograph.foundation.error.warning
 import player.phonograph.mechanism.event.EventHub
 import player.phonograph.mechanism.playlist.m3u.M3UWriter
 import player.phonograph.model.Song
@@ -25,7 +25,7 @@ suspend fun writePlaylist(context: Context, uri: Uri, songs: List<Song>): Boolea
             EventHub.sendEvent(App.instance, EventHub.EVENT_PLAYLISTS_CHANGED)
             true
         } catch (e: Exception) {
-            reportError(e, TAG, "Failed to write $uri")
+            warning(context, TAG, "Failed to write $uri", e)
             false
         }
     } == true

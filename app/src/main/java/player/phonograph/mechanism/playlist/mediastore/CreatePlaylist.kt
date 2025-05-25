@@ -6,7 +6,7 @@ package player.phonograph.mechanism.playlist.mediastore
 
 import legacy.phonograph.MediaStoreCompat.Audio.PlaylistsColumns
 import player.phonograph.App
-import player.phonograph.foundation.warning
+import player.phonograph.foundation.error.warning
 import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.Song
 import player.phonograph.util.MEDIASTORE_VOLUME_EXTERNAL
@@ -86,9 +86,9 @@ suspend fun duplicatePlaylistViaMediaStore(
             failureList.append(names[index]).append(" ")
         }
     }
-    EventHub.sendEvent(App.instance, EventHub.EVENT_PLAYLISTS_CHANGED)
+    EventHub.sendEvent(context.applicationContext, EventHub.EVENT_PLAYLISTS_CHANGED)
     if (failures > 0) {
-        warning("Playlist", "Playlists failed to save: $failureList")
+        warning(context.applicationContext, "Playlist", "Playlists failed to save: $failureList")
     }
     return failures <= 0
 }

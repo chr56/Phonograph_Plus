@@ -5,7 +5,7 @@
 package player.phonograph.service.util
 
 import player.phonograph.R
-import player.phonograph.foundation.reportError
+import player.phonograph.foundation.error.warning
 import player.phonograph.model.service.ACTION_CANCEL_PENDING_QUIT
 import player.phonograph.model.service.ACTION_STOP_AND_QUIT_NOW
 import player.phonograph.model.service.ACTION_STOP_AND_QUIT_PENDING
@@ -65,7 +65,7 @@ object SleepTimer {
         }
         true
     } catch (e: Exception) {
-        reportError(e, TAG, "Failed to set sleep timer")
+        warning(context, TAG, "Failed to set sleep timer", e)
         false
     }
 
@@ -89,7 +89,7 @@ object SleepTimer {
         }
         true
     } catch (e: Exception) {
-        reportError(e, TAG, context.getString(R.string.failed))
+        warning(context, TAG, context.getString(R.string.failed), e)
         false
     }
 

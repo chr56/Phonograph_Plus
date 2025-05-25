@@ -8,7 +8,7 @@ import lib.storage.launcher.IOpenFileStorageAccessible
 import lib.storage.launcher.OpenDocumentContract
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import player.phonograph.R
-import player.phonograph.foundation.warning
+import player.phonograph.foundation.error.warning
 import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.model.ui.NowPlayingScreenStyle
@@ -439,7 +439,7 @@ private fun buildPlayerToolbar(
                         }
                     }
                 } else {
-                    warning("Lyrics", "Can not open file from $activity")
+                    warning(activity, "Lyrics", "Can not open file from $activity")
                 }
                 true
             }

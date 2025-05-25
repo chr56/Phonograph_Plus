@@ -10,7 +10,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import player.phonograph.ACTUAL_PACKAGE_NAME
 import player.phonograph.R
 import player.phonograph.foundation.Reboot
-import player.phonograph.foundation.reportError
+import player.phonograph.foundation.error.warning
 import player.phonograph.mechanism.actions.actionPlay
 import player.phonograph.mechanism.scanner.FileScanner
 import player.phonograph.mechanism.scanner.MediaStoreScanner
@@ -254,7 +254,7 @@ private fun viewFiles(activity: FragmentActivity) {
                 }
             )
         } catch (e: Exception) {
-            reportError(e, "OpenDocumentsUi", "Failed to open Documents UI")
+            warning(activity, "OpenDocumentsUi", "Failed to open Documents UI", e)
         }
     }
 }
@@ -278,7 +278,7 @@ private suspend fun scanMedia(
     val mediaStoreScanner = MediaStoreScanner(context)
     try {
         val paths = FileScanner.listPaths(
-            DirectoryInfo(File(path), FileScanner.audioFileFilter)
+            context, DirectoryInfo(File(path), FileScanner.audioFileFilter)
         )
         coroutineToast(context.applicationContext, R.string.action_scan_media)
         if (!paths.isNullOrEmpty()) {
@@ -287,6 +287,6 @@ private suspend fun scanMedia(
             coroutineToast(context.applicationContext, R.string.msg_nothing_to_scan)
         }
     } catch (e: Exception) {
-        reportError(e, "ScanMedia", context.getString(R.string.failed))
+        warning(context, "ScanMedia", "Failed to scan media", e)
     }
 }
