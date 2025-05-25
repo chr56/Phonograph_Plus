@@ -141,8 +141,8 @@ fun List<Song>.actionDelete(context: Context) =
 
 private fun showRingtoneDialog(context: Context): AlertDialog =
     AlertDialog.Builder(context)
-        .setTitle(R.string.dialog_ringtone_title)
-        .setMessage(R.string.dialog_ringtone_title)
+        .setTitle(R.string.title_dialog_ringtone)
+        .setMessage(R.string.title_dialog_ringtone)
         .setNegativeButton(android.R.string.cancel) { d, _ -> d.dismiss() }
         .setPositiveButton(android.R.string.ok) { _, _ ->
             context.startActivity(

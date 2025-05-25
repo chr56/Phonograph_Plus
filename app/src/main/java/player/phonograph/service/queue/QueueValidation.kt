@@ -33,7 +33,7 @@ object QueueValidator {
         Songs.id(context, song.id) ?: Songs.path(context, song.data)
 
     private fun markDeleted(context: Context, song: Song): Song {
-        val prefix = "[${context.getString(R.string.deleted)}]"
+        val prefix = "[${context.getString(R.string.state_deleted)}]"
         val title = song.title
         val new = title.takeIf { title.startsWith(prefix) } ?: (prefix + title)
         return song.copy(title = new)

@@ -83,7 +83,7 @@ open class PermissionActivity : ThemeActivity(), IRequestMultiplePermission {
     ) {
         if (missingPermissions.isEmpty()) return
 
-        val message = StringBuffer(getString(R.string.permissions_denied)).append('\n')
+        val message = StringBuffer(getString(R.string.err_permissions_denied)).append('\n')
         var requireGotoSetting = false
         for (permission in missingPermissions) {
             message

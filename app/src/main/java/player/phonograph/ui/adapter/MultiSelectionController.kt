@@ -119,7 +119,7 @@ class MultiSelectionController<I>(
 
         if (currentCab != null) {
             if (size > 0) {
-                currentCab.titleText = currentCab.toolbar.resources.getString(R.string.x_selected, size)
+                currentCab.titleText = currentCab.toolbar.resources.getString(R.string.tips_x_selected, size)
                 currentCab.setupMenu()
                 currentCab.show()
             } else {
@@ -192,7 +192,7 @@ class MultiSelectionController<I>(
         }
 
     private fun ToolbarCab.prepare() {
-        titleText = toolbar.resources.getString(R.string.x_selected, 0)
+        titleText = toolbar.resources.getString(R.string.tips_x_selected, 0)
 
         titleTextColor = textColor
         backgroundColor = cabColor

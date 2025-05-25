@@ -52,23 +52,23 @@ fun ColumnScope.PathFilterSettings(
     )
     Row {
         ActionButton(
-            contentDescription = R.string.add_action,
+            contentDescription = R.string.action_add,
             icon = Icons.Default.Add,
             modifier = Modifier.weight(2f),
             onClick = actionAdd
         )
         ActionButton(
-            contentDescription = R.string.refresh,
+            contentDescription = R.string.action_refresh,
             icon = Icons.Default.Refresh,
             modifier = Modifier.weight(2f),
             onClick = actionRefresh
         )
         Spacer(modifier = Modifier.weight(3f))
         ActionButton(
-            contentDescription = R.string.clear_action,
+            contentDescription = R.string.action_clear,
             icon = Icons.Default.Delete,
             modifier = Modifier.weight(2f),
-            confirmationText = { stringResource(R.string.clear_action) },
+            confirmationText = { stringResource(R.string.action_clear) },
             onClick = actionClear
         )
     }
@@ -83,13 +83,13 @@ fun ColumnScope.PathFilterSettings(
                 fontSize = 12.sp
             )
             ActionButton(
-                contentDescription = R.string.delete_action,
+                contentDescription = R.string.action_delete,
                 icon = Icons.Default.Close,
                 modifier = Modifier
                     .weight(1f)
                     .align(Alignment.CenterVertically),
                 confirmationText = {
-                    "${stringResource(R.string.delete_action)}:\n$path"
+                    "${stringResource(R.string.action_delete)}:\n$path"
                 },
                 onClick = { actionRemove(path) },
             )

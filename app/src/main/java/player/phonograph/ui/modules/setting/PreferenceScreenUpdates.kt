@@ -27,7 +27,7 @@ fun PreferenceScreenUpdates() {
     Column(
         Modifier.verticalScroll(rememberScrollState())
     ) {
-        SettingsGroup(titleRes = R.string.check_for_updates) {
+        SettingsGroup(titleRes = R.string.action_check_for_updates) {
             BooleanPreference(
                 key = Keys.checkUpgradeAtStartup,
                 titleRes = R.string.pref_title_auto_check_for_updates,

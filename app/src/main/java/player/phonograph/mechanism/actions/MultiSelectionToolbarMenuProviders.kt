@@ -135,7 +135,7 @@ object MultiSelectionToolbarMenuProviders {
                 }
 
                 if (playlists.isNotEmpty()) {
-                    menuItem(getString(R.string.save_playlists_title)) {
+                    menuItem(getString(R.string.action_save_playlists)) {
                         icon = getTintedDrawable(R.drawable.ic_save_white_24dp, controller.textColor)
                         showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                         onClick {
@@ -146,7 +146,7 @@ object MultiSelectionToolbarMenuProviders {
                     }
                 }
 
-                menuItem(getString(R.string.select_all_title)) {
+                menuItem(getString(R.string.action_select_all)) {
                     icon = getTintedDrawable(R.drawable.ic_select_all_white_24dp, controller.textColor)
                     showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                     onClick {
@@ -155,7 +155,7 @@ object MultiSelectionToolbarMenuProviders {
                     }
                 }
 
-                menuItem(getString(R.string.invert_selection)) {
+                menuItem(getString(R.string.action_invert_selection)) {
                     showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                     onClick {
                         controller.invertSelected()
@@ -163,7 +163,7 @@ object MultiSelectionToolbarMenuProviders {
                     }
                 }
 
-                menuItem(getString(R.string.unselect_all_title)) {
+                menuItem(getString(R.string.action_unselect_all)) {
                     showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                     onClick {
                         controller.unselectedAll()

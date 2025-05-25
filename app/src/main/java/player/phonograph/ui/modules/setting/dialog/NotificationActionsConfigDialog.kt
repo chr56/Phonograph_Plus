@@ -42,7 +42,7 @@ class NotificationActionsConfigDialog : DialogFragment() {
         adapter.attachToRecyclerView(recyclerView)
 
         view.findViewById<TextView>(R.id.description).apply {
-            setText(R.string.help_notification_actions)
+            setText(R.string.tips_notification_actions)
             visibility = View.VISIBLE
         }
 
@@ -59,13 +59,13 @@ class NotificationActionsConfigDialog : DialogFragment() {
                 } else {
                     Toast.makeText(
                         it.context,
-                        R.string.illegal_operation,
+                        R.string.err_illegal_operation,
                         Toast.LENGTH_SHORT
                     ).show()
                 }
             }
             .negativeButton(android.R.string.cancel) { dismiss() }
-            .neutralButton(R.string.reset_action) {
+            .neutralButton(R.string.action_reset) {
                 Setting(requireContext())[Keys.notificationActions].data = NotificationActionsConfig.DEFAULT
                 dismiss()
             }
@@ -110,7 +110,7 @@ class NotificationActionsConfigDialog : DialogFragment() {
                 } else {
                     Toast.makeText(
                         view.context,
-                        R.string.help_unmatched_notification_actions,
+                        R.string.tips_unmatched_notification_actions,
                         Toast.LENGTH_SHORT
                     ).show()
                     (view as CheckBox).toggle()

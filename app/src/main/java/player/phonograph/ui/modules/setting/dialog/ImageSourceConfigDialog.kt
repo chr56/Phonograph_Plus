@@ -50,7 +50,7 @@ class ImageSourceConfigDialog : DialogFragment() {
                 if (sourceConfig.sources.none { it.enabled }) {
                     Toast.makeText(
                         requireActivity(),
-                        R.string.choose_at_least_one,
+                        R.string.tips_choose_at_least_one,
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -58,7 +58,7 @@ class ImageSourceConfigDialog : DialogFragment() {
                 dismiss()
             }
             .negativeButton(android.R.string.cancel) { dismiss(); }
-            .neutralButton(R.string.reset_action) {
+            .neutralButton(R.string.action_reset) {
                 Setting(requireContext())[Keys.imageSourceConfig].data = ImageSourceConfig.DEFAULT
                 dismiss()
             }

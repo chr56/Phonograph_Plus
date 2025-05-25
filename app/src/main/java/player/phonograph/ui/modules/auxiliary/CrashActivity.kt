@@ -109,7 +109,7 @@ class CrashActivity : ToolbarActivity() {
             clipboardManager.setPrimaryClip(clipData)
             Toast.makeText(
                 this,
-                "${getString(R.string.copy_to_clipboard)}:\n${getString(R.string.success)}",
+                "${getString(R.string.action_copy_to_clipboard)}:\n${getString(R.string.success)}",
                 Toast.LENGTH_SHORT
             ).show()
         }
@@ -160,14 +160,14 @@ class CrashActivity : ToolbarActivity() {
                     true
                 }
             }
-            menuItem(0, NONE, 2, getString(R.string.clear_all_preference)) {
+            menuItem(0, NONE, 2, getString(R.string.action_clear_all_preference)) {
                 showAsActionFlag = SHOW_AS_ACTION_NEVER
                 onClick {
                     val dialog = alertDialog(context) {
-                        title(R.string.clear_all_preference)
-                        message(R.string.clear_all_preference_msg)
+                        title(R.string.action_clear_all_preference)
+                        message(R.string.warning_clear_all_preference_msg)
                         neutralButton(android.R.string.cancel)
-                        positiveButton(R.string.clear_all_preference) { dialog ->
+                        positiveButton(R.string.action_clear_all_preference) { dialog ->
                             dialog.dismiss()
                             runBlocking {
                                 if (Setting(context).clearAll()) {
@@ -250,9 +250,9 @@ class CrashActivity : ToolbarActivity() {
 
     private val titleRes: Int
         get() = when (report.type) {
-            CRASH_TYPE_INTERNAL_ERROR -> R.string.internal_error
-            CRASH_TYPE_CORRUPTED_DATA -> R.string.corrupted_data_error
-            else                      -> R.string.crash
+            CRASH_TYPE_INTERNAL_ERROR -> R.string.title_internal_error
+            CRASH_TYPE_CORRUPTED_DATA -> R.string.title_corrupted_data_error
+            else                      -> R.string.title_crash
         }
 
     private val reportHead: String

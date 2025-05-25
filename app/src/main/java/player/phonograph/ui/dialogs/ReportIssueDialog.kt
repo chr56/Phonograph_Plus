@@ -70,8 +70,8 @@ class ReportIssueDialog : DialogFragment() {
 
     private fun Context.copyDeviceInfoToClipBoard() {
         val clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        clipboardManager.setPrimaryClip(ClipData.newPlainText(getString(R.string.device_info), deviceInfo))
-        Toast.makeText(this, R.string.copied_device_info_to_clipboard, Toast.LENGTH_LONG).show()
+        clipboardManager.setPrimaryClip(ClipData.newPlainText(getString(R.string.label_device_info), deviceInfo))
+        Toast.makeText(this, R.string.msg_copied_device_info_to_clipboard, Toast.LENGTH_LONG).show()
     }
 
 }

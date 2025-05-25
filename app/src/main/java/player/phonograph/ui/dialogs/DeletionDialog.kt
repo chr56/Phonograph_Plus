@@ -103,7 +103,7 @@ private fun MainContent(context: Context, songs: List<Song>, dismiss: () -> Unit
                 ) { dismiss() }
             }
         ) {
-            title(res = R.string.delete_action)
+            title(res = R.string.action_delete)
             BoxWithConstraints {
                 val limit = maxHeight / 3
                 Column(
@@ -157,7 +157,7 @@ private fun MainContent(context: Context, songs: List<Song>, dismiss: () -> Unit
                     ) {
                         Checkbox(withLyrics, null, Modifier.align(Alignment.CenterVertically))
                         Text(
-                            stringResource(R.string.delete_with_lyrics),
+                            stringResource(R.string.option_delete_with_lyrics),
                             Modifier
                                 .align(Alignment.CenterVertically)
                                 .padding(horizontal = 4.dp, vertical = 12.dp),
@@ -172,7 +172,7 @@ private fun MainContent(context: Context, songs: List<Song>, dismiss: () -> Unit
                             Modifier.align(Alignment.CenterVertically)
                         ) {
                             Text(
-                                stringResource(R.string.delete_action).uppercase(),
+                                stringResource(R.string.action_delete).uppercase(),
                                 style = MaterialTheme.typography.button,
                                 color = Color.Red,
                             )
@@ -190,7 +190,7 @@ private fun MainContent(context: Context, songs: List<Song>, dismiss: () -> Unit
 private fun NoPermissionTips(navigateToStorageSetting: () -> Unit) {
     Column {
         Text(
-            stringResource(R.string.tips_no_storage_write_permission),
+            stringResource(R.string.err_no_storage_write_permission),
             Modifier.padding(16.dp),
             fontWeight = FontWeight.Bold,
         )
@@ -199,7 +199,7 @@ private fun NoPermissionTips(navigateToStorageSetting: () -> Unit) {
             Modifier.align(Alignment.End)
         ) {
             Text(
-                stringResource(R.string.grant_permission),
+                stringResource(R.string.action_grant_permission),
                 style = MaterialTheme.typography.button,
                 color = MaterialTheme.colors.secondary
             )
@@ -243,7 +243,7 @@ private fun deleteLyrics(activity: Context, songs: Collection<Song>) {
             withLooper {
                 Toast.makeText(
                     activity,
-                    activity.getString(R.string.failed_to_delete) + fails.fold("") { a, n -> "$a,$n" },
+                    activity.getString(R.string.err_failed_to_delete) + fails.fold("") { a, n -> "$a,$n" },
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -253,7 +253,7 @@ private fun deleteLyrics(activity: Context, songs: Collection<Song>) {
 
 private fun showFailDialog(context: Context, msg: String, failList: Collection<Song>) {
     alertDialog(context) {
-        val t = context.getString(R.string.failed_to_delete)
+        val t = context.getString(R.string.err_failed_to_delete)
         title(t)
         message(
             buildString {
@@ -262,14 +262,14 @@ private fun showFailDialog(context: Context, msg: String, failList: Collection<S
                 append(failList.fold("") { acc, song -> "$acc${song.title}\n" })
             }
         )
-        neutralButton(R.string.grant_permission) {
+        neutralButton(R.string.action_grant_permission) {
             navigateToStorageSetting(context)
         }
         positiveButton(android.R.string.ok) { dialog ->
             dialog.dismiss()
         }
         if (SDK_INT >= VERSION_CODES.R && context is Activity) {
-            negativeButton(R.string.retry) {
+            negativeButton(R.string.action_retry) {
                 val uris = failList.map { song ->
                     mediaStoreUriSong(MEDIASTORE_VOLUME_EXTERNAL, song.id)
                 }

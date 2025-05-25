@@ -122,11 +122,11 @@ class MediaStoreScanner(val context: Context) : MediaScannerConnection.MediaScan
         }
     }
 
-    private val scannedFiles = context.getString(R.string.scanned_files)
-    private val couldNotScanFiles = context.getString(R.string.could_not_scan_files)
+    private val scannedFiles = context.getString(R.string.msg_scanned_files)
+    private val couldNotScanFiles = context.getString(R.string.err_could_not_scan_files)
 
 
-    private val title = context.getString(R.string.background_notification_name)
+    private val title = context.getString(R.string.notification_background_name)
 
     companion object {
         private const val TAG = "MediaScanner"

@@ -327,7 +327,7 @@ class PlayerQueueFragment : AbsMusicServiceFragment() {
     private fun buildUpNextAndQueueTimeText(position: Int): String {
         val duration = MusicPlayerRemote.getQueueDurationMillis(position)
         return buildInfoString(
-            resources.getString(R.string.up_next),
+            resources.getString(R.string.title_up_next),
             readableDuration(duration)
         )
     }
@@ -477,7 +477,7 @@ class PlayerQueueFragment : AbsMusicServiceFragment() {
             }
         }
         menuItem {
-            title = context.getString(R.string.playing_queue_history)
+            title = context.getString(R.string.label_playing_queue_history)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
             onClick {
                 QueueSnapshotsDialog().show(childFragmentManager, "QUEUE_SNAPSHOTS")

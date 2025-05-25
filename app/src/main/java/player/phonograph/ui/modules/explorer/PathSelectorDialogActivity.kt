@@ -55,7 +55,7 @@ class PathSelectorDialogActivity : DialogActivity() {
         }
 
         val buttonPanel = buttonPanel(this) {
-            button(0, getString(R.string.grant_permission), accentColor) {
+            button(0, getString(R.string.action_grant_permission), accentColor) {
                 navigateToStorageSetting(this@PathSelectorDialogActivity)
             }
             space(1)

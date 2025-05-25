@@ -70,21 +70,21 @@ class MiniPlayerFragment : AbsMusicServiceFragment() {
             )
         }
         observe(queueViewModel.currentSong) {
-            replaceText(if (it != null) it.title else getString(R.string.empty))
+            replaceText(if (it != null) it.title else getString(R.string.msg_empty))
         }
     }
 
     override fun onServiceConnected() {
         val context = requireContext()
         val currentSong: Song? = MusicPlayerRemote.currentSong
-        replaceText(currentSong?.title ?: context.getString(R.string.empty))
+        replaceText(currentSong?.title ?: context.getString(R.string.msg_empty))
         replaceDrawable(miniPlayerPlayPauseDrawable)
         updatePlayPauseDrawableState(false)
     }
 
     override fun onServiceDisconnected() {
         val context = requireContext()
-        replaceText(context.getString(R.string.service_disconnected))
+        replaceText(context.getString(R.string.tips_service_disconnected))
         replaceDrawable(getTintedDrawable(R.drawable.ic_refresh_white_24dp, themeIconColor(context)))
     }
 

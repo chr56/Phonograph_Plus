@@ -14,10 +14,10 @@ class SearchResultPageAdapter(
 ) : FragmentStateAdapter(searchActivity) {
 
     enum class TabType(@StringRes val nameRes: Int) {
-        SONG(R.string.song),
-        ALBUM(R.string.album),
-        ARTIST(R.string.artist),
-        PLAYLIST(R.string.playlists),
+        SONG(R.string.label_songs),
+        ALBUM(R.string.label_albums),
+        ARTIST(R.string.label_artists),
+        PLAYLIST(R.string.label_playlists),
         QUEUE(R.string.label_playing_queue);
     }
 

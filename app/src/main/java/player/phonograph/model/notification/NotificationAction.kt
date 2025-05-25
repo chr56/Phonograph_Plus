@@ -88,15 +88,15 @@ sealed class NotificationAction(
         override fun icon(status: MusicServiceStatus): Int = R.drawable.ic_fast_forward_white_24dp
     }
 
-    object Fav : NotificationAction(ACTION_KEY_FAV, R.string.favorites, ACTION_FAV) {
+    object Fav : NotificationAction(ACTION_KEY_FAV, R.string.playlist_favorites, ACTION_FAV) {
         override fun icon(status: MusicServiceStatus): Int = R.drawable.ic_favorite_border_white_24dp
     }
 
-    object Close : NotificationAction(ACTION_KEY_CLOSE, R.string.exit, ACTION_EXIT_OR_STOP) {
+    object Close : NotificationAction(ACTION_KEY_CLOSE, R.string.action_exit, ACTION_EXIT_OR_STOP) {
         override fun icon(status: MusicServiceStatus): Int = R.drawable.ic_close_white_24dp
     }
 
-    private object Invalid : NotificationAction(ACTION_KEY_UNKNOWN, R.string.empty, ".") {
+    private object Invalid : NotificationAction(ACTION_KEY_UNKNOWN, R.string.msg_empty, ".") {
         override fun icon(status: MusicServiceStatus): Int = R.drawable.ic_notification
     }
 

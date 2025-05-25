@@ -336,7 +336,7 @@ class PlayerController : ServiceComponent, Controller {
                 } else {
                     Toast.makeText(
                         service,
-                        service.resources.getString(R.string.audio_focus_denied),
+                        service.resources.getString(R.string.err_audio_focus_denied),
                         Toast.LENGTH_SHORT
                     ).show()
                 }

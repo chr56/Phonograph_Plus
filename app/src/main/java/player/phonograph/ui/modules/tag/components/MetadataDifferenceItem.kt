@@ -31,9 +31,9 @@ fun MetadataDifferenceItem(action: EditAction, old: String?) {
         NullableText(
             when (action) {
                 is EditAction.Update       -> action.newValue
-                is EditAction.Delete       -> stringResource(id = R.string.empty)
-                EditAction.ImageDelete     -> stringResource(id = R.string.remove_cover)
-                is EditAction.ImageReplace -> stringResource(id = R.string.update_image)
+                is EditAction.Delete       -> stringResource(id = R.string.msg_empty)
+                EditAction.ImageDelete     -> stringResource(id = R.string.action_remove_cover)
+                is EditAction.ImageReplace -> stringResource(id = R.string.action_update_image)
             }
         )
     }
@@ -43,7 +43,7 @@ fun MetadataDifferenceItem(action: EditAction, old: String?) {
 private fun NullableText(string: String?, modifier: Modifier = Modifier) {
     if (string.isNullOrEmpty()) {
         Text(
-            stringResource(id = R.string.empty),
+            stringResource(id = R.string.msg_empty),
             modifier
                 .fillMaxWidth()
                 .alpha(0.5f)

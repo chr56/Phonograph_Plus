@@ -177,7 +177,7 @@ class MigrationActivity : ComposeActivity() {
     private fun Options() {
         IconButton(
             content = {
-                Icon(Icons.Default.Info, stringResource(id = R.string.app_info))
+                Icon(Icons.Default.Info, stringResource(id = R.string.label_app_info))
             },
             onClick = {
                 navigateToAppDetailSetting(this)

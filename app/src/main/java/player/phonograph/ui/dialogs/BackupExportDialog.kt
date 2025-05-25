@@ -47,7 +47,7 @@ class BackupExportDialog : DialogFragment() {
 
         // dialog
         val dialog = MaterialDialog(requireActivity())
-            .title(text = getString(R.string.action_export, getString(R.string.action_backup)))
+            .title(text = getString(R.string.action_export, getString(R.string.label_backup)))
             .customView(view = view, dialogWrapContent = false)
             .positiveButton(android.R.string.ok) { dialog ->
                 val selected = adapter.currentConfig
@@ -84,8 +84,8 @@ class BackupExportDialog : DialogFragment() {
 
     private fun completeDialog(context: Context, success: Boolean) =
         AlertDialog.Builder(context)
-            .setTitle(R.string.action_backup)
-            .setMessage(context.getString(if (success) R.string.completed else R.string.failed))
+            .setTitle(R.string.label_backup)
+            .setMessage(context.getString(if (success) R.string.state_completed else R.string.failed))
             .setPositiveButton(android.R.string.ok) { _, _ -> }
             .create().tintButtons()
 

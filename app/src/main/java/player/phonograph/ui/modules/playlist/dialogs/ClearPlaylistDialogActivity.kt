@@ -96,7 +96,7 @@ class ClearPlaylistDialogActivity : DialogActivity(),
 
         Column(Modifier.padding(8.dp)) {
             Text(
-                stringResource(R.string.delete_action),
+                stringResource(R.string.action_delete),
                 Modifier.padding(8.dp),
                 style = MaterialTheme.typography.h5
             )
@@ -126,7 +126,7 @@ class ClearPlaylistDialogActivity : DialogActivity(),
         DisplayPlaylist(state.targetPlaylists)
         CheckBoxItem(stringResource(R.string.behaviour_force_saf), useSAF, true, viewModel::flipUseSAF)
 
-        val text = stringResource(if (state.failedLastTime) R.string.retry else android.R.string.ok)
+        val text = stringResource(if (state.failedLastTime) R.string.action_retry else android.R.string.ok)
         ButtonPanel(stringResource(android.R.string.cancel), ::finish, text, {
             lifecycleScope.launch { viewModel.startDelete(context) }
         })
@@ -144,9 +144,9 @@ class ClearPlaylistDialogActivity : DialogActivity(),
                 )
             }
             Text(report, Modifier.padding(8.dp))
-            Text(stringResource(R.string.failed_to_delete), Modifier.padding(8.dp))
+            Text(stringResource(R.string.err_failed_to_delete), Modifier.padding(8.dp))
         } else {
-            Text(stringResource(R.string.delete_action), Modifier.padding(8.dp))
+            Text(stringResource(R.string.action_delete), Modifier.padding(8.dp))
         }
     }
 
@@ -188,7 +188,7 @@ class ClearPlaylistDialogActivity : DialogActivity(),
             }
         }
 
-        ButtonPanel(stringResource(android.R.string.cancel), ::finish, stringResource(R.string.delete_action), {
+        ButtonPanel(stringResource(android.R.string.cancel), ::finish, stringResource(R.string.action_delete), {
             lifecycleScope.launch { viewModel.finalDelete(context) }
         })
     }
@@ -229,10 +229,10 @@ class ClearPlaylistDialogActivity : DialogActivity(),
         if (SDK_INT >= VERSION_CODES.R && !hasPermission) {
             Card(Modifier.padding(8.dp), elevation = 4.dp) {
                 Column {
-                    Text(stringResource(R.string.permission_manage_external_storage_denied), Modifier.padding(8.dp))
+                    Text(stringResource(R.string.err_permission_manage_external_storage_denied), Modifier.padding(8.dp))
                     TextButton({ viewModel.requirePermission(context) }) {
                         Text(
-                            stringResource(R.string.grant_permission),
+                            stringResource(R.string.action_grant_permission),
                             style = MaterialTheme.typography.button.copy(color = MaterialTheme.colors.primary)
                         )
                     }

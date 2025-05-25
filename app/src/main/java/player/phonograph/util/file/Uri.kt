@@ -135,17 +135,17 @@ private suspend fun selectContentUriViaDocument(
 private suspend fun notifyErrorDocumentUri(context: Context, filePath: String, documentUri: Uri) {
     val actualPath = documentProviderUriAbsolutePath(documentUri, context)
     val message = buildString {
-        append(context.getString(R.string.file_incorrect)).append('\n')
+        append(context.getString(R.string.err_file_incorrect)).append('\n')
         append("Target:$filePath\n")
         append("Actual:$actualPath\n")
     }
-    coroutineToast(context, context.getString(R.string.file_incorrect))
+    coroutineToast(context, context.getString(R.string.err_file_incorrect))
     warning(TAG, message)
 }
 
 private suspend fun notifyErrorChildDocumentUri(context: Context, childDocumentUri: Uri) {
     val message = buildString {
-        append(context.getString(R.string.file_incorrect)).append('\n')
+        append(context.getString(R.string.err_file_incorrect)).append('\n')
         val segments: List<String> = childDocumentUri.pathSegments
         if (segments.size == 4) {
             append("File is out of reach:\n")
@@ -155,7 +155,7 @@ private suspend fun notifyErrorChildDocumentUri(context: Context, childDocumentU
             append("File is out of reach: $childDocumentUri\n")
         }
     }
-    coroutineToast(context, context.getString(R.string.file_incorrect))
+    coroutineToast(context, context.getString(R.string.err_file_incorrect))
     warning(TAG, message)
 }
 

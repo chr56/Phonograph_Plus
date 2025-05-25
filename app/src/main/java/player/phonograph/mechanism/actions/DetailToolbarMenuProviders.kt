@@ -156,7 +156,7 @@ object DetailToolbarMenuProviders {
                         }
                     }
 
-                    menuItem(title = getString(R.string.wiki)) { //id = R.id.action_wiki
+                    menuItem(title = getString(R.string.label_wiki)) { //id = R.id.action_wiki
                         icon = getTintedDrawable(R.drawable.ic_info_outline_white_24dp, iconColor)
                         showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                         onClick {
@@ -241,7 +241,7 @@ object DetailToolbarMenuProviders {
                         }
                     }
 
-                    menuItem(title = getString(R.string.set_artist_image)) { //id = R.id.action_set_artist_image
+                    menuItem(title = getString(R.string.action_set_artist_image)) { //id = R.id.action_set_artist_image
                         icon = getTintedDrawable(R.drawable.ic_person_white_24dp, iconColor)
                         showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                         onClick {
@@ -259,11 +259,11 @@ object DetailToolbarMenuProviders {
                     }
 
 
-                    menuItem(title = getString(R.string.reset_artist_image)) { //id = R.id.action_reset_artist_image
+                    menuItem(title = getString(R.string.action_reset_artist_image)) { //id = R.id.action_reset_artist_image
                         icon = getTintedDrawable(R.drawable.ic_close_white_24dp, iconColor)
                         showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                         onClick {
-                            Toast.makeText(context, resources.getString(R.string.updating), Toast.LENGTH_SHORT)
+                            Toast.makeText(context, resources.getString(R.string.state_updating), Toast.LENGTH_SHORT)
                                 .show()
                             CustomArtistImageStore.instance(context)
                                 .resetCustomArtistImage(context, item.id, item.name)
@@ -295,7 +295,7 @@ object DetailToolbarMenuProviders {
                     }
 
 
-                    menuItem(title = getString(R.string.biography)) { //id = R.id.action_biography
+                    menuItem(title = getString(R.string.label_biography)) { //id = R.id.action_biography
                         icon = getTintedDrawable(R.drawable.ic_info_outline_white_24dp, iconColor)
                         showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                         onClick {
@@ -426,7 +426,7 @@ object DetailToolbarMenuProviders {
                 }
                 if (!item.isVirtual()) {
                     menuItem {
-                        title = getString(R.string.rename_action)
+                        title = getString(R.string.action_rename)
                         showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                         onClick {
                             fragmentActivity(context) {
@@ -438,7 +438,7 @@ object DetailToolbarMenuProviders {
                 }
                 menuItem {
                     title = getString(
-                        if (!item.isVirtual()) R.string.delete_action else R.string.clear_action
+                        if (!item.isVirtual()) R.string.action_delete else R.string.action_clear
                     )
                     showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                     onClick {
@@ -459,7 +459,7 @@ object DetailToolbarMenuProviders {
                     }
                 }
                 menuItem {
-                    title = getString(R.string.save_playlist_title)
+                    title = getString(R.string.action_save_playlist)
                     showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                     onClick {
                         fragmentActivity(context) {

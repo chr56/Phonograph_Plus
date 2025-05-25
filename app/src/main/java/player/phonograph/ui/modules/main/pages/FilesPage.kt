@@ -166,7 +166,7 @@ class FilesPage : AbsPage() {
     }
 
     private suspend fun play(context: Context, shuffle: Boolean) {
-        coroutineToast(context, R.string.process)
+        coroutineToast(context, R.string.state_process)
         val allSongs = model.currentSongs(context)
         val size = allSongs.size
         if (size > 0) {
@@ -182,7 +182,7 @@ class FilesPage : AbsPage() {
         } else {
             coroutineToast(
                 context,
-                R.string.empty
+                R.string.msg_empty
             )
         }
     }

@@ -124,43 +124,43 @@
         <activity
             android:name=".ui.modules.auxiliary.PhonographIntroActivity"
             android:exported="true"
-            android:label="@string/intro_label"
+            android:label="@string/label_intro"
             android:theme="@style/Theme.AppIntro" />
         <activity
             android:name=".ui.modules.album.AlbumDetailActivity"
-            android:label="@string/album" />
+            android:label="@string/label_album" />
         <activity
             android:name=".ui.modules.artist.ArtistDetailActivity"
-            android:label="@string/artist" />
+            android:label="@string/label_artist" />
         <activity
             android:name=".ui.modules.genre.GenreDetailActivity"
-            android:label="@string/genre" />
+            android:label="@string/label_genre" />
         <activity
             android:name=".ui.modules.playlist.PlaylistDetailActivity"
-            android:label="@string/playlists" />
+            android:label="@string/label_playlists" />
         <activity
             android:name="player.phonograph.ui.modules.playlist.dialogs.AddToPlaylistDialogActivity"
             android:excludeFromRecents="true"
             android:exported="false"
-            android:label="@string/add_playlist_title"
+            android:label="@string/title_add_playlist"
             android:theme="@style/Theme.Phonograph.DialogActivity.Auto" />
         <activity
             android:name="player.phonograph.ui.modules.playlist.dialogs.CreatePlaylistDialogActivity"
             android:excludeFromRecents="true"
             android:exported="false"
-            android:label="@string/new_playlist_title"
+            android:label="@string/title_new_playlist"
             android:theme="@style/Theme.Phonograph.DialogActivity.Auto" />
         <activity
             android:name="player.phonograph.ui.modules.playlist.dialogs.RenamePlaylistDialogActivity"
             android:excludeFromRecents="true"
             android:exported="false"
-            android:label="@string/rename_playlist_title"
+            android:label="@string/title_rename_playlist"
             android:theme="@style/Theme.Phonograph.DialogActivity.Auto" />
         <activity
             android:name="player.phonograph.ui.modules.playlist.dialogs.ClearPlaylistDialogActivity"
             android:excludeFromRecents="true"
             android:exported="false"
-            android:label="@string/clear_action"
+            android:label="@string/action_clear"
             android:theme="@style/Theme.Phonograph.DialogActivity.Auto" />
         <activity
             android:name=".ui.modules.tag.TagBrowserActivity"
@@ -177,7 +177,7 @@
             android:name=".ui.modules.explorer.PathSelectorDialogActivity"
             android:excludeFromRecents="true"
             android:exported="false"
-            android:label="@string/path_selector"
+            android:label="@string/label_path_selector"
             android:launchMode="singleInstance"
             android:theme="@style/Theme.Phonograph.DialogActivity.Auto" />
         <activity
@@ -198,7 +198,7 @@
         <activity
             android:name=".ui.modules.auxiliary.CrashActivity"
             android:exported="true"
-            android:label="@string/crash"
+            android:label="@string/title_crash"
             android:launchMode="singleInstance"
             android:process="player.phonograph.crash" />
         <activity

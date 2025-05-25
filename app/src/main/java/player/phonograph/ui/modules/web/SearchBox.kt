@@ -54,7 +54,7 @@ fun BaseSearchBox(
             fontWeight = FontWeight.Black,
             style = MaterialTheme.typography.h5
         )
-        HorizontalTextItem(label = stringResource(R.string.target)) {
+        HorizontalTextItem(label = stringResource(R.string.label_target)) {
             target()
         }
         fields()
@@ -85,7 +85,7 @@ fun SearchTextBox(current: String, modifier: Modifier = Modifier, hint: String? 
         trailingIcon = {
             Icon(
                 Icons.Default.Clear,
-                contentDescription = stringResource(id = R.string.reset_action),
+                contentDescription = stringResource(id = R.string.action_reset),
                 modifier = Modifier
                     .padding(8.dp)
                     .clickable {

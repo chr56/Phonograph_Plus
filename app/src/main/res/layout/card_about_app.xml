@@ -66,7 +66,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                android:text="@string/version"
+                android:text="@string/about_version"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                 app:layout_constraintBottom_toTopOf="@id/app_version"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -155,7 +155,7 @@
                     android:layout_marginStart="32dp"
                     android:paddingBottom="8dp"
                     android:paddingTop="8dp"
-                    android:text="@string/changelog"
+                    android:text="@string/label_changelog"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
             </LinearLayout>
@@ -186,7 +186,7 @@
                     android:layout_marginStart="32dp"
                     android:paddingBottom="8dp"
                     android:paddingTop="8dp"
-                    android:text="@string/check_for_updates"
+                    android:text="@string/action_check_for_updates"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
             </LinearLayout>
@@ -218,7 +218,7 @@
                     android:layout_marginStart="32dp"
                     android:paddingBottom="8dp"
                     android:paddingTop="8dp"
-                    android:text="@string/git_hub"
+                    android:text="@string/label_github"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
             </LinearLayout>
@@ -249,7 +249,7 @@
                     android:layout_marginStart="32dp"
                     android:paddingBottom="8dp"
                     android:paddingTop="8dp"
-                    android:text="@string/licenses"
+                    android:text="@string/label_licenses"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
             </LinearLayout>

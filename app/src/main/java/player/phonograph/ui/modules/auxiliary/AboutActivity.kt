@@ -188,10 +188,10 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
                             val ignored = Setting(App.instance)[Keys.ignoreUpgradeDate].data
                             val current = versionCatalog.latest(currentChannel)?.date ?: 0
                             if (ignored >= current) {
-                                toast(getString(R.string.ignored_update))
+                                toast(getString(R.string.msg_ignored_update))
                             }
                         } else {
-                            toast(getText(R.string.no_updates))
+                            toast(getText(R.string.msg_no_updates))
                         }
                     }
                 }
@@ -291,9 +291,9 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
             reportError(e, "NoticesProcessor", "Failed to read notices")
             return
         }
-        LicensesDialog.Builder(this).setNotices(notices).setTitle(R.string.licenses)
+        LicensesDialog.Builder(this).setNotices(notices).setTitle(R.string.label_licenses)
             .setNoticesCssStyle(
-                getString(R.string.license_dialog_style).replace(
+                getString(R.string.css_style_license_dialog).replace(
                     "{bg-color}",
                     if (nightMode) "424242" else "ffffff"
                 )

@@ -82,7 +82,7 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>> : AbsPanelPage() {
         observe(viewLifecycleOwner.lifecycle, viewModel.dataset) { items ->
             updateDisplayedItems(items.toList())
 
-            binding.empty.text = resources.getText(R.string.empty)
+            binding.empty.text = resources.getText(R.string.msg_empty)
             binding.empty.visibility = if (items.isEmpty()) View.VISIBLE else View.GONE
 
             val headerTextRes = viewModel.headerTextRes

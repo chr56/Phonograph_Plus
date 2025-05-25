@@ -44,7 +44,7 @@ fun RequestWebSearchButton(
             DropdownMenuItem(onClick = {
                 onShowWikiDialog.invoke()
             }) {
-                Text(stringResource(R.string.wiki), Modifier.padding(8.dp))
+                Text(stringResource(R.string.label_wiki), Modifier.padding(8.dp))
             }
         }
     }

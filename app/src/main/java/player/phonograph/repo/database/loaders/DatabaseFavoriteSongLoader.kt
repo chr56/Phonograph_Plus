@@ -48,7 +48,7 @@ class DatabaseFavoriteSongLoader : IFavoriteSongs {
         private suspend fun lookupSong(context: Context, path: String): Song {
             val song = Songs.path(context, path)
             return if (song == null) {
-                val filename = ExternalFilePathParser.bashPath(path) ?: context.getString(R.string.deleted)
+                val filename = ExternalFilePathParser.bashPath(path) ?: context.getString(R.string.state_deleted)
                 Song.deleted(filename, path)
             } else {
                 song

@@ -108,14 +108,14 @@ private fun MainContent(versionCatalog: VersionCatalog, dismiss: () -> Unit) {
             onCloseRequest = { dismiss() },
             buttons = {
                 button(
-                    res = R.string.ignore_for_once,
+                    res = R.string.action_ignore_for_once,
                     textStyle = accentColoredButtonStyle(),
                 ) {
                     dismiss()
                     actionIgnore(context, versionCatalog)
                 }
                 positiveButton(
-                    res = R.string.more_actions,
+                    res = R.string.action_more,
                     textStyle = accentColoredButtonStyle(),
                     disableDismiss = true
                 ) {
@@ -123,7 +123,7 @@ private fun MainContent(versionCatalog: VersionCatalog, dismiss: () -> Unit) {
                 }
             }
         ) {
-            title(res = R.string.new_version_available)
+            title(res = R.string.msg_new_version_available)
             Column(
                 Modifier
                     .padding(16.dp)
@@ -218,7 +218,7 @@ private fun ColumnScope.DownloadLink(version: Version) {
         val dismissPopup = { showPopup = false }
         TextButton(onClick = { showPopup = true }) {
             Text(
-                stringResource(R.string.download),
+                stringResource(R.string.action_download),
                 style = MaterialTheme.typography.button.copy(color = MaterialTheme.colors.secondary)
             )
         }
@@ -278,21 +278,21 @@ private fun actionIgnore(context: Context, versionCatalog: VersionCatalog) {
     val current = versionCatalog.latest(currentChannel)
     if (current != null) {
         Setting(context)[Keys.ignoreUpgradeDate].data = current.date
-        Toast.makeText(context, R.string.ignored_update, Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, R.string.msg_ignored_update, Toast.LENGTH_SHORT).show()
     }
 }
 
 private fun actionMore(context: Context) {
     val map = mutableListOf(
-        Pair("${context.getString(R.string.git_hub)} (Release Page)") { _: DialogInterface ->
+        Pair("${context.getString(R.string.label_github)} (Release Page)") { _: DialogInterface ->
             context.open(GITHUB_RELEASE_URL)
         }
     )
     if (canAccessGitHub) {
-        map += Pair(context.getString(R.string.tg_channel)) { _: DialogInterface -> context.open(TG_CHANNEL) }
+        map += Pair(context.getString(R.string.label_tg_channel)) { _: DialogInterface -> context.open(TG_CHANNEL) }
     }
     alertDialog(context) {
-        title(R.string.download)
+        title(R.string.action_download)
         positiveButton(android.R.string.ok) { dialog -> dialog.dismiss() }
         singleChoiceItems(map, -1, true)
     }.show()

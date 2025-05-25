@@ -55,7 +55,7 @@ class BackupImportDialog : DialogFragment() {
 
         // dialog
         val dialog = MaterialDialog(requireActivity())
-            .title(text = getString(R.string.action_import, getString(R.string.action_backup)))
+            .title(text = getString(R.string.action_import, getString(R.string.label_backup)))
             .customView(view = view, dialogWrapContent = false)
             .noAutoDismiss()
             .positiveButton(android.R.string.ok) { dialog ->
@@ -64,7 +64,7 @@ class BackupImportDialog : DialogFragment() {
 
                 if (selected.isEmpty()) return@positiveButton
 
-                val processDialog = ProgressDialog.newInstance(getString(R.string.action_backup))
+                val processDialog = ProgressDialog.newInstance(getString(R.string.label_backup))
                 dialog.dismiss()
                 processDialog.show(host.supportFragmentManager, "ProgressDialog")
                 host.lifecycleScope.launch(Dispatchers.IO) {
@@ -117,8 +117,8 @@ class BackupImportDialog : DialogFragment() {
 
     private fun completeDialog(context: Context, success: Boolean) =
         AlertDialog.Builder(context)
-            .setTitle(R.string.action_backup)
-            .setMessage(context.getString(if (success) R.string.completed else R.string.failed))
+            .setTitle(R.string.label_backup)
+            .setMessage(context.getString(if (success) R.string.state_completed else R.string.failed))
             .setPositiveButton(context.getString(R.string.action_reboot)) { _, _ ->
                 Reboot.reboot(context)
             }

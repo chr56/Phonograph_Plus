@@ -73,13 +73,13 @@ fun ImageActionMenu(
             .wrapContentWidth()
     ) {
         if (artworkExist) {
-            MenuItem(textRes = R.string.save, onSave)
+            MenuItem(textRes = R.string.action_save, onSave)
             if (editMode) {
-                MenuItem(textRes = R.string.remove_cover, onDelete)
+                MenuItem(textRes = R.string.action_remove_cover, onDelete)
             }
         }
         if (editMode) {
-            MenuItem(textRes = R.string.update_image, onUpdate)
+            MenuItem(textRes = R.string.action_update_image, onUpdate)
         }
     }
 }

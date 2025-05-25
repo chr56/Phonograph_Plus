@@ -20,13 +20,13 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/bug_report_manual"
+            android:text="@string/action_send_bug_report"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/you_will_be_forwarded_to_the_issue_tracker_website"
+            android:text="@string/tips_go_to_the_issue_tracker_website"
             android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
     </LinearLayout>
 
@@ -55,7 +55,7 @@
                 android:paddingLeft="16dp"
                 android:paddingTop="8dp"
                 android:paddingRight="16dp"
-                android:text="@string/device_info"
+                android:text="@string/label_device_info"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                 android:textColor="?android:textColorSecondary" />
 

@@ -226,17 +226,17 @@ object MediaItemProviders {
             val res = context.resources
             listOf(
                 mediaItem(FLAG_BROWSABLE) {
-                    setTitle(res.getString(R.string.songs))
+                    setTitle(res.getString(R.string.label_songs))
                     setIconUri(iconRes(res, R.drawable.ic_music_note_white_24dp))
                     setMediaId(MediaItemPath.pageSongs.mediaId)
                 },
                 mediaItem(FLAG_BROWSABLE) {
-                    setTitle(res.getString(R.string.albums))
+                    setTitle(res.getString(R.string.label_albums))
                     setIconUri(iconRes(res, R.drawable.ic_album_white_24dp))
                     setMediaId(MediaItemPath.pageAlbums.mediaId)
                 },
                 mediaItem(FLAG_BROWSABLE) {
-                    setTitle(res.getString(R.string.artists))
+                    setTitle(res.getString(R.string.label_artists))
                     setIconUri(iconRes(res, R.drawable.ic_person_white_24dp))
                     setMediaId(MediaItemPath.pageArtist.mediaId)
                 },
@@ -246,32 +246,32 @@ object MediaItemProviders {
                     setMediaId(MediaItemPath.pageQueue.mediaId)
                 },
                 mediaItem(FLAG_BROWSABLE) {
-                    setTitle(res.getString(R.string.playlists))
+                    setTitle(res.getString(R.string.label_playlists))
                     setIconUri(iconRes(res, R.drawable.ic_description_white_24dp))
                     setMediaId(MediaItemPath.pagePlaylists.mediaId)
                 },
                 mediaItem(FLAG_BROWSABLE) {
-                    setTitle(res.getString(R.string.favorites))
+                    setTitle(res.getString(R.string.playlist_favorites))
                     setIconUri(iconRes(res, R.drawable.ic_favorite_white_24dp))
                     setMediaId(MediaItemPath.pageFavorites.mediaId)
                 },
                 mediaItem(FLAG_BROWSABLE) {
-                    setTitle(res.getString(R.string.my_top_tracks))
+                    setTitle(res.getString(R.string.playlist_my_top_tracks))
                     setIconUri(iconRes(res, R.drawable.ic_trending_up_white_24dp))
                     setMediaId(MediaItemPath.pageTopTracks.mediaId)
                 },
                 mediaItem(FLAG_BROWSABLE) {
-                    setTitle(res.getString(R.string.last_added))
+                    setTitle(res.getString(R.string.playlist_last_added))
                     setIconUri(iconRes(res, R.drawable.ic_library_add_white_24dp))
                     setMediaId(MediaItemPath.pageLastAdded.mediaId)
                 },
                 mediaItem(FLAG_BROWSABLE) {
-                    setTitle(res.getString(R.string.history))
+                    setTitle(res.getString(R.string.playlist_history))
                     setIconUri(iconRes(res, R.drawable.ic_access_time_white_24dp))
                     setMediaId(MediaItemPath.pageHistory.mediaId)
                 },
                 mediaItem(FLAG_BROWSABLE) {
-                    setTitle(res.getString(R.string.genres))
+                    setTitle(res.getString(R.string.label_genres))
                     setIconUri(iconRes(res, R.drawable.ic_bookmark_music_white_24dp))
                     setMediaId(MediaItemPath.pageGenres.mediaId)
                 }
@@ -464,7 +464,7 @@ object MediaItemProviders {
     fun error(context: Context): MediaItem =
         MediaItem(
             MediaDescriptionCompat.Builder()
-                .setTitle(context.getString(R.string.internal_error))
+                .setTitle(context.getString(R.string.title_internal_error))
                 .setMediaId(MediaItemPath.ROOT_PATH)
                 .build(), FLAG_BROWSABLE
         )

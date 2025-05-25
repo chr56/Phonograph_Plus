@@ -23,7 +23,6 @@ import player.phonograph.ui.compose.components.ListItem
 import player.phonograph.util.parcelableArrayListExtra
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -92,14 +91,14 @@ class AddToPlaylistDialogActivity : DialogActivity(),
         val useSAF by viewModel.useSAF.collectAsState()
         Column(Modifier.padding(8.dp)) {
             Text(
-                stringResource(R.string.add_playlist_title),
+                stringResource(R.string.action_add_to_playlist),
                 Modifier.padding(8.dp),
                 style = MaterialTheme.typography.h5
             )
             ListItem(
                 modifier = Modifier,
                 title = stringResource(R.string.action_new_playlist),
-                subtitle = stringResource(R.string.new_playlist_title),
+                subtitle = stringResource(R.string.title_new_playlist),
                 onClick = { viewModel.createNewPlaylist(context as FragmentActivity) },
                 painter = rememberVectorPainter(Icons.Default.Add)
             )

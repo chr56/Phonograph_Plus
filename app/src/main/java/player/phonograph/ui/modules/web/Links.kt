@@ -52,7 +52,7 @@ fun LinkMusicBrainz(modifier: Modifier, type: Target, mbid: String?) {
             },
             modifier = modifier
         ) {
-            Text("MusicBrainz(${stringResource(id = R.string.website)})")
+            Text("MusicBrainz(${stringResource(id = R.string.label_website)})")
         }
     }
 }
@@ -67,7 +67,7 @@ fun LinkLastFm(modifier: Modifier, lastFmUri: String?) {
             },
             modifier = modifier
         ) {
-            Text("Last.FM(${stringResource(id = R.string.website)})")
+            Text("Last.FM(${stringResource(id = R.string.label_website)})")
         }
     }
 }

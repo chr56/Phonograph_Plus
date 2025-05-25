@@ -16,14 +16,14 @@ import mms.musicbrainz.MusicBrainzAction.Target.Release as MusicbrainzRelease
 import mms.musicbrainz.MusicBrainzAction.Target.ReleaseGroup as MusicbrainzReleaseGroup
 
 fun LastFmAction.Target.displayTextRes(): Int = when (this) {
-    LastFmArtist -> R.string.target_artist
-    LastFmAlbum  -> R.string.target_album
-    LastFmTrack  -> R.string.target_track
+    LastFmArtist -> R.string.label_target_artist
+    LastFmAlbum  -> R.string.label_target_album
+    LastFmTrack  -> R.string.label_target_track
 }
 
 fun MusicBrainzAction.Target.displayTextRes(): Int = when (this) {
-    MusicbrainzArtist       -> R.string.target_release_group
-    MusicbrainzRecording    -> R.string.target_release
-    MusicbrainzRelease      -> R.string.target_artist
-    MusicbrainzReleaseGroup -> R.string.target_recording
+    MusicbrainzArtist       -> R.string.label_target_release_group
+    MusicbrainzRecording    -> R.string.label_target_release
+    MusicbrainzRelease      -> R.string.label_target_artist
+    MusicbrainzReleaseGroup -> R.string.label_target_recording
 }

@@ -50,7 +50,7 @@ fun PreferenceScreenAppearance() {
         SettingsGroup(titleRes = R.string.pref_header_appearance) {
             DialogPreference(
                 dialog = LanguageSettingDialog::class.java,
-                titleRes = R.string.app_language,
+                titleRes = R.string.label_app_language,
                 currentValueForHint = { context ->
                     val locale = LocalizationStore.current(context)
                     locale.getDisplayName(locale)
@@ -124,10 +124,10 @@ fun PreferenceScreenAppearance() {
         SettingsGroup(titleRes = R.string.pref_header_library) {
             DialogPreference(
                 dialog = HomeTabConfigDialog::class.java,
-                titleRes = R.string.library_categories,
+                titleRes = R.string.label_library_categories,
                 summaryRes = R.string.pref_summary_library_categories,
                 reset = {
-                    resetPreference(it, R.string.library_categories, Keys.homeTabConfig)
+                    resetPreference(it, R.string.label_library_categories, Keys.homeTabConfig)
                 }
             )
             BooleanPreference(

@@ -71,7 +71,7 @@ class FilesPageAdapter(
             return if (songCount >= 0) {
                 resources.getQuantityString(R.plurals.item_songs, songCount, songCount)
             } else {
-                resources.getString(R.string.folder)
+                resources.getString(R.string.label_folder)
             }
         }
 

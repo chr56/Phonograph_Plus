@@ -137,7 +137,7 @@ class PlaylistDetailActivity :
         observe(viewModel.currentMode) { mode ->
             supportActionBar!!.title =
                 if (mode == UIMode.Editor)
-                    "${viewModel.playlist.name} [${getString(R.string.edit)}]"
+                    "${viewModel.playlist.name} [${getString(R.string.action_edit)}]"
                 else
                     viewModel.playlist.name
             updateBannerVisibility(mode)

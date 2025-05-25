@@ -79,7 +79,7 @@ class SleepTimerDialog : DialogFragment() {
         if (SleepTimer.setTimer(service, minutesToQuit, shouldFinishLastSong)) {
             Toast.makeText(
                 service,
-                getString(R.string.sleep_timer_set, minutesToQuit),
+                getString(R.string.msg_sleep_timer_set, minutesToQuit),
                 Toast.LENGTH_SHORT
             ).show()
         } else {
@@ -101,7 +101,7 @@ class SleepTimerDialog : DialogFragment() {
         if (SleepTimer.cancelTimer(service)) {
             Toast.makeText(
                 service,
-                getString(R.string.sleep_timer_canceled),
+                getString(R.string.msg_sleep_timer_canceled),
                 Toast.LENGTH_SHORT
             ).show()
         } else {
@@ -115,7 +115,7 @@ class SleepTimerDialog : DialogFragment() {
 
     private fun showDisconnectedDialog() {
         AlertDialog.Builder(requireContext())
-            .setMessage(R.string.service_disconnected)
+            .setMessage(R.string.tips_service_disconnected)
             .create().tintButtons()
     }
 
@@ -141,7 +141,7 @@ class SleepTimerDialog : DialogFragment() {
             object : SeekArc.OnSeekArcChangeListener {
                 override fun onProgressChanged(seekArc: SeekArc, i: Int, b: Boolean) {
                     progress = if (i < 1) 1 else i
-                    timeDisplay.text = String.format(getString(R.string.minutes_short), i)
+                    timeDisplay.text = String.format(getString(R.string.tips_minutes), i)
                 }
 
                 override fun onStartTrackingTouch(seekArc: SeekArc) {}
@@ -162,7 +162,7 @@ class SleepTimerDialog : DialogFragment() {
 
         // init views : set remaining time for timeDisplay
         timeDisplay.text =
-            getString(R.string.minutes_short, Setting(requireContext())[Keys.lastSleepTimerValue].data)
+            getString(R.string.tips_minutes, Setting(requireContext())[Keys.lastSleepTimerValue].data)
     }
 
     override fun onDismiss(dialog: DialogInterface) {
@@ -183,11 +183,11 @@ class SleepTimerDialog : DialogFragment() {
         }
 
         private fun setNegativeButtonText(time: Long) {
-            val text = requireContext().getString(R.string.cancel_current_timer).plus(
+            val text = requireContext().getString(R.string.action_cancel_current_timer).plus(
                 if (MusicPlayerRemote.isServiceConnected) {
                     if (time > 0 && SleepTimer.hasTimer()) "(${readableDuration(time)})" else ""
                 } else {
-                    requireContext().getString(R.string.service_disconnected)
+                    requireContext().getString(R.string.tips_service_disconnected)
                 }
             )
             dialog.getButton(DialogInterface.BUTTON_NEGATIVE)?.text = text

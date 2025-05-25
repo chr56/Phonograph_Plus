@@ -42,7 +42,7 @@ class SpeedControlDialog : DialogFragment() {
         if (service == null) {
             Log.e(TAG, "Service unavailable!")
             return AlertDialog.Builder(requireContext())
-                .setMessage(R.string.service_disconnected)
+                .setMessage(R.string.tips_service_disconnected)
                 .create().tintButtons()
         }
 
@@ -59,12 +59,12 @@ class SpeedControlDialog : DialogFragment() {
 
 
         return AlertDialog.Builder(requireContext())
-            .setTitle(R.string.action_speed)
+            .setTitle(R.string.label_speed)
             .setView(binding.root)
             .setPositiveButton(R.string.action_set) { _, _: Int ->
                 applySpeed()
             }
-            .setNegativeButton(R.string.reset_action) { _, _: Int ->
+            .setNegativeButton(R.string.action_reset) { _, _: Int ->
                 speedData.value = 1.0f
                 applySpeed()
             }

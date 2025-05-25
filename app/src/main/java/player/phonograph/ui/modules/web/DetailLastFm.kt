@@ -17,7 +17,6 @@ import player.phonograph.coil.lastfm.LastFmImageBundle
 import player.phonograph.ui.compose.components.Chip
 import player.phonograph.ui.compose.components.HorizontalTextItem
 import player.phonograph.ui.compose.components.VerticalTextItem
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -65,7 +64,7 @@ fun DetailLastFm(viewModel: WebSearchViewModel, lastFmDetail: PageDetail.LastFmD
             is LastFmArtist -> LastFmArtist(item)
             is LastFmTrack  -> LastFmTrack(item)
             else            -> Text(
-                stringResource(R.string.empty), modifier = Modifier.align(Alignment.TopCenter)
+                stringResource(R.string.msg_empty), modifier = Modifier.align(Alignment.TopCenter)
             )
         }
     }
@@ -79,7 +78,7 @@ fun LastFmArtist(artist: LastFmArtist) {
             .verticalScroll(rememberScrollState())
     ) {
         Image(LastFmImageBundle.from(artist))
-        HorizontalTextItem(stringResource(R.string.artist), artist.name)
+        HorizontalTextItem(stringResource(R.string.label_artist), artist.name)
         Wiki(artist.bio, isBio = true)
         MusicBrainzIdentifier(artist.mbid)
         Tags(artist.tags)
@@ -95,8 +94,8 @@ fun LastFmAlbum(album: LastFmAlbum) {
             .verticalScroll(rememberScrollState())
     ) {
         Image(LastFmImageBundle.from(album))
-        HorizontalTextItem(stringResource(R.string.artist), album.name)
-        HorizontalTextItem(stringResource(R.string.album), album.artist.orEmpty())
+        HorizontalTextItem(stringResource(R.string.label_artist), album.name)
+        HorizontalTextItem(stringResource(R.string.label_album), album.artist.orEmpty())
         Wiki(album.wiki, isBio = false)
         MusicBrainzIdentifier(album.mbid)
         Tags(album.tags)
@@ -112,9 +111,9 @@ fun LastFmTrack(track: LastFmTrack) {
             .fillMaxWidth()
             .verticalScroll(rememberScrollState())
     ) {
-        HorizontalTextItem(stringResource(R.string.title), track.name)
-        HorizontalTextItem(stringResource(R.string.artist), track.artist?.name.orEmpty())
-        HorizontalTextItem(stringResource(R.string.album), track.album?.name.orEmpty())
+        HorizontalTextItem(stringResource(R.string.label_title), track.name)
+        HorizontalTextItem(stringResource(R.string.label_artist), track.artist?.name.orEmpty())
+        HorizontalTextItem(stringResource(R.string.label_album), track.album?.name.orEmpty())
         Wiki(track.wiki, isBio = false)
         MusicBrainzIdentifier(track.mbid)
         Tags(track.toptags)
@@ -152,7 +151,7 @@ private fun Wiki(wikiData: LastFmWikiData?, isBio: Boolean) {
             }
         } else {
             Text(
-                stringResource(id = if (isBio) R.string.biography_unavailable else R.string.wiki_unavailable),
+                stringResource(id = if (isBio) R.string.err_biography_unavailable else R.string.err_wiki_unavailable),
                 Modifier.align(Alignment.Center)
             )
         }
@@ -161,7 +160,7 @@ private fun Wiki(wikiData: LastFmWikiData?, isBio: Boolean) {
 
 @Composable
 private fun MusicBrainzIdentifier(string: String?) {
-    if (!string.isNullOrEmpty()) VerticalTextItem(stringResource(R.string.key_mbid), string)
+    if (!string.isNullOrEmpty()) VerticalTextItem(stringResource(R.string.label_key_mbid), string)
 }
 
 @Composable
@@ -200,7 +199,7 @@ private fun Tag(tag: Tags.Tag, context: Context) {
             }
             Icon(
                 Icons.Outlined.Info,
-                contentDescription = stringResource(id = R.string.website),
+                contentDescription = stringResource(id = R.string.label_website),
                 modifier = Modifier
                     .padding(horizontal = 2.dp)
                     .clickable {
@@ -215,7 +214,7 @@ private fun Tag(tag: Tags.Tag, context: Context) {
 @Composable
 private fun ColumnScope.Tracks(tracks: LastFmAlbum.Tracks?) {
     if (tracks != null && !tracks.track.isNullOrEmpty() && !tracks.track.isNullOrEmpty()) {
-        Text(stringResource(id = R.string.songs), fontWeight = FontWeight.Bold)
+        Text(stringResource(id = R.string.label_songs), fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(6.dp))
         for (track in tracks.track!!) {
             Track(track)
@@ -243,7 +242,7 @@ private fun ColumnScope.Track(track: LastFmAlbum.Tracks.Track) {
         }
         Icon(
             Icons.Outlined.Info,
-            contentDescription = stringResource(id = R.string.website),
+            contentDescription = stringResource(id = R.string.label_website),
             modifier = Modifier
                 .weight(2f)
                 .clickable {

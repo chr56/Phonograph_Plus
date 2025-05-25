@@ -386,7 +386,7 @@ private fun buildPlayerToolbar(
     var favoriteMenuItem: MenuItem? = null
     attach(activity, playerToolbar.menu) {
         // visible
-        lyricsMenuItem = menuItem(activity.getString(R.string.lyrics)) {
+        lyricsMenuItem = menuItem(activity.getString(R.string.label_lyrics)) {
             order = 0
             icon = context.getTintedDrawable(R.drawable.ic_comment_text_outline_white_24dp, Color.WHITE)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
@@ -417,7 +417,7 @@ private fun buildPlayerToolbar(
 
         // collapsed
         menuItem {
-            title = activity.getString(R.string.change_now_playing_screen)
+            title = activity.getString(R.string.action_change_now_playing_screen)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
             onClick {
                 NowPlayingScreenStylePreferenceDialog().show(childFragmentManager, "NOW_PLAYING_SCREEN")
@@ -454,7 +454,7 @@ private fun buildPlayerToolbar(
             }
         }
         menuItem {
-            title = activity.getString(R.string.equalizer)
+            title = activity.getString(R.string.label_equalizer)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
             onClick {
                 NavigationUtil.openEqualizer(activity)
@@ -462,7 +462,7 @@ private fun buildPlayerToolbar(
             }
         }
         menuItem {
-            title = activity.getString(R.string.action_speed)
+            title = activity.getString(R.string.label_speed)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
             onClick {
                 SpeedControlDialog().show(childFragmentManager, "SPEED_CONTROL_DIALOG")

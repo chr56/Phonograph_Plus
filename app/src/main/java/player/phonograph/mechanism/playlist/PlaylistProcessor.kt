@@ -117,7 +117,7 @@ private sealed class FilePlaylistProcessor(val location: FilePlaylistLocation) :
         override suspend fun appendSong(context: Context, song: Song) = impl(context, listOf(song))
         override suspend fun appendSongs(context: Context, songs: List<Song>) = impl(context, songs)
         private suspend fun impl(context: Context, songs: List<Song>) {
-            coroutineToast(context, R.string.direction_open_file_with_saf)
+            coroutineToast(context, R.string.tips_open_file_with_saf)
             appendToPlaylistViaSAF(context, songs, location.mediastoreId, location.path)
         }
     }

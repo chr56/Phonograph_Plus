@@ -47,7 +47,7 @@ class ChangelogDialog : DialogFragment() {
             }
 
         val dialog: MaterialDialog = MaterialDialog(requireActivity())
-            .title(R.string.changelog)
+            .title(R.string.label_changelog)
             .customView(view = customView, noVerticalPadding = false)
             .positiveButton(android.R.string.ok) {
                 it.dismiss()

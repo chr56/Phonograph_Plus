@@ -41,7 +41,7 @@
             android:layout_gravity="center"
             android:fontFamily="sans-serif-light"
             android:gravity="center_vertical"
-            android:text="@string/playlist_empty_text"
+            android:text="@string/msg_empty_playlist"
             android:textColor="?android:textColorSecondary"
             android:textSize="20sp"
             android:visibility="gone" />

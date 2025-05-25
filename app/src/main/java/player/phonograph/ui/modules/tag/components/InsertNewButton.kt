@@ -85,14 +85,14 @@ fun InsertNewButton(
             {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_add_white_24dp),
-                    contentDescription = stringResource(id = R.string.add_action),
+                    contentDescription = stringResource(id = R.string.action_add),
                     modifier = Modifier
                         .padding(8.dp)
                         .align(Alignment.CenterVertically),
                     tint = MaterialTheme.colors.onSurface
                 )
                 Text(
-                    text = stringResource(id = R.string.add_action),
+                    text = stringResource(id = R.string.action_add),
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
                         .fillMaxWidth(),

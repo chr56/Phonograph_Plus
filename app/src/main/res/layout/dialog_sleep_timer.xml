@@ -39,6 +39,6 @@
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:textColor="@color/seek_arc_text"
-        android:text="@string/finish_current_music_sleep_timer" />
+        android:text="@string/option_finish_current_music_sleep_timer" />
 
 </LinearLayout>

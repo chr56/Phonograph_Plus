@@ -74,7 +74,7 @@ class PhonographIntroActivity : AppIntro(), IOpenFileStorageAccessible, IRequest
         addSlide(
             AppIntroFragment.createInstance(
                 title = getString(R.string.app_name),
-                description = getString(R.string.welcome_to_phonograph),
+                description = getString(R.string.tips_welcome_to_phonograph),
                 imageDrawable = R.drawable.icon_web,
                 backgroundColorRes = MaterialColor.Blue._900.asResource
             )
@@ -90,7 +90,7 @@ class PhonographIntroActivity : AppIntro(), IOpenFileStorageAccessible, IRequest
 
         addSlide(
             AppIntroFragment.createInstance(
-                description = getString(R.string.completed),
+                description = getString(R.string.state_completed),
                 imageDrawable = R.drawable.icon_web,
                 backgroundColorRes = MaterialColor.Green._800.asResource
             )
@@ -113,8 +113,8 @@ class PhonographIntroActivity : AppIntro(), IOpenFileStorageAccessible, IRequest
 
     class PermissionSlideFragment : EmptySlideFragment(), SlidePolicy {
 
-        override val titleRes: Int get() = R.string.grant_permission
-        override val descriptionRes: Int get() = R.string.grant_permission_description
+        override val titleRes: Int get() = R.string.action_grant_permission
+        override val descriptionRes: Int get() = R.string.tips_grant_permission_description
 
 
         private var _items: List<ItemSimpleBinding>? = null
@@ -178,7 +178,7 @@ class PhonographIntroActivity : AppIntro(), IOpenFileStorageAccessible, IRequest
                 for (permission in necessaryPermissions) {
                     val result = context.checkSelfPermission(permission.permission)
                     if (result == PackageManager.PERMISSION_DENIED && permission.required) {
-                        Snackbar.make(binding.container, R.string.permissions_denied, Snackbar.LENGTH_SHORT).show()
+                        Snackbar.make(binding.container, R.string.err_permissions_denied, Snackbar.LENGTH_SHORT).show()
                         return false
                     }
                 }
@@ -212,7 +212,7 @@ class PhonographIntroActivity : AppIntro(), IOpenFileStorageAccessible, IRequest
         override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
             super.onViewCreated(view, savedInstanceState)
             val msg =
-                "${getString(R.string.pref_summary_auto_check_for_updates)}\n\n${getString(R.string.pref_description_auto_check_for_updates_extra_description)}"
+                "${getString(R.string.pref_summary_auto_check_for_updates)}\n\n${getString(R.string.pref_summary_auto_check_for_updates_extra_description)}"
             contentBinding.checkUpgradeDesc.text = msg
             contentBinding.checkUpgradeChoose.setOnCheckedChangeListener { _, selected ->
                 when (selected) {
@@ -220,7 +220,7 @@ class PhonographIntroActivity : AppIntro(), IOpenFileStorageAccessible, IRequest
                     R.id.disable -> Setting(view.context)[Keys.checkUpgradeAtStartup].data = false
                 }
             }
-            contentBinding.backup.text = getString(R.string.action_import, getString(R.string.action_backup))
+            contentBinding.backup.text = getString(R.string.action_import, getString(R.string.label_backup))
             contentBinding.backup.setOnClickListener {
                 val activity = activity
                 require(activity is IOpenFileStorageAccessible)
@@ -253,7 +253,7 @@ class PhonographIntroActivity : AppIntro(), IOpenFileStorageAccessible, IRequest
             get() = contentBinding.checkUpgradeChoose.checkedRadioButtonId != -1
 
         override fun onUserIllegallyRequestedNextPage() {
-            Toast.makeText(requireContext(), R.string.choose_at_least_one, Toast.LENGTH_SHORT)
+            Toast.makeText(requireContext(), R.string.tips_choose_at_least_one, Toast.LENGTH_SHORT)
                 .show()
         }
 

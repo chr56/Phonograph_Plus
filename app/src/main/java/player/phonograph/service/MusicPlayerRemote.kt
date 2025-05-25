@@ -336,7 +336,7 @@ object MusicPlayerRemote {
             }
         }
         toastWithService {
-            it.getString(R.string.added_title_to_playing_queue)
+            it.getString(R.string.msg_added_title_to_playing_queue)
         }
         return true
     }
@@ -354,8 +354,8 @@ object MusicPlayerRemote {
             }
         }
         toastWithService {
-            if (songs.size == 1) it.getString(R.string.added_title_to_playing_queue)
-            else it.getString(R.string.added_x_titles_to_playing_queue, songs.size)
+            if (songs.size == 1) it.getString(R.string.msg_added_title_to_playing_queue)
+            else it.getString(R.string.msg_added_x_titles_to_playing_queue, songs.size)
         }
         return true
     }
@@ -367,7 +367,7 @@ object MusicPlayerRemote {
             queueManager.addSong(song, position + 1)
         }
         toastWithService {
-            it.getString(R.string.added_title_to_playing_queue)
+            it.getString(R.string.msg_added_title_to_playing_queue)
         }
         return true
     }
@@ -380,8 +380,8 @@ object MusicPlayerRemote {
             queueManager.addSongs(songs, position + 1)
         }
         toastWithService {
-            if (songs.size == 1) it.getString(R.string.added_title_to_playing_queue)
-            else it.getString(R.string.added_x_titles_to_playing_queue, songs.size)
+            if (songs.size == 1) it.getString(R.string.msg_added_title_to_playing_queue)
+            else it.getString(R.string.msg_added_x_titles_to_playing_queue, songs.size)
         }
         return true
     }
@@ -393,7 +393,7 @@ object MusicPlayerRemote {
             queueManager.addSong(song)
         }
         toastWithService {
-            it.getString(R.string.added_title_to_playing_queue)
+            it.getString(R.string.msg_added_title_to_playing_queue)
         }
         return true
     }
@@ -405,8 +405,8 @@ object MusicPlayerRemote {
             queueManager.addSongs(songs)
         }
         toastWithService {
-            if (songs.size == 1) it.getString(R.string.added_title_to_playing_queue)
-            else it.getString(R.string.added_x_titles_to_playing_queue, songs.size)
+            if (songs.size == 1) it.getString(R.string.msg_added_title_to_playing_queue)
+            else it.getString(R.string.msg_added_x_titles_to_playing_queue, songs.size)
         }
         return true
     }

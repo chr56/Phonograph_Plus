@@ -35,10 +35,10 @@ fun MusicBrainzSearchBox(
         },
         onSearch = { onSearch(queryParameter.toAction()) }
     ) {
-        HorizontalTextItem(stringResource(R.string.query)) {
+        HorizontalTextItem(stringResource(R.string.label_query)) {
             SearchTextBox(
                 queryParameter.query,
-                hint = stringResource(R.string.hint_lucene_query_syntax)
+                hint = stringResource(R.string.tips_hint_lucene_query_syntax)
             ) {
                 updateQueryParameter { old -> old.copy(query = it) }
             }

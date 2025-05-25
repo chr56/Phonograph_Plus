@@ -37,7 +37,7 @@ fun ColumnScope.ExternalPlayRequestSettings(
     CheckBoxItem(stringResource(R.string.pref_option_silence), silence, flip = flipSilence)
 
     Spacer(Modifier.height(8.dp))
-    Text(text = stringResource(R.string.single_item), style = MaterialTheme.typography.h6)
+    Text(text = stringResource(R.string.label_single_item), style = MaterialTheme.typography.h6)
     for (id in SongClickMode.singleItemModes) {
         ModeRadioBox(
             mode = id,
@@ -48,7 +48,7 @@ fun ColumnScope.ExternalPlayRequestSettings(
         )
     }
     Spacer(Modifier.height(8.dp))
-    Text(text = stringResource(R.string.multiple_items), style = MaterialTheme.typography.h6)
+    Text(text = stringResource(R.string.label_multiple_items), style = MaterialTheme.typography.h6)
     for (id in SongClickMode.multipleItemsModes) {
         ModeRadioBox(
             mode = id,

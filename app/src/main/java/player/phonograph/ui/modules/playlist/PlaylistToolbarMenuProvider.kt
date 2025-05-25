@@ -46,7 +46,7 @@ class PlaylistToolbarMenuProvider(
                     }
                 }
                 menuItem {
-                    title = getString(R.string.refresh)
+                    title = getString(R.string.action_refresh)
                     icon = getTintedDrawable(R.drawable.ic_refresh_white_24dp, iconColor)
                     showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                     onClick {
@@ -55,7 +55,7 @@ class PlaylistToolbarMenuProvider(
                     }
                 }
                 if (!item.isVirtual()) menuItem {
-                    title = getString(R.string.edit)
+                    title = getString(R.string.action_edit)
                     itemId = R.id.action_edit_playlist
                     showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                     onClick {

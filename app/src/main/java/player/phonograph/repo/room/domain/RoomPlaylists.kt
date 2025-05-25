@@ -38,7 +38,7 @@ object RoomPlaylists : RoomLoader(), IPlaylists {
                 val song = item.songEntity.let(EntityConverter::toSongModel)
                 PlaylistSong(song, item.playlistId, item.position.toLong())
             } else {
-                PlaylistSong(Song.deleted(context.getString(R.string.deleted), ""), id, -1)
+                PlaylistSong(Song.deleted(context.getString(R.string.state_deleted), ""), id, -1)
             }
         }
     }

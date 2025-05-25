@@ -71,7 +71,7 @@ object PhonographShortcutManager {
             context,
             type.id,
             context.getString(R.string.app_shortcut_last_added_short),
-            context.getString(R.string.last_added),
+            context.getString(R.string.playlist_last_added),
             themedIcon(context, R.drawable.ic_app_shortcut_last_added, colored),
             playIntent(context, type.id)
         )
@@ -89,7 +89,7 @@ object PhonographShortcutManager {
             context,
             type.id,
             context.getString(R.string.app_shortcut_top_tracks_short),
-            context.getString(R.string.my_top_tracks),
+            context.getString(R.string.playlist_my_top_tracks),
             themedIcon(context, R.drawable.ic_app_shortcut_top_tracks, colored),
             playIntent(context, type.id),
         )

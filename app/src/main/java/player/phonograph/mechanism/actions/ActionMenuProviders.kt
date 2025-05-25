@@ -101,7 +101,7 @@ object ActionMenuProviders {
                         fragmentActivity(context) { song.actionGotoDetail(it) }
                     }
                 }
-                submenu(context.getString(R.string.more_actions)) {
+                submenu(context.getString(R.string.action_more)) {
                     menuItem(title = getString(R.string.action_share)) { // id = R.id.action_share
                         showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                         onClick { song.actionShare(context) }
@@ -162,7 +162,7 @@ object ActionMenuProviders {
                     }
                 }
                 menuItem {
-                    title = getString(R.string.add_playlist_title)
+                    title = getString(R.string.action_add_to_playlist)
                     onClick {
                         fragmentActivity(context) {
                             lifecycleScopeOrNewOne().launch {
@@ -173,7 +173,7 @@ object ActionMenuProviders {
                         }
                     }
                 }
-                submenu(context.getString(R.string.more_actions)) {
+                submenu(context.getString(R.string.action_more)) {
                     menuItem(title = getString(R.string.action_delete_from_device)) {
                         onClick {
                             fragmentActivity(context) {
@@ -245,7 +245,7 @@ object ActionMenuProviders {
                     }
                 }
                 menuItem {
-                    title = getString(R.string.add_playlist_title)
+                    title = getString(R.string.action_add_to_playlist)
                     onClick {
                         fragmentActivity(context) {
                             it.lifecycleScope.launch {
@@ -257,7 +257,7 @@ object ActionMenuProviders {
                 }
                 if (!playlist.isVirtual()) {
                     menuItem {
-                        title = getString(R.string.rename_action)
+                        title = getString(R.string.action_rename)
                         onClick {
                             fragmentActivity(context) {
                                 playlist.actionRenamePlaylist(it)
@@ -279,8 +279,8 @@ object ActionMenuProviders {
                 }
                 menuItem {
                     title =
-                        if (!playlist.isVirtual()) getString(R.string.delete_action)
-                        else getString(R.string.clear_action)
+                        if (!playlist.isVirtual()) getString(R.string.action_delete)
+                        else getString(R.string.action_clear)
                     onClick {
                         fragmentActivity(context) {
                             playlist.actionDeletePlaylist(it)
@@ -289,7 +289,7 @@ object ActionMenuProviders {
                     }
                 }
                 menuItem {
-                    title = getString(R.string.save_playlist_title)
+                    title = getString(R.string.action_save_playlist)
                     onClick {
                         fragmentActivity(context) {
                             playlist.actionSavePlaylist(it)
@@ -420,7 +420,7 @@ object ActionMenuProviders {
             Setting(context)[Keys.startDirectory].data = File(path)
             Toast.makeText(
                 context,
-                String.format(context.getString(R.string.new_start_directory), path),
+                String.format(context.getString(R.string.msg_new_start_directory), path),
                 Toast.LENGTH_SHORT
             ).show()
             return true

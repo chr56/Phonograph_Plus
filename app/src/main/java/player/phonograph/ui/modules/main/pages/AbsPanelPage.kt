@@ -59,7 +59,7 @@ sealed class AbsPanelPage : AbsPage() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.empty.text = resources.getText(R.string.loading)
+        binding.empty.text = resources.getText(R.string.state_loading)
 
         prepareContentView()
 
@@ -183,9 +183,9 @@ sealed class AbsPanelPage : AbsPage() {
         with(popup) {
             viewBinding.titleGridSize.text =
                 if (isLandscape(resources)) {
-                    resources.getText(R.string.action_grid_size_land)
+                    resources.getText(R.string.label_grid_size_land)
                 } else {
-                    resources.getText(R.string.action_grid_size)
+                    resources.getText(R.string.label_grid_size)
                 }
             maxGridSize = displayConfig.maxGridSize
             gridSize = displayConfig.gridSize

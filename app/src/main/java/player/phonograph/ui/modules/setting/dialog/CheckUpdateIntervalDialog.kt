@@ -65,7 +65,7 @@ class CheckUpdateIntervalDialog : ComposeViewDialogFragment() {
                     CheckUpdateIntervalSettings(
                         currentSelectedDuration = duration,
                         onChangeDuration = { duration = it },
-                        previewTextTemplate = R.string.preview_text_next_updates_check
+                        previewTextTemplate = R.string.tips_preview_next_updates_check
                     )
                 }
             }

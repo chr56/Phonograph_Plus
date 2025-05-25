@@ -106,7 +106,7 @@ class LastFmDialog : ComposeViewDialogFragment() {
                 onCloseRequest = { dismiss() },
                 buttons = {
                     negativeButton(
-                        res = R.string.search_online,
+                        res = R.string.action_search_online,
                         textStyle = accentColoredButtonStyle()
                     ) {
                         webSearchDialogState.show()
@@ -121,7 +121,7 @@ class LastFmDialog : ComposeViewDialogFragment() {
             ) {
                 Box(Modifier.padding(12.dp)) {
                     Text(
-                        stringResource(R.string.wiki),
+                        stringResource(R.string.label_wiki),
                         style = MaterialTheme.typography.h5
                     )
                 }
@@ -136,7 +136,7 @@ class LastFmDialog : ComposeViewDialogFragment() {
                         is LastFmAlbumModel -> LastFmAlbum(item)
                         is LastFmArtistModel -> LastFmArtist(item)
                         is LastFmTrackModel -> LastFmTrack(item)
-                        null -> Text(stringResource(R.string.wiki_unavailable))
+                        null -> Text(stringResource(R.string.err_wiki_unavailable))
                     }
                 }
             }

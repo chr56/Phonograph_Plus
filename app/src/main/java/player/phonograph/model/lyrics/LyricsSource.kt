@@ -18,9 +18,9 @@ enum class LyricsSource : Parcelable {
     Unknown;
 
     fun name(context: Context): String = when (this) {
-        Embedded                           -> context.getString(R.string.embedded_lyrics)
-        ExternalDecorated, ExternalPrecise -> context.getString(R.string.external_lyrics)
-        ManuallyLoaded                     -> context.getString(R.string.loaded)
+        Embedded                           -> context.getString(R.string.label_embedded_lyrics)
+        ExternalDecorated, ExternalPrecise -> context.getString(R.string.label_external_lyrics)
+        ManuallyLoaded                     -> context.getString(R.string.label_loaded)
         Unknown                            -> "N/A"
     }
 }

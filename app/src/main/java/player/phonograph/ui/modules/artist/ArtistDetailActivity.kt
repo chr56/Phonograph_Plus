@@ -195,7 +195,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvide
             menu, this, viewModel.artist.value ?: Artist(), iconColor
         )
         attach(menu) {
-            menuItem(title = getString(R.string.colored_footers)) {
+            menuItem(title = getString(R.string.label_colored_footers)) {
                 checkable = true
                 checked = viewModel.usePaletteColor.value
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER

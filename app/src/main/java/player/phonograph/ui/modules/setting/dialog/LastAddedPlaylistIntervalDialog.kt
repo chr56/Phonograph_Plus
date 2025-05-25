@@ -78,7 +78,7 @@ class LastAddedPlaylistIntervalDialog : ComposeViewDialogFragment() {
                         onChangeMode = { calculationMode -> currentlySelectedMode = calculationMode },
                         currentSelectedDuration = currentlySelected,
                         onChangeDuration = { duration -> currentlySelected = duration },
-                        previewTextTemplate = R.string.preview_text_cutoff_time_interval
+                        previewTextTemplate = R.string.tips_preview_cutoff_time_interval
                     )
                 }
             }

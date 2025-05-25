@@ -51,13 +51,13 @@ fun PreferenceScreenContent() {
             )
             DialogPreference(
                 dialog = PathFilterEditorDialog.ExcludedMode::class.java,
-                titleRes = R.string.excluded_paths,
+                titleRes = R.string.label_excluded_paths,
                 summaryRes = R.string.pref_summary_path_filter_excluded_mode,
                 enabled = dependOn(Keys.pathFilterExcludeMode) { it == true }
             )
             DialogPreference(
                 dialog = PathFilterEditorDialog.IncludedMode::class.java,
-                titleRes = R.string.included_paths,
+                titleRes = R.string.label_included_paths,
                 summaryRes = R.string.pref_summary_path_filter_included_mode,
                 enabled = dependOn(Keys.pathFilterExcludeMode) { it == false }
             )
@@ -75,7 +75,7 @@ fun PreferenceScreenContent() {
                 summaryRes = R.string.pref_summary_image_cache,
                 titleRes = R.string.pref_title_image_cache,
             )
-            ExternalPreference(titleRes = R.string.clear_image_cache) { CacheStore.clear(App.instance) }
+            ExternalPreference(titleRes = R.string.action_clear_image_cache) { CacheStore.clear(App.instance) }
         }
         SettingsGroup(titleRes = R.string.pref_header_interactions) {
             DialogPreference(

@@ -13,7 +13,7 @@ import android.content.Context
 class BackgroundNotificationImpl(context: Context) : AbsNotificationImpl() {
 
     override val channelId = NOTIFICATION_CHANNEL_ID_BACKGROUND
-    override val channelName = context.getString(R.string.background_notification_name)
+    override val channelName = context.getString(R.string.notification_background_name)
     override val importance = NotificationManager.IMPORTANCE_HIGH
 
 

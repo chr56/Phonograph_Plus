@@ -69,7 +69,7 @@ private fun MainContent(dismiss: () -> Unit) {
             }
         ) {
             Spacer(Modifier.height(12.dp))
-            title(stringResource(R.string.title_database_maintenance))
+            title(stringResource(R.string.label_database_maintenance))
             Spacer(Modifier.height(12.dp))
             Column(Modifier.padding(horizontal = 12.dp)) {
                 OptionItemRefresh(coroutineScope, context)
@@ -84,7 +84,7 @@ private fun MainContent(dismiss: () -> Unit) {
 private fun OptionItemRefresh(coroutineScope: CoroutineScope, context: Context) {
     Option(
         stringResource(R.string.action_refresh_database),
-        stringResource(R.string.description_refresh_database)
+        stringResource(R.string.tips_refresh_database)
     ) {
         coroutineScope.launch(Dispatchers.IO) {
             DatabaseUtil.checkAndRefresh(context.applicationContext, MusicDatabase.koinInstance)
@@ -101,7 +101,7 @@ private fun OptionItemDelete(
 ) {
     Option(
         stringResource(R.string.action_delete_database),
-        stringResource(R.string.description_delete_database),
+        stringResource(R.string.tips_delete_database),
         requireConfirm = true
     ) {
         coroutineScope.launch(Dispatchers.IO) {
@@ -131,7 +131,7 @@ private fun Option(name: String, description: String, requireConfirm: Boolean = 
         Text(description, style = MaterialTheme.typography.body2)
         if (requireConfirm) {
             Text(
-                stringResource(R.string.hint_long_press_to_proceed),
+                stringResource(R.string.tips_long_press_to_proceed),
                 style = MaterialTheme.typography.body2, color = if (hint) Color.Red else Color.LightGray
             )
         }

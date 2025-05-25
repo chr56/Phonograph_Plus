@@ -78,8 +78,8 @@ class PlayingNotificationManager : ServiceComponent {
         if (channel == null) {
             notificationManager.createNotificationChannel(
                 NotificationChannelCompat.Builder(NOTIFICATION_CHANNEL_ID, NotificationManagerCompat.IMPORTANCE_LOW)
-                    .setName(musicService.getString(R.string.playing_notification_name))
-                    .setDescription(musicService.getString(R.string.playing_notification_description))
+                    .setName(musicService.getString(R.string.notification_playing_name))
+                    .setDescription(musicService.getString(R.string.notification_playing_description))
                     .setLightsEnabled(false)
                     .setVibrationEnabled(false)
                     .build()
@@ -310,7 +310,7 @@ class PlayingNotificationManager : ServiceComponent {
         ): NotificationCompat.Builder =
             prepareNotification(
                 builder = notificationBuilder(service),
-                title = service.getString(R.string.empty),
+                title = service.getString(R.string.msg_empty),
                 content = null,
                 subText = null,
                 config = config,
@@ -401,7 +401,7 @@ class PlayingNotificationManager : ServiceComponent {
         override fun empty(status: MusicServiceStatus, config: NotificationActionsConfig) {
             common(
                 notificationBuilder = notificationBuilder(service),
-                title = service.getString(R.string.empty), text1 = null, text2 = null,
+                title = service.getString(R.string.msg_empty), text1 = null, text2 = null,
                 backgroundColor = Color.LTGRAY,
                 song = null, status = status,
                 config = config

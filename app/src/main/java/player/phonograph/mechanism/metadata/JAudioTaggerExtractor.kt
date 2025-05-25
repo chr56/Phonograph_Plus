@@ -55,7 +55,7 @@ object JAudioTaggerExtractor : MetadataExtractor {
         val songFile = File(song.data)
         if (!songFile.exists()) {
             Handler(Looper.getMainLooper()).post {
-                Toast.makeText(context, context.getString(R.string.file_not_found, songFile.path), Toast.LENGTH_SHORT)
+                Toast.makeText(context, context.getString(R.string.err_file_not_found, songFile.path), Toast.LENGTH_SHORT)
                     .show()
             }
             return null

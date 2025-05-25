@@ -19,7 +19,7 @@ import android.content.Intent
 class ErrorNotificationImpl(context: Context, private val crashActivity: Class<out Activity>) : AbsNotificationImpl() {
 
     override val channelId: String = NOTIFICATION_CHANNEL_ID_ERROR
-    override val channelName: CharSequence = context.getString(R.string.error_notification_name)
+    override val channelName: CharSequence = context.getString(R.string.notification_error_name)
     override val importance: Int = NotificationManager.IMPORTANCE_HIGH
 
     fun send(
@@ -50,11 +50,11 @@ class ErrorNotificationImpl(context: Context, private val crashActivity: Class<o
                     .setCategory(NotificationCompat.CATEGORY_ERROR)
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
                     .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
-                    .setContentTitle(context.getString(R.string.error_notification_name))
+                    .setContentTitle(context.getString(R.string.notification_error_name))
                     .setContentText(note)
                     .setStyle(
                         NotificationCompat.BigTextStyle()
-                            .setBigContentTitle(context.getString(R.string.error_notification_name))
+                            .setBigContentTitle(context.getString(R.string.notification_error_name))
                             .setSummaryText(title).bigText(note)
                     )
                     .setContentIntent(clickIntent).setAutoCancel(true)

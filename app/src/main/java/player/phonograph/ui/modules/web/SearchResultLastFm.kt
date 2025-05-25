@@ -49,7 +49,7 @@ fun LastFmSearchResult(
             }
         } else {
             Text(
-                stringResource(R.string.no_results),
+                stringResource(R.string.msg_no_results),
                 modifier = Modifier
                     .align(Alignment.TopCenter)
                     .padding(vertical = 8.dp)

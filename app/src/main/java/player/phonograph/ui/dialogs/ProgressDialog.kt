@@ -23,8 +23,8 @@ class ProgressDialog : DialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        title = arguments?.getString(KEY_TITLE) ?: getString(R.string.process)
-        currentTextState = MutableStateFlow(getString(R.string.process))
+        title = arguments?.getString(KEY_TITLE) ?: getString(R.string.state_process)
+        currentTextState = MutableStateFlow(getString(R.string.state_process))
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

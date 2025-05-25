@@ -90,7 +90,7 @@ fun PhonographPreferenceScreen(
                 PAGE_NOTIFICATION -> PreferenceScreenNotification()
                 PAGE_ADVANCED     -> PreferenceScreenAdvanced()
                 PAGE_UPDATES      -> PreferenceScreenUpdates()
-                else              -> Text(text = stringResource(R.string.empty))
+                else              -> Text(text = stringResource(R.string.msg_empty))
             }
         }
 
@@ -190,7 +190,7 @@ fun <T> dependOn(key: PreferenceKey<T>, predicate: (T) -> Boolean): Boolean {
 
 fun resetPreference(context: Context, @StringRes what: Int, vararg keys: PreferenceKey<*>) {
     AlertDialog.Builder(context)
-        .setTitle(context.getString(R.string.reset_action))
+        .setTitle(context.getString(R.string.action_reset))
         .setMessage(context.getString(what))
         .setPositiveButton(android.R.string.ok) { _, _ ->
             val targets = keys.map { Setting(context)[it] }

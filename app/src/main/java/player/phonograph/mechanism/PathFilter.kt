@@ -54,7 +54,7 @@ object PathFilter {
                         if (pathText.isNotBlank()) {
                             CoroutineScope(Dispatchers.Main).launch {
                                 MaterialDialog(context)
-                                    .title(R.string.add_blacklist)
+                                    .title(R.string.tips_add_to_blacklist)
                                     .message(text = pathText)
                                     .positiveButton(android.R.string.ok) {
                                         CoroutineScope(Dispatchers.IO).launch(Dispatchers.IO) {

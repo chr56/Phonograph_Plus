@@ -94,8 +94,8 @@ class CreatePlaylistDialogActivity : DialogActivity(),
             spinnerContainer.visibility =
                 if (viewModel.parameter.userAction == Parameter.USER_ACTION_CREATE) View.VISIBLE else View.GONE
             val options = listOf(
-                getString(R.string.file_playlists),
-                getString(R.string.database_playlists),
+                getString(R.string.label_file_playlists),
+                getString(R.string.label_database_playlists),
             )
             val callback: (Int) -> Unit = { position: Int ->
                 when (position) {
@@ -234,7 +234,7 @@ class CreatePlaylistDialogActivity : DialogActivity(),
             }
 
         suspend fun selectFile(context: Context): Uri = withContext(Dispatchers.IO) {
-            val documentUri = makeNewFile(context, name.value ?: context.getString(R.string.new_playlist_title))
+            val documentUri = makeNewFile(context, name.value ?: context.getString(R.string.title_new_playlist))
             _uri.update { documentUri }
             _location.update { documentUriBasePath(documentUri.pathSegments) }
             documentUri
@@ -268,7 +268,7 @@ class CreatePlaylistDialogActivity : DialogActivity(),
         private suspend fun createFromDatabase(context: Context, name: String?, songs: List<Song>) {
             PlaylistManager.create(songs).intoDatabase(
                 context,
-                if (name.isNullOrEmpty()) context.getString(R.string.new_playlist_title) else name
+                if (name.isNullOrEmpty()) context.getString(R.string.title_new_playlist) else name
             )
         }
 
@@ -284,11 +284,11 @@ class CreatePlaylistDialogActivity : DialogActivity(),
 
         private suspend fun createFromMediaStore(context: Context, songs: List<Song>, name: String?) {
             val result = PlaylistManager.create(songs).fromMediaStore(
-                context, if (name.isNullOrEmpty()) context.getString(R.string.new_playlist_title) else name
+                context, if (name.isNullOrEmpty()) context.getString(R.string.title_new_playlist) else name
             )
             val message = when (result) {
                 -1L  -> context.getString(R.string.failed)
-                -2L  -> context.getString(R.string.playlist_exists, name)
+                -2L  -> context.getString(R.string.err_playlist_exists, name)
                 else -> context.getString(R.string.success)
             }
             coroutineToast(context, message)
@@ -322,7 +322,7 @@ class CreatePlaylistDialogActivity : DialogActivity(),
 
             if (failed.isNotEmpty()) {
                 val message = context.getString(
-                    R.string.failed_to_save_playlist,
+                    R.string.err_failed_to_save_playlist,
                     failed.fold("total ${failed.size}: ") { a, b -> "$a, ${b.name}" }
                 )
                 coroutineToast(context, message)
@@ -369,7 +369,7 @@ class CreatePlaylistDialogActivity : DialogActivity(),
                         val songs = intent.parcelableArrayListExtra<Song>(SONGS) ?: emptyList()
                         Parameter(
                             userAction = userAction,
-                            defaultName = resources.getString(R.string.new_playlist_title),
+                            defaultName = resources.getString(R.string.title_new_playlist),
                             songs = songs,
                         )
                     }
@@ -388,7 +388,7 @@ class CreatePlaylistDialogActivity : DialogActivity(),
                         val playlists = intent.parcelableArrayListExtra<Playlist>(PLAYLISTS) ?: emptyList()
                         Parameter(
                             userAction = userAction,
-                            defaultName = resources.getString(R.string.new_playlist_title),
+                            defaultName = resources.getString(R.string.title_new_playlist),
                             playlists = playlists,
                         )
                     }

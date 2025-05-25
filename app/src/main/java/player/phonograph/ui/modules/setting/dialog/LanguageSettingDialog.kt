@@ -30,7 +30,7 @@ class LanguageSettingDialog : DialogFragment() {
         val selected = allLocales.indexOf(current)
 
         val dialog = MaterialAlertDialogBuilder(requireContext())
-            .setTitle(R.string.app_language)
+            .setTitle(R.string.label_app_language)
             .setSingleChoiceItems(allNames, selected) { _, which ->
                 target = allLocales.getOrNull(which) ?: current
             }
@@ -41,7 +41,7 @@ class LanguageSettingDialog : DialogFragment() {
                 )
                 LocalizationStore.Companion.save(requireContext(), target)
             }
-            .setNegativeButton(getString(R.string.reset_action)) { dialog, _ ->
+            .setNegativeButton(getString(R.string.action_reset)) { dialog, _ ->
                 dialog.dismiss()
                 AppCompatDelegate.setApplicationLocales(
                     LocaleListCompat.getEmptyLocaleList()

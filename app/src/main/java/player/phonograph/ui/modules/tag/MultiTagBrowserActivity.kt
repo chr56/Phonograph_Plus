@@ -136,14 +136,14 @@ private fun BatchTagEditor(
                                 IconButton(onClick = { viewModel.saveConfirmationDialogState.show() }) {
                                     Icon(
                                         painterResource(id = R.drawable.ic_save_white_24dp),
-                                        stringResource(R.string.save)
+                                        stringResource(R.string.action_save)
                                     )
                                 }
                             } else {
                                 IconButton(onClick = { viewModel.enterEditMode() }) {
                                     Icon(
                                         painterResource(id = R.drawable.ic_edit_white_24dp),
-                                        stringResource(R.string.edit)
+                                        stringResource(R.string.action_edit)
                                     )
                                 }
                             }

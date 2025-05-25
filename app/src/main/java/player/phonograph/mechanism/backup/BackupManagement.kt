@@ -59,14 +59,14 @@ object Backup {
         when (backupItem) {
             SettingBackup                    -> getString(R.string.action_settings)
             PathFilterBackup                 -> getString(R.string.path_filter)
-            FavoriteBackup                   -> getString(R.string.favorites)
+            FavoriteBackup                   -> getString(R.string.playlist_favorites)
             PlayingQueuesBackup              -> getString(R.string.label_playing_queue)
-            InternalPlaylistsBackup          -> getString(R.string.database_playlists)
-            FavoriteDatabaseBackup           -> "[${getString(R.string.databases)}] ${getString(R.string.favorites)}"
-            PathFilterDatabaseBackup         -> "[${getString(R.string.databases)}] ${getString(R.string.path_filter)}"
-            HistoryDatabaseBackup            -> "[${getString(R.string.databases)}] ${getString(R.string.history)}"
-            SongPlayCountDatabaseBackup      -> "[${getString(R.string.databases)}] ${getString(R.string.my_top_tracks)}"
-            MusicPlaybackStateDatabaseBackup -> "[${getString(R.string.databases)}] ${getString(R.string.label_playing_queue)}"
+            InternalPlaylistsBackup          -> getString(R.string.label_database_playlists)
+            FavoriteDatabaseBackup           -> "[${getString(R.string.label_databases)}] ${getString(R.string.playlist_favorites)}"
+            PathFilterDatabaseBackup         -> "[${getString(R.string.label_databases)}] ${getString(R.string.path_filter)}"
+            HistoryDatabaseBackup            -> "[${getString(R.string.label_databases)}] ${getString(R.string.playlist_history)}"
+            SongPlayCountDatabaseBackup      -> "[${getString(R.string.label_databases)}] ${getString(R.string.playlist_my_top_tracks)}"
+            MusicPlaybackStateDatabaseBackup -> "[${getString(R.string.label_databases)}] ${getString(R.string.label_playing_queue)}"
         }
     }
 

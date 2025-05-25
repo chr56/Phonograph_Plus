@@ -33,11 +33,11 @@ fun playlistTypeName(resources: Resources, @PlaylistType type: Int): CharSequenc
 
 @StringRes
 fun playlistTypeNameRes(@PlaylistType type: Int): Int = when (type) {
-    PLAYLIST_TYPE_FILE         -> R.string.file
-    PLAYLIST_TYPE_FAVORITE     -> R.string.favorites
-    PLAYLIST_TYPE_LAST_ADDED   -> R.string.last_added
-    PLAYLIST_TYPE_HISTORY      -> R.string.history
-    PLAYLIST_TYPE_MY_TOP_TRACK -> R.string.my_top_tracks
+    PLAYLIST_TYPE_FILE         -> R.string.label_file
+    PLAYLIST_TYPE_FAVORITE     -> R.string.playlist_favorites
+    PLAYLIST_TYPE_LAST_ADDED   -> R.string.playlist_last_added
+    PLAYLIST_TYPE_HISTORY      -> R.string.playlist_history
+    PLAYLIST_TYPE_MY_TOP_TRACK -> R.string.playlist_my_top_tracks
     PLAYLIST_TYPE_RANDOM       -> R.string.action_shuffle_all
-    else                       -> R.string.playlists
+    else                       -> R.string.label_playlists
 }

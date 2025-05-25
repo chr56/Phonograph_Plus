@@ -175,7 +175,7 @@ class TagBrowserActivityViewModel : AbsMetadataViewModel() {
         } else {
             navigateToStorageSetting(context)
             Toast.makeText(
-                context, R.string.permission_manage_external_storage_denied, Toast.LENGTH_SHORT
+                context, R.string.err_permission_manage_external_storage_denied, Toast.LENGTH_SHORT
             ).show()
         }
     }

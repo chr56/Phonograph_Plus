@@ -60,7 +60,7 @@ class QueueSnapshotsDialog : ComposeViewDialogFragment() {
                     ) { dismiss() }
                 }
             ) {
-                title(res = R.string.playing_queue_history)
+                title(res = R.string.label_playing_queue_history)
                 customView {
                     QueueSnapshotsDialogContent(
                         requireContext(),
@@ -102,7 +102,7 @@ private fun QueueSnapshotsDialogContent(
                     .fillMaxWidth()
                     .wrapContentHeight()
             ) {
-                Text(text = context.getString(R.string.empty), Modifier.align(Alignment.Center))
+                Text(text = context.getString(R.string.msg_empty), Modifier.align(Alignment.Center))
             }
         }
     }

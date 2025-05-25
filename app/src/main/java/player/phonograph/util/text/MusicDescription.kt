@@ -53,9 +53,9 @@ fun Genre.infoString(context: Context): String =
 
 
 fun songCountString(context: Context, songCount: Int): String =
-    "$songCount ${if (songCount == 1) context.resources.getString(R.string.song) else context.resources.getString(R.string.songs)}"
+    "$songCount ${if (songCount == 1) context.resources.getString(R.string.label_song) else context.resources.getString(R.string.label_songs)}"
 
 fun albumCountString(context: Context, albumCount: Int): String =
-    "$albumCount ${if (albumCount == 1) context.resources.getString(R.string.album) else context.resources.getString(R.string.albums)}"
+    "$albumCount ${if (albumCount == 1) context.resources.getString(R.string.label_album) else context.resources.getString(R.string.label_albums)}"
 
 fun readableYear(year: Int): String = if (year > 0) year.toString() else "-"

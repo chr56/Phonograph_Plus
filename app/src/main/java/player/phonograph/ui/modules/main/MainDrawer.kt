@@ -96,7 +96,7 @@ fun setupDrawerMenu(
                 groupId = groupIds[1]
                 itemId = R.id.action_theme_toggle
                 icon = getTintedDrawable(R.drawable.ic_theme_switch_white_24dp, textColorPrimary)
-                titleRes(R.string.theme_switch)
+                titleRes(R.string.action_theme_switch)
                 onClick {
                     Handler(Looper.getMainLooper()).postDelayed(
                         {
@@ -126,7 +126,7 @@ fun setupDrawerMenu(
             groupId = groupIds[2]
             itemId = R.id.action_scan
             icon = getTintedDrawable(R.drawable.ic_scan_white_24dp, textColorPrimary)
-            titleRes(R.string.scan_media)
+            titleRes(R.string.action_scan_media)
             onClick {
                 closeDrawer()
                 Handler(Looper.getMainLooper()).postDelayed(
@@ -172,28 +172,28 @@ fun setupDrawerMenu(
         menuItem {
             groupId = groupIds[3]
             icon = getTintedDrawable(R.drawable.ic_more_vert_white_24dp, textColorPrimary)
-            titleRes(R.string.more_actions)
+            titleRes(R.string.action_more)
             onClick {
                 val items = listOf(
-                    activity.getString(R.string.title_database_maintenance) to {
+                    activity.getString(R.string.label_database_maintenance) to {
                         DatabaseMaintenanceDialog.create().show(activity.supportFragmentManager, "DATABASE_MAINTENANCE")
                     },
                     activity.getString(R.string.action_grant_storage_permission) to {
                         navigateToStorageSetting(activity)
                     },
-                    activity.getString(R.string.app_info) to {
+                    activity.getString(R.string.label_app_info) to {
                         navigateToAppDetailSetting(activity)
                     },
                     activity.getString(R.string.action_reboot) to {
                         Reboot.reboot(activity)
                     },
-                    activity.getString(R.string.search_online) to {
+                    activity.getString(R.string.action_search_online) to {
                         activity.startActivity(WebSearchLauncher.launchIntent(activity))
                     },
                     context.getString(R.string.action_view_external_files) to {
                         viewFiles(activity)
                     },
-                    context.getString(R.string.exit) to {
+                    context.getString(R.string.action_exit) to {
                         val pendingIntent = PendingIntent.getService(
                             context, 0,
                             Intent(ACTION_EXIT_OR_STOP).apply {
@@ -207,7 +207,7 @@ fun setupDrawerMenu(
                     },
                 )
                 MaterialAlertDialogBuilder(activity)
-                    .setTitle(R.string.more_actions)
+                    .setTitle(R.string.action_more)
                     .setItems(items.map { it.first }.toTypedArray()) { dialog, index ->
                         dialog.dismiss()
                         items[index].second.invoke()
@@ -280,11 +280,11 @@ private suspend fun scanMedia(
         val paths = FileScanner.listPaths(
             DirectoryInfo(File(path), FileScanner.audioFileFilter)
         )
-        coroutineToast(context.applicationContext, R.string.scan_media)
+        coroutineToast(context.applicationContext, R.string.action_scan_media)
         if (!paths.isNullOrEmpty()) {
             mediaStoreScanner.scan(paths)
         } else {
-            coroutineToast(context.applicationContext, R.string.nothing_to_scan)
+            coroutineToast(context.applicationContext, R.string.msg_nothing_to_scan)
         }
     } catch (e: Exception) {
         reportError(e, "ScanMedia", context.getString(R.string.failed))

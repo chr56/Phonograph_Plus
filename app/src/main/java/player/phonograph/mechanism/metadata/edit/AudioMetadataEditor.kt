@@ -29,7 +29,7 @@ abstract class AudioMetadataEditor(
             // notify user first
             BackgroundNotification.post(
                 App.instance.getString(R.string.action_tag_editor),
-                App.instance.getString(R.string.saving_changes),
+                App.instance.getString(R.string.state_saving_changes),
                 TAG_EDITOR_NOTIFICATION_CODE
             )
             // process

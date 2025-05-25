@@ -101,7 +101,7 @@ class SettingsActivity : ComposeActivity(),
                                 actions = {
                                     IconButton(
                                         content = {
-                                            Icon(Icons.Default.MoreVert, stringResource(id = R.string.more_actions))
+                                            Icon(Icons.Default.MoreVert, stringResource(id = R.string.action_more))
                                         },
                                         onClick = {
                                             dropMenuState.value = true
@@ -143,12 +143,12 @@ class SettingsActivity : ComposeActivity(),
 
     @Composable
     private fun menuItemClearAll(context: Context): Pair<String, Function0<Unit>> =
-        stringResource(id = R.string.clear_all_preference) to {
+        stringResource(id = R.string.action_clear_all_preference) to {
             MaterialDialog(context).show {
-                title(R.string.clear_all_preference)
-                message(R.string.clear_all_preference_msg)
+                title(R.string.action_clear_all_preference)
+                message(R.string.warning_clear_all_preference_msg)
                 negativeButton(android.R.string.cancel)
-                positiveButton(R.string.clear_all_preference) { dialog ->
+                positiveButton(R.string.action_clear_all_preference) { dialog ->
                     dialog.dismiss()
                     runBlocking {
                         if (Setting(context).clearAll()) {
@@ -166,7 +166,7 @@ class SettingsActivity : ComposeActivity(),
 
     @Composable
     private fun menuItemImport(context: Context): Pair<String, Function0<Unit>> =
-        stringResource(id = R.string.action_import).format(stringResource(id = R.string.action_backup)) to {
+        stringResource(id = R.string.action_import).format(stringResource(id = R.string.label_backup)) to {
             openFileStorageAccessDelegate.launch(
                 OpenDocumentContract.Config(arrayOf("*/*"))
             ) { uri ->
@@ -186,13 +186,13 @@ class SettingsActivity : ComposeActivity(),
 
     @Composable
     private fun menuItemExport(): Pair<String, Function0<Unit>> =
-        stringResource(id = R.string.action_export).format(stringResource(id = R.string.action_backup)) to {
+        stringResource(id = R.string.action_export).format(stringResource(id = R.string.label_backup)) to {
             BackupExportDialog().show(supportFragmentManager, "EXPORT")
         }
 
     @Composable
     private fun menuItemDeleteDatabase(): Pair<String, Function0<Unit>> =
-        stringResource(R.string.title_database_maintenance) to {
+        stringResource(R.string.label_database_maintenance) to {
             DatabaseMaintenanceDialog.create().show(supportFragmentManager, "DATABASE_MAINTENANCE")
         }
 

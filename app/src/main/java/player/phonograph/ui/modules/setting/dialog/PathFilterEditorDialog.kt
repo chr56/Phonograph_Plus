@@ -135,7 +135,7 @@ abstract class PathFilterEditorDialog : ComposeViewDialogFragment() {
                 if (it != null) {
                     onSelect(it)
                 } else {
-                    Toast.makeText(context, R.string.empty, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, R.string.msg_empty, Toast.LENGTH_SHORT).show()
                 }
             }
         } else {

@@ -111,7 +111,7 @@ private fun BoxScope.Icon(
 private fun Menu(onMenuClick: () -> Unit) {
     Icon(
         Icons.Outlined.MoreVert,
-        stringResource(R.string.more_actions),
+        stringResource(R.string.action_more),
         Modifier
             .fillMaxSize(0.7f)
             .clickable(onClick = onMenuClick)

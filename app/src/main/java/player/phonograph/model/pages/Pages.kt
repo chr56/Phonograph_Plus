@@ -19,14 +19,14 @@ object Pages {
 
     fun getDisplayName(pager: String?, context: Context): String {
         return when (pager) {
-            SONG     -> context.getString(R.string.songs)
-            ALBUM    -> context.getString(R.string.albums)
-            ARTIST   -> context.getString(R.string.artists)
-            PLAYLIST -> context.getString(R.string.playlists)
-            GENRE    -> context.getString(R.string.genres)
-            FOLDER   -> context.getString(R.string.folders)
-            FILES    -> context.getString(R.string.files)
-            EMPTY    -> context.getString(R.string.empty)
+            SONG     -> context.getString(R.string.label_songs)
+            ALBUM    -> context.getString(R.string.label_albums)
+            ARTIST   -> context.getString(R.string.label_artists)
+            PLAYLIST -> context.getString(R.string.label_playlists)
+            GENRE    -> context.getString(R.string.label_genres)
+            FOLDER   -> context.getString(R.string.label_folders)
+            FILES    -> context.getString(R.string.label_files)
+            EMPTY    -> context.getString(R.string.msg_empty)
             else     -> "UNKNOWN"
         }
     }

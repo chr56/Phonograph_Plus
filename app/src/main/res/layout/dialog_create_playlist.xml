@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:paddingHorizontal="8dp"
         android:paddingVertical="8dp"
-        android:text="@string/new_playlist_title"
+        android:text="@string/title_new_playlist"
         app:layout_constraintBottom_toTopOf="@id/spinner_container"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -37,7 +37,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingHorizontal="8dp"
-            android:text="@string/type"
+            android:text="@string/label_type"
             android:textSize="12sp" />
 
         <androidx.appcompat.widget.AppCompatSpinner
@@ -52,7 +52,7 @@
         android:id="@+id/name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/playlist_name_empty"
+        android:hint="@string/tips_playlist_name_placeholder"
         android:paddingVertical="8dp"
         app:endIconMode="clear_text"
         app:layout_constraintBottom_toTopOf="@id/location"
@@ -108,7 +108,7 @@
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/create_action"
+        android:text="@string/action_create"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/location"
         app:layout_constraintTop_toBottomOf="@+id/checkBox_saf" />

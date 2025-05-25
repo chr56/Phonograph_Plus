@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="karim_abou_zeid" translatable="false">Karim Abou Zeid</string>
-    <string name="aidan_follestad" translatable="false">Aidan Follestad</string>
-    <string name="maarten_corpel" translatable="false">Maarten Corpel</string>
-    <string name="michael_cook_cookicons" translatable="false">Michael Cook (Cookicons)</string>
-    <string name="aleksandar_tesic" translatable="false">Aleksandar Tešić</string>
-    <string name="eugene_cheung" translatable="false">Eugene Cheung</string>
-    <string name="adrian" translatable="false">Adrian</string>
+    <string name="person_karim_abou_zeid" translatable="false">Karim Abou Zeid</string>
+    <string name="person_aidan_follestad" translatable="false">Aidan Follestad</string>
+    <string name="person_maarten_corpel" translatable="false">Maarten Corpel</string>
+    <string name="person_michael_cook_cookicons" translatable="false">Michael Cook (Cookicons)</string>
+    <string name="person_aleksandar_tesic" translatable="false">Aleksandar Tešić</string>
+    <string name="person_eugene_cheung" translatable="false">Eugene Cheung</string>
+    <string name="person_adrian" translatable="false">Adrian</string>
 
-    <string name="aachen_germany" translatable="false">Aachen, Germany</string>
+    <string name="address_aachen_germany" translatable="false">Aachen, Germany</string>
 
-    <string name="git_hub" translatable="false">GitHub</string>
-    <string name="twitter" translatable="false">Twitter</string>
+    <string name="label_github" translatable="false">GitHub</string>
+    <string name="label_twitter" translatable="false">Twitter</string>
 
-    <string name="license_dialog_style" translatable="false">
+    <string name="css_style_license_dialog" translatable="false">
         body {
             background-color: #{bg-color};
             color: #{text-color};

@@ -74,7 +74,7 @@ class StarterActivity : AppCompatActivity() {
     private fun processFrontGroundMode(intent: Intent) {
         val playRequest = runBlocking { lookupSongsFromIntent(intent) }
         if (playRequest is PlayRequest.EmptyRequest) {
-            Toast.makeText(this, R.string.empty, Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, R.string.msg_empty, Toast.LENGTH_SHORT).show()
             finish()
         } else {
             val showPrompt: Boolean = Setting(this.applicationContext)[Keys.externalPlayRequestShowPrompt].data
@@ -217,7 +217,7 @@ class StarterActivity : AppCompatActivity() {
                 Intent(this, MusicService::class.java).apply { action = ACTION_PLAY }
             )
         } else {
-            Toast.makeText(this, R.string.playlist_empty_text, Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, R.string.msg_empty_playlist, Toast.LENGTH_SHORT).show()
         }
     }
 

@@ -14,7 +14,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
         android:focusable="false"
-        android:text="@string/action_speed"
+        android:text="@string/label_speed"
         app:layout_constraintBottom_toTopOf="@id/speed_seeker"
         app:layout_constraintEnd_toStartOf="@id/speed"
         app:layout_constraintStart_toStartOf="@+id/speed_seeker"

@@ -13,7 +13,6 @@ import player.phonograph.ui.compose.components.Title
 import player.phonograph.ui.modules.tag.components.MetadataDifferenceItem
 import player.phonograph.util.theme.accentColoredButtonStyle
 import androidx.activity.compose.LocalActivity
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
@@ -50,7 +49,7 @@ fun <VM : AbsMetadataViewModel> BrowserScreenFrame(
         if (fileListSection != null) {
             Column(modifier = Modifier.padding(horizontal = 16.dp)) {
                 Spacer(modifier = Modifier.height(16.dp))
-                Title(stringResource(R.string.files), color = MaterialTheme.colors.primary)
+                Title(stringResource(R.string.label_files), color = MaterialTheme.colors.primary)
                 fileListSection(this)
                 Spacer(modifier = Modifier.height(16.dp))
             }
@@ -92,11 +91,11 @@ fun SaveConfirmationDialog(
         elevation = 0.dp,
         autoDismiss = false,
         buttons = {
-            button(res = R.string.save, onClick = save, textStyle = accentColoredButtonStyle())
+            button(res = R.string.action_save, onClick = save, textStyle = accentColoredButtonStyle())
             button(res = android.R.string.cancel, onClick = dismiss, textStyle = accentColoredButtonStyle())
         }
     ) {
-        title(res = R.string.save)
+        title(res = R.string.action_save)
         customView {
             MetadataDifferenceScreen(changes = changes())
         }
@@ -107,7 +106,7 @@ fun SaveConfirmationDialog(
 @Composable
 private fun MetadataDifferenceScreen(changes: MetadataChanges) {
     if (changes.changes.isEmpty()) {
-        Text(text = stringResource(id = R.string.no_changes))
+        Text(text = stringResource(id = R.string.msg_no_changes))
     } else {
         LazyColumn(Modifier.padding(8.dp)) {
             for (change in changes.changes) {
@@ -141,6 +140,6 @@ private fun ExitWithoutSavingDialog(
             }
         }
     ) {
-        title(res = R.string.exit_without_saving)
+        title(res = R.string.action_exit_without_saving)
     }
 }

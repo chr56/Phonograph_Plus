@@ -109,7 +109,7 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
         }
 
         private fun isFavoritePlaylist(context: Context, playlist: Playlist): Boolean {
-            return playlist.name == context.getString(R.string.favorites)
+            return playlist.name == context.getString(R.string.playlist_favorites)
         }
 
         companion object {

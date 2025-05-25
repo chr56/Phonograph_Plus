@@ -56,7 +56,7 @@ suspend fun appendToPlaylistViaSAF(
         }
     } catch (e: IOException) {
         warning(TAG, "Failed write playlist via uri: $uri (from file $playlistPath)")
-        coroutineToast(context, context.getString(R.string.failed_to_save_playlist, playlistPath))
+        coroutineToast(context, context.getString(R.string.err_failed_to_save_playlist, playlistPath))
     }
 }
 

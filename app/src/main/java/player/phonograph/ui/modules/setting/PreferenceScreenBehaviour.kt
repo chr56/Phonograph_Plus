@@ -97,8 +97,8 @@ private fun EqualizerSetting() {
     }
 
     ExternalPreference(
-        titleRes = R.string.equalizer,
-        summaryRes = if (hasEqualizer) R.string.no_equalizer else 0
+        titleRes = R.string.label_equalizer,
+        summaryRes = if (hasEqualizer) R.string.err_no_equalizer else 0
     ) {
         if (activity != null) {
             NavigationUtil.openEqualizer(activity)

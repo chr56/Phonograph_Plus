@@ -116,14 +116,14 @@ fun EditableTagItem(
                     }
                     Icon(
                         Icons.Default.ArrowDropDown,
-                        contentDescription = stringResource(id = R.string.more_actions),
+                        contentDescription = stringResource(id = R.string.action_more),
                         modifier = Modifier
                             .padding(8.dp)
                             .clickable { showDropdownMenu = !showDropdownMenu }
                     )
                     Icon(
                         Icons.Default.Close,
-                        contentDescription = stringResource(id = R.string.delete_action),
+                        contentDescription = stringResource(id = R.string.action_delete),
                         modifier = Modifier
                             .padding(8.dp)
                             .clickable {
@@ -152,13 +152,13 @@ fun EditableTagItem(
                         Modifier.weight(5f)
                     )
                     Icon(
-                        Icons.Default.Add, stringResource(R.string.add_action),
+                        Icons.Default.Add, stringResource(R.string.action_add),
                         modifier = Modifier
                             .clickable { onClick("$currentValue ; $alternative") }
                             .weight(1f)
                     )
                     Icon(
-                        Icons.Default.Check, stringResource(R.string.save),
+                        Icons.Default.Check, stringResource(R.string.action_save),
                         modifier =
                         Modifier
                             .clickable { onClick(alternative) }
@@ -168,7 +168,7 @@ fun EditableTagItem(
                 }
             }
             DropdownMenuItem(onClick = { onClick(originalValue) }) {
-                Text(text = " [${stringResource(id = R.string.reset_action)}] ")
+                Text(text = " [${stringResource(id = R.string.action_reset)}] ")
             }
         }
     }

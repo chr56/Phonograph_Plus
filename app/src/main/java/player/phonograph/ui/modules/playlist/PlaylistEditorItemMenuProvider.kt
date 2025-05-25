@@ -49,7 +49,7 @@ class PlaylistEditorItemMenuProvider(
             }
         }
         menuItem {
-            titleRes(R.string.move_to_top)
+            titleRes(R.string.action_move_to_top)
             onClick {
                 activity.lifecycleScope.launch(Dispatchers.IO) {
                     adapter.moveSong(bindingAdapterPosition, 0)
@@ -58,7 +58,7 @@ class PlaylistEditorItemMenuProvider(
             }
         }
         menuItem {
-            titleRes(R.string.move_up)
+            titleRes(R.string.action_move_up)
             onClick {
                 if (bindingAdapterPosition != 0) {
                     activity.lifecycleScope.launch(Dispatchers.IO) {
@@ -69,7 +69,7 @@ class PlaylistEditorItemMenuProvider(
             }
         }
         menuItem {
-            titleRes(R.string.move_down)
+            titleRes(R.string.action_move_down)
             onClick {
                 if (bindingAdapterPosition != adapter.size() - 1) {
                     activity.lifecycleScope.launch(Dispatchers.IO) {
@@ -80,7 +80,7 @@ class PlaylistEditorItemMenuProvider(
             }
         }
         menuItem {
-            titleRes(R.string.move_to_bottom)
+            titleRes(R.string.action_move_to_bottom)
             onClick {
                 activity.lifecycleScope.launch(Dispatchers.IO) {
                     adapter.moveSong(bindingAdapterPosition, adapter.size() - 1)
@@ -98,7 +98,7 @@ class PlaylistEditorItemMenuProvider(
         }
 
         submenu(
-            context.getString(R.string.more_actions)
+            context.getString(R.string.action_more)
         ) {
             menuItem {
                 titleRes(R.string.action_tag_editor)

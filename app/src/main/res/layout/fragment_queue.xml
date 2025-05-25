@@ -28,7 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/player_queue_sub_header_height"
             android:gravity="center_vertical"
-            android:text="@string/up_next"
+            android:text="@string/title_up_next"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:textColor="?android:textColorSecondary" />
     </androidx.appcompat.widget.Toolbar>

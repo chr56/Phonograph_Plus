@@ -39,7 +39,7 @@ fun MultiTagBrowserScreen(viewModel: MultiTagBrowserActivityViewModel) {
         ArtworkSection(viewModel)
     }) {
         Spacer(modifier = Modifier.height(16.dp))
-        Title(stringResource(R.string.music_tags), color = MaterialTheme.colors.primary)
+        Title(stringResource(R.string.label_music_tags), color = MaterialTheme.colors.primary)
         GenericTagItems(viewModel)
     }
 }
@@ -80,7 +80,7 @@ private fun GenericTagItem(
             val options = allValues.orEmpty()
             EditableTagItem(key, tagName, value, options, onEdit = { onEdit(context, it) })
         } else {
-            val value = allValues?.toSet()?.joinToString("\n") ?: stringResource(R.string.empty)
+            val value = allValues?.toSet()?.joinToString("\n") ?: stringResource(R.string.msg_empty)
             ReadonlyTagItem(tagName, value)
         }
     }
@@ -97,7 +97,7 @@ private fun ArtworkSection(viewModel: MultiTagBrowserActivityViewModel) {
     val editable by viewModel.editable.collectAsState()
     ArtworkSection(viewModel, false, editable, viewModel.state.hashCode().toString()) {
         Text(
-            text = stringResource(R.string.update_image),
+            text = stringResource(R.string.action_update_image),
             modifier = Modifier
                 .padding(horizontal = 24.dp, vertical = 8.dp)
                 .fillMaxWidth(),

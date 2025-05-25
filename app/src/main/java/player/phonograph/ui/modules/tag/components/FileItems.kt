@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun FileItems(songs: List<Song>) {
     CascadeVerticalItem(
-        stringResource(R.string.files),
+        stringResource(R.string.label_files),
         collapsible = true,
         collapsed = false
     ) {
@@ -49,7 +49,7 @@ fun FileItems(songs: List<Song>) {
                 }
                 Column {
                     VerticalTextItem(
-                        stringResource(R.string.title),
+                        stringResource(R.string.label_title),
                         song.title
                     )
                     VerticalTextItem(

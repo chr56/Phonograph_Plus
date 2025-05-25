@@ -43,7 +43,7 @@ object ErrorNotification {
     ) {
         getImpl(context, crashActivity).send(
             context = context,
-            title = App.instance.getString(R.string.internal_error),
+            title = App.instance.getString(R.string.title_internal_error),
             note = note,
             type = type,
         )

@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_margin="24dp"
-            android:contentDescription="@string/copy_to_clipboard"
+            android:contentDescription="@string/action_copy_to_clipboard"
             android:src="@drawable/ic_send_white_24dp" />
     </FrameLayout>
 

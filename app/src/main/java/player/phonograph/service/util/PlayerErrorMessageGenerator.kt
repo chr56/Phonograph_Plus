@@ -4,7 +4,6 @@
 
 package player.phonograph.service.util
 
-import lib.storage.basePathOf
 import lib.storage.textparser.ExternalFilePathParser
 import player.phonograph.R
 import android.content.res.Resources
@@ -36,14 +35,14 @@ internal fun makeErrorMessage(resources: Resources, what: Int, extra: Int, path:
 
 internal fun makeErrorMessage(resources: Resources, path: String, exist: Boolean) =
     "${makeErrorMessage(resources, path)} (${
-        if (!exist) resources.getString(R.string.deleted) else resources.getString(
-            R.string.permissions_denied
+        if (!exist) resources.getString(R.string.state_deleted) else resources.getString(
+            R.string.err_permissions_denied
         )
     })"
 
 @Suppress("NAME_SHADOWING")
 private fun makeErrorMessage(resources: Resources, path: String): String {
-    val head = resources.getString(R.string.unplayable_file)
+    val head = resources.getString(R.string.err_unplayable_file)
     val path = try {
         ExternalFilePathParser.bashPath(path)
     } catch (e: Exception) {

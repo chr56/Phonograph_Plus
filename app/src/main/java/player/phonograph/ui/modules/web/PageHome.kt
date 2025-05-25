@@ -16,7 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
-object PageHome : Page(R.string.home)
+object PageHome : Page(R.string.label_home)
 
 @Composable
 @Suppress("UNUSED_PARAMETER")

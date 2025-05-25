@@ -58,7 +58,7 @@ class NowPlayingScreenStylePreferenceDialog : ComposeViewDialogFragment() {
                     ) { dismiss() }
 
                     button(
-                        res = R.string.reset_action,
+                        res = R.string.action_reset,
                         textStyle = accentColoredButtonStyle()
                     ) {
                         lifecycleScope.launch(Dispatchers.IO) { preference.reset() }

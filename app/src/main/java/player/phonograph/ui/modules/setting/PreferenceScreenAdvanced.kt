@@ -36,7 +36,7 @@ fun PreferenceScreenAdvanced() {
             )
             BooleanPreference(
                 key = Keys.useLegacyListFilesImpl,
-                titleRes = R.string.use_legacy_list_Files,
+                titleRes = R.string.option_use_legacy_list_Files,
             )
             BooleanPreference(
                 key = Keys.useLegacyStatusBarLyricsApi,

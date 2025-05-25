@@ -22,7 +22,7 @@ import java.util.Locale
 class UpgradeNotificationImpl(context: Context) : AbsNotificationImpl() {
 
     override val channelId: String = NOTIFICATION_CHANNEL_ID_UPGRADABLE
-    override val channelName: CharSequence = context.getString(R.string.upgrade_notification_name)
+    override val channelName: CharSequence = context.getString(R.string.notification_update_name)
     override val importance: Int = NotificationManager.IMPORTANCE_HIGH
 
     fun sendUpgradeNotification(context: Context, versionCatalog: VersionCatalog, channel: ReleaseChannel) {
@@ -42,7 +42,7 @@ class UpgradeNotificationImpl(context: Context) : AbsNotificationImpl() {
                     .setCategory(NotificationCompat.CATEGORY_RECOMMENDATION)
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
                     .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
-                    .setContentTitle(context.getText(R.string.new_version_available))
+                    .setContentTitle(context.getText(R.string.msg_new_version_available))
                     .setContentText("$title\n$note")
                     .setStyle(
                         NotificationCompat.BigTextStyle()

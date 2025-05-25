@@ -106,14 +106,14 @@ private fun TrailingIcon(
         if (allowReset)
             Icon(
                 Icons.Default.Refresh,
-                contentDescription = stringResource(id = R.string.reset_action),
+                contentDescription = stringResource(id = R.string.action_reset),
                 modifier = Modifier
                     .padding(8.dp)
                     .clickable { onReset() })
         if (allowClear)
             Icon(
                 Icons.Default.Close,
-                contentDescription = stringResource(id = R.string.clear_action),
+                contentDescription = stringResource(id = R.string.action_clear),
                 modifier = Modifier
                     .padding(8.dp)
                     .clickable { onClear() })

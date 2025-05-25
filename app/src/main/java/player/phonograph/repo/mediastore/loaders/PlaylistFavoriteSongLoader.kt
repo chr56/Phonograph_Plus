@@ -54,7 +54,7 @@ class PlaylistFavoriteSongLoader : IFavoriteSongs {
             true
         } else {
             val message =
-                "${context.getString(R.string.failed)}\n${context.getString(R.string.could_not_create_playlist)}"
+                "${context.getString(R.string.failed)}\n${context.getString(R.string.err_could_not_create_playlist)}"
             coroutineToast(context, message)
             false
         }
@@ -84,10 +84,10 @@ class PlaylistFavoriteSongLoader : IFavoriteSongs {
     }
 
     private suspend fun getFavoritesPlaylist(context: Context): Playlist? =
-        MediaStorePlaylists.named(context, context.getString(R.string.favorites))
+        MediaStorePlaylists.named(context, context.getString(R.string.playlist_favorites))
 
     private suspend fun getOrCreateFavoritesPlaylist(context: Context): Playlist? {
-        return createOrFindPlaylistViaMediastore(context, context.getString(R.string.favorites))
+        return createOrFindPlaylistViaMediastore(context, context.getString(R.string.playlist_favorites))
     }
 
 

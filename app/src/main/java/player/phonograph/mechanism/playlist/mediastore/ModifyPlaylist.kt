@@ -106,7 +106,7 @@ suspend fun addToPlaylistViaMediastore(
             coroutineToast(
                 context,
                 context.resources.getString(
-                    R.string.inserted_x_songs_into_playlist_x, numInserted,
+                    R.string.msg_inserted_x_songs_into_playlist_x, numInserted,
                     PlaylistLoader.id(context, playlistId)?.name.orEmpty()
                 ),
             )

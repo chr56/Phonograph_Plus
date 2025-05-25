@@ -175,7 +175,7 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
             ?.filter { it.state == Environment.MEDIA_MOUNTED || it.state == Environment.MEDIA_MOUNTED_READ_ONLY }
             ?: emptyList()
         if (volumes.isEmpty()) {
-            Snackbar.make(binding.root, getString(R.string.no_volume_found), Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(binding.root, getString(R.string.err_no_volume_found), Snackbar.LENGTH_SHORT).show()
             return false
         }
         val volumesNames = volumes.map { "${it.getDescription(context)}\n(${it.rootDirectory()?.path ?: "N/A"})" }
@@ -183,12 +183,12 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
         val currentVolume = volumes.find { it.uuid.orEmpty() == currentLocation.volumeUUID }
         val selected = volumes.indexOf(currentVolume)
         AlertDialog.Builder(requireContext())
-            .setTitle(R.string.storage_volumes)
+            .setTitle(R.string.label_storage_volumes)
             .setSingleChoiceItems(volumesNames.toTypedArray(), selected) { dialog, choice ->
                 dialog.dismiss()
                 val rootDirectory = volumes[choice].rootDirectory()
                 if (rootDirectory == null) {
-                    Toast.makeText(context, R.string.not_available_now, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, R.string.tips_not_available_now, Toast.LENGTH_SHORT).show()
                 } else {
                     onSwitch(Locations.from(rootDirectory, requireContext())) // todo
                 }
@@ -209,7 +209,7 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
             onSwitch(parent)
             true
         } else {
-            Snackbar.make(binding.root, getString(R.string.reached_to_root), Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(binding.root, getString(R.string.tips_reached_to_root), Snackbar.LENGTH_SHORT).show()
             if (!allowToChangeVolume) {
                 false
             } else {

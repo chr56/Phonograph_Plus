@@ -57,11 +57,11 @@ fun TagBrowserScreen(viewModel: TagBrowserActivityViewModel) {
         val metadata = state?.metadata
         if (metadata != null) {
             Spacer(modifier = Modifier.height(16.dp))
-            Title(stringResource(R.string.file), color = MaterialTheme.colors.primary)
+            Title(stringResource(R.string.label_file), color = MaterialTheme.colors.primary)
             AudioProperties(metadata)
 
             Spacer(modifier = Modifier.height(16.dp))
-            Title(stringResource(R.string.music_tags), color = MaterialTheme.colors.primary)
+            Title(stringResource(R.string.label_music_tags), color = MaterialTheme.colors.primary)
             MusicTagItems(viewModel, metadata, editable)
         }
     }
@@ -83,7 +83,7 @@ private fun AudioProperties(metadata: AudioMetadata) {
 @Composable
 private fun MusicTagItems(viewModel: TagBrowserActivityViewModel, metadata: AudioMetadata, editable: Boolean) {
     // Format
-    ReadonlyTagItem(stringResource(R.string.tag_format), metadata.audioMetadataFormat.id)
+    ReadonlyTagItem(stringResource(R.string.label_tag_format), metadata.audioMetadataFormat.id)
     // Generic Tags
     Spacer(modifier = Modifier.height(8.dp))
     GenericTagItems(viewModel, metadata.musicMetadata, editable)
@@ -109,7 +109,7 @@ private fun GenericTagItems(viewModel: TagBrowserActivityViewModel, musicMetadat
 
 @Composable
 private fun RawTagItems(musicMetadata: JAudioTaggerMetadata) {
-    CascadeVerticalItem(stringResource(R.string.raw_tags)) {
+    CascadeVerticalItem(stringResource(R.string.label_raw_tags)) {
         for ((key, field) in musicMetadata.allTagFields) {
             JAudioTaggerTagItem(key, field)
         }

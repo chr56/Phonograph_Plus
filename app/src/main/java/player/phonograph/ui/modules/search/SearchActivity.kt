@@ -138,7 +138,7 @@ class SearchActivity : AbsSlidingMusicPanelActivity(), SearchView.OnQueryTextLis
         val searchItem = menu.findItem(R.id.search)
 
         searchView = searchItem.actionView as SearchView
-        searchView!!.queryHint = getString(R.string.search_hint)
+        searchView!!.queryHint = getString(R.string.tips_search_hint)
         searchView!!.maxWidth = Int.MAX_VALUE
 
         searchItem.expandActionView()

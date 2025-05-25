@@ -34,12 +34,12 @@ object NavigationUtil {
             splitMultiTag(artistName).flatMap { Artists.searchByName(context, it) }.toSet().toList()
         }
         when (artists.size) {
-            0    -> Toast.makeText(context, R.string.empty, Toast.LENGTH_SHORT).show()
+            0    -> Toast.makeText(context, R.string.msg_empty, Toast.LENGTH_SHORT).show()
             1    -> goToArtist(context, artists.first().id, sharedElements)
             else -> {
                 if (context is FragmentActivity) {
                     AlertDialog.Builder(context)
-                        .setTitle(R.string.artists)
+                        .setTitle(R.string.label_artists)
                         .setNegativeButton(android.R.string.cancel) { dialog, _ ->
                             dialog.dismiss()
                         }
@@ -99,7 +99,7 @@ object NavigationUtil {
         if (sessionId == AudioEffect.ERROR_BAD_VALUE) {
             Toast.makeText(
                 activity,
-                activity.resources.getString(R.string.no_audio_ID),
+                activity.resources.getString(R.string.err_no_audio_ID),
                 Toast.LENGTH_LONG
             ).show()
         } else {
@@ -113,7 +113,7 @@ object NavigationUtil {
             } catch (notFound: ActivityNotFoundException) {
                 Toast.makeText(
                     activity,
-                    activity.resources.getString(R.string.no_equalizer),
+                    activity.resources.getString(R.string.err_no_equalizer),
                     Toast.LENGTH_SHORT
                 ).show()
             }

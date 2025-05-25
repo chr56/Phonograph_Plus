@@ -46,7 +46,7 @@ class HomeTabConfigDialog : DialogFragment() {
         Log.v(TAG, adapter.getState())
 
         val dialog = MaterialDialog(requireContext())
-            .title(R.string.library_categories)
+            .title(R.string.label_library_categories)
             .customView(view = view, dialogWrapContent = false)
             .noAutoDismiss()
             .positiveButton(android.R.string.ok) {
@@ -58,13 +58,13 @@ class HomeTabConfigDialog : DialogFragment() {
                 } else {
                     Toast.makeText(
                         it.context,
-                        R.string.you_have_to_select_at_least_one_category,
+                        R.string.tips_select_at_least_one_category,
                         Toast.LENGTH_SHORT
                     ).show()
                 }
             }
             .negativeButton(android.R.string.cancel) { dismiss(); Log.i(TAG, adapter.getState()) }
-            .neutralButton(R.string.reset_action) {
+            .neutralButton(R.string.action_reset) {
                 Setting(requireContext())[Keys.homeTabConfig].data = PagesConfig.DEFAULT_CONFIG
                 Log.v(TAG, adapter.getState())
                 dismiss()
