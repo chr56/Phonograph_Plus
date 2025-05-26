@@ -4,8 +4,8 @@
 package player.phonograph.repo.mediastore.loaders
 
 import player.phonograph.R
-import player.phonograph.mechanism.playlist.PlaylistManager
-import player.phonograph.mechanism.playlist.PlaylistProcessors
+import player.phonograph.mechanism.playlist.PlaylistActions
+import player.phonograph.mechanism.playlist.PlaylistSongsActions
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylistLocation
 import player.phonograph.model.playlist.Playlist
@@ -25,7 +25,7 @@ class PlaylistFavoriteSongLoader : IFavoriteSongs {
     override suspend fun allSongs(context: Context): List<Song> {
         val favoritesPlaylist = getFavoritesPlaylist(context)
         return if (favoritesPlaylist != null) {
-            PlaylistProcessors.reader(favoritesPlaylist).allSongs(context)
+            PlaylistSongsActions.reader(favoritesPlaylist).allSongs(context)
         } else {
             emptyList()
         }
@@ -55,7 +55,7 @@ class PlaylistFavoriteSongLoader : IFavoriteSongs {
     override suspend fun removeFromFavorites(context: Context, song: Song): Boolean {
         val favoritesPlaylist = getFavoritesPlaylist(context)
         return if (favoritesPlaylist != null) {
-            !PlaylistProcessors.writer(favoritesPlaylist)!!.removeSong(context, song, -1)
+            !PlaylistSongsActions.writer(favoritesPlaylist)!!.removeSong(context, song, -1)
         } else {
             true
         }
@@ -69,7 +69,7 @@ class PlaylistFavoriteSongLoader : IFavoriteSongs {
     override suspend fun clearAll(context: Context): Boolean {
         val favoritesPlaylist = getFavoritesPlaylist(context)
         return if (favoritesPlaylist != null) {
-            PlaylistManager.delete(favoritesPlaylist, true).delete(context)
+            PlaylistActions.delete(favoritesPlaylist, true).delete(context)
         } else {
             false
         }

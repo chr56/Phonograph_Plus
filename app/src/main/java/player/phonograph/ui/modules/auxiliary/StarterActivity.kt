@@ -9,7 +9,7 @@ import org.koin.android.ext.android.get
 import player.phonograph.R
 import player.phonograph.mechanism.PhonographShortcutManager
 import player.phonograph.mechanism.SongUriParsers
-import player.phonograph.mechanism.playlist.PlaylistProcessors
+import player.phonograph.mechanism.playlist.PlaylistSongsActions
 import player.phonograph.model.PlayRequest
 import player.phonograph.model.PlayRequest.SongRequest
 import player.phonograph.model.PlayRequest.SongsRequest
@@ -197,7 +197,7 @@ class StarterActivity : AppCompatActivity() {
         }
 
         val songs =
-            runBlocking(Dispatchers.IO) { PlaylistProcessors.reader(playlist).allSongs(this@StarterActivity) }
+            runBlocking(Dispatchers.IO) { PlaylistSongsActions.reader(playlist).allSongs(this@StarterActivity) }
         play(songs, shuffleMode)
 
         if (SDK_INT >= N_MR1) PhonographShortcutManager.reportShortcutUsed(this, type.id)

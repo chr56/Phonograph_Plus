@@ -31,7 +31,7 @@ import android.provider.DocumentsContract
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-object PlaylistManager {
+object PlaylistActions {
 
     fun create(songs: List<Song>): PlaylistCreator = PlaylistCreatorImpl(songs)
 

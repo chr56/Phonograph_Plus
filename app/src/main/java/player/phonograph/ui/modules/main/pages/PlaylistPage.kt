@@ -7,7 +7,7 @@ package player.phonograph.ui.modules.main.pages
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.mechanism.event.EventHub
-import player.phonograph.mechanism.playlist.PlaylistProcessors
+import player.phonograph.mechanism.playlist.PlaylistSongsActions
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.DynamicPlaylists
 import player.phonograph.model.playlist.Playlist
@@ -69,7 +69,7 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
         }
 
         override suspend fun collectAllSongs(context: Context): List<Song> =
-            Playlists.all(context).flatMap { PlaylistProcessors.reader(it).allSongs(context) }
+            Playlists.all(context).flatMap { PlaylistSongsActions.reader(it).allSongs(context) }
 
         override val headerTextRes: Int get() = R.plurals.item_playlists
     }

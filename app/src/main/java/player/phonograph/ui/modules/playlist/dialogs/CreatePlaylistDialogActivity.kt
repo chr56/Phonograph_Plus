@@ -17,8 +17,8 @@ import lib.storage.textparser.DocumentUriPathParser.documentUriBasePath
 import player.phonograph.R
 import player.phonograph.databinding.DialogCreatePlaylistBinding
 import player.phonograph.foundation.error.warning
-import player.phonograph.mechanism.playlist.PlaylistManager
-import player.phonograph.mechanism.playlist.PlaylistProcessors.reader
+import player.phonograph.mechanism.playlist.PlaylistActions
+import player.phonograph.mechanism.playlist.PlaylistSongsActions.reader
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.PlaylistCreator
@@ -267,14 +267,14 @@ class CreatePlaylistDialogActivity : DialogActivity(),
             SAFActivityResultContracts.chooseDirViaSAF(context, path)
 
         private suspend fun createFromDatabase(context: Context, name: String?, songs: List<Song>) {
-            PlaylistManager.create(songs).intoDatabase(
+            PlaylistActions.create(songs).intoDatabase(
                 context,
                 if (name.isNullOrEmpty()) context.getString(R.string.title_new_playlist) else name
             )
         }
 
         private suspend fun createFromSAF(context: Context, songs: List<Song>, uri: Uri) {
-            val result = PlaylistManager.create(songs).fromUri(context, uri)
+            val result = PlaylistActions.create(songs).fromUri(context, uri)
             val message = when (result) {
                 true  -> context.getString(R.string.success)
                 false -> context.getString(R.string.failed)
@@ -284,7 +284,7 @@ class CreatePlaylistDialogActivity : DialogActivity(),
         }
 
         private suspend fun createFromMediaStore(context: Context, songs: List<Song>, name: String?) {
-            val result = PlaylistManager.create(songs).fromMediaStore(
+            val result = PlaylistActions.create(songs).fromMediaStore(
                 context, if (name.isNullOrEmpty()) context.getString(R.string.title_new_playlist) else name
             )
             val message = when (result) {
@@ -316,7 +316,7 @@ class CreatePlaylistDialogActivity : DialogActivity(),
                 }
                 if (childUri != null) {
                     val songs = reader(playlist).allSongs(context)
-                    val result = PlaylistManager.create(songs).fromUri(context, childUri)
+                    val result = PlaylistActions.create(songs).fromUri(context, childUri)
                     if (!result) failed.add(playlist)
                 }
             }
@@ -338,7 +338,7 @@ class CreatePlaylistDialogActivity : DialogActivity(),
             for (playlist in playlists) {
                 val name = "${playlist.name}_$timestamp"
                 val songs = reader(playlist).allSongs(context)
-                val result = PlaylistManager.create(songs).fromMediaStore(context, name)
+                val result = PlaylistActions.create(songs).fromMediaStore(context, name)
                 if (result < 0) failures.add(playlist)
             }
             if (failures.isNotEmpty()) {

@@ -38,7 +38,7 @@ import player.phonograph.util.mediastoreUriPlaylistMembers
 import android.content.Context
 import android.net.Uri
 
-object PlaylistProcessors {
+object PlaylistSongsActions {
 
     fun reader(playlist: Playlist): PlaylistReader = of(playlist) as PlaylistReader
     fun writer(playlist: Playlist, preferSAF: Boolean = true): PlaylistWriter? =

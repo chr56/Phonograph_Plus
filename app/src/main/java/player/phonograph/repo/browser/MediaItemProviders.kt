@@ -6,7 +6,7 @@ package player.phonograph.repo.browser
 
 import org.koin.core.context.GlobalContext
 import player.phonograph.R
-import player.phonograph.mechanism.playlist.PlaylistProcessors
+import player.phonograph.mechanism.playlist.PlaylistSongsActions
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Genre
@@ -357,7 +357,7 @@ object MediaItemProviders {
 
     private class PlaylistProvider(val playlistId: Long) : AbsMediaItemProvider() {
         private suspend fun fetch(context: Context) =
-            PlaylistProcessors.reader(MediaStorePlaylists.id(context, playlistId)!!).allSongs(context)
+            PlaylistSongsActions.reader(MediaStorePlaylists.id(context, playlistId)!!).allSongs(context)
 
         override suspend fun browser(context: Context): List<MediaItem> =
             withPlayAllItems(
