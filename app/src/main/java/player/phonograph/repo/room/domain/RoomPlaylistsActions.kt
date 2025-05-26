@@ -11,34 +11,23 @@ import player.phonograph.repo.room.MusicDatabase
 import player.phonograph.repo.room.entity.PlaylistEntity
 import player.phonograph.repo.room.entity.PlaylistSongEntity
 
-@Suppress("MemberVisibilityCanBePrivate")
-object PlaylistActions {
+object RoomPlaylistsActions {
 
-    fun createPlaylist(
+    fun create(
         database: MusicDatabase,
         name: String,
         songs: Collection<Song>,
     ): Boolean {
-        val id = createPlaylist(database, name)
+        val id = create(database, name)
         return if (id > 0) {
             EventHub.sendEvent(App.instance, EventHub.EVENT_PLAYLISTS_CHANGED)
-            amendPlaylist(database, id, songs) == songs.size
+            amendSongs(database, id, songs) == songs.size
         } else {
             false
         }
     }
 
-    fun containsSongFromPlaylist(
-        database: MusicDatabase,
-        playlistId: Long,
-        song: Song,
-    ): Boolean {
-        val playlistSongDao = database.PlaylistSongDao()
-        return playlistSongDao.count(playlistId, song.id) > 0
-    }
-
-
-    fun createPlaylist(
+    fun create(
         database: MusicDatabase,
         name: String,
         dateAdded: Long = currentTimestamp(),
@@ -48,21 +37,30 @@ object PlaylistActions {
         return playlistDao.insert(PlaylistEntity(name = name, dateAdded = dateAdded, dateModified = dateModified))
     }
 
-    fun renamePlaylist(
+    fun rename(
         database: MusicDatabase,
-        id: Long,
+        playlistId: Long,
         newName: String,
     ): Boolean {
         val playlistDao = database.PlaylistDao()
-        val result = playlistDao.rename(id, newName)
+        val result = playlistDao.rename(playlistId, newName)
         if (result) {
-            playlistDao.modifyDate(id, currentTimestamp())
+            playlistDao.modifyDate(playlistId, currentTimestamp())
             EventHub.sendEvent(App.instance, EventHub.EVENT_PLAYLISTS_CHANGED)
         }
         return result
     }
 
-    fun amendPlaylist(
+    fun containsSong(
+        database: MusicDatabase,
+        playlistId: Long,
+        song: Song,
+    ): Boolean {
+        val playlistSongDao = database.PlaylistSongDao()
+        return playlistSongDao.count(playlistId, song.id) > 0
+    }
+
+    fun amendSongs(
         database: MusicDatabase,
         id: Long,
         songs: Collection<Song>,
@@ -82,7 +80,7 @@ object PlaylistActions {
         return lines
     }
 
-    fun removeSongFromPlaylist(
+    fun removeSong(
         database: MusicDatabase,
         playlistId: Long,
         songId: Long,
@@ -96,7 +94,7 @@ object PlaylistActions {
         return result
     }
 
-    fun swapSongFromPlaylist(
+    fun swapSong(
         database: MusicDatabase,
         playlistId: Long,
         positionA: Int,
@@ -110,7 +108,7 @@ object PlaylistActions {
         return result
     }
 
-    fun moveSongFromPlaylist(
+    fun moveSong(
         database: MusicDatabase,
         playlistId: Long,
         from: Int,
@@ -124,13 +122,12 @@ object PlaylistActions {
         return result
     }
 
-    fun deletePlaylist(
+    fun delete(
         database: MusicDatabase,
-        id: Long,
+        playlistId: Long,
     ): Boolean {
         val playlistDao = database.PlaylistDao()
-
-        val playlistEntity = playlistDao.id(id)
+        val playlistEntity = playlistDao.id(playlistId)
         return if (playlistEntity != null) {
             playlistDao.delete(playlistEntity) == 1
         } else {
@@ -140,17 +137,17 @@ object PlaylistActions {
         }
     }
 
-    fun importPlaylist(
+    fun import(
         database: MusicDatabase,
         name: String,
         songs: Collection<Song>,
         dateAdded: Long,
         dateModified: Long,
     ): Boolean {
-        val id = createPlaylist(database, name, dateAdded = dateAdded, dateModified = dateModified)
+        val id = create(database, name, dateAdded = dateAdded, dateModified = dateModified)
         return if (id > 0) {
             EventHub.sendEvent(App.instance, EventHub.EVENT_PLAYLISTS_CHANGED)
-            amendPlaylist(database, id, songs) == songs.size
+            amendSongs(database, id, songs) == songs.size
         } else {
             false
         }

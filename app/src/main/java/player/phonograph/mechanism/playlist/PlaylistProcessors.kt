@@ -6,11 +6,7 @@ package player.phonograph.mechanism.playlist
 
 import player.phonograph.R
 import player.phonograph.mechanism.event.EventHub
-import player.phonograph.mechanism.playlist.mediastore.addToPlaylistViaMediastore
-import player.phonograph.mechanism.playlist.mediastore.moveItemViaMediastore
-import player.phonograph.mechanism.playlist.mediastore.removeFromPlaylistViaMediastore
-import player.phonograph.mechanism.playlist.mediastore.renamePlaylistViaMediastore
-import player.phonograph.mechanism.playlist.saf.appendToPlaylistViaSAF
+import player.phonograph.mechanism.playlist.m3u.SAFPlaylistUtil
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.DatabasePlaylistLocation
 import player.phonograph.model.playlist.FilePlaylistLocation
@@ -20,6 +16,9 @@ import player.phonograph.model.playlist.PLAYLIST_TYPE_LAST_ADDED
 import player.phonograph.model.playlist.PLAYLIST_TYPE_MY_TOP_TRACK
 import player.phonograph.model.playlist.PLAYLIST_TYPE_RANDOM
 import player.phonograph.model.playlist.Playlist
+import player.phonograph.model.playlist.PlaylistProcessor
+import player.phonograph.model.playlist.PlaylistReader
+import player.phonograph.model.playlist.PlaylistWriter
 import player.phonograph.model.playlist.VirtualPlaylistLocation
 import player.phonograph.repo.database.loaders.RecentlyPlayedTracksLoader
 import player.phonograph.repo.database.loaders.TopTracksLoader
@@ -27,13 +26,17 @@ import player.phonograph.repo.database.store.SongPlayCountStore
 import player.phonograph.repo.loader.FavoriteSongs
 import player.phonograph.repo.loader.Songs
 import player.phonograph.repo.mediastore.MediaStorePlaylists
+import player.phonograph.repo.mediastore.MediaStorePlaylistsActions
 import player.phonograph.repo.room.MusicDatabase
-import player.phonograph.repo.room.domain.PlaylistActions
 import player.phonograph.repo.room.domain.RoomPlaylists
+import player.phonograph.repo.room.domain.RoomPlaylistsActions
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.util.concurrent.coroutineToast
+import player.phonograph.util.mediastoreUriPlaylist
+import player.phonograph.util.mediastoreUriPlaylistMembers
 import android.content.Context
+import android.net.Uri
 
 object PlaylistProcessors {
 
@@ -57,36 +60,10 @@ object PlaylistProcessors {
 
 }
 
-sealed interface PlaylistProcessor
-
-sealed interface PlaylistReader : PlaylistProcessor {
-    suspend fun allSongs(context: Context): List<Song>
-    suspend fun containsSong(context: Context, songId: Long): Boolean
-    suspend fun refresh(context: Context) {}
-}
-
-sealed interface PlaylistWriter : PlaylistProcessor {
-    suspend fun removeSong(context: Context, song: Song, index: Long): Boolean
-    suspend fun removeSongs(context: Context, songs: List<Song>) {
-        for (song in songs) {
-            removeSong(context, song, -1)
-        }
-    }
-
-    //    fun insert(context: Context, song: Song, pos: Int)
-    suspend fun appendSong(context: Context, song: Song)
-    suspend fun appendSongs(context: Context, songs: List<Song>) {
-        for (song in songs) {
-            appendSong(context, song)
-        }
-    }
-
-    suspend fun moveSong(context: Context, from: Int, to: Int): Boolean
-    suspend fun rename(context: Context, newName: String): Boolean = false
-}
-
-
 private sealed class FilePlaylistProcessor(val location: FilePlaylistLocation) : PlaylistReader, PlaylistWriter {
+
+    fun playlistUri(): Uri = mediastoreUriPlaylist(location.storageVolume, location.mediastoreId)
+    fun playlistMembersUri(): Uri = mediastoreUriPlaylistMembers(location.storageVolume, location.mediastoreId)
 
     override suspend fun allSongs(context: Context): List<Song> =
         MediaStorePlaylists.songs(context, location).map { it.song }
@@ -95,36 +72,36 @@ private sealed class FilePlaylistProcessor(val location: FilePlaylistLocation) :
         MediaStorePlaylists.contains(context, location, songId)
 
     override suspend fun removeSong(context: Context, song: Song, index: Long): Boolean =
-        removeFromPlaylistViaMediastore(context, location.storageVolume, location.mediastoreId, song.id, index) > 0
+        MediaStorePlaylistsActions.removeSong(context, playlistMembersUri(), song.id, index)
 
-    override suspend fun moveSong(context: Context, from: Int, to: Int): Boolean {
-        return moveItemViaMediastore(context, location.mediastoreId, from, to)
-    }
+    override suspend fun moveSong(context: Context, from: Int, to: Int): Boolean =
+        MediaStorePlaylistsActions.moveSong(context, playlistUri(), from, to)
 
     override suspend fun rename(context: Context, newName: String): Boolean =
-        renamePlaylistViaMediastore(context, location.storageVolume, location.mediastoreId, newName)
+        MediaStorePlaylistsActions.rename(context, playlistUri(), newName)
 
+    override suspend fun appendSong(context: Context, song: Song) = appendSongImpl(context, listOf(song))
 
-    class MediaStoreImplementation(location: FilePlaylistLocation) : FilePlaylistProcessor(location) {
-        override suspend fun appendSong(context: Context, song: Song) = impl(context, listOf(song))
-        override suspend fun appendSongs(context: Context, songs: List<Song>) = impl(context, songs)
-        private suspend fun impl(context: Context, songs: List<Song>) {
-            addToPlaylistViaMediastore(context, songs, location.storageVolume, location.mediastoreId, true)
+    override suspend fun appendSongs(context: Context, songs: List<Song>) = appendSongImpl(context, songs)
+
+    abstract suspend fun appendSongImpl(context: Context, songs: List<Song>)
+
+    private class MediaStoreImplementation(location: FilePlaylistLocation) : FilePlaylistProcessor(location) {
+        override suspend fun appendSongImpl(context: Context, songs: List<Song>) {
+            MediaStorePlaylistsActions.amendSongs(context, playlistUri(), songs)
         }
     }
 
-    class SafImplementation(location: FilePlaylistLocation) : FilePlaylistProcessor(location) {
-        override suspend fun appendSong(context: Context, song: Song) = impl(context, listOf(song))
-        override suspend fun appendSongs(context: Context, songs: List<Song>) = impl(context, songs)
-        private suspend fun impl(context: Context, songs: List<Song>) {
+    private class SafImplementation(location: FilePlaylistLocation) : FilePlaylistProcessor(location) {
+        override suspend fun appendSongImpl(context: Context, songs: List<Song>) {
             coroutineToast(context, R.string.tips_open_file_with_saf)
-            appendToPlaylistViaSAF(context, songs, location.mediastoreId, location.path)
+            SAFPlaylistUtil.appendPlaylist(context, location.path, songs)
         }
     }
 
     companion object {
         @JvmStatic
-        fun by(location: FilePlaylistLocation, useSaf: Boolean) =
+        fun by(location: FilePlaylistLocation, useSaf: Boolean): FilePlaylistProcessor =
             if (useSaf) SafImplementation(location) else MediaStoreImplementation(location)
     }
 
@@ -141,21 +118,21 @@ private class DatabasePlaylistProcessor(val location: DatabasePlaylistLocation) 
         RoomPlaylists.contains(context, location, songId)
 
     override suspend fun removeSong(context: Context, song: Song, index: Long): Boolean =
-        PlaylistActions.removeSongFromPlaylist(database, id, song.id, index.toInt())
+        RoomPlaylistsActions.removeSong(database, id, song.id, index.toInt())
 
     override suspend fun moveSong(context: Context, from: Int, to: Int): Boolean =
-        PlaylistActions.moveSongFromPlaylist(database, id, from, to)
+        RoomPlaylistsActions.moveSong(database, id, from, to)
 
     override suspend fun appendSong(context: Context, song: Song) {
-        PlaylistActions.amendPlaylist(database, id, listOf(song))
+        RoomPlaylistsActions.amendSongs(database, id, listOf(song))
     }
 
     override suspend fun appendSongs(context: Context, songs: List<Song>) {
-        PlaylistActions.amendPlaylist(database, id, songs)
+        RoomPlaylistsActions.amendSongs(database, id, songs)
     }
 
     override suspend fun rename(context: Context, newName: String): Boolean =
-        PlaylistActions.renamePlaylist(database, id, newName)
+        RoomPlaylistsActions.rename(database, id, newName)
 }
 
 private data object FavoriteSongsPlaylistProcessor : PlaylistReader, PlaylistWriter {

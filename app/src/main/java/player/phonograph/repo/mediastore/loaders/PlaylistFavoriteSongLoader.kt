@@ -6,14 +6,14 @@ package player.phonograph.repo.mediastore.loaders
 import player.phonograph.R
 import player.phonograph.mechanism.playlist.PlaylistManager
 import player.phonograph.mechanism.playlist.PlaylistProcessors
-import player.phonograph.mechanism.playlist.mediastore.addToPlaylistViaMediastore
-import player.phonograph.mechanism.playlist.mediastore.createPlaylistViaMediastore
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylistLocation
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.repo.loader.IFavoriteSongs
 import player.phonograph.repo.mediastore.MediaStorePlaylists
+import player.phonograph.repo.mediastore.MediaStorePlaylistsActions
 import player.phonograph.util.concurrent.coroutineToast
+import player.phonograph.util.mediastoreUriPlaylist
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -44,18 +44,10 @@ class PlaylistFavoriteSongLoader : IFavoriteSongs {
         val favoritesPlaylist = getOrCreateFavoritesPlaylist(context)
         return if (favoritesPlaylist != null) {
             val location = favoritesPlaylist.location as FilePlaylistLocation
-            addToPlaylistViaMediastore(
-                context,
-                song,
-                location.storageVolume,
-                location.mediastoreId,
-                false
-            )
-            true
+            val playlistUri = mediastoreUriPlaylist(location.storageVolume, location.mediastoreId)
+            return MediaStorePlaylistsActions.amendSongs(context, playlistUri, listOf(song))
         } else {
-            val message =
-                "${context.getString(R.string.failed)}\n${context.getString(R.string.err_could_not_create_playlist)}"
-            coroutineToast(context, message)
+            coroutineToast(context, context.getString(R.string.err_could_not_create_playlist))
             false
         }
     }
@@ -105,9 +97,9 @@ class PlaylistFavoriteSongLoader : IFavoriteSongs {
         if (playlists.isNotEmpty()) {
             playlists.first()
         } else {
-            val id = createPlaylistViaMediastore(context, name)
-            if (id != -1L) {
-                MediaStorePlaylists.id(context, id)
+            val uri = MediaStorePlaylistsActions.create(context, name)
+            if (uri != null) {
+                MediaStorePlaylists.id(context, MediaStorePlaylistsActions.playlistId(uri))
             } else {
                 null
             }

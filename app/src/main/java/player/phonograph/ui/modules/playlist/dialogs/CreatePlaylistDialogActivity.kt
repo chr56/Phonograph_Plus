@@ -16,11 +16,12 @@ import lib.storage.textparser.DocumentUriPathParser.documentTreeUriBasePath
 import lib.storage.textparser.DocumentUriPathParser.documentUriBasePath
 import player.phonograph.R
 import player.phonograph.databinding.DialogCreatePlaylistBinding
+import player.phonograph.foundation.error.warning
 import player.phonograph.mechanism.playlist.PlaylistManager
 import player.phonograph.mechanism.playlist.PlaylistProcessors.reader
-import player.phonograph.mechanism.playlist.mediastore.duplicatePlaylistViaMediaStore
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist
+import player.phonograph.model.playlist.PlaylistCreator
 import player.phonograph.ui.basis.DialogActivity
 import player.phonograph.util.PLAYLIST_MIME_TYPE
 import player.phonograph.util.concurrent.coroutineToast
@@ -28,6 +29,7 @@ import player.phonograph.util.observe
 import player.phonograph.util.parcelableArrayListExtra
 import player.phonograph.util.text.currentDate
 import player.phonograph.util.text.dateTimeSuffix
+import player.phonograph.util.text.dateTimeSuffixCompat
 import player.phonograph.util.ui.getScreenSize
 import androidx.activity.viewModels
 import androidx.appcompat.widget.AppCompatSpinner
@@ -45,7 +47,6 @@ import android.provider.DocumentsContract
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import kotlin.getValue
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -287,9 +288,9 @@ class CreatePlaylistDialogActivity : DialogActivity(),
                 context, if (name.isNullOrEmpty()) context.getString(R.string.title_new_playlist) else name
             )
             val message = when (result) {
-                -1L  -> context.getString(R.string.failed)
-                -2L  -> context.getString(R.string.err_playlist_exists, name)
-                else -> context.getString(R.string.success)
+                PlaylistCreator.RESULT_ERROR   -> context.getString(R.string.failed)
+                PlaylistCreator.RESULT_EXISTED -> context.getString(R.string.err_playlist_exists, name)
+                else                           -> context.getString(R.string.success)
             }
             coroutineToast(context, message)
         }
@@ -332,9 +333,17 @@ class CreatePlaylistDialogActivity : DialogActivity(),
         }
 
         private suspend fun duplicatePlaylistsFromMediaStore(context: Context, playlists: List<Playlist>) {
-            val names = playlists.map { it.name }
-            val songBatches = withContext(Dispatchers.IO) { playlists.map { reader(it).allSongs(context) } }
-            duplicatePlaylistViaMediaStore(context, songBatches, names)
+            val timestamp = dateTimeSuffixCompat(currentDate())
+            val failures = mutableListOf<Playlist>()
+            for (playlist in playlists) {
+                val name = "${playlist.name}_$timestamp"
+                val songs = reader(playlist).allSongs(context)
+                val result = PlaylistManager.create(songs).fromMediaStore(context, name)
+                if (result < 0) failures.add(playlist)
+            }
+            if (failures.isNotEmpty()) {
+                warning(context, "Playlist", "Playlists failed to save: $failures")
+            }
         }
 
 

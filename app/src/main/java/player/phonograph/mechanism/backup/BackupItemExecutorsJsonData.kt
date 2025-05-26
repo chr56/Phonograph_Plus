@@ -28,8 +28,8 @@ import player.phonograph.repo.database.store.PathFilterStore
 import player.phonograph.repo.loader.Songs
 import player.phonograph.repo.mediastore.MediaStorePlaylists
 import player.phonograph.repo.room.MusicDatabase
-import player.phonograph.repo.room.domain.PlaylistActions
 import player.phonograph.repo.room.domain.RoomPlaylists
+import player.phonograph.repo.room.domain.RoomPlaylistsActions
 import player.phonograph.service.queue.MusicPlaybackQueueStore
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.settings.Setting
@@ -272,7 +272,7 @@ object InternalDatabasePlaylistsDataBackupItemExecutor : JsonDataBackupItemExecu
         val imported = read(context, ExportedInternalPlaylists.serializer(), source, "InternalDatabasePlaylists")
         return if (imported != null) {
             for (playlist in imported.playlists) {
-                PlaylistActions.importPlaylist(
+                RoomPlaylistsActions.import(
                     MusicDatabase.koinInstance,
                     playlist.name,
                     playlist.songs.mapNotNull { importSong(it, context) },

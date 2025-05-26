@@ -5,11 +5,11 @@
 package player.phonograph.ui.modules.playlist
 
 import player.phonograph.mechanism.playlist.PlaylistProcessors
-import player.phonograph.mechanism.playlist.PlaylistReader
-import player.phonograph.mechanism.playlist.PlaylistWriter
 import player.phonograph.model.QueueSong
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist
+import player.phonograph.model.playlist.PlaylistReader
+import player.phonograph.model.playlist.PlaylistWriter
 import player.phonograph.model.ui.UIMode
 import androidx.lifecycle.ViewModel
 import android.content.Context
