@@ -11,6 +11,8 @@ interface IFavoritePlaylists {
 
     suspend fun allPlaylists(context: Context): List<Playlist>
 
+    suspend fun isFavorite(context: Context, id: Long?, path: String?): Boolean
+
     suspend fun isFavorite(context: Context, playlist: Playlist): Boolean
 
     suspend fun addToFavorites(context: Context, playlist: Playlist): Boolean

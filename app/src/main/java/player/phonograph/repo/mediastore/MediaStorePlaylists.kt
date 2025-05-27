@@ -37,7 +37,7 @@ object MediaStorePlaylists : IPlaylists {
     override suspend fun searchByName(context: Context, query: String): List<Playlist> =
         PlaylistLoader.searchByName(context, query)
 
-    fun searchByPath(context: Context, path: String): Playlist? =
+    suspend fun searchByPath(context: Context, path: String): Playlist? =
         PlaylistLoader.searchByPath(context, path)
 
 

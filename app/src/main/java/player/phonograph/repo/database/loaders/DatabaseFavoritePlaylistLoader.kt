@@ -20,6 +20,9 @@ class DatabaseFavoritePlaylistLoader : IFavoritePlaylists {
     override suspend fun allPlaylists(context: Context): List<Playlist> =
         favoritesStore.getAllPlaylists { id, path, _, _ -> lookupPlaylist(context, id, path) }
 
+    override suspend fun isFavorite(context: Context, id: Long?, path: String?): Boolean =
+        favoritesStore.containsPlaylist(id, path)
+
     override suspend fun isFavorite(context: Context, playlist: Playlist): Boolean =
         favoritesStore.containsPlaylist(playlist)
 

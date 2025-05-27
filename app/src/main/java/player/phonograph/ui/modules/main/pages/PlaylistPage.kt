@@ -4,7 +4,6 @@
 
 package player.phonograph.ui.modules.main.pages
 
-import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.mechanism.event.EventHub
 import player.phonograph.mechanism.playlist.PlaylistSongsActions
@@ -39,7 +38,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.runBlocking
 
 class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
 
@@ -101,16 +99,6 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
 
         override val imageType: Int = DisplayPresenter.IMAGE_TYPE_FIXED_ICON
         override val usePalette: Boolean = false
-
-        override fun getIconRes(playlist: Playlist): Int = when {
-            runBlocking { FavoritePlaylists.isFavorite(App.instance, playlist) } -> R.drawable.ic_pin_white_24dp
-            isFavoritePlaylist(App.instance, playlist)                           -> R.drawable.ic_favorite_white_24dp
-            else                                                                 -> playlist.iconRes
-        }
-
-        private fun isFavoritePlaylist(context: Context, playlist: Playlist): Boolean {
-            return playlist.name == context.getString(R.string.playlist_favorites)
-        }
 
         companion object {
 

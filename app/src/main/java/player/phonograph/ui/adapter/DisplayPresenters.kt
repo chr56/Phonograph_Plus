@@ -230,10 +230,9 @@ abstract class PlaylistBasicDisplayPresenter(
         }
 
     override fun getIcon(context: Context, item: Playlist): Drawable? {
-        return AppCompatResources.getDrawable(context, getIconRes(item))
+        return AppCompatResources.getDrawable(context, item.iconRes)
     }
 
-    abstract fun getIconRes(playlist: Playlist): Int
 }
 
 abstract class SongCollectionBasicDisplayPresenter(

@@ -5,9 +5,11 @@
 package player.phonograph.repo.mediastore.loaders
 
 import legacy.phonograph.MediaStoreCompat
+import player.phonograph.R
 import player.phonograph.model.playlist.FilePlaylistLocation
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.sort.SortRef
+import player.phonograph.repo.loader.FavoritePlaylists
 import player.phonograph.repo.mediastore.internal.SQLWhereClause
 import player.phonograph.repo.mediastore.internal.withBasePlaylistFilter
 import player.phonograph.repo.mediastore.internal.withPathFilter
@@ -25,37 +27,37 @@ import android.provider.MediaStore
 object PlaylistLoader : Loader<Playlist> {
 
     override suspend fun all(context: Context): List<Playlist> =
-        queryPlaylists(context, null, null).intoPlaylists().sortAll(context)
+        queryPlaylists(context, null, null).intoPlaylists(context).sortAll(context)
 
     override suspend fun id(context: Context, id: Long): Playlist? =
-        queryPlaylists(context, BaseColumns._ID + "=?", arrayOf(id.toString())).intoFirstPlaylist()
+        queryPlaylists(context, BaseColumns._ID + "=?", arrayOf(id.toString())).intoFirstPlaylist(context)
 
-    fun playlistName(context: Context, playlistName: String): Playlist? =
+    suspend fun playlistName(context: Context, playlistName: String): Playlist? =
         queryPlaylists(
             context, MediaStoreCompat.Audio.PlaylistsColumns.NAME + "=?", arrayOf(playlistName)
-        ).intoFirstPlaylist()
+        ).intoFirstPlaylist(context)
 
-    fun searchByPath(context: Context, path: String): Playlist? =
+    suspend fun searchByPath(context: Context, path: String): Playlist? =
         queryPlaylists(
             context, "${MediaStoreCompat.Audio.PlaylistsColumns.DATA} = ?", arrayOf(path)
-        ).intoFirstPlaylist()
+        ).intoFirstPlaylist(context)
 
-    fun searchByName(context: Context, name: String): List<Playlist> =
+    suspend fun searchByName(context: Context, name: String): List<Playlist> =
         queryPlaylists(
             context, "${MediaStoreCompat.Audio.PlaylistsColumns.NAME} LIKE ?", arrayOf("%$name%")
-        ).intoPlaylists()
+        ).intoPlaylists(context)
 
 
     /**
      * consume cursor (read & close) and convert into FilePlaylist list
      */
-    private fun Cursor?.intoPlaylists(): List<Playlist> =
+    private suspend fun Cursor?.intoPlaylists(context: Context): List<Playlist> =
         this?.use {
             val filePlaylists = mutableListOf<Playlist>()
             if (moveToFirst()) {
                 do {
                     filePlaylists.add(
-                        extractPlaylist(this)
+                        extractPlaylist(this, context)
                     )
                 } while (moveToNext())
             }
@@ -65,22 +67,36 @@ object PlaylistLoader : Loader<Playlist> {
     /**
      * consume cursor (read & close) and convert into first FilePlaylist
      */
-    private fun Cursor?.intoFirstPlaylist(): Playlist? {
+    private suspend fun Cursor?.intoFirstPlaylist(context: Context): Playlist? {
         return this?.use {
-            if (moveToFirst()) extractPlaylist(this) else null
+            if (moveToFirst()) extractPlaylist(this, context) else null
         }
     }
 
-    private fun extractPlaylist(cursor: Cursor): Playlist = Playlist(
-        name = cursor.getString(1),
-        location = FilePlaylistLocation(
-            path = cursor.getString(2),
-            storageVolume = if (SDK_INT > Q) cursor.getString(5) else MEDIASTORE_VOLUME_EXTERNAL,
-            mediastoreId = cursor.getLong(0)
-        ),
-        dateAdded = cursor.getLong(3),
-        dateModified = cursor.getLong(4),
-    )
+    private suspend fun extractPlaylist(cursor: Cursor, context: Context): Playlist {
+        val mediastoreId = cursor.getLong(0)
+        val name = cursor.getString(1)
+        val path = cursor.getString(2)
+        val dateAdded = cursor.getLong(3)
+        val dateModified = cursor.getLong(4)
+        val storageVolume = if (SDK_INT > Q) cursor.getString(5) else MEDIASTORE_VOLUME_EXTERNAL
+        val iconRes = when {
+            FavoritePlaylists.isFavorite(context, mediastoreId, path) -> R.drawable.ic_pin_white_24dp
+            name == context.getString(R.string.playlist_favorites)    -> R.drawable.ic_favorite_white_24dp
+            else                                                      -> R.drawable.ic_file_music_white_24dp
+        }
+        return Playlist(
+            name = name,
+            location = FilePlaylistLocation(
+                path = path,
+                storageVolume = storageVolume,
+                mediastoreId = mediastoreId
+            ),
+            dateAdded = dateAdded,
+            dateModified = dateModified,
+            iconRes = iconRes
+        )
+    }
 
     /**
      * query playlist file via MediaStore
