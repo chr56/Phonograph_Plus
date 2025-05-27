@@ -4,7 +4,6 @@
 
 package player.phonograph.repo.loader
 
-import org.koin.core.context.GlobalContext
 import player.phonograph.model.repo.loader.IAlbums
 import player.phonograph.model.repo.loader.IArtists
 import player.phonograph.model.repo.loader.IFavoritePlaylists
@@ -27,6 +26,6 @@ object Playlists : IPlaylists by RouterPlaylists
 
 object Songs : ISongs by MediaStoreSongs
 
-val FavoriteSongs: IFavoriteSongs by GlobalContext.get().inject()
+object FavoriteSongs: IFavoriteSongs by RouterFavoriteSongs
 
-val FavoritePlaylists: IFavoritePlaylists by GlobalContext.get().inject()
+object FavoritePlaylists: IFavoritePlaylists by RouterFavoritePlaylists
