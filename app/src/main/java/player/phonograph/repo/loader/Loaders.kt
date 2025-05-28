@@ -6,9 +6,9 @@ package player.phonograph.repo.loader
 
 import player.phonograph.model.repo.loader.IAlbums
 import player.phonograph.model.repo.loader.IArtists
-import player.phonograph.model.repo.loader.IFavoritePlaylists
 import player.phonograph.model.repo.loader.IFavoriteSongs
 import player.phonograph.model.repo.loader.IGenres
+import player.phonograph.model.repo.loader.IPinedPlaylists
 import player.phonograph.model.repo.loader.IPlaylists
 import player.phonograph.model.repo.loader.ISongs
 import player.phonograph.repo.mediastore.MediaStoreAlbums
@@ -28,4 +28,4 @@ object Songs : ISongs by MediaStoreSongs
 
 object FavoriteSongs: IFavoriteSongs by RouterFavoriteSongs
 
-object FavoritePlaylists: IFavoritePlaylists by RouterFavoritePlaylists
+object PinedPlaylists: IPinedPlaylists by RouterPinedPlaylists

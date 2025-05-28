@@ -9,7 +9,7 @@ import player.phonograph.R
 import player.phonograph.model.playlist.FilePlaylistLocation
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.sort.SortRef
-import player.phonograph.repo.loader.FavoritePlaylists
+import player.phonograph.repo.loader.PinedPlaylists
 import player.phonograph.repo.mediastore.internal.SQLWhereClause
 import player.phonograph.repo.mediastore.internal.withBasePlaylistFilter
 import player.phonograph.repo.mediastore.internal.withPathFilter
@@ -81,9 +81,9 @@ object PlaylistLoader : Loader<Playlist> {
         val dateModified = cursor.getLong(4)
         val storageVolume = if (SDK_INT > Q) cursor.getString(5) else MEDIASTORE_VOLUME_EXTERNAL
         val iconRes = when {
-            FavoritePlaylists.isFavorite(context, mediastoreId, path) -> R.drawable.ic_pin_white_24dp
-            name == context.getString(R.string.playlist_favorites)    -> R.drawable.ic_favorite_white_24dp
-            else                                                      -> R.drawable.ic_file_music_white_24dp
+            PinedPlaylists.isPined(context, mediastoreId, path)    -> R.drawable.ic_pin_white_24dp
+            name == context.getString(R.string.playlist_favorites) -> R.drawable.ic_favorite_white_24dp
+            else                                                   -> R.drawable.ic_file_music_white_24dp
         }
         return Playlist(
             name = name,

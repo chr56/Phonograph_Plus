@@ -20,7 +20,7 @@ import player.phonograph.model.file.Location
 import player.phonograph.model.playlist.FilePlaylistLocation
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.service.ShuffleMode
-import player.phonograph.repo.loader.FavoritePlaylists
+import player.phonograph.repo.loader.PinedPlaylists
 import player.phonograph.repo.loader.Songs
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Keys
@@ -266,12 +266,12 @@ object ActionMenuProviders {
                         }
                     }
                     if (location is FilePlaylistLocation) menuItem {
-                        val pined = runBlocking { FavoritePlaylists.isFavorite(context, playlist) }
+                        val pined = runBlocking { PinedPlaylists.isPined(context, playlist) }
                         title = getString(if (!pined) R.string.action_pin else R.string.action_unpin)
                         showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                         onClick {
                             context.lifecycleScopeOrNewOne().launch(Dispatchers.IO) {
-                                FavoritePlaylists.toggleFavorite(context, playlist)
+                                PinedPlaylists.toggleState(context, playlist)
                             }
                             true
                         }

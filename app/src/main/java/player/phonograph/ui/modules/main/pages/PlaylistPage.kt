@@ -12,7 +12,7 @@ import player.phonograph.model.playlist.DynamicPlaylists
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.ui.ItemLayoutStyle
-import player.phonograph.repo.loader.FavoritePlaylists
+import player.phonograph.repo.loader.PinedPlaylists
 import player.phonograph.repo.loader.Playlists
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
@@ -59,7 +59,7 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
             }.also { playlists ->
                 val (pined, normal) =
                     Playlists.all(context).partition { playlist ->
-                        FavoritePlaylists.isFavorite(context, playlist)
+                        PinedPlaylists.isPined(context, playlist)
                     }
                 playlists.addAll(pined)
                 playlists.addAll(normal)
