@@ -9,7 +9,7 @@ import org.koin.android.ext.android.get
 import player.phonograph.R
 import player.phonograph.mechanism.PhonographShortcutManager
 import player.phonograph.mechanism.SongUriParsers
-import player.phonograph.mechanism.playlist.PlaylistProcessors
+import player.phonograph.mechanism.playlist.PlaylistSongsActions
 import player.phonograph.model.PlayRequest
 import player.phonograph.model.PlayRequest.SongRequest
 import player.phonograph.model.PlayRequest.SongsRequest
@@ -21,7 +21,7 @@ import player.phonograph.model.service.ShuffleMode
 import player.phonograph.model.ui.AppShortcutType
 import player.phonograph.repo.loader.Songs
 import player.phonograph.repo.mediastore.MediaStorePlaylists
-import player.phonograph.repo.mediastore.processQuery
+import player.phonograph.repo.mediastore.MediaStoreSongs
 import player.phonograph.service.MusicService
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.service.queue.executePlayRequest
@@ -31,6 +31,7 @@ import player.phonograph.ui.dialogs.OpenWithDialog
 import player.phonograph.ui.modules.main.MainActivity
 import player.phonograph.util.debug
 import androidx.appcompat.app.AppCompatActivity
+import android.app.SearchManager
 import android.content.Intent
 import android.net.Uri
 import android.os.Build.VERSION.SDK_INT
@@ -139,9 +140,14 @@ class StarterActivity : AppCompatActivity() {
     }
 
     private suspend fun handleSearchRequest(intent: Intent): PlayRequest? {
-        intent.action?.let {
-            if (it == MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH) {
-                val songs = processQuery(this, intent.extras!!)
+        intent.action?.let { action ->
+            val extras = intent.extras
+            if (action == MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH && extras != null) {
+                val query = extras.getString(SearchManager.QUERY)
+                val title = extras.getString(MediaStore.EXTRA_MEDIA_TITLE)
+                val album = extras.getString(MediaStore.EXTRA_MEDIA_ALBUM)
+                val artist = extras.getString(MediaStore.EXTRA_MEDIA_ARTIST)
+                val songs = MediaStoreSongs.search(this, query, title, album, artist)
                 return PlayRequest.from(songs)
             }
         }
@@ -197,7 +203,7 @@ class StarterActivity : AppCompatActivity() {
         }
 
         val songs =
-            runBlocking(Dispatchers.IO) { PlaylistProcessors.reader(playlist).allSongs(this@StarterActivity) }
+            runBlocking(Dispatchers.IO) { PlaylistSongsActions.reader(playlist).allSongs(this@StarterActivity) }
         play(songs, shuffleMode)
 
         if (SDK_INT >= N_MR1) PhonographShortcutManager.reportShortcutUsed(this, type.id)

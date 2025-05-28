@@ -28,8 +28,8 @@ import player.phonograph.repo.database.store.PathFilterStore
 import player.phonograph.repo.loader.Songs
 import player.phonograph.repo.mediastore.MediaStorePlaylists
 import player.phonograph.repo.room.MusicDatabase
-import player.phonograph.repo.room.domain.PlaylistActions
 import player.phonograph.repo.room.domain.RoomPlaylists
+import player.phonograph.repo.room.domain.RoomPlaylistsActions
 import player.phonograph.service.queue.MusicPlaybackQueueStore
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.settings.Setting
@@ -179,11 +179,10 @@ object PlayingQueuesDataBackupItemExecutor : JsonDataBackupItemExecutor() {
 
         return if (imported != null) {
             val db = GlobalContext.get().get<MusicPlaybackQueueStore>()
+            val playingQueue = imported.playingQueue.mapNotNull { importSong(it, context) }
+            val originalPlayingQueue = imported.originalPlayingQueue.mapNotNull { importSong(it, context) }
             synchronized(db) {
-                db.saveQueues(
-                    imported.playingQueue.mapNotNull { importSong(it, context) },
-                    imported.originalPlayingQueue.mapNotNull { importSong(it, context) },
-                )
+                db.saveQueues(playingQueue, originalPlayingQueue)
                 GlobalContext.get().get<QueueManager>().reload()
             }
             true
@@ -213,12 +212,12 @@ object FavoritesDataBackupItemExecutor : JsonDataBackupItemExecutor() {
 
         return if (imported != null) {
             val db = FavoritesStore.get()
+            val favoriteSong = imported.favoriteSong.mapNotNull { importSong(it, context) }
+            val pinedPlaylist = imported.pinedPlaylist.mapNotNull { importPlaylist(it, context) }
             synchronized(db) {
-                val favoriteSong = imported.favoriteSong.mapNotNull { importSong(it, context) }
                 db.clearAllSongs()
                 db.addSongs(favoriteSong.asReversed())
 
-                val pinedPlaylist = imported.pinedPlaylist.mapNotNull { importPlaylist(it, context) }
                 db.clearAllPlaylists()
                 db.addPlaylists(pinedPlaylist.asReversed())
             }
@@ -240,7 +239,7 @@ object FavoritesDataBackupItemExecutor : JsonDataBackupItemExecutor() {
         }
     }
 
-    private fun lookupPlaylist(context: Context, id: Long, path: String): Playlist? {
+    private suspend fun lookupPlaylist(context: Context, id: Long, path: String): Playlist? {
 
         val filePlaylist = MediaStorePlaylists.searchByPath(context, path)
         if (filePlaylist != null) return filePlaylist
@@ -272,7 +271,7 @@ object InternalDatabasePlaylistsDataBackupItemExecutor : JsonDataBackupItemExecu
         val imported = read(context, ExportedInternalPlaylists.serializer(), source, "InternalDatabasePlaylists")
         return if (imported != null) {
             for (playlist in imported.playlists) {
-                PlaylistActions.importPlaylist(
+                RoomPlaylistsActions.import(
                     MusicDatabase.koinInstance,
                     playlist.name,
                     playlist.songs.mapNotNull { importSong(it, context) },
@@ -291,11 +290,11 @@ object InternalDatabasePlaylistsDataBackupItemExecutor : JsonDataBackupItemExecu
 private fun exportSong(song: Song): ExportedSong =
     ExportedSong(song.data, song.title, song.albumName, song.artistName)
 
-private fun importSong(song: ExportedSong, context: Context): Song? =
-    runBlocking { Songs.searchByPath(context, song.path, withoutPathFilter = true).firstOrNull() }
+private suspend fun importSong(song: ExportedSong, context: Context): Song? =
+    Songs.searchByPath(context, song.path, withoutPathFilter = true).firstOrNull()
 
 private fun exportPlaylist(playlist: Playlist): ExportedPlaylist =
     ExportedPlaylist(playlist.path() ?: "-", playlist.name)
 
-private fun importPlaylist(playlist: ExportedPlaylist, context: Context): Playlist? =
+private suspend fun importPlaylist(playlist: ExportedPlaylist, context: Context): Playlist? =
     MediaStorePlaylists.searchByPath(context, playlist.path)

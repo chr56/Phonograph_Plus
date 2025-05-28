@@ -9,7 +9,7 @@ import com.vanpra.composematerialdialogs.title
 import player.phonograph.R
 import player.phonograph.mechanism.lyrics.LyricsLoader
 import player.phonograph.model.Song
-import player.phonograph.repo.mediastore.deleteSongsViaMediaStore
+import player.phonograph.repo.mediastore.MediaStoreSongsActions
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.util.MEDIASTORE_VOLUME_EXTERNAL
@@ -214,7 +214,7 @@ private fun executeDeletion(context: Context, songs: List<Song>, withLyrics: Boo
 
 private fun delete(context: Context, songs: List<Song>) {
     val total = songs.size
-    val fails = deleteSongsViaMediaStore(context, songs)
+    val fails = MediaStoreSongsActions.delete(context, songs)
 
     val msg: String = context.resources.getQuantityString(
         R.plurals.msg_deletion_result,

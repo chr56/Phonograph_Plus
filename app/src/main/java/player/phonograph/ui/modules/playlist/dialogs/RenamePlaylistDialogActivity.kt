@@ -6,7 +6,7 @@ package player.phonograph.ui.modules.playlist.dialogs
 
 import player.phonograph.R
 import player.phonograph.databinding.DialogRenamePlaylistBinding
-import player.phonograph.mechanism.playlist.PlaylistProcessors
+import player.phonograph.mechanism.playlist.PlaylistSongsActions
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.ui.basis.DialogActivity
 import player.phonograph.util.parcelableExtra
@@ -78,7 +78,7 @@ class RenamePlaylistDialogActivity : DialogActivity() {
     companion object {
         private suspend fun rename(context: Context, playlist: Playlist, name: String) {
             if (name.trim().isNotEmpty()) {
-                val result = PlaylistProcessors.writer(playlist)!!.rename(context, name)
+                val result = PlaylistSongsActions.writer(playlist)!!.rename(context, name)
                 withContext(Dispatchers.Main) {
                     Toast.makeText(
                         context,

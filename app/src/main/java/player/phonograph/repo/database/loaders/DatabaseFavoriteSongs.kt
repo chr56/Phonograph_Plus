@@ -12,7 +12,7 @@ import player.phonograph.repo.database.store.FavoritesStore
 import player.phonograph.repo.loader.Songs
 import android.content.Context
 
-class DatabaseFavoriteSongLoader : IFavoriteSongs {
+class DatabaseFavoriteSongs : IFavoriteSongs {
 
     private val favoritesStore: FavoritesStore = FavoritesStore.get()
 

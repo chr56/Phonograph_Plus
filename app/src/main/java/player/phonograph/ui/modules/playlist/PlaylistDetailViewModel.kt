@@ -4,12 +4,12 @@
 
 package player.phonograph.ui.modules.playlist
 
-import player.phonograph.mechanism.playlist.PlaylistProcessors
-import player.phonograph.mechanism.playlist.PlaylistReader
-import player.phonograph.mechanism.playlist.PlaylistWriter
+import player.phonograph.mechanism.playlist.PlaylistSongsActions
 import player.phonograph.model.QueueSong
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist
+import player.phonograph.model.playlist.PlaylistReader
+import player.phonograph.model.playlist.PlaylistWriter
 import player.phonograph.model.ui.UIMode
 import androidx.lifecycle.ViewModel
 import android.content.Context
@@ -26,8 +26,8 @@ import kotlinx.coroutines.withContext
 class PlaylistDetailViewModel(_playlist: Playlist, _songs: List<QueueSong>) : ViewModel() {
 
     val playlist: Playlist = _playlist
-    private val reader: PlaylistReader = PlaylistProcessors.reader(playlist)
-    private val writer: PlaylistWriter? = PlaylistProcessors.writer(playlist)
+    private val reader: PlaylistReader = PlaylistSongsActions.reader(playlist)
+    private val writer: PlaylistWriter? = PlaylistSongsActions.writer(playlist)
 
     private val _currentMode: MutableStateFlow<UIMode> = MutableStateFlow(UIMode.Common)
     val currentMode get() = _currentMode.asStateFlow()

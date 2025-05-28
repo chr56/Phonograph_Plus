@@ -10,13 +10,12 @@ import player.phonograph.model.Song
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.repo.loader.Albums
-import player.phonograph.repo.mediastore.loaders.AlbumSongLoader.allSongs
+import player.phonograph.repo.loader.Songs
 import player.phonograph.ui.adapter.AlbumBasicDisplayPresenter
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayPresenter
 import androidx.fragment.app.viewModels
 import android.content.Context
-import kotlin.getValue
 import kotlinx.coroutines.CoroutineScope
 
 class AlbumPage : AbsDisplayPage<Album, DisplayAdapter<Album>>() {
@@ -30,7 +29,8 @@ class AlbumPage : AbsDisplayPage<Album, DisplayAdapter<Album>>() {
             return Albums.all(context)
         }
 
-        override suspend fun collectAllSongs(context: Context): List<Song> = dataset.value.toList().allSongs(context)
+        override suspend fun collectAllSongs(context: Context): List<Song> =
+            dataset.value.toList().flatMap { artist -> Songs.album(context, artist.id) }
 
         override val headerTextRes: Int get() = R.plurals.item_albums
     }

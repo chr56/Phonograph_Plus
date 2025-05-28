@@ -4,7 +4,7 @@
 
 package player.phonograph.mechanism.actions
 
-import player.phonograph.mechanism.playlist.PlaylistProcessors
+import player.phonograph.mechanism.playlist.PlaylistSongsActions
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.service.ShuffleMode
@@ -74,7 +74,7 @@ fun List<Playlist>.actionDeletePlaylists(context: Context): Boolean = fragmentAc
 
 fun Playlist.actionSavePlaylist(activity: FragmentActivity) {
     activity.lifecycleScope.launch(Dispatchers.IO) {
-        val songs = PlaylistProcessors.reader(this@actionSavePlaylist).allSongs(activity)
+        val songs = PlaylistSongsActions.reader(this@actionSavePlaylist).allSongs(activity)
         withContext(Dispatchers.Main) {
             activity.startActivity(
                 CreatePlaylistDialogActivity.Parameter.buildLaunchingIntentForDuplicate(
@@ -101,4 +101,4 @@ fun List<Playlist>.actionSavePlaylists(context: Context) = fragmentActivity(cont
 }
 
 private suspend fun Playlist.songs(context: Context): List<Song> =
-   withContext(Dispatchers.IO) { PlaylistProcessors.reader(this@songs).allSongs(context) }
+   withContext(Dispatchers.IO) { PlaylistSongsActions.reader(this@songs).allSongs(context) }

@@ -6,13 +6,15 @@ package player.phonograph.repo.browser
 
 import player.phonograph.model.PlayRequest
 import player.phonograph.repo.loader.Songs
-import player.phonograph.repo.mediastore.processQuery
+import player.phonograph.repo.mediastore.MediaStoreSongs
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import androidx.media.MediaBrowserServiceCompat.BrowserRoot
+import android.app.SearchManager
 import android.content.Context
 import android.os.Bundle
 import android.os.Process
+import android.provider.MediaStore
 import android.support.v4.media.MediaBrowserCompat
 import android.util.Log
 
@@ -46,7 +48,11 @@ object MediaBrowserDelegate {
             PlayRequest.SongsRequest(Songs.all(context), 0)
         } else {
             if (extras != null) {
-                val songs = processQuery(context, extras)
+                val query = extras.getString(SearchManager.QUERY)
+                val title = extras.getString(MediaStore.EXTRA_MEDIA_TITLE)
+                val album = extras.getString(MediaStore.EXTRA_MEDIA_ALBUM)
+                val artist = extras.getString(MediaStore.EXTRA_MEDIA_ARTIST)
+                val songs = MediaStoreSongs.search(context, query, title, album, artist)
                 PlayRequest.SongsRequest(songs, 0)
             } else {
                 val songs = Songs.searchByTitle(context, query)

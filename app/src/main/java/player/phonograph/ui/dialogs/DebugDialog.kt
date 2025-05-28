@@ -10,8 +10,7 @@ import player.phonograph.foundation.notification.UpgradeNotification
 import player.phonograph.mechanism.Update
 import player.phonograph.model.Song
 import player.phonograph.model.version.VersionCatalog
-import player.phonograph.repo.mediastore.checkEmbeddedIdOverflow
-import player.phonograph.repo.mediastore.checkIdConflict
+import player.phonograph.repo.mediastore.MediaStoreSongsActions
 import player.phonograph.util.concurrent.coroutineToast
 import player.phonograph.util.currentChannel
 import player.phonograph.util.theme.tintButtons
@@ -47,13 +46,13 @@ class DebugDialog : DialogFragment() {
         },
         "Check Overflowed Song Ids" to {
             CoroutineScope(Dispatchers.IO).launch {
-                val errors = checkEmbeddedIdOverflow(App.instance)
+                val errors = MediaStoreSongsActions.checkEmbeddedIdOverflow(App.instance)
                 dumpSong("Overflowed Ids", errors)
             }
         },
         "Check Conflicted Song Ids" to {
             CoroutineScope(Dispatchers.IO).launch {
-                val errors = checkIdConflict(App.instance)
+                val errors = MediaStoreSongsActions.checkIdConflict(App.instance)
                 dumpSong("Conflicted Position Embedded Ids", errors)
             }
         },

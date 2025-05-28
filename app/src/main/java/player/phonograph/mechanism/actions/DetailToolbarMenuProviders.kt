@@ -8,7 +8,7 @@ import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import player.phonograph.R
 import player.phonograph.coil.CustomArtistImageStore
-import player.phonograph.mechanism.playlist.PlaylistProcessors
+import player.phonograph.mechanism.playlist.PlaylistSongsActions
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Genre
@@ -452,7 +452,7 @@ object DetailToolbarMenuProviders {
                     showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                     onClick {
                         context.lifecycleScope.launch(Dispatchers.IO) {
-                            val paths = PlaylistProcessors.reader(item).allSongs(context).map { it.data }
+                            val paths = PlaylistSongsActions.reader(item).allSongs(context).map { it.data }
                             MultiTagBrowserActivity.launch(context, ArrayList(paths))
                         }
                         true

@@ -7,7 +7,7 @@ package player.phonograph.mechanism.actions
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import player.phonograph.R
-import player.phonograph.mechanism.playlist.PlaylistProcessors
+import player.phonograph.mechanism.playlist.PlaylistSongsActions
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Genre
@@ -183,7 +183,7 @@ object MultiSelectionToolbarMenuProviders {
                     is Album          -> Songs.album(context, it.id)
                     is Artist         -> Songs.artist(context, it.id)
                     is Genre          -> Songs.genres(context, it.id)
-                    is Playlist       -> PlaylistProcessors.reader(it).allSongs(context)
+                    is Playlist       -> PlaylistSongsActions.reader(it).allSongs(context)
                     is SongCollection -> it.songs
                     is FileEntity     -> convertFileEntityToSong(context, it)
                     else              -> emptyList()

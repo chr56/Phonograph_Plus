@@ -6,12 +6,12 @@ package player.phonograph.ui.modules.explorer
 
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.Location
-import player.phonograph.repo.mediastore.loaders.FileEntityLoader
+import player.phonograph.repo.mediastore.MediaStoreFileEntities
 import android.content.Context
 import kotlinx.coroutines.CoroutineScope
 
 class FilesChooserViewModel : AbsFileViewModel() {
 
     override suspend fun listFiles(context: Context, location: Location, scope: CoroutineScope?): List<FileEntity> =
-        FileEntityLoader.listFilesLegacy(location, context, scope)
+        MediaStoreFileEntities.listFilesLegacy(location, context, scope)
 }

@@ -178,7 +178,6 @@ class PlaylistSearchResultPageFragment : SearchResultPageFragment<Playlist>() {
         override val layoutStyle: ItemLayoutStyle = ItemLayoutStyle.LIST
         override val usePalette: Boolean = false
         override val imageType: Int = DisplayPresenter.IMAGE_TYPE_FIXED_ICON
-        override fun getIconRes(playlist: Playlist): Int = playlist.iconRes
     }
 }
 

@@ -92,8 +92,10 @@ class FavoritesStore(val context: Context) :
         containsImpl(TABLE_NAME_SONGS, songId, path)
 
     fun containsPlaylist(playlist: Playlist): Boolean =
-        if (!playlist.isVirtual()) containsImpl(TABLE_NAME_PLAYLISTS, playlist.mediaStoreId(), playlist.path())
+        if (!playlist.isVirtual()) containsPlaylist(playlist.mediaStoreId(), playlist.path())
         else false
+
+    fun containsPlaylist(id: Long?, path: String?): Boolean = containsImpl(TABLE_NAME_PLAYLISTS, id, path)
 
     private fun containsImpl(table: String, id: Long?, path: String?): Boolean {
         val database = readableDatabase

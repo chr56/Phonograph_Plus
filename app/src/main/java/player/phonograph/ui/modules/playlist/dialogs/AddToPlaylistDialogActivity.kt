@@ -12,7 +12,7 @@ import lib.storage.launcher.IOpenFileStorageAccessible
 import lib.storage.launcher.OpenDirStorageAccessDelegate
 import lib.storage.launcher.OpenFileStorageAccessDelegate
 import player.phonograph.R
-import player.phonograph.mechanism.playlist.PlaylistProcessors
+import player.phonograph.mechanism.playlist.PlaylistSongsActions
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.ui.basis.DialogActivity
@@ -145,7 +145,7 @@ class AddToPlaylistDialogActivity : DialogActivity(),
             val playlist = playlists[position]
             val useSaf = useSAF.value
             viewModelScope.launch(Dispatchers.IO + SupervisorJob()) {
-                PlaylistProcessors.writer(playlist, useSaf)!!.appendSongs(context, songs)
+                PlaylistSongsActions.writer(playlist, useSaf)!!.appendSongs(context, songs)
                 (context as? Activity)?.finish()
             }
         }

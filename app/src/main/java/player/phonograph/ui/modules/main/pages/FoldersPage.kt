@@ -15,7 +15,7 @@ import player.phonograph.model.service.ShuffleMode
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.model.ui.ItemLayoutStyle
-import player.phonograph.repo.mediastore.loaders.SongCollectionLoader
+import player.phonograph.repo.mediastore.MediaStoreSongCollections
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.adapter.DisplayAdapter
@@ -310,7 +310,7 @@ class FoldersPage : AbsPanelPage() {
         fun loadFolders(context: Context, updateBanner: Boolean) {
             viewModelScope.launch(Dispatchers.IO) {
                 _folders.emit(
-                    SongCollectionLoader.all(context = context).toMutableList().sort(context)
+                    MediaStoreSongCollections.all(context = context).toMutableList().sort(context)
                 )
                 if (updateBanner) updateBannerText(context, true)
             }

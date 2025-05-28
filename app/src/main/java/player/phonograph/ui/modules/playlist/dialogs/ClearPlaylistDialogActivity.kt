@@ -11,7 +11,7 @@ import lib.storage.launcher.IOpenFileStorageAccessible
 import lib.storage.launcher.OpenDirStorageAccessDelegate
 import lib.storage.launcher.OpenFileStorageAccessDelegate
 import player.phonograph.R
-import player.phonograph.mechanism.playlist.PlaylistManager
+import player.phonograph.mechanism.playlist.PlaylistActions
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.ui.basis.DialogActivity
 import player.phonograph.ui.compose.PhonographTheme
@@ -60,7 +60,6 @@ import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.provider.Settings
-import kotlin.getValue
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -245,11 +244,11 @@ class ClearPlaylistDialogActivity : DialogActivity(),
         lateinit var parameter: Parameter private set
         val targetPlaylists: List<Playlist> get() = parameter.playlists
 
-        private lateinit var session: PlaylistManager.BatchDeleteSession
+        private lateinit var session: PlaylistActions.BatchDeleteSession
 
         fun init(intent: Intent) {
             parameter = Parameter.fromLaunchingIntent(intent)
-            session = PlaylistManager.BatchDeleteSession(targetPlaylists)
+            session = PlaylistActions.BatchDeleteSession(targetPlaylists)
             _state.value = PreparedToDelete(targetPlaylists, false)
         }
 
