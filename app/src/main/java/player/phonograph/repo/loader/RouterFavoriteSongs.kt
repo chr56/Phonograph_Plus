@@ -6,8 +6,8 @@ package player.phonograph.repo.loader
 
 import player.phonograph.model.Song
 import player.phonograph.model.repo.loader.IFavoriteSongs
-import player.phonograph.repo.database.loaders.DatabaseFavoriteSongLoader
-import player.phonograph.repo.mediastore.loaders.PlaylistFavoriteSongLoader
+import player.phonograph.repo.database.loaders.DatabaseFavoriteSongs
+import player.phonograph.repo.mediastore.loaders.PlaylistFavoriteSongs
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import android.content.Context
@@ -21,7 +21,7 @@ object RouterFavoriteSongs : IFavoriteSongs {
             _implement ?: run { // double check
                 val preference = Setting(context)[Keys.useLegacyFavoritePlaylistImpl]
                 val impl: IFavoriteSongs =
-                    if (preference.data) PlaylistFavoriteSongLoader() else DatabaseFavoriteSongLoader()
+                    if (preference.data) PlaylistFavoriteSongs() else DatabaseFavoriteSongs()
                 _implement = impl
                 impl
             }

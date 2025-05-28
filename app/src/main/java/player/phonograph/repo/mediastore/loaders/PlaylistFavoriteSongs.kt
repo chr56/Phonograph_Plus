@@ -19,7 +19,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 
-class PlaylistFavoriteSongLoader : IFavoriteSongs {
+class PlaylistFavoriteSongs : IFavoriteSongs {
 
 
     override suspend fun allSongs(context: Context): List<Song> {
