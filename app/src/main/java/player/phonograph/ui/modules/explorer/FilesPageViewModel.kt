@@ -9,7 +9,7 @@ import player.phonograph.model.Song
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.Location
 import player.phonograph.repo.loader.Songs
-import player.phonograph.repo.mediastore.loaders.FileEntityLoader
+import player.phonograph.repo.mediastore.MediaStoreFileEntities
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.util.asList
@@ -33,9 +33,9 @@ class FilesPageViewModel : AbsFileViewModel() {
 
     override suspend fun listFiles(context: Context, location: Location, scope: CoroutineScope?): List<FileEntity> =
         if (useLegacyListFile) {
-            FileEntityLoader.listFilesLegacy(location, context, scope)
+            MediaStoreFileEntities.listFilesLegacy(location, context, scope)
         } else {
-            FileEntityLoader.listFilesMediaStore(location, context, scope)
+            MediaStoreFileEntities.listFilesMediaStore(location, context, scope)
         }
 
 

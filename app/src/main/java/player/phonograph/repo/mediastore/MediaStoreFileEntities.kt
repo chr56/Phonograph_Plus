@@ -1,10 +1,9 @@
 /*
- *  Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2025 chr_56
  */
 
-package player.phonograph.repo.mediastore.loaders
+package player.phonograph.repo.mediastore
 
-import player.phonograph.App
 import player.phonograph.mechanism.explorer.Locations
 import player.phonograph.mechanism.scanner.FileScanner
 import player.phonograph.model.file.FileEntity
@@ -23,7 +22,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.isActive
 import java.io.File
 
-object FileEntityLoader {
+object MediaStoreFileEntities {
 
     /**
      * list files in [currentLocation] as format of FileEntity via MediaStore
@@ -47,7 +46,7 @@ object FileEntityLoader {
                     val item = readFileEntity(cursor, currentLocation, storageManager)
                     list.put(item)
                 } while (cursor.moveToNext())
-                val sortMode = Setting(App.instance)[Keys.fileSortMode].data
+                val sortMode = Setting(context)[Keys.fileSortMode].data
                 list.sortedWith(FileEntityComparator(sortMode))
             } else emptyList()
         }

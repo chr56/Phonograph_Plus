@@ -92,6 +92,62 @@ fun queryAudio(
     }
 }
 
+/**
+ * search songs by keywords for tittle, artist, album fields
+ */
+fun locateSongs(
+    context: Context,
+    title: String?,
+    album: String?,
+    artist: String?,
+): Cursor? {
+    val selections = mutableListOf<String>()
+    val selectionValues = mutableListOf<String>()
+
+    if (artist != null) {
+        selections.add(ARTIST_SELECTION)
+        selectionValues.add(artist.lowercase().trim())
+    }
+
+    if (album != null) {
+        selections.add(ALBUM_SELECTION)
+        selectionValues.add(album.lowercase().trim())
+    }
+
+    if (title != null) {
+        selections.add(TITLE_SELECTION)
+        selectionValues.add(title.lowercase().trim())
+    }
+
+    return if (selections.isNotEmpty()) {
+        querySongs(context, selections.joinToString(separator = AND), selectionValues.toTypedArray())
+    } else {
+        null
+    }
+}
+
+/**
+ * search songs by keyword for tittle, artist, album fields
+ * @param keyword keyword
+ */
+fun locateSongs(
+    context: Context,
+    keyword: String,
+): Cursor? {
+    for (selection in listOf(TITLE_SELECTION, ALBUM_SELECTION, ARTIST_SELECTION)) {
+        val cursor = querySongs(context, selection, arrayOf(keyword.trim()))
+        if (cursor != null) {
+            return cursor
+        }
+    }
+    return null
+}
+
+private const val TITLE_SELECTION = "lower(${AudioColumns.TITLE}) LIKE ?"
+private const val ALBUM_SELECTION = "lower(${AudioColumns.ALBUM}) LIKE ?"
+private const val ARTIST_SELECTION = "lower(${AudioColumns.ARTIST}) LIKE ?"
+private const val AND = " AND "
+
 val BASE_SONG_PROJECTION = arrayOf(
     BaseColumns._ID, // 0
     AudioColumns.TITLE, // 1

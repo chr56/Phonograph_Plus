@@ -21,7 +21,7 @@ import player.phonograph.model.service.ShuffleMode
 import player.phonograph.model.ui.AppShortcutType
 import player.phonograph.repo.loader.Songs
 import player.phonograph.repo.mediastore.MediaStorePlaylists
-import player.phonograph.repo.mediastore.processQuery
+import player.phonograph.repo.mediastore.MediaStoreSongs
 import player.phonograph.service.MusicService
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.service.queue.executePlayRequest
@@ -31,6 +31,7 @@ import player.phonograph.ui.dialogs.OpenWithDialog
 import player.phonograph.ui.modules.main.MainActivity
 import player.phonograph.util.debug
 import androidx.appcompat.app.AppCompatActivity
+import android.app.SearchManager
 import android.content.Intent
 import android.net.Uri
 import android.os.Build.VERSION.SDK_INT
@@ -139,9 +140,14 @@ class StarterActivity : AppCompatActivity() {
     }
 
     private suspend fun handleSearchRequest(intent: Intent): PlayRequest? {
-        intent.action?.let {
-            if (it == MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH) {
-                val songs = processQuery(this, intent.extras!!)
+        intent.action?.let { action ->
+            val extras = intent.extras
+            if (action == MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH && extras != null) {
+                val query = extras.getString(SearchManager.QUERY)
+                val title = extras.getString(MediaStore.EXTRA_MEDIA_TITLE)
+                val album = extras.getString(MediaStore.EXTRA_MEDIA_ALBUM)
+                val artist = extras.getString(MediaStore.EXTRA_MEDIA_ARTIST)
+                val songs = MediaStoreSongs.search(this, query, title, album, artist)
                 return PlayRequest.from(songs)
             }
         }
