@@ -31,6 +31,9 @@ import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
+import androidx.compose.material.Slider
+import androidx.compose.material.SliderColors
+import androidx.compose.material.SliderDefaults
 import androidx.compose.material.Surface
 import androidx.compose.material.Switch
 import androidx.compose.material.SwitchColors
@@ -48,6 +51,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.fastRoundToInt
 
 //region Stateless Settings Components
 @Composable
@@ -195,6 +199,64 @@ fun SettingsListDropdown(
                                 }
                             }
                         }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun SettingsSlider(
+    value: Float,
+    valueRange: ClosedFloatingPointRange<Float>,
+    title: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    icon: (@Composable () -> Unit)? = null,
+    subtitle: (@Composable () -> Unit)? = null,
+    colors: SliderColors = SliderDefaults.colors(),
+    steps: Int = 0,
+    onValueChange: (Float) -> Unit = {},
+    onValueChangeFinished: () -> Unit = {},
+) {
+    Surface {
+        Row(
+            modifier = modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            InabilityColor(enabled = enabled) {
+                SettingsTileIcon(icon = icon)
+                Column(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(end = 16.dp)
+                ) {
+                    SettingsTileTexts(title = title, subtitle = subtitle)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Slider(
+                            value = value,
+                            onValueChange = onValueChange,
+                            modifier = Modifier
+                                .weight(9f)
+                                .padding(horizontal = 8.dp),
+                            valueRange = valueRange,
+                            steps = steps,
+                            onValueChangeFinished = onValueChangeFinished,
+                            enabled = enabled,
+                            colors = colors,
+                        )
+                        Text(
+                            text = value.fastRoundToInt().toString(),
+                            modifier = Modifier
+                                .weight(2f)
+                                .padding(start = 8.dp)
+                        )
                     }
                 }
             }

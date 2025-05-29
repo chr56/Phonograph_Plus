@@ -13,11 +13,14 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.SliderDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -180,6 +183,45 @@ fun ListPreference(
             subtitle = subtitle(summaryRes),
         )
     }
+}
+
+@Composable
+fun FloatPreference(
+    key: PreferenceKey<Float>,
+    valueRange: ClosedFloatingPointRange<Float>,
+    steps: Int = 0,
+    @StringRes titleRes: Int,
+    @StringRes summaryRes: Int = 0,
+    enabled: Boolean = true,
+    writerCoroutineScope: CoroutineScope = rememberCoroutineScope(),
+) {
+    val preference = rememberSettingPreference(key)
+    val value by preference.flow.collectAsState(preference.default)
+    var staging by remember(value) { mutableFloatStateOf(value) }
+
+    val defaultSubtitle = if (summaryRes != 0) stringResource(summaryRes) else null
+    var subtitle by remember { mutableStateOf<String?>(defaultSubtitle) }
+
+    SettingsSlider(
+        value = staging,
+        valueRange = valueRange,
+        enabled = enabled,
+        title = title(titleRes),
+        subtitle = subtitle(subtitle),
+        colors =
+            SliderDefaults.colors(
+                thumbColor = MaterialTheme.colors.secondary,
+                activeTrackColor = MaterialTheme.colors.secondary,
+            ),
+        steps = steps,
+        onValueChange = { staging = it },
+        onValueChangeFinished = {
+            writerCoroutineScope.launch {
+                preference.edit { staging }
+            }
+        }
+    )
+
 }
 
 @Composable
