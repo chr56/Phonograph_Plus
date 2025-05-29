@@ -64,10 +64,4 @@ abstract class MediaStoreSongDao {
     @Query("DELETE FROM ${Tables.MEDIASTORE_SONGS}")
     abstract suspend fun deleteAll()
 
-    @Transaction
-    open suspend fun refresh(songs: Collection<MediastoreSongEntity>) {
-        deleteAll()
-        insert(songs)
-    }
-
 }

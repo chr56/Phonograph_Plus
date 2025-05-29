@@ -10,6 +10,7 @@ import com.vanpra.composematerialdialogs.title
 import player.phonograph.R
 import player.phonograph.repo.room.DatabaseUtil
 import player.phonograph.repo.room.MusicDatabase
+import player.phonograph.repo.room.domain.DatabaseSync
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.util.theme.accentColoredButtonStyle
@@ -87,7 +88,7 @@ private fun OptionItemRefresh(coroutineScope: CoroutineScope, context: Context) 
         stringResource(R.string.tips_refresh_database)
     ) {
         coroutineScope.launch(Dispatchers.IO) {
-            DatabaseUtil.checkAndRefresh(context.applicationContext, MusicDatabase.koinInstance)
+            DatabaseSync.checkAndRefresh(context.applicationContext, MusicDatabase.koinInstance)
         }
     }
 }
