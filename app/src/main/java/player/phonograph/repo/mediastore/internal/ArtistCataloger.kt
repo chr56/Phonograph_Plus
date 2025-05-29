@@ -8,7 +8,7 @@ import player.phonograph.foundation.error.warning
 import player.phonograph.model.Artist
 import player.phonograph.model.Song
 import player.phonograph.model.sort.SortMode
-import player.phonograph.model.sort.SortRef
+import player.phonograph.repo.mediastore.mediastoreArtistSortRefKey
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.util.sort
@@ -114,14 +114,7 @@ private suspend fun catalogArtists(
     }
 }
 
-internal fun List<Artist>.sortAllArtist(sortMode: SortMode): List<Artist> {
-    val revert = sortMode.revert
-    return when (sortMode.sortRef) {
-        SortRef.ARTIST_NAME -> this.sort(revert) { it.name.lowercase() }
-        SortRef.ALBUM_COUNT -> this.sort(revert) { it.albumCount }
-        SortRef.SONG_COUNT  -> this.sort(revert) { it.songCount }
-        else                -> this
-    }
-}
+internal fun List<Artist>.sortAllArtist(sortMode: SortMode): List<Artist> =
+    this.sort(sortMode.revert, mediastoreArtistSortRefKey(sortMode.sortRef))
 
 private const val TAG_ARTIST = "ArtistCataloger"

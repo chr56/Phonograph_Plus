@@ -9,6 +9,7 @@ import player.phonograph.model.Album
 import player.phonograph.model.Song
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
+import player.phonograph.repo.mediastore.mediastoreAlbumSortRefKey
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.util.sort
@@ -106,15 +107,7 @@ private suspend fun catalogAlbums(
     }
 }
 
-private fun List<Album>.sortAllAlbums(sortMode: SortMode): List<Album> {
-    val revert = sortMode.revert
-    return when (sortMode.sortRef) {
-        SortRef.ALBUM_NAME  -> this.sort(revert) { it.title }
-        SortRef.ARTIST_NAME -> this.sort(revert) { it.artistName }
-        SortRef.YEAR        -> this.sort(revert) { it.year }
-        SortRef.SONG_COUNT  -> this.sort(revert) { it.songCount }
-        else                -> this
-    }
-}
+private fun List<Album>.sortAllAlbums(sortMode: SortMode): List<Album> =
+    this.sort(sortMode.revert, mediastoreAlbumSortRefKey(sortMode.sortRef))
 
 private const val TAG_ALBUM = "AlbumCataloger"

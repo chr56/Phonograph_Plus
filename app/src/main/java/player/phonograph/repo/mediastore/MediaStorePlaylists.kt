@@ -13,7 +13,7 @@ import player.phonograph.model.playlist.FilePlaylistLocation
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.PlaylistLocation
 import player.phonograph.model.repo.loader.IPlaylists
-import player.phonograph.model.sort.SortRef
+import player.phonograph.model.sort.SortMode
 import player.phonograph.repo.loader.PinedPlaylists
 import player.phonograph.repo.mediastore.internal.BASE_AUDIO_SELECTION
 import player.phonograph.repo.mediastore.internal.BASE_SONG_PROJECTION
@@ -26,6 +26,7 @@ import player.phonograph.settings.Setting
 import player.phonograph.util.MEDIASTORE_VOLUME_EXTERNAL
 import player.phonograph.util.mediastoreUriPlaylistMembers
 import player.phonograph.util.mediastoreUriPlaylists
+import player.phonograph.util.sort
 import android.content.Context
 import android.database.Cursor
 import android.os.Build.VERSION.SDK_INT
@@ -188,26 +189,11 @@ object MediaStorePlaylists : IPlaylists {
         )
     }
 
-    private fun List<Playlist>.sortAll(context: Context): List<Playlist> {
-        val sortMode = Setting(context)[Keys.playlistSortMode].data
-        val revert = sortMode.revert
-        return when (sortMode.sortRef) {
-            SortRef.DISPLAY_NAME  -> this.sort(revert) { it.name }
-            SortRef.PATH          -> this.sort(revert) { it.location }
-            SortRef.ADDED_DATE    -> this.sort(revert) { it.dateAdded }
-            SortRef.MODIFIED_DATE -> this.sort(revert) { it.dateModified }
-            else                  -> this
-        }
-    }
+    private fun List<Playlist>.sortAll(context: Context): List<Playlist> =
+        sortAll(Setting(context)[Keys.playlistSortMode].data)
 
-    private inline fun List<Playlist>.sort(
-        revert: Boolean,
-        crossinline selector: (Playlist) -> Comparable<*>?,
-    ): List<Playlist> {
-        return if (revert) this.sortedWith(compareByDescending(selector))
-        else this.sortedWith(compareBy(selector))
-    }
-
+    private fun List<Playlist>.sortAll(sortMode: SortMode): List<Playlist> =
+        this.sort(sortMode.revert, mediastorePlaylistSortRefKey(sortMode.sortRef))
 
     private fun queryPlaylistSongs(context: Context, playlistId: Long): Cursor? = try {
         context.contentResolver.query(

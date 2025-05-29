@@ -7,7 +7,7 @@ package player.phonograph.repo.mediastore
 import player.phonograph.model.Genre
 import player.phonograph.model.Song
 import player.phonograph.model.repo.loader.IGenres
-import player.phonograph.model.sort.SortRef
+import player.phonograph.model.sort.SortMode
 import player.phonograph.repo.mediastore.internal.BASE_AUDIO_SELECTION
 import player.phonograph.repo.mediastore.internal.BASE_SONG_PROJECTION
 import player.phonograph.repo.mediastore.internal.intoSongs
@@ -16,6 +16,7 @@ import player.phonograph.settings.Setting
 import player.phonograph.util.MEDIASTORE_VOLUME_EXTERNAL
 import player.phonograph.util.mediastoreUriGenreMembers
 import player.phonograph.util.mediastoreUriGenres
+import player.phonograph.util.sort
 import android.content.Context
 import android.database.Cursor
 import android.os.Build
@@ -89,19 +90,11 @@ object MediaStoreGenres : IGenres {
         }
     }
 
-    private fun List<Genre>.sortAll(context: Context): List<Genre> {
-        val sortMode = Setting(context)[Keys.genreSortMode].data
-        val revert = sortMode.revert
-        return when (sortMode.sortRef) {
-            SortRef.DISPLAY_NAME -> this.sort(revert) { it.name }
-            SortRef.SONG_COUNT   -> this.sort(revert) { it.songCount }
-            else                 -> this
-        }
-    }
+    private fun List<Genre>.sortAll(context: Context): List<Genre> =
+        sortAll(Setting(context)[Keys.genreSortMode].data)
 
-    private inline fun List<Genre>.sort(revert: Boolean, crossinline selector: (Genre) -> Comparable<*>?): List<Genre> {
-        return if (revert) this.sortedWith(compareByDescending(selector))
-        else this.sortedWith(compareBy(selector))
+    private fun List<Genre>.sortAll(sortMode: SortMode): List<Genre> {
+        return this.sort(sortMode.revert, mediastoreGenreSortRefKey(sortMode.sortRef))
     }
 
 
