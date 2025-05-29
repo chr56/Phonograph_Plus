@@ -5,9 +5,9 @@
 package player.phonograph.repo.room.dao
 
 import player.phonograph.model.sort.SortMode
-import player.phonograph.repo.mediastore.internal.mediastoreQuerySortOrder
-import player.phonograph.repo.room.entity.MediastoreSongEntity
+import player.phonograph.repo.room.dao.RoomSortOrder.roomSongQuerySortOrder
 import player.phonograph.repo.room.entity.Columns
+import player.phonograph.repo.room.entity.MediastoreSongEntity
 import player.phonograph.repo.room.entity.Tables
 import androidx.room.Dao
 import androidx.room.Delete
@@ -24,7 +24,7 @@ abstract class MediaStoreSongDao {
 
     suspend fun all(sortMode: SortMode): List<MediastoreSongEntity> = rawQuery(
         SimpleSQLiteQuery(
-            "SELECT * from ${Tables.MEDIASTORE_SONGS} order by ${sortMode.mediastoreQuerySortOrder()}", // no risks of injection
+            "SELECT * from ${Tables.MEDIASTORE_SONGS} order by ${roomSongQuerySortOrder(sortMode)}", // no risks of injection
         )
     )
 
