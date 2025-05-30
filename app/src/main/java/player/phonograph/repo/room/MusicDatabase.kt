@@ -8,10 +8,10 @@ import org.koin.core.context.GlobalContext
 import player.phonograph.repo.room.dao.MediaStoreSongDao
 import player.phonograph.repo.room.dao.PlaylistDao
 import player.phonograph.repo.room.dao.PlaylistSongDao
-import player.phonograph.repo.room.entity.FavoritePlaylistEntity
 import player.phonograph.repo.room.entity.FavoriteSongEntity
 import player.phonograph.repo.room.entity.MediastoreSongEntity
 import player.phonograph.repo.room.entity.Metadata
+import player.phonograph.repo.room.entity.PinedPlaylistsEntity
 import player.phonograph.repo.room.entity.PlaylistEntity
 import player.phonograph.repo.room.entity.PlaylistSongEntity
 import androidx.room.Database
@@ -27,7 +27,7 @@ import java.io.Closeable
         PlaylistEntity::class,
         PlaylistSongEntity::class,
         FavoriteSongEntity::class,
-        FavoritePlaylistEntity::class,
+        PinedPlaylistsEntity::class,
         Metadata::class,
     ],
     version = MusicDatabase.DATABASE_REVISION,

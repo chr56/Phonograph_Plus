@@ -11,7 +11,7 @@ object Tables {
     const val PLAYLIST_SONGS = "playlist_songs"
 
     const val FAVORITE_SONGS = "favorite_songs"
-    const val FAVORITE_PLAYLISTS = "favorite_playlists"
+    const val PINED_PLAYLISTS = "favorite_playlists"
 
     const val METADATA = "metadata"
 }
