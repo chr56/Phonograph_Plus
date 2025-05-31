@@ -8,10 +8,13 @@
 [简体中文](./README_ZH.md)
 <br/>
 
-[![Crowdin](https://badges.crowdin.net/phonograph-plus/localized.svg)](https://crowdin.com/project/phonograph-plus)
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://github.com/chr56/Phonograph_Plus/blob/release/LICENSE.txt)
-[<img src="https://github.com/chr56/Phonograph_Plus/actions/workflows/dev.yml/badge.svg" alt="Dev CI Status">](https://github.com/chr56/Phonograph_Plus/actions/workflows/dev.yml)
-![DownloadsStatistics](https://img.shields.io/github/downloads/chr56/Phonograph_Plus/total)
+[![DownloadsStatistics](https://img.shields.io/github/downloads/chr56/Phonograph_Plus/total)](https://github.com/chr56/Phonograph_Plus/releases)
+[![Crowdin](https://badges.crowdin.net/phonograph-plus/localized.svg)](https://crowdin.com/project/phonograph-plus)
+
+[![Stable Release Building Status](https://img.shields.io/github/actions/workflow/status/chr56/Phonograph_Plus/stable_release.yml?label=Stable%20Channel%20building)](https://github.com/chr56/Phonograph_Plus/actions/workflows/stable_release.yml)
+[![Preview Release Building Status](https://img.shields.io/github/actions/workflow/status/chr56/Phonograph_Plus/preview_release.yml?label=Preview%20Channel%20building)](https://github.com/chr56/Phonograph_Plus/actions/workflows/preview_release.yml)
+[![Dev CI Building Status](https://img.shields.io/github/actions/workflow/status/chr56/Phonograph_Plus/dev.yml?label=Dev%20building)](https://github.com/chr56/Phonograph_Plus/actions/workflows/dev.yml)
 
 
 **A revived classic material designed music player for Android**
