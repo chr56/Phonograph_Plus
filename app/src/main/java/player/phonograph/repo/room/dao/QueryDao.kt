@@ -20,6 +20,8 @@ import player.phonograph.repo.room.entity.Columns.TITLE
 import player.phonograph.repo.room.entity.MediastoreSongEntity
 import player.phonograph.repo.room.entity.Tables.ALBUMS
 import player.phonograph.repo.room.entity.Tables.ARTISTS
+import player.phonograph.repo.room.entity.Tables.LINKAGE_ARTIST_ALBUM
+import player.phonograph.repo.room.entity.Tables.LINKAGE_ARTIST_SONG
 import player.phonograph.repo.room.entity.Tables.MEDIASTORE_SONGS
 import player.phonograph.repo.room.entity.derived.AlbumWithSongs
 import player.phonograph.repo.room.entity.derived.ArtistWithAlbums
@@ -27,6 +29,7 @@ import player.phonograph.repo.room.entity.derived.ArtistWithAll
 import player.phonograph.repo.room.entity.derived.ArtistWithSongs
 import player.phonograph.repo.room.entity.derived.SongWithArtists
 import androidx.room.Dao
+import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.room.Transaction
 import androidx.sqlite.db.SimpleSQLiteQuery
@@ -150,6 +153,14 @@ abstract class QueryDao {
             "SELECT * from $ARTISTS order by ${roomArtistQuerySortOrder(sortMode)}",
         )
     )
+
+    @Query("SELECT COUNT(*) from $MEDIASTORE_SONGS where $ALBUM_ID = :albumId")
+    abstract fun queryAlbumSongCount(albumId: Long): Int
+
+    @Query("SELECT COUNT(${ALBUM_ID}) from $LINKAGE_ARTIST_ALBUM where $ARTIST_ID = :artistId")
+    abstract fun queryArtistAlbumCount(artistId: Long): Int
+    @Query("SELECT COUNT(${MEDIASTORE_ID}) from $LINKAGE_ARTIST_SONG where $ARTIST_ID = :artistId")
+    abstract fun queryArtistSongCount(artistId: Long): Int
 
     //  RawSearch
     @RawQuery

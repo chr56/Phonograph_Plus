@@ -13,7 +13,8 @@ import player.phonograph.repo.room.dao.PinedPlaylistsDao
 import player.phonograph.repo.room.dao.PlaylistDao
 import player.phonograph.repo.room.dao.PlaylistSongDao
 import player.phonograph.repo.room.dao.QueryDao
-import player.phonograph.repo.room.dao.RelationShipDao
+import player.phonograph.repo.room.dao.RelationshipArtistAlbumDao
+import player.phonograph.repo.room.dao.RelationshipArtistSongDao
 import player.phonograph.repo.room.entity.AlbumEntity
 import player.phonograph.repo.room.entity.ArtistEntity
 import player.phonograph.repo.room.entity.FavoriteSongEntity
@@ -57,7 +58,8 @@ abstract class MusicDatabase : RoomDatabase(), Closeable {
     abstract fun PinedPlaylistsDao(): PinedPlaylistsDao
     abstract fun AlbumDao(): AlbumDao
     abstract fun ArtistDao(): ArtistDao
-    abstract fun RelationShipDao(): RelationShipDao
+    abstract fun RelationshipArtistAlbumDao(): RelationshipArtistAlbumDao
+    abstract fun RelationshipArtistSongDao(): RelationshipArtistSongDao
     abstract fun QueryDao(): QueryDao
     override fun close() {
         super.close()
