@@ -104,6 +104,9 @@ class MusicService : MediaBrowserServiceCompat(),
         settingObserver.collect(Keys.alwaysUseMediaSessionToDisplayCover) { alwaysUseMediaSessionToDisplayCover ->
             couldPutCover = SDK_INT >= VERSION_SET_COVER_USING_METADATA || alwaysUseMediaSessionToDisplayCover
         }
+        settingObserver.collect(Keys.seekJumpInterval) { interval ->
+            seekJumpInterval = (interval * 1000).toInt()
+        }
         // misc
         EventHub.setUpMediaStoreObserver(this, controller.handler) // todo use other handler
         AppWidgetUpdateReceiver.register(this)
@@ -227,8 +230,11 @@ class MusicService : MediaBrowserServiceCompat(),
         false
     }
 
-    fun fastForward(millis: Int = 10_000) = seek(songProgressMillis + millis)
-    fun fastRewind(millis: Int = 10_000) = seek(songProgressMillis - millis)
+
+    private var seekJumpInterval: Int = 5_000
+
+    fun fastForward(millis: Int = seekJumpInterval) = seek(songProgressMillis + millis)
+    fun fastRewind(millis: Int = seekJumpInterval) = seek(songProgressMillis - millis)
 
     val audioSessionId: Int get() = controller.audioSessionId
     val mediaSession get() = mediaSessionController.mediaSession
