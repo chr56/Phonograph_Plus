@@ -22,6 +22,7 @@ import player.phonograph.util.ui.MonetColor
 import util.theme.materials.MaterialColor
 import java.io.File
 import androidx.datastore.preferences.core.booleanPreferencesKey as booleanPK
+import androidx.datastore.preferences.core.floatPreferencesKey as floatPK
 import androidx.datastore.preferences.core.intPreferencesKey as intPK
 import androidx.datastore.preferences.core.longPreferencesKey as longPK
 import androidx.datastore.preferences.core.stringPreferencesKey as stringPK
@@ -151,6 +152,8 @@ object Keys {
         get() = PrimitiveKey<Boolean>(booleanPK("gapless_playback")) { false }
     val broadcastCurrentPlayerState
         get() = PrimitiveKey<Boolean>(booleanPK("broadcast_current_player_state")) { true }
+    val seekJumpInterval
+        get() = PrimitiveKey<Float>(floatPK("seek_jump_interval")) { 5f }
     //</editor-fold>
 
     //</editor-fold>
