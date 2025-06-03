@@ -89,10 +89,10 @@ class BreadCrumbView : FrameLayout {
 
         private fun generateSegmentation(path: String): List<String> = path.split("/").filter { it.isNotEmpty() }
         private fun locationAt(position: Int): Location? {
-            val all = location ?: return null
-            val root = all.volumeRootPath
-            val base = segmentations.subList(0, position).fold("") { acc, s -> "$acc/$s" }
-            val path = "$root$base"
+            val volumePath = location?.volumeRootPath ?: return null
+            val targetSegments = segmentations.run { subList(0, position.coerceAtMost(size)) }
+            val basePath = targetSegments.joinToString(prefix = "/", separator = "/")
+            val path = "$volumePath$basePath"
             return Locations.from(path, context)
         }
 
