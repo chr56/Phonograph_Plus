@@ -545,4 +545,6 @@
     <string name="version_migration_hint_required_to_wipe_data">請務必抹除應用程式資料！</string>
     <string name="tips_long_press_to_proceed">請長按以繼續！</string>
     <string name="title_corrupted_data_error">内部存儲檔案錯誤</string>
+    <string name="pref_title_seek_jump_interval">快進與快退跳躍時間間隔</string>
+    <string name="pref_summary_seek_jump_interval">從通知或者播放器按鈕進行快進或快時，跳過的秒數</string>
 </resources>

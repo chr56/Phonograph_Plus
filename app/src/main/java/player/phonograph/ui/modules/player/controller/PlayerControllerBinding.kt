@@ -166,8 +166,8 @@ abstract class PlayerControllerBinding {
         forwardButton?.setImageResource(R.drawable.ic_fast_forward_white_24dp)
         rewindButton?.contentDescription = context.getString(R.string.action_fast_rewind)
         forwardButton?.contentDescription = context.getString(R.string.action_fast_forward)
-        rewindButton?.setOnClickListener { MusicPlayerRemote.fastRewind(5000) }
-        forwardButton?.setOnClickListener { MusicPlayerRemote.fastForward(5000) }
+        rewindButton?.setOnClickListener { MusicPlayerRemote.fastRewind() }
+        forwardButton?.setOnClickListener { MusicPlayerRemote.fastForward() }
 
         shuffleButton?.visibility = View.VISIBLE
         repeatButton?.visibility = View.VISIBLE

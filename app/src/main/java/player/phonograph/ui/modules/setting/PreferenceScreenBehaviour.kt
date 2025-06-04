@@ -8,6 +8,7 @@ import player.phonograph.R
 import player.phonograph.settings.Keys
 import player.phonograph.ui.modules.setting.components.BooleanPreference
 import player.phonograph.ui.modules.setting.components.ExternalPreference
+import player.phonograph.ui.modules.setting.components.FloatPreference
 import player.phonograph.ui.modules.setting.components.SettingsGroup
 import player.phonograph.util.NavigationUtil
 import androidx.activity.compose.LocalActivity
@@ -66,6 +67,13 @@ fun PreferenceScreenBehaviour() {
                 key = Keys.broadcastCurrentPlayerState,
                 summaryRes = R.string.pref_summary_broadcast_current_player_state,
                 titleRes = R.string.pref_title_broadcast_current_player_state,
+            )
+            FloatPreference(
+                key = Keys.seekJumpInterval,
+                titleRes = R.string.pref_title_seek_jump_interval,
+                summaryRes = R.string.pref_summary_seek_jump_interval,
+                valueRange = 5f..30f,
+                steps = 4
             )
         }
         Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.systemBars))
