@@ -377,7 +377,7 @@
     <string name="pref_title_remember_last_tab">Remember last tab</string>
     <string name="pref_title_remember_shuffle">Remember shuffle</string>
     <string name="pref_title_resume_after_audio_focus_gain">Automatically resume playing after interruptions</string>
-    <string name="pref_title_seek_jump_interval">Seek Internal for Forward / Rewind</string>
+    <string name="pref_title_seek_jump_interval">Seek Interval for Forward / Rewind</string>
     <string name="pref_title_send_lyrics">Broadcast synchronized lyrics</string>
     <string name="pref_title_start_directory">Start Directory</string>
     <string name="pref_title_synchronized_lyrics_show">Show synchronized lyrics</string>
