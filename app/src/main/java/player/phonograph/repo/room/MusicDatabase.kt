@@ -50,7 +50,7 @@ abstract class MusicDatabase : RoomDatabase(), Closeable {
                 .enableMultiInstanceInvalidation()
                 .build()
                 .also { db ->
-                    DatabaseUtil.syncWithMediastore(context.applicationContext, db)
+                    DatabaseActions.syncWithMediastore(context.applicationContext, db)
                 }
 
         val koinInstance: MusicDatabase get() = GlobalContext.get().get()

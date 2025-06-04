@@ -5,7 +5,8 @@
 package player.phonograph.repo.room
 
 import player.phonograph.mechanism.event.EventHub
-import player.phonograph.repo.room.domain.DatabaseSync
+import player.phonograph.model.repo.sync.SyncResult
+import player.phonograph.repo.room.domain.BasicSyncExecutor
 import android.content.Context
 import android.content.Intent
 import kotlinx.coroutines.CoroutineScope
@@ -14,7 +15,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-object DatabaseUtil {
+object DatabaseActions {
 
     fun syncWithMediastore(context: Context, musicDatabase: MusicDatabase): EventHub.EventReceiver {
         class PersistentListener : EventHub.EventReceiver(EventHub.EVENT_MEDIASTORE_CHANGED) {
@@ -23,10 +24,9 @@ object DatabaseUtil {
                 refresh()
             }
 
-
             fun refresh() {
                 coroutineScope.launch {
-                    DatabaseSync.checkAndRefresh(context, musicDatabase)
+                    if (musicDatabase.isOpen) checkAndRefresh(context, musicDatabase)
                 }
             }
 
@@ -40,6 +40,37 @@ object DatabaseUtil {
     }
 
 
+    /**
+     * Sync Database:
+     * check MediaStore, refresh database if have changes
+     */
+    suspend fun checkAndRefresh(context: Context, musicDatabase: MusicDatabase): SyncResult? {
+
+        val syncExecutor = BasicSyncExecutor(musicDatabase)
+
+        return if (syncExecutor.check(context)) {
+            syncExecutor.sync(context, null)
+        } else {
+            null
+        }
+
+    }
+
+    /**
+     * Close Database and wipe all table
+     */
+    suspend fun purge(musicDatabase: MusicDatabase) {
+        withContext(Dispatchers.IO) {
+            synchronized(musicDatabase) {
+                musicDatabase.close()
+                musicDatabase.clearAllTables()
+            }
+        }
+    }
+
+    /**
+     * delete database file
+     */
     suspend fun deleteEntireDatabase(context: Context, musicDatabase: MusicDatabase) = withContext(Dispatchers.IO) {
         val path = context.getDatabasePath(MusicDatabase.DATABASE_NAME)
         try {
