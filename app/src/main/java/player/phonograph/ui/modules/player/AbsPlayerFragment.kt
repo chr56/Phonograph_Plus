@@ -409,7 +409,7 @@ private fun buildPlayerToolbar(
             onClick {
                 val song = queueViewModel.currentSong.value
                 if (song != null) lifecycle.coroutineScope.launch(Dispatchers.IO) {
-                    FavoriteSongs.toggleFavorite(context, song)
+                    FavoriteSongs.toggleState(context, song)
                 }
                 true
             }

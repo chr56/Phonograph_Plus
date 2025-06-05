@@ -19,7 +19,7 @@ import kotlinx.coroutines.withContext
 
 class PlaylistFavoriteSongs : IFavoriteSongs {
 
-    override suspend fun allSongs(context: Context): List<Song> {
+    override suspend fun all(context: Context): List<Song> {
         val favoritesPlaylist = getFavoritesPlaylist(context)
         return if (favoritesPlaylist != null) {
             PlaylistSongsActions.reader(favoritesPlaylist).allSongs(context)
@@ -37,19 +37,21 @@ class PlaylistFavoriteSongs : IFavoriteSongs {
         }
     }
 
-    override suspend fun addToFavorites(context: Context, song: Song): Boolean {
+    override suspend fun add(context: Context, song: Song): Boolean = add(context, listOf(song))
+
+    override suspend fun add(context: Context, songs: List<Song>): Boolean {
         val favoritesPlaylist = getOrCreateFavoritesPlaylist(context)
         return if (favoritesPlaylist != null) {
             val location = favoritesPlaylist.location as FilePlaylistLocation
             val playlistUri = mediastoreUriPlaylist(location.storageVolume, location.mediastoreId)
-            return MediaStorePlaylistsActions.amendSongs(context, playlistUri, listOf(song))
+            return MediaStorePlaylistsActions.amendSongs(context, playlistUri, songs)
         } else {
             coroutineToast(context, context.getString(R.string.err_could_not_create_playlist))
             false
         }
     }
 
-    override suspend fun removeFromFavorites(context: Context, song: Song): Boolean {
+    override suspend fun remove(context: Context, song: Song): Boolean {
         val favoritesPlaylist = getFavoritesPlaylist(context)
         return if (favoritesPlaylist != null) {
             !PlaylistSongsActions.writer(favoritesPlaylist)!!.removeSong(context, song, -1)
@@ -58,8 +60,8 @@ class PlaylistFavoriteSongs : IFavoriteSongs {
         }
     }
 
-    override suspend fun toggleFavorite(context: Context, song: Song): Boolean =
-        if (isFavorite(context, song)) removeFromFavorites(context, song) else addToFavorites(context, song)
+    override suspend fun toggleState(context: Context, song: Song): Boolean =
+        if (isFavorite(context, song)) remove(context, song) else add(context, song)
 
     override suspend fun cleanMissing(context: Context): Boolean = false
 

@@ -17,6 +17,8 @@ interface IPinedPlaylists {
 
     suspend fun add(context: Context, playlist: Playlist): Boolean
 
+    suspend fun add(context: Context, playlists: List<Playlist>): Boolean
+
     suspend fun remove(context: Context, playlist: Playlist): Boolean
 
     /**

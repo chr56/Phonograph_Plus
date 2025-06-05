@@ -16,23 +16,26 @@ class DatabaseFavoriteSongs : IFavoriteSongs {
 
     private val favoritesStore: FavoritesStore = FavoritesStore.get()
 
-    override suspend fun allSongs(context: Context): List<Song> =
+    override suspend fun all(context: Context): List<Song> =
         favoritesStore.getAllSongs { _, path, _, _ -> lookupSong(context, path) }
 
     override suspend fun isFavorite(context: Context, song: Song): Boolean =
         favoritesStore.containsSong(song.id, song.data)
 
-    override suspend fun addToFavorites(context: Context, song: Song): Boolean =
+    override suspend fun add(context: Context, song: Song): Boolean =
         favoritesStore.addSong(song)
 
-    override suspend fun removeFromFavorites(context: Context, song: Song): Boolean =
+    override suspend fun add(context: Context, songs: List<Song>): Boolean =
+        favoritesStore.addSongs(songs)
+
+    override suspend fun remove(context: Context, song: Song): Boolean =
         favoritesStore.removeSong(song)
 
-    override suspend fun toggleFavorite(context: Context, song: Song): Boolean =
+    override suspend fun toggleState(context: Context, song: Song): Boolean =
         if (isFavorite(context, song)) {
-            !removeFromFavorites(context, song)
+            !remove(context, song)
         } else {
-            addToFavorites(context, song)
+            add(context, song)
         }
 
     override suspend fun cleanMissing(context: Context): Boolean {

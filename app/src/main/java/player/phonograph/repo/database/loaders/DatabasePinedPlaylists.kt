@@ -29,6 +29,9 @@ class DatabasePinedPlaylists : IPinedPlaylists {
     override suspend fun add(context: Context, playlist: Playlist): Boolean =
         favoritesStore.addPlaylist(playlist)
 
+    override suspend fun add(context: Context, playlists: List<Playlist>): Boolean =
+        favoritesStore.addPlaylists(playlists)
+
     override suspend fun remove(context: Context, playlist: Playlist): Boolean =
         favoritesStore.removePlaylist(playlist)
 

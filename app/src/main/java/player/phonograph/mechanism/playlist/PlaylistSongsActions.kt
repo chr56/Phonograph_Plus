@@ -138,7 +138,7 @@ private class DatabasePlaylistProcessor(val location: DatabasePlaylistLocation) 
 private data object FavoriteSongsPlaylistProcessor : PlaylistReader, PlaylistWriter {
 
     override suspend fun allSongs(context: Context): List<Song> =
-        FavoriteSongs.allSongs(context)
+        FavoriteSongs.all(context)
 
     override suspend fun containsSong(context: Context, songId: Long): Boolean {
         val song = Songs.id(context, songId) ?: return false
@@ -146,15 +146,15 @@ private data object FavoriteSongsPlaylistProcessor : PlaylistReader, PlaylistWri
     }
 
     override suspend fun removeSong(context: Context, song: Song, index: Long): Boolean =
-        FavoriteSongs.removeFromFavorites(context, song)
+        FavoriteSongs.remove(context, song)
 
     override suspend fun appendSong(context: Context, song: Song) {
-        FavoriteSongs.addToFavorites(context, song)
+        FavoriteSongs.add(context, song)
         EventHub.sendEvent(context, EventHub.EVENT_FAVORITES_CHANGED)
     }
 
     override suspend fun appendSongs(context: Context, songs: List<Song>) {
-        for (song in songs) FavoriteSongs.addToFavorites(context, song)
+        for (song in songs) FavoriteSongs.add(context, song)
         EventHub.sendEvent(context, EventHub.EVENT_FAVORITES_CHANGED)
     }
 

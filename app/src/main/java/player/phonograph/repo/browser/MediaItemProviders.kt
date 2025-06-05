@@ -372,7 +372,7 @@ object MediaItemProviders {
 
 
     private object FavoriteSongsProvider : AbsMediaItemProvider() {
-        private suspend fun fetch(context: Context): List<Song> = FavoriteSongs.allSongs(context)
+        private suspend fun fetch(context: Context): List<Song> = FavoriteSongs.all(context)
 
         override suspend fun browser(context: Context): List<MediaItem> =
             withPlayAllItems(
@@ -382,7 +382,7 @@ object MediaItemProviders {
             )
 
         override suspend fun play(context: Context): PlayRequest =
-            PlayRequest.SongsRequest(FavoriteSongs.allSongs(context), 0)
+            PlayRequest.SongsRequest(FavoriteSongs.all(context), 0)
     }
 
     private object TopTracksProvider : AbsMediaItemProvider() {

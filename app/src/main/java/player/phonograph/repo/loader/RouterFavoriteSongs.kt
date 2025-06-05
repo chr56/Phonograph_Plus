@@ -27,20 +27,23 @@ object RouterFavoriteSongs : IFavoriteSongs {
             }
         }
 
-    override suspend fun allSongs(context: Context): List<Song> =
-        implement(context).allSongs(context)
+    override suspend fun all(context: Context): List<Song> =
+        implement(context).all(context)
 
     override suspend fun isFavorite(context: Context, song: Song): Boolean =
         implement(context).isFavorite(context, song)
 
-    override suspend fun addToFavorites(context: Context, song: Song): Boolean =
-        implement(context).addToFavorites(context, song)
+    override suspend fun add(context: Context, song: Song): Boolean =
+        implement(context).add(context, song)
 
-    override suspend fun removeFromFavorites(context: Context, song: Song): Boolean =
-        implement(context).removeFromFavorites(context, song)
+    override suspend fun add(context: Context, songs: List<Song>): Boolean =
+        implement(context).add(context, songs)
 
-    override suspend fun toggleFavorite(context: Context, song: Song): Boolean =
-        implement(context).toggleFavorite(context, song)
+    override suspend fun remove(context: Context, song: Song): Boolean =
+        implement(context).remove(context, song)
+
+    override suspend fun toggleState(context: Context, song: Song): Boolean =
+        implement(context).toggleState(context, song)
 
     override suspend fun cleanMissing(context: Context): Boolean =
         implement(context).cleanMissing(context)

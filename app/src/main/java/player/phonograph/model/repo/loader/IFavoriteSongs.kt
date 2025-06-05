@@ -9,27 +9,26 @@ import android.content.Context
 
 interface IFavoriteSongs {
 
-    suspend fun allSongs(context: Context): List<Song>
+    suspend fun all(context: Context): List<Song>
 
     suspend fun isFavorite(context: Context, song: Song): Boolean
 
-    suspend fun addToFavorites(context: Context, song: Song): Boolean
+    suspend fun add(context: Context, song: Song): Boolean
 
-    suspend fun removeFromFavorites(context: Context, song: Song): Boolean
+    suspend fun add(context: Context, songs: List<Song>): Boolean
+
+    suspend fun remove(context: Context, song: Song): Boolean
 
     /**
      * @return new favorite state
      */
-    suspend fun toggleFavorite(context: Context, song: Song): Boolean
+    suspend fun toggleState(context: Context, song: Song): Boolean
 
     /**
      * clean missing (deleted) songs
      */
     suspend fun cleanMissing(context: Context): Boolean
 
-    /**
-     * clear all
-     */
     suspend fun clearAll(context: Context): Boolean
 
 }

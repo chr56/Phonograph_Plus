@@ -156,7 +156,7 @@ class MusicService : MediaBrowserServiceCompat(),
 
 
     private fun toggleFavorite(song: Song?): Boolean {
-        return if (song != null) runBlocking { FavoriteSongs.toggleFavorite(this@MusicService, song) } else false
+        return if (song != null) runBlocking { FavoriteSongs.toggleState(this@MusicService, song) } else false
     }
 
 
