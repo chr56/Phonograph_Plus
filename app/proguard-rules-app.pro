@@ -36,7 +36,7 @@
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.util.NavigationUtil { public <methods>; }
 
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.lyrics.LyricsLoader { public <methods>; }
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.migrate.Migration { public void doMigrate(android.content.Context); }
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.model.migration.Migration { public void execute(android.content.Context); }
 
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.metadata.* extends player.phonograph.mechanism.metadata.MetadataExtractor { public <methods>; }
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.metadata.* extends player.phonograph.mechanism.metadata.TagReader { public *** read(...); }
