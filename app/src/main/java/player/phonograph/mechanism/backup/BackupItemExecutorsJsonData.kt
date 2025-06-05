@@ -4,12 +4,10 @@
 
 package player.phonograph.mechanism.backup
 
-import lib.storage.textparser.ExternalFilePathParser
 import okio.Buffer
 import okio.Source
 import okio.buffer
 import org.koin.core.context.GlobalContext
-import player.phonograph.R
 import player.phonograph.foundation.error.warning
 import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.Song
@@ -23,8 +21,9 @@ import player.phonograph.model.backup.ExportedPlaylist
 import player.phonograph.model.backup.ExportedSetting
 import player.phonograph.model.backup.ExportedSong
 import player.phonograph.model.playlist.Playlist
-import player.phonograph.repo.database.store.FavoritesStore
 import player.phonograph.repo.database.store.PathFilterStore
+import player.phonograph.repo.loader.FavoriteSongs
+import player.phonograph.repo.loader.PinedPlaylists
 import player.phonograph.repo.loader.Songs
 import player.phonograph.repo.mediastore.MediaStorePlaylists
 import player.phonograph.repo.room.MusicDatabase
@@ -38,7 +37,6 @@ import androidx.datastore.preferences.core.edit
 import android.content.Context
 import kotlin.LazyThreadSafetyMode.NONE
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
@@ -194,14 +192,10 @@ object PlayingQueuesDataBackupItemExecutor : JsonDataBackupItemExecutor() {
 
 object FavoritesDataBackupItemExecutor : JsonDataBackupItemExecutor() {
     override suspend fun export(context: Context): Buffer? {
-        val db = FavoritesStore.get()
 
-        val songs =
-            db.getAllSongs { _, path, _, _ -> lookupSong(context, path) }.map(::exportSong)
+        val songs = FavoriteSongs.all(context).map(::exportSong)
 
-        val playlists =
-            db.getAllPlaylists { id, path, _, _ -> lookupPlaylist(context, id, path) }.map(::exportPlaylist)
-
+        val playlists = PinedPlaylists.all(context).map(::exportPlaylist)
 
         val exported = ExportedFavorites(ExportedFavorites.VERSION, songs, playlists)
         return write(context, ExportedFavorites.serializer(), exported, "Favorites")
@@ -211,17 +205,15 @@ object FavoritesDataBackupItemExecutor : JsonDataBackupItemExecutor() {
         val imported = read(context, ExportedFavorites.serializer(), source, "Favorites")
 
         return if (imported != null) {
-            val db = FavoritesStore.get()
-            val favoriteSong = imported.favoriteSong.mapNotNull { importSong(it, context) }
-            val pinedPlaylist = imported.pinedPlaylist.mapNotNull { importPlaylist(it, context) }
-            synchronized(db) {
-                db.clearAllSongs()
-                db.addSongs(favoriteSong.asReversed())
 
-                db.clearAllPlaylists()
-                db.addPlaylists(pinedPlaylist.asReversed())
-            }
+            val favoriteSongs = imported.favoriteSong.mapNotNull { importSong(it, context) }
+            FavoriteSongs.clearAll(context)
+            FavoriteSongs.add(context, favoriteSongs.asReversed())
             EventHub.sendEvent(context, EventHub.EVENT_FAVORITES_CHANGED)
+
+            val pinedPlaylists = imported.pinedPlaylist.mapNotNull { importPlaylist(it, context) }
+            PinedPlaylists.clearAll(context)
+            PinedPlaylists.add(context, pinedPlaylists.asReversed())
             EventHub.sendEvent(context, EventHub.EVENT_PLAYLISTS_CHANGED)
             true
         } else {
@@ -229,27 +221,6 @@ object FavoritesDataBackupItemExecutor : JsonDataBackupItemExecutor() {
         }
     }
 
-    private suspend fun lookupSong(context: Context, path: String): Song {
-        val song = Songs.path(context, path)
-        return if (song == null) {
-            val filename = ExternalFilePathParser.bashPath(path) ?: context.getString(R.string.state_deleted)
-            Song.deleted(filename, path)
-        } else {
-            song
-        }
-    }
-
-    private suspend fun lookupPlaylist(context: Context, id: Long, path: String): Playlist? {
-
-        val filePlaylist = MediaStorePlaylists.searchByPath(context, path)
-        if (filePlaylist != null) return filePlaylist
-
-        val databasePlaylist = null // Playlists.of(context, DatabasePlaylistLocation(path.toLongOrDefault(0)))
-        @Suppress("SENSELESS_COMPARISON")
-        if (databasePlaylist != null) return databasePlaylist
-
-        return null
-    }
 }
 
 object InternalDatabasePlaylistsDataBackupItemExecutor : JsonDataBackupItemExecutor() {
