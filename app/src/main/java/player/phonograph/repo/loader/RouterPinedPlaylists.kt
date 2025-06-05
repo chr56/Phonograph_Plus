@@ -5,6 +5,6 @@
 package player.phonograph.repo.loader
 
 import player.phonograph.model.repo.loader.IPinedPlaylists
-import player.phonograph.repo.database.loaders.DatabasePinedPlaylists
+import player.phonograph.repo.room.domain.RoomPinedPlaylists
 
-object RouterPinedPlaylists : IPinedPlaylists by DatabasePinedPlaylists()
+object RouterPinedPlaylists : IPinedPlaylists by RoomPinedPlaylists
