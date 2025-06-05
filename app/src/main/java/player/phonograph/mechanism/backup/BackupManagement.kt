@@ -15,6 +15,7 @@ import player.phonograph.model.backup.BackupItem.FavoriteBackup
 import player.phonograph.model.backup.BackupItem.FavoriteDatabaseBackup
 import player.phonograph.model.backup.BackupItem.HistoryDatabaseBackup
 import player.phonograph.model.backup.BackupItem.InternalPlaylistsBackup
+import player.phonograph.model.backup.BackupItem.MainDatabaseBackup
 import player.phonograph.model.backup.BackupItem.MusicPlaybackStateDatabaseBackup
 import player.phonograph.model.backup.BackupItem.PathFilterBackup
 import player.phonograph.model.backup.BackupItem.PathFilterDatabaseBackup
@@ -28,6 +29,7 @@ import player.phonograph.repo.database.DatabaseConstants.HISTORY_DB
 import player.phonograph.repo.database.DatabaseConstants.MUSIC_PLAYBACK_STATE_DB
 import player.phonograph.repo.database.DatabaseConstants.PATH_FILTER
 import player.phonograph.repo.database.DatabaseConstants.SONG_PLAY_COUNT_DB
+import player.phonograph.repo.room.MusicDatabase
 import player.phonograph.util.text.currentTimestamp
 import player.phonograph.util.zip.ZipUtil.extractDirectory
 import player.phonograph.util.zip.ZipUtil.zipDirectory
@@ -44,6 +46,7 @@ object Backup {
         listOf(
             SettingBackup, FavoriteBackup, PathFilterBackup, PlayingQueuesBackup,
             InternalPlaylistsBackup,
+            MainDatabaseBackup,
             FavoriteDatabaseBackup,
             PathFilterDatabaseBackup,
             HistoryDatabaseBackup,
@@ -62,6 +65,7 @@ object Backup {
             FavoriteBackup                   -> getString(R.string.playlist_favorites)
             PlayingQueuesBackup              -> getString(R.string.label_playing_queue)
             InternalPlaylistsBackup          -> getString(R.string.label_database_playlists)
+            MainDatabaseBackup               -> "[${getString(R.string.label_databases)}] ${getString(R.string.pref_header_library)}"
             FavoriteDatabaseBackup           -> "[${getString(R.string.label_databases)}] ${getString(R.string.playlist_favorites)}"
             PathFilterDatabaseBackup         -> "[${getString(R.string.label_databases)}] ${getString(R.string.path_filter)}"
             HistoryDatabaseBackup            -> "[${getString(R.string.label_databases)}] ${getString(R.string.playlist_history)}"
@@ -76,6 +80,7 @@ object Backup {
         FavoriteBackup                   -> FavoritesDataBackupItemExecutor
         PlayingQueuesBackup              -> PlayingQueuesDataBackupItemExecutor
         InternalPlaylistsBackup          -> InternalDatabasePlaylistsDataBackupItemExecutor
+        MainDatabaseBackup               -> RawDatabaseBackupItemExecutor(MusicDatabase.DATABASE_NAME)
         FavoriteDatabaseBackup           -> RawDatabaseBackupItemExecutor(FAVORITE_DB)
         PathFilterDatabaseBackup         -> RawDatabaseBackupItemExecutor(PATH_FILTER)
         HistoryDatabaseBackup            -> RawDatabaseBackupItemExecutor(HISTORY_DB)

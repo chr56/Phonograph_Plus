@@ -59,6 +59,8 @@ sealed class BackupItem(
         const val KEY_DATABASE_SONG_PLAY_COUNT = "database_song_play_count"
         const val KEY_DATABASE_MUSIC_PLAYBACK_STATE = "database_music_playback_state"
 
+        const val KEY_DATABASE_MAIN = "database_main"
+
         private fun fromKey(key: String): BackupItem? = when (key) {
             KEY_SETTING                       -> SettingBackup
             KEY_PATH_FILTER                   -> PathFilterBackup
@@ -70,6 +72,7 @@ sealed class BackupItem(
             KEY_DATABASE_HISTORY              -> HistoryDatabaseBackup
             KEY_DATABASE_SONG_PLAY_COUNT      -> SongPlayCountDatabaseBackup
             KEY_DATABASE_MUSIC_PLAYBACK_STATE -> MusicPlaybackStateDatabaseBackup
+            KEY_DATABASE_MAIN                 -> MainDatabaseBackup
             else                              -> null
         }
     }
@@ -85,5 +88,7 @@ sealed class BackupItem(
     object HistoryDatabaseBackup : BackupItem(KEY_DATABASE_HISTORY, Type.DATABASE)
     object SongPlayCountDatabaseBackup : BackupItem(KEY_DATABASE_SONG_PLAY_COUNT, Type.DATABASE)
     object MusicPlaybackStateDatabaseBackup : BackupItem(KEY_DATABASE_MUSIC_PLAYBACK_STATE, Type.DATABASE)
+
+    object MainDatabaseBackup : BackupItem(KEY_DATABASE_MAIN, Type.DATABASE)
 }
 
