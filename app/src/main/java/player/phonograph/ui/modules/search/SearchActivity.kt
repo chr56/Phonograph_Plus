@@ -36,6 +36,9 @@ import util.theme.view.toolbar.setToolbarColor
 import util.theme.view.toolbar.tintCollapseIcon
 import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.children
 import androidx.viewpager2.widget.ViewPager2
 import android.content.Context
 import android.content.Intent
@@ -45,6 +48,7 @@ import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.inputmethod.EditorInfo
 
 class SearchActivity : AbsSlidingMusicPanelActivity(), SearchView.OnQueryTextListener,
                        ICreateFileStorageAccessible, IOpenFileStorageAccessible, IOpenDirStorageAccessible {
@@ -62,6 +66,7 @@ class SearchActivity : AbsSlidingMusicPanelActivity(), SearchView.OnQueryTextLis
     private lateinit var mediator: TabLayoutMediator
 
     private var searchView: SearchView? = null
+    private var isKeyboardVisible = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         viewBinding = ActivitySearchBinding.inflate(layoutInflater)
@@ -95,8 +100,15 @@ class SearchActivity : AbsSlidingMusicPanelActivity(), SearchView.OnQueryTextLis
                 adapter = searchResultPageAdapter
                 orientation = ViewPager2.ORIENTATION_HORIZONTAL
                 offscreenPageLimit = 1
-                setOnClickListener {
-                    hideSoftKeyboard()
+                for (view in children) {
+                    view.setOnTouchListener { view, _ ->
+                        if (isKeyboardVisible) {
+                            hideSoftKeyboard()
+                            true
+                        } else {
+                            view.performClick()
+                        }
+                    }
                 }
             }
             with(tabs) {
@@ -130,32 +142,46 @@ class SearchActivity : AbsSlidingMusicPanelActivity(), SearchView.OnQueryTextLis
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         addMenuProvider(menuProvider(this::setupMenu))
         setToolbarColor(binding.toolbar, primaryColor())
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, windowInsets ->
+            isKeyboardVisible = windowInsets.isVisible(WindowInsetsCompat.Type.ime())
+            windowInsets
+        }
     }
 
     private fun setupMenu(menu: Menu) {
         menuInflater.inflate(R.menu.menu_search, menu)
 
-        val searchItem = menu.findItem(R.id.search)
+        val searchItem = menu.findItem(R.id.search).apply {
+            expandActionView()
+            setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
+                override fun onMenuItemActionExpand(item: MenuItem): Boolean {
+                    return true
+                }
 
-        searchView = searchItem.actionView as SearchView
-        searchView!!.queryHint = getString(R.string.tips_search_hint)
-        searchView!!.maxWidth = Int.MAX_VALUE
+                override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
+                    if (isKeyboardVisible) {
+                        hideSoftKeyboard()
+                    } else {
+                        onBackPressedDispatcher.onBackPressed()
+                    }
+                    return false
+                }
+            })
+        }
 
-        searchItem.expandActionView()
-        searchItem.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
-            override fun onMenuItemActionExpand(item: MenuItem): Boolean {
-                return true
+
+        searchView = (searchItem.actionView as SearchView).apply {
+            queryHint = getString(R.string.tips_search_hint)
+            maxWidth = Int.MAX_VALUE
+            imeOptions = EditorInfo.IME_ACTION_SEARCH
+            post {
+                setOnQueryTextListener(this@SearchActivity)
             }
-
-            override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
-                onBackPressedDispatcher.onBackPressed()
-                return false
-            }
-        })
-
-        searchView!!.post { searchView!!.setOnQueryTextListener(this) }
+        }
 
         val textColor = primaryTextColor(primaryColor())
+
         binding.toolbar.tintCollapseIcon(textColor)
         setSearchViewContentColor(searchView, textColor)
     }
