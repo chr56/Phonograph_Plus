@@ -8,7 +8,6 @@ import player.phonograph.R
 import player.phonograph.model.version.ReleaseChannel
 import player.phonograph.model.version.Version
 import player.phonograph.model.version.VersionCatalog
-import player.phonograph.ui.modules.main.MainActivity
 import androidx.core.app.NotificationCompat
 import android.app.Notification
 import android.app.NotificationManager
@@ -25,14 +24,24 @@ class UpgradeNotificationImpl(context: Context) : AbsNotificationImpl() {
     override val channelName: CharSequence = context.getString(R.string.notification_update_name)
     override val importance: Int = NotificationManager.IMPORTANCE_HIGH
 
-    fun sendUpgradeNotification(context: Context, versionCatalog: VersionCatalog, channel: ReleaseChannel) {
+    fun sendUpgradeNotification(
+        context: Context,
+        versionCatalog: VersionCatalog,
+        channel: ReleaseChannel,
+        handlerIntent: Intent,
+    ) {
         execute(context) {
-            val version = versionCatalog.versions.filter { it.channel == channel.determiner }.maxByOrNull { it.versionCode } ?: return
-            val action =
-                MainActivity.launchingIntent(context, versionCatalog, Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            val version =
+                versionCatalog.versions.filter { it.channel == channel.determiner }.maxByOrNull { it.versionCode }
+                    ?: return
 
             val clickIntent: PendingIntent =
-                PendingIntent.getActivity(context, 0, action, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+                PendingIntent.getActivity(
+                    context,
+                    0,
+                    handlerIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                )
 
             val title = version.versionName
             val note = version.releaseNote.parsed(context.resources)

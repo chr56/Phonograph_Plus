@@ -20,10 +20,10 @@ fun warning(
 ) {
     if (throwable == null) {
         Log.w(tag, message)
-        ErrorNotification.postErrorNotification(message, type, context)
+        ErrorNotification.postErrorNotification(context, message, type)
     } else {
         Log.e(tag, message, throwable)
-        ErrorNotification.postErrorNotification(throwable, message, type, context)
+        ErrorNotification.postErrorNotification(context, throwable, message, type)
     }
 }
 

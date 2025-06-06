@@ -28,6 +28,7 @@ abstract class AudioMetadataEditor(
         withContext(Dispatchers.Default) {
             // notify user first
             BackgroundNotification.post(
+                context,
                 App.instance.getString(R.string.action_tag_editor),
                 App.instance.getString(R.string.state_saving_changes),
                 TAG_EDITOR_NOTIFICATION_CODE
@@ -43,7 +44,7 @@ abstract class AudioMetadataEditor(
                 }
             }
             // notify user
-            BackgroundNotification.remove(TAG_EDITOR_NOTIFICATION_CODE)
+            BackgroundNotification.remove(context, TAG_EDITOR_NOTIFICATION_CODE)
             if (logs.isNotEmpty()) warning(context, LOG_TAG, logs.joinToString(separator = "\n"))
             yield()
             // refresh media store

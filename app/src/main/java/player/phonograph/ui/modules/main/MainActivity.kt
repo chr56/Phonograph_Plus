@@ -234,7 +234,16 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
         lifecycleScope.launch(SupervisorJob()) {
             Update.checkUpdate { versionCatalog: VersionCatalog, upgradable: Boolean ->
                 if (upgradable) {
-                    UpgradeNotification.sendUpgradeNotification(versionCatalog, currentChannel)
+                    UpgradeNotification.sendUpgradeNotification(
+                        this@MainActivity,
+                        versionCatalog,
+                        currentChannel,
+                        launchingIntent(
+                            this@MainActivity,
+                            versionCatalog,
+                            Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        )
+                    )
                 }
             }
             Setting(this@MainActivity)[Keys.lastCheckUpgradeTimeStamp].data = System.currentTimeMillis()

@@ -68,7 +68,7 @@ class MediaStoreScanner(val context: Context) : MediaScannerConnection.MediaScan
             scannerConnection.scanFile(path, null)
             if (index % 17 == 0) reportProcess(index, paths, task.id)
         }
-        BackgroundNotification.remove(task.id)
+        BackgroundNotification.remove(context, task.id)
     }
 
 
@@ -102,6 +102,7 @@ class MediaStoreScanner(val context: Context) : MediaScannerConnection.MediaScan
 
     private fun reportProcess(current: Int, all: Array<String>, id: Int) {
         BackgroundNotification.post(
+            context,
             title,
             String.format(scannedFiles, current, all.size),
             id,

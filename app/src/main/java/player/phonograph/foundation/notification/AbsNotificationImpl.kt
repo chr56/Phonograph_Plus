@@ -8,11 +8,13 @@ import androidx.annotation.RequiresApi
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import android.os.Build
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES
 
 abstract class AbsNotificationImpl {
 
-    protected val notificationManager: NotificationManager get() = sNotificationManager!!
+    private var _notificationManager: NotificationManager? = null
+    protected val notificationManager: NotificationManager get() = _notificationManager!!
 
     protected var isReady: Boolean = false
         private set
@@ -23,8 +25,8 @@ abstract class AbsNotificationImpl {
     protected open val channelCfg: NotificationChannel.() -> Unit = {}
 
     protected fun init(context: Context) {
-        sNotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && sNotificationManager != null) {
+        _notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        if (SDK_INT >= VERSION_CODES.O && _notificationManager != null) {
             createNotificationChannel(notificationManager, channelId, channelName, importance, channelCfg)
         }
         isReady = true
@@ -53,10 +55,6 @@ abstract class AbsNotificationImpl {
                 }.apply(cfg)
             )
         }
-    }
-
-    companion object {
-        private var sNotificationManager: NotificationManager? = null
     }
 
 }

@@ -307,6 +307,7 @@ class SongPlayCountStore(val context: Context) :
                         updateExistingRow(readableDatabase, cursor.getLong(0), bumpCount = false, force = true)
                         if (i.mod(31) == 0)
                             BackgroundNotification.post(
+                                context,
                                 context.getString(R.string.action_refresh),
                                 context.getString(R.string.playlist_my_top_tracks),
                                 NOTIFICATION_ID, i, totalCount
@@ -315,7 +316,7 @@ class SongPlayCountStore(val context: Context) :
                 } catch (e: Exception) {
                     warning(context, this::class.java.simpleName, "Failed to recalculate score!", e)
                 } finally {
-                    BackgroundNotification.remove(NOTIFICATION_ID)
+                    BackgroundNotification.remove(context, NOTIFICATION_ID)
                 }
             }
         }

@@ -8,9 +8,11 @@ import player.phonograph.App
 import player.phonograph.foundation.notification.ErrorNotification
 import player.phonograph.foundation.notification.UpgradeNotification
 import player.phonograph.mechanism.Update
+import player.phonograph.model.CrashReport
 import player.phonograph.model.Song
 import player.phonograph.model.version.VersionCatalog
 import player.phonograph.repo.mediastore.MediaStoreSongsActions
+import player.phonograph.ui.modules.main.MainActivity
 import player.phonograph.util.concurrent.coroutineToast
 import player.phonograph.util.currentChannel
 import player.phonograph.util.theme.tintButtons
@@ -19,6 +21,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
 import android.app.Dialog
 import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
@@ -42,7 +45,12 @@ class DebugDialog : DialogFragment() {
             }
         },
         "Send Crash Notification" to {
-            ErrorNotification.postErrorNotification(Exception("Test"), "Crash Notification Test!!")
+            ErrorNotification.postErrorNotification(
+                App.instance,
+                Exception("Test"),
+                "Crash Notification Test!!",
+                CrashReport.CRASH_TYPE_CRASH
+            )
         },
         "Check Overflowed Song Ids" to {
             CoroutineScope(Dispatchers.IO).launch {
@@ -74,7 +82,16 @@ class DebugDialog : DialogFragment() {
         "Check for updates (Notification)" to {
             CoroutineScope(Dispatchers.Unconfined).launch {
                 Update.checkUpdate(true) { versionCatalog: VersionCatalog, upgradable: Boolean ->
-                    UpgradeNotification.sendUpgradeNotification(versionCatalog, currentChannel)
+                    UpgradeNotification.sendUpgradeNotification(
+                        App.instance,
+                        versionCatalog,
+                        currentChannel,
+                        MainActivity.launchingIntent(
+                            App.instance,
+                            versionCatalog,
+                            Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        )
+                    )
                     if (!upgradable) {
                         coroutineToast(App.instance, "not upgradable")
                     }
