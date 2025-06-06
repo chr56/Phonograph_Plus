@@ -58,30 +58,30 @@ object DatabaseActions {
 
     /**
      * Close Database and wipe all table
+     *
+     * **Require reboot after operation**
+     *
      */
-    suspend fun purge(musicDatabase: MusicDatabase) {
-        withContext(Dispatchers.IO) {
-            synchronized(musicDatabase) {
-                musicDatabase.close()
-                musicDatabase.clearAllTables()
-            }
+    fun wipe(musicDatabase: MusicDatabase) = run {
+        synchronized(musicDatabase) {
+            musicDatabase.close()
+            musicDatabase.clearAllTables()
         }
     }
 
     /**
-     * delete database file
+     * Close Database delete database file
+     *
+     * **Require reboot after operation**
+     *
+     * @return deletion result
      */
-    suspend fun deleteEntireDatabase(context: Context, musicDatabase: MusicDatabase) = withContext(Dispatchers.IO) {
+    fun purge(context: Context, musicDatabase: MusicDatabase): Boolean = run {
         val path = context.getDatabasePath(MusicDatabase.DATABASE_NAME)
-        try {
-            synchronized(musicDatabase) {
-                musicDatabase.close()
-                path.delete()
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
+        synchronized(musicDatabase) {
+            musicDatabase.close()
+            path.delete()
         }
-
     }
 
 }

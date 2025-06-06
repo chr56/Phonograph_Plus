@@ -8,6 +8,8 @@ import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.vanpra.composematerialdialogs.title
 import player.phonograph.R
+import player.phonograph.foundation.Reboot
+import player.phonograph.foundation.error.warning
 import player.phonograph.repo.room.DatabaseActions
 import player.phonograph.repo.room.MusicDatabase
 import player.phonograph.ui.compose.ComposeViewDialogFragment
@@ -104,9 +106,15 @@ private fun OptionItemDelete(
         stringResource(R.string.tips_delete_database),
         requireConfirm = true
     ) {
-        coroutineScope.launch(Dispatchers.IO) {
-            DatabaseActions.deleteEntireDatabase(context.applicationContext, MusicDatabase.koinInstance)
-            dismiss()
+        coroutineScope.launch {
+            try {
+                DatabaseActions.purge(context.applicationContext, MusicDatabase.koinInstance)
+                Reboot.reboot(context)
+            } catch (e: Exception) {
+                warning(context, "Database", "Failed to purge database", e)
+            } finally {
+                dismiss()
+            }
         }
     }
 }
