@@ -4,9 +4,9 @@
 
 package player.phonograph.repo.mediastore
 
+import player.phonograph.foundation.mediastore.intoSongs
 import player.phonograph.model.Song
 import player.phonograph.repo.mediastore.internal.SortedLongCursor
-import player.phonograph.repo.mediastore.internal.intoSongs
 import player.phonograph.repo.mediastore.internal.querySongs
 import android.content.Context
 import android.database.Cursor

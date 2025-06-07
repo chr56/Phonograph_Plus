@@ -4,10 +4,10 @@
 
 package player.phonograph.repo.mediastore
 
+import player.phonograph.foundation.mediastore.intoSongs
 import player.phonograph.model.Artist
 import player.phonograph.model.repo.loader.IArtists
 import player.phonograph.repo.mediastore.internal.generateArtists
-import player.phonograph.repo.mediastore.internal.intoSongs
 import player.phonograph.repo.mediastore.internal.querySongs
 import android.content.Context
 import android.provider.MediaStore.Audio.AudioColumns

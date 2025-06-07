@@ -11,6 +11,7 @@ import player.phonograph.coil.loadImage
 import player.phonograph.coil.palette.PaletteColorTarget
 import player.phonograph.databinding.FragmentAlbumCoverBinding
 import player.phonograph.databinding.FragmentPlayerAlbumCoverBinding
+import player.phonograph.foundation.compat.parcelable
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.service.MusicPlayerRemote
@@ -20,7 +21,6 @@ import player.phonograph.ui.modules.panel.AbsMusicServiceFragment
 import player.phonograph.ui.modules.panel.PanelViewModel
 import player.phonograph.util.component.MusicProgressUpdateDelegate
 import player.phonograph.util.observe
-import player.phonograph.util.parcelable
 import player.phonograph.util.theme.themeFooterColor
 import player.phonograph.util.ui.PHONOGRAPH_ANIM_TIME
 import player.phonograph.util.ui.SimpleAnimatorListener

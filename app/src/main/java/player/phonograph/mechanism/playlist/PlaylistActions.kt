@@ -4,6 +4,7 @@
 
 package player.phonograph.mechanism.playlist
 
+import player.phonograph.foundation.mediastore.mediastoreUriPlaylist
 import player.phonograph.mechanism.playlist.m3u.SAFPlaylistUtil
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.DatabasePlaylistLocation
@@ -24,7 +25,6 @@ import player.phonograph.repo.mediastore.MediaStorePlaylistsActions
 import player.phonograph.repo.room.MusicDatabase
 import player.phonograph.repo.room.domain.RoomPlaylistsActions
 import player.phonograph.util.file.selectDocumentUris
-import player.phonograph.util.mediastoreUriPlaylist
 import android.content.Context
 import android.net.Uri
 import android.provider.DocumentsContract

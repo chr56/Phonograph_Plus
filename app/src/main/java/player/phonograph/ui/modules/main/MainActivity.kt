@@ -13,6 +13,7 @@ import player.phonograph.VERSION_INFO
 import player.phonograph.coil.loadImage
 import player.phonograph.databinding.ActivityMainBinding
 import player.phonograph.databinding.LayoutDrawerBinding
+import player.phonograph.foundation.compat.parcelableExtra
 import player.phonograph.foundation.error.warning
 import player.phonograph.foundation.notification.UpgradeNotification
 import player.phonograph.mechanism.PhonographShortcutManager
@@ -33,7 +34,6 @@ import player.phonograph.util.currentVersionCode
 import player.phonograph.util.debug
 import player.phonograph.util.logMetrics
 import player.phonograph.util.observe
-import player.phonograph.util.parcelableExtra
 import player.phonograph.util.text.infoString
 import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.nightMode

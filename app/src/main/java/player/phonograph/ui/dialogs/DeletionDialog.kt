@@ -7,16 +7,15 @@ import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.vanpra.composematerialdialogs.title
 import player.phonograph.R
+import player.phonograph.foundation.compat.parcelableArrayList
+import player.phonograph.foundation.mediastore.mediaStoreUriSongExternal
 import player.phonograph.mechanism.lyrics.LyricsLoader
 import player.phonograph.model.Song
 import player.phonograph.repo.mediastore.MediaStoreSongsActions
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
-import player.phonograph.util.MEDIASTORE_VOLUME_EXTERNAL
 import player.phonograph.util.concurrent.runOnMainHandler
 import player.phonograph.util.concurrent.withLooper
-import player.phonograph.util.mediaStoreUriSong
-import player.phonograph.util.parcelableArrayList
 import player.phonograph.util.permissions.StoragePermissionChecker
 import player.phonograph.util.permissions.navigateToStorageSetting
 import player.phonograph.util.theme.accentColoredButtonStyle
@@ -271,7 +270,7 @@ private fun showFailDialog(context: Context, msg: String, failList: Collection<S
         if (SDK_INT >= VERSION_CODES.R && context is Activity) {
             negativeButton(R.string.action_retry) {
                 val uris = failList.map { song ->
-                    mediaStoreUriSong(MEDIASTORE_VOLUME_EXTERNAL, song.id)
+                    mediaStoreUriSongExternal(song.id)
                 }
                 context.startIntentSenderForResult(
                     MediaStore.createDeleteRequest(

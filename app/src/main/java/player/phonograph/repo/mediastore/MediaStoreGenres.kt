@@ -4,18 +4,17 @@
 
 package player.phonograph.repo.mediastore
 
+import player.phonograph.foundation.mediastore.BASE_AUDIO_SELECTION
+import player.phonograph.foundation.mediastore.BASE_SONG_PROJECTION
+import player.phonograph.foundation.mediastore.intoSongs
+import player.phonograph.foundation.mediastore.mediastoreUriGenreMembersExternal
+import player.phonograph.foundation.mediastore.mediastoreUriGenresExternal
 import player.phonograph.model.Genre
 import player.phonograph.model.Song
 import player.phonograph.model.repo.loader.IGenres
 import player.phonograph.model.sort.SortMode
-import player.phonograph.repo.mediastore.internal.BASE_AUDIO_SELECTION
-import player.phonograph.repo.mediastore.internal.BASE_SONG_PROJECTION
-import player.phonograph.repo.mediastore.internal.intoSongs
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
-import player.phonograph.util.MEDIASTORE_VOLUME_EXTERNAL
-import player.phonograph.util.mediastoreUriGenreMembers
-import player.phonograph.util.mediastoreUriGenres
 import player.phonograph.util.sort
 import android.content.Context
 import android.database.Cursor
@@ -41,7 +40,7 @@ object MediaStoreGenres : IGenres {
 
     private fun queryGenreImpl(context: Context, selection: String?, selectionArgs: Array<String>?): Cursor? =
         context.contentResolver.query(
-            mediastoreUriGenres(MEDIASTORE_VOLUME_EXTERNAL),
+            mediastoreUriGenresExternal(),
             arrayOf(Genres._ID, Genres.NAME),
             selection,
             selectionArgs,
@@ -50,7 +49,7 @@ object MediaStoreGenres : IGenres {
 
     private fun querySongs(context: Context, genreId: Long): Cursor? =
         context.contentResolver.query(
-            mediastoreUriGenreMembers(MEDIASTORE_VOLUME_EXTERNAL, genreId),
+            mediastoreUriGenreMembersExternal(genreId),
             BASE_SONG_PROJECTION,
             BASE_AUDIO_SELECTION,
             null,
@@ -80,7 +79,7 @@ object MediaStoreGenres : IGenres {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
             try {
                 context.contentResolver.delete(
-                    mediastoreUriGenres(MEDIASTORE_VOLUME_EXTERNAL),
+                    mediastoreUriGenresExternal(),
                     "${Genres._ID} == $genreId",
                     null
                 )

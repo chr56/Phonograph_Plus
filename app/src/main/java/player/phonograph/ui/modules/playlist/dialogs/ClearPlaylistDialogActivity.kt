@@ -11,6 +11,7 @@ import lib.storage.launcher.IOpenFileStorageAccessible
 import lib.storage.launcher.OpenDirStorageAccessDelegate
 import lib.storage.launcher.OpenFileStorageAccessDelegate
 import player.phonograph.R
+import player.phonograph.foundation.compat.parcelableArrayListExtra
 import player.phonograph.mechanism.playlist.PlaylistActions
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.ui.basis.DialogActivity
@@ -21,7 +22,6 @@ import player.phonograph.ui.compose.components.ListItem
 import player.phonograph.ui.modules.playlist.dialogs.ClearPlaylistDialogActivity.ClearPlaylistViewModel.State.ConfirmToDelete
 import player.phonograph.ui.modules.playlist.dialogs.ClearPlaylistDialogActivity.ClearPlaylistViewModel.State.PreparedToDelete
 import player.phonograph.ui.modules.playlist.dialogs.ClearPlaylistDialogActivity.ClearPlaylistViewModel.State.Success
-import player.phonograph.util.parcelableArrayListExtra
 import player.phonograph.util.permissions.StoragePermissionChecker
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels

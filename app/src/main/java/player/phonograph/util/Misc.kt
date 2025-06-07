@@ -16,6 +16,7 @@ package player.phonograph.util
 
 import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.foundation.error.warning
+import player.phonograph.foundation.mediastore.mediaStoreUriSongExternal
 import player.phonograph.model.Song
 import androidx.core.content.FileProvider
 import androidx.fragment.app.FragmentActivity
@@ -126,7 +127,7 @@ fun setRingtone(context: Context, songId: Long) {
     RingtoneManager.setActualDefaultRingtoneUri(
         context,
         RingtoneManager.TYPE_ALARM,
-        mediaStoreUriSong(MEDIASTORE_VOLUME_EXTERNAL, songId)
+        mediaStoreUriSongExternal(songId)
     )
 }
 

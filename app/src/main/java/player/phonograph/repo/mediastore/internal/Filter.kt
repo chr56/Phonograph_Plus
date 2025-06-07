@@ -5,6 +5,8 @@
 package player.phonograph.repo.mediastore.internal
 
 import org.koin.core.context.GlobalContext
+import player.phonograph.foundation.mediastore.BASE_AUDIO_SELECTION
+import player.phonograph.foundation.mediastore.BASE_PLAYLIST_SELECTION
 import player.phonograph.repo.database.store.PathFilterStore
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting

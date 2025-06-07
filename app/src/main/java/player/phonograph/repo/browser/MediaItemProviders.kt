@@ -6,6 +6,7 @@ package player.phonograph.repo.browser
 
 import org.koin.core.context.GlobalContext
 import player.phonograph.R
+import player.phonograph.foundation.mediastore.mediaStoreUriAlbumArt
 import player.phonograph.mechanism.playlist.PlaylistSongsActions
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
@@ -25,7 +26,6 @@ import player.phonograph.repo.mediastore.MediaStorePlaylists
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
-import player.phonograph.util.mediaStoreUriAlbumArt
 import androidx.annotation.DrawableRes
 import android.content.ContentResolver
 import android.content.Context

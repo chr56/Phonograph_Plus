@@ -4,10 +4,10 @@
 
 package player.phonograph.repo.mediastore
 
+import player.phonograph.foundation.mediastore.intoFirstSong
+import player.phonograph.foundation.mediastore.intoSongs
 import player.phonograph.model.Song
 import player.phonograph.model.repo.loader.ISongs
-import player.phonograph.repo.mediastore.internal.intoFirstSong
-import player.phonograph.repo.mediastore.internal.intoSongs
 import player.phonograph.repo.mediastore.internal.locateSongs
 import player.phonograph.repo.mediastore.internal.querySongs
 import android.content.Context

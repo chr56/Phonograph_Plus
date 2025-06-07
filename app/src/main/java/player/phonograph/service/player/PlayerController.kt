@@ -2,6 +2,7 @@ package player.phonograph.service.player
 
 import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.R
+import player.phonograph.foundation.mediastore.mediaStoreUriSongExternal
 import player.phonograph.mechanism.StatusBarLyric
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
@@ -16,9 +17,6 @@ import player.phonograph.service.util.QueuePreferenceManager
 import player.phonograph.service.util.makeErrorMessage
 import player.phonograph.settings.Keys
 import player.phonograph.settings.SettingObserver
-import player.phonograph.util.MEDIASTORE_VOLUME_EXTERNAL
-import player.phonograph.util.mediaStoreUriSong
-import player.phonograph.util.registerReceiverCompat
 import androidx.core.content.ContextCompat
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -249,7 +247,7 @@ class PlayerController : ServiceComponent, Controller {
          */
         private fun prepareCurrentPlayer(song: Song?): Boolean {
             return if (song != null && song.data.isNotEmpty()) {
-                audioPlayer.setDataSource(mediaStoreUriSong(MEDIASTORE_VOLUME_EXTERNAL, song.id).toString())
+                audioPlayer.setDataSource(mediaStoreUriSongExternal(song.id).toString())
             } else {
                 false
             }
@@ -262,7 +260,7 @@ class PlayerController : ServiceComponent, Controller {
         fun prepareNextPlayer(song: Song?) {
             if (audioPlayer.isInitialized) audioPlayer.setNextDataSource(
                 if (song != null && song.data.isNotEmpty())
-                    mediaStoreUriSong(MEDIASTORE_VOLUME_EXTERNAL, song.id).toString()
+                    mediaStoreUriSongExternal(song.id).toString()
                 else null
             )
         }
@@ -519,7 +517,8 @@ class PlayerController : ServiceComponent, Controller {
         private var becomingNoisyReceiverRegistered = false
         private fun checkAndRegisterBecomingNoisyReceiver(context: Context) {
             if (!becomingNoisyReceiverRegistered) {
-                context.registerReceiverCompat(
+                ContextCompat.registerReceiver(
+                    context,
                     becomingNoisyReceiver,
                     IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY),
                     ContextCompat.RECEIVER_EXPORTED

@@ -12,6 +12,7 @@ import player.phonograph.UpdateConfig.CHANNEL_NAME
 import player.phonograph.UpdateConfig.DOMAIN_GITHUB
 import player.phonograph.UpdateConfig.DOMAIN_TG_LINK
 import player.phonograph.UpdateConfig.GITHUB_REPO
+import player.phonograph.foundation.compat.parcelable
 import player.phonograph.mechanism.canAccessGitHub
 import player.phonograph.model.version.ReleaseChannel
 import player.phonograph.model.version.Version
@@ -23,7 +24,6 @@ import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.TempPopupContent
 import player.phonograph.util.currentChannel
 import player.phonograph.util.currentVariant
-import player.phonograph.util.parcelable
 import player.phonograph.util.text.dateText
 import player.phonograph.util.theme.accentColoredButtonStyle
 import player.phonograph.util.ui.alertDialog

@@ -8,6 +8,7 @@ import lib.storage.launcher.IOpenFileStorageAccessible
 import lib.storage.launcher.OpenDocumentContract
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import player.phonograph.R
+import player.phonograph.foundation.compat.parcelable
 import player.phonograph.foundation.error.warning
 import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.lyrics.LrcLyrics
@@ -28,7 +29,6 @@ import player.phonograph.ui.modules.player.controller.PlayerControllerFragment
 import player.phonograph.ui.modules.setting.dialog.NowPlayingScreenStylePreferenceDialog
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.observe
-import player.phonograph.util.parcelable
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.ui.PHONOGRAPH_ANIM_TIME
 import player.phonograph.util.ui.backgroundColorTransitionAnimator

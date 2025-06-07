@@ -4,12 +4,11 @@
 
 package player.phonograph.repo.mediastore
 
+import player.phonograph.foundation.mediastore.mediastoreUriSongsExternal
 import player.phonograph.model.Song
 import player.phonograph.repo.loader.Songs
-import player.phonograph.util.MEDIASTORE_VOLUME_EXTERNAL
 import player.phonograph.util.debug
 import player.phonograph.util.isEmbeddingOverflow
-import player.phonograph.util.mediastoreUriSongs
 import player.phonograph.util.produceSafeId
 import android.content.Context
 import android.provider.MediaStore.Audio
@@ -36,7 +35,7 @@ object MediaStoreSongsActions {
      */
     private fun deleteViaMediaStoreImpl(context: Context, song: Song): Boolean {
         val output = context.contentResolver.delete(
-            mediastoreUriSongs(MEDIASTORE_VOLUME_EXTERNAL), "${Audio.Media.DATA} = ?", arrayOf(song.data)
+            mediastoreUriSongsExternal(), "${Audio.Media.DATA} = ?", arrayOf(song.data)
         )
         // if it failed
         return if (output <= 0) {

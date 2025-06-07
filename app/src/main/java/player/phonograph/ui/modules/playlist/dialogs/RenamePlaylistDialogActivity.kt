@@ -6,10 +6,10 @@ package player.phonograph.ui.modules.playlist.dialogs
 
 import player.phonograph.R
 import player.phonograph.databinding.DialogRenamePlaylistBinding
+import player.phonograph.foundation.compat.parcelableExtra
 import player.phonograph.mechanism.playlist.PlaylistSongsActions
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.ui.basis.DialogActivity
-import player.phonograph.util.parcelableExtra
 import player.phonograph.util.ui.getScreenSize
 import android.content.Context
 import android.content.Intent

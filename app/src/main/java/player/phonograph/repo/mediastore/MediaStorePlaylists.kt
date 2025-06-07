@@ -4,10 +4,17 @@
 
 package player.phonograph.repo.mediastore
 
-import legacy.phonograph.MediaStoreCompat.Audio.Playlists
-import legacy.phonograph.MediaStoreCompat.Audio.PlaylistsColumns
 import player.phonograph.R
+import player.phonograph.foundation.compat.MEDIASTORE_VOLUME_EXTERNAL
+import player.phonograph.foundation.compat.MediaStoreCompat.Audio.Playlists
+import player.phonograph.foundation.compat.MediaStoreCompat.Audio.PlaylistsColumns
 import player.phonograph.foundation.error.record
+import player.phonograph.foundation.mediastore.BASE_AUDIO_SELECTION
+import player.phonograph.foundation.mediastore.BASE_SONG_PROJECTION
+import player.phonograph.foundation.mediastore.mediastoreUriPlaylistMembers
+import player.phonograph.foundation.mediastore.mediastoreUriPlaylistMembersExternal
+import player.phonograph.foundation.mediastore.mediastoreUriPlaylistsExternal
+import player.phonograph.foundation.mediastore.readSong
 import player.phonograph.model.PlaylistSong
 import player.phonograph.model.playlist.FilePlaylistLocation
 import player.phonograph.model.playlist.Playlist
@@ -15,17 +22,11 @@ import player.phonograph.model.playlist.PlaylistLocation
 import player.phonograph.model.repo.loader.IPlaylists
 import player.phonograph.model.sort.SortMode
 import player.phonograph.repo.loader.PinedPlaylists
-import player.phonograph.repo.mediastore.internal.BASE_AUDIO_SELECTION
-import player.phonograph.repo.mediastore.internal.BASE_SONG_PROJECTION
 import player.phonograph.repo.mediastore.internal.SQLWhereClause
-import player.phonograph.repo.mediastore.internal.readSong
 import player.phonograph.repo.mediastore.internal.withBasePlaylistFilter
 import player.phonograph.repo.mediastore.internal.withPathFilter
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
-import player.phonograph.util.MEDIASTORE_VOLUME_EXTERNAL
-import player.phonograph.util.mediastoreUriPlaylistMembers
-import player.phonograph.util.mediastoreUriPlaylists
 import player.phonograph.util.sort
 import android.content.Context
 import android.database.Cursor
@@ -92,7 +93,7 @@ object MediaStorePlaylists : IPlaylists {
 
     private fun checkExistenceImpl(context: Context, selection: String, values: Array<String>): Boolean =
         context.contentResolver
-            .query(mediastoreUriPlaylists(MEDIASTORE_VOLUME_EXTERNAL), arrayOf(), selection, values, null)
+            .query(mediastoreUriPlaylistsExternal(), arrayOf(), selection, values, null)
             ?.use { it.count > 0 } == true
 
     /**
@@ -111,7 +112,7 @@ object MediaStorePlaylists : IPlaylists {
                 )
             }
         return context.contentResolver.query(
-            mediastoreUriPlaylists(MEDIASTORE_VOLUME_EXTERNAL),
+            mediastoreUriPlaylistsExternal(),
             if (SDK_INT > Q) BASE_PLAYLIST_PROJECTION_Q else BASE_PLAYLIST_PROJECTION,
             actual.selection,
             actual.selectionValues,
@@ -197,7 +198,7 @@ object MediaStorePlaylists : IPlaylists {
 
     private fun queryPlaylistSongs(context: Context, playlistId: Long): Cursor? = try {
         context.contentResolver.query(
-            mediastoreUriPlaylistMembers(MEDIASTORE_VOLUME_EXTERNAL, playlistId),
+            mediastoreUriPlaylistMembersExternal(playlistId),
             arrayOf(Playlists.Members.AUDIO_ID) + BASE_SONG_PROJECTION.drop(1) + arrayOf(Playlists.Members._ID),
             BASE_AUDIO_SELECTION, null,
             Playlists.Members.DEFAULT_SORT_ORDER

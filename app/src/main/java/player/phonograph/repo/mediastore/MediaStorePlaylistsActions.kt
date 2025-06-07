@@ -4,13 +4,13 @@
 
 package player.phonograph.repo.mediastore
 
-import legacy.phonograph.MediaStoreCompat
-import legacy.phonograph.MediaStoreCompat.Audio.Playlists
+import player.phonograph.foundation.compat.MEDIASTORE_VOLUME_EXTERNAL
+import player.phonograph.foundation.compat.MediaStoreCompat
+import player.phonograph.foundation.compat.MediaStoreCompat.Audio.Playlists
 import player.phonograph.foundation.error.record
+import player.phonograph.foundation.mediastore.mediastoreUriPlaylists
 import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.Song
-import player.phonograph.util.MEDIASTORE_VOLUME_EXTERNAL
-import player.phonograph.util.mediastoreUriPlaylists
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
@@ -211,11 +211,12 @@ object MediaStorePlaylistsActions {
     fun delete(
         context: Context,
         playlistUri: Uri,
+        volume: String = MEDIASTORE_VOLUME_EXTERNAL,
     ): Boolean {
         val playlistId = playlistId(playlistUri)
         return try {
             val result = context.contentResolver.delete(
-                mediastoreUriPlaylists(MEDIASTORE_VOLUME_EXTERNAL),
+                mediastoreUriPlaylists(volume),
                 "${MediaStore.Audio.Media._ID} = ?",
                 arrayOf(playlistId.toString())
             )

@@ -4,9 +4,9 @@
 
 package player.phonograph.mechanism.event
 
-import legacy.phonograph.MediaStoreCompat.Audio.Playlists
 import player.phonograph.App
 import player.phonograph.PACKAGE_NAME
+import player.phonograph.foundation.compat.MediaStoreCompat.Audio.Playlists
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner

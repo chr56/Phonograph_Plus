@@ -22,12 +22,12 @@ import mms.lastfm.TrackResult
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.USER_AGENT
+import player.phonograph.foundation.compat.parcelable
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Song
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
-import player.phonograph.util.parcelable
 import player.phonograph.util.theme.accentColoredButtonStyle
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box

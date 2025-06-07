@@ -7,10 +7,10 @@ package player.phonograph.coil
 import coil.Coil
 import coil.request.ImageRequest
 import coil.target.Target
+import player.phonograph.foundation.compat.MEDIASTORE_VOLUME_EXTERNAL
 import player.phonograph.foundation.error.warning
-import player.phonograph.util.MEDIASTORE_VOLUME_EXTERNAL
+import player.phonograph.foundation.mediastore.mediastoreUriArtists
 import player.phonograph.util.file.createOrOverrideFileRecursive
-import player.phonograph.util.mediastoreUriArtists
 import player.phonograph.util.ui.BitmapUtil.restraintBitmapSize
 import androidx.core.graphics.drawable.toBitmap
 import android.content.Context

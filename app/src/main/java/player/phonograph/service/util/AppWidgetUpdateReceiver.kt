@@ -11,7 +11,6 @@ import player.phonograph.ui.appwidgets.AppWidgetCard
 import player.phonograph.ui.appwidgets.AppWidgetClassic
 import player.phonograph.ui.appwidgets.AppWidgetSmall
 import player.phonograph.ui.appwidgets.BaseAppWidget
-import player.phonograph.util.registerReceiverCompat
 import androidx.core.content.ContextCompat
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetManager.EXTRA_APPWIDGET_IDS
@@ -79,7 +78,8 @@ class AppWidgetUpdateReceiver : BroadcastReceiver() {
          * register & attach this Receiver to this [context]
          */
         fun register(context: Context) {
-            context.registerReceiverCompat(
+            ContextCompat.registerReceiver(
+                context,
                 instant,
                 IntentFilter().apply {
                     addAction(ACTION_APPWIDGET_UPDATE)

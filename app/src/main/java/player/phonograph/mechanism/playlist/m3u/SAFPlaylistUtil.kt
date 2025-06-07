@@ -5,10 +5,10 @@
 package player.phonograph.mechanism.playlist.m3u
 
 
-import legacy.phonograph.MediaStoreCompat.Audio.Playlists
 import lib.storage.launcher.IOpenFileStorageAccessible
 import player.phonograph.App
 import player.phonograph.R
+import player.phonograph.foundation.compat.MediaStoreCompat.Audio.Playlists
 import player.phonograph.foundation.error.warning
 import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.Song

@@ -4,15 +4,13 @@
 
 package player.phonograph.repo.mediastore.internal
 
-import legacy.phonograph.MediaStoreCompat
 import player.phonograph.foundation.error.record
+import player.phonograph.foundation.mediastore.BASE_FILE_PROJECTION
+import player.phonograph.foundation.mediastore.BASE_SONG_PROJECTION
+import player.phonograph.foundation.mediastore.mediastoreUriSongsExternal
 import player.phonograph.repo.mediastore.defaultSongQuerySortOrder
-import player.phonograph.util.MEDIASTORE_VOLUME_EXTERNAL
-import player.phonograph.util.mediastoreUriSongs
 import android.content.Context
 import android.database.Cursor
-import android.provider.BaseColumns
-import android.provider.MediaStore.Audio
 import android.provider.MediaStore.Audio.AudioColumns
 
 
@@ -75,7 +73,7 @@ fun queryAudio(
 
     return try {
         context.contentResolver.query(
-            mediastoreUriSongs(MEDIASTORE_VOLUME_EXTERNAL),
+            mediastoreUriSongsExternal(),
             projection,
             actual.selection,
             actual.selectionValues,
@@ -144,37 +142,5 @@ private const val TITLE_SELECTION = "lower(${AudioColumns.TITLE}) LIKE ?"
 private const val ALBUM_SELECTION = "lower(${AudioColumns.ALBUM}) LIKE ?"
 private const val ARTIST_SELECTION = "lower(${AudioColumns.ARTIST}) LIKE ?"
 private const val AND = " AND "
-
-val BASE_SONG_PROJECTION = arrayOf(
-    BaseColumns._ID, // 0
-    AudioColumns.TITLE, // 1
-    AudioColumns.TRACK, // 2
-    AudioColumns.YEAR, // 3
-    AudioColumns.DURATION, // 4
-    AudioColumns.DATA, // 5
-    AudioColumns.DATE_ADDED, // 6
-    AudioColumns.DATE_MODIFIED, // 7
-    AudioColumns.ALBUM_ID, // 8
-    AudioColumns.ALBUM, // 9
-    AudioColumns.ARTIST_ID, // 10
-    AudioColumns.ARTIST, // 11
-    AudioColumns.ALBUM_ARTIST, // 12 (hidden api before R)
-    AudioColumns.COMPOSER, // 13 (hidden api before R)
-)
-
-val BASE_FILE_PROJECTION = arrayOf(
-    BaseColumns._ID, // 0
-    AudioColumns.DISPLAY_NAME, // 1
-    AudioColumns.DATA, // 2
-    AudioColumns.SIZE, // 3
-    AudioColumns.DATE_ADDED, // 4
-    AudioColumns.DATE_MODIFIED, // 5
-)
-
-const val BASE_AUDIO_SELECTION =
-    "${AudioColumns.IS_MUSIC} =1 "
-
-const val BASE_PLAYLIST_SELECTION =
-    "${MediaStoreCompat.Audio.PlaylistsColumns.NAME} != '' "
 
 private const val TAG = "MediaStoreQuery"

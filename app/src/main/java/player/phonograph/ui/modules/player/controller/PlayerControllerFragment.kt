@@ -5,6 +5,7 @@
 package player.phonograph.ui.modules.player.controller
 
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import player.phonograph.foundation.compat.parcelable
 import player.phonograph.model.service.PlayerState
 import player.phonograph.model.ui.PlayerControllerStyle
 import player.phonograph.model.ui.PlayerControllerStyle.Companion.ButtonPosition
@@ -14,7 +15,6 @@ import player.phonograph.ui.modules.panel.AbsMusicServiceFragment
 import player.phonograph.ui.modules.panel.PanelViewModel
 import player.phonograph.util.component.MusicProgressUpdateDelegate
 import player.phonograph.util.observe
-import player.phonograph.util.parcelable
 import util.theme.color.isColorLight
 import util.theme.color.primaryTextColor
 import util.theme.color.secondaryTextColor

@@ -4,9 +4,9 @@
 
 package player.phonograph.ui.modules.auxiliary
 
-import legacy.phonograph.MediaStoreCompat
 import org.koin.android.ext.android.get
 import player.phonograph.R
+import player.phonograph.foundation.compat.MediaStoreCompat
 import player.phonograph.mechanism.PhonographShortcutManager
 import player.phonograph.mechanism.SongUriParsers
 import player.phonograph.mechanism.playlist.PlaylistSongsActions

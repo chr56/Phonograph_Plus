@@ -7,13 +7,13 @@ package player.phonograph.ui.modules.web
 import mms.lastfm.LastFmAction
 import mms.musicbrainz.MusicBrainzAction
 import mms.musicbrainz.MusicBrainzModel
+import player.phonograph.foundation.compat.parcelableExtra
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Song
 import player.phonograph.ui.modules.web.WebSearchActionConst.LASTFM_SEARCH
 import player.phonograph.ui.modules.web.WebSearchActionConst.MUSICBRAINZ_SEARCH
 import player.phonograph.ui.modules.web.WebSearchActionConst.MUSICBRAINZ_VIEW
-import player.phonograph.util.parcelableExtra
 import androidx.lifecycle.viewModelScope
 import android.content.Context
 import android.content.Intent

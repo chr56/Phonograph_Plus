@@ -13,6 +13,7 @@
 package player.phonograph.service.util
 
 import player.phonograph.BuildConfig
+import player.phonograph.foundation.compat.parcelableExtra
 import player.phonograph.model.service.ACTION_NEXT
 import player.phonograph.model.service.ACTION_PAUSE
 import player.phonograph.model.service.ACTION_PLAY
@@ -20,7 +21,6 @@ import player.phonograph.model.service.ACTION_PREVIOUS
 import player.phonograph.model.service.ACTION_STOP_AND_QUIT_NOW
 import player.phonograph.model.service.ACTION_TOGGLE_PAUSE
 import player.phonograph.service.MusicService
-import player.phonograph.util.parcelableExtra
 import androidx.core.content.ContextCompat
 import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
