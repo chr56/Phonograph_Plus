@@ -1,0 +1,17 @@
+version: "1.10.2"
+channel: "STABLE"
+versionCode: 1102
+timestamp: 1749800000
+notes:
+  en:
+    highlights: [ ]
+    items:
+      - ""
+
+  zh:
+    highlights: [ ]
+    items:
+      - ""
+
+previousVersion: "1.10.1"
+previousChannel: "STABLE"

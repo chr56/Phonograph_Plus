@@ -1,31 +1,33 @@
-version: "1.10.1"
-channel: "STABLE"
-versionCode: 1101
-timestamp: 1747388000
+version: "1.10.2-dev0"
+channel: "PREVIEW"
+versionCode: 1102
+timestamp: 1749750000
 notes:
   en:
     highlights: [ ]
     items:
-      - "Fix: Sleep timer possibly not working on Android 14 and above"
-      - "Fix: last item behind navigation bar due to edge-to-edge"
-      - "Fix: crash due to Speed Control dialog"
-      - "Fix: crash when operating internal database playlists via multi-selection"
-      - "Fix: occasional crash due to Main Player after some settings changed"
-      - "Modify: default player buttons settings"
-      - "Improve: support for exporting internal database playlists"
-      - "Translation: update Brazilian Portuguese (by FalaTudo), Hungarian (by Balázs Meskó & Balázs Úr)"
+      - "New: support customizing seek internal for forwarding and rewinding"
+      - "Fix: file playlist editing may not work on some devices"
+      - "Fix: possibly crash due to the bread crumb in Files"
+      - "Fix: various issues related to soft keyboard in Search"
+      - "Fix: some issues in Folders due to folder name collision"
+      - "Improve: performance of playlist loading"
+      - "Improve: support exporting the database of internal playlists"
+      - "Modify: force to reboot application after purging the database"
+      - "Translation: update Russian (by Yurt Page)"
 
   zh:
     highlights: [ ]
     items:
-      - "修复 睡眠定时器在 Android 14 及以上版本上可能失效"
-      - "修复 列表最后一项被导航栏挡住"
-      - "修复 速度控制对话框导致崩溃"
-      - "修复 通过多选操作内部数据库播放列表时崩溃"
-      - "修复 更改某些设置后由于主播放器导致偶尔崩溃"
-      - "修改 默认播放器按钮设置"
-      - "改进 支持导出内部数据库播放列表"
-      - "翻译 更新 巴西葡萄牙语 (FalaTudo), 匈牙利语 (Balázs Meskó & Balázs Úr)"
+      - "新增 支持自定义快进和快退的间隔时间"
+      - "修复 某些设备上无法正常编辑文件播放列表编辑"
+      - "修复 面包屑路径导航可能导致的崩溃"
+      - "修复 搜索页中与软键盘相关的若干问题"
+      - "修复 文件夹页中当文件夹名称冲突导致的若干异常"
+      - "改进 播放列表加载性能"
+      - "改进 支持导出包含内部播放列表的数据库"
+      - "修改 清空数据库后强制重新启动应用"
+      - "翻译 更新 俄语 (Yurt Page)"
 
-previousVersion: "1.10.0"
+previousVersion: "1.10.1"
 previousChannel: "STABLE"
