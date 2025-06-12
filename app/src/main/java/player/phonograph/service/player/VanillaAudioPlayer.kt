@@ -142,7 +142,6 @@ class VanillaAudioPlayer(private val context: Context, override var gaplessPlayb
         try {
             // currentMediaPlayer.start()
             playWithSpeed(currentMediaPlayer, _speed)
-            true
         } catch (e: IllegalStateException) {
             false
         }
@@ -216,11 +215,14 @@ class VanillaAudioPlayer(private val context: Context, override var gaplessPlayb
     override var speed: Float
         get() = _speed
         set(value) {
-            _speed = value
-            if (isPlaying) playWithSpeed(currentMediaPlayer, _speed)
+            if (isPlaying) {
+                playWithSpeed(currentMediaPlayer, _speed)
+            } else {
+                _speed = value
+            }
         }
 
-    private fun playWithSpeed(player: MediaPlayer, targetSpeed: Float) {
+    private fun playWithSpeed(player: MediaPlayer, targetSpeed: Float): Boolean = try {
         player.playbackParams = PlaybackParams().apply {
             allowDefaults()
             audioFallbackMode = AUDIO_FALLBACK_MODE_MUTE
@@ -229,6 +231,12 @@ class VanillaAudioPlayer(private val context: Context, override var gaplessPlayb
             pitch = if (outRanged) ((targetSpeed - 1.0f) * 0.333f + 1.0f) else 1.0f
         }
         player.start()
+        _speed = targetSpeed
+        true
+    } catch (e: Exception) {
+        Log.e(TAG, "Failed to adjust speed to $targetSpeed", e)
+        _speed = 1.0f
+        false
     }
 
     override val audioSessionId: Int get() = currentMediaPlayer.audioSessionId
