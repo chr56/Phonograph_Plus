@@ -61,19 +61,22 @@ class ExoAudioPlayer(
 
     override fun setDataSource(path: String): Boolean {
         isInitialized = false
-        handler.post {
-            exoPlayer.stop()
-            exoPlayer.clearMediaItems()
-            exoPlayer.addMediaItem(MediaItem.fromUri(path))
-            exoPlayer.prepare()
-            currentDataSource = path
-            isInitialized = true
-        }
+        exoPlayer.stop()
+        exoPlayer.clearMediaItems()
+        exoPlayer.addMediaItem(MediaItem.fromUri(path))
+        exoPlayer.prepare()
+        currentDataSource = path
+        isInitialized = true
         return true
     }
 
     override fun setNextDataSource(path: String?) {
-        // todo
+        if (exoPlayer.hasNextMediaItem()) {
+            exoPlayer.removeMediaItems(exoPlayer.currentMediaItemIndex + 1, exoPlayer.mediaItemCount)
+        }
+        path?.let {
+            exoPlayer.addMediaItem(MediaItem.fromUri(path))
+        }
     }
 
 
@@ -151,6 +154,15 @@ class ExoAudioPlayer(
         }, 720)
     }
 
+    override fun onPositionDiscontinuity(
+        oldPosition: Player.PositionInfo,
+        newPosition: Player.PositionInfo,
+        reason: Int,
+    ) {
+        if (reason == Player.DISCONTINUITY_REASON_AUTO_TRANSITION) {
+            callbacks?.onTrackWentToNext()
+        }
+    }
     @OptIn(UnstableApi::class)
     private fun createExoPlayer(context: Context): ExoPlayer {
 

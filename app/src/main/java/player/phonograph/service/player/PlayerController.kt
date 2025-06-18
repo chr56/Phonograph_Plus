@@ -577,6 +577,11 @@ class PlayerController : ServiceComponent, Controller {
                     if (controllerImpl.gaplessPlayback) queueManager.nextSong else null
                 )
             }
+            else if (controllerImpl is ExoAudioPlayerControllerImpl) {
+                controllerImpl.prepareNextPlayer(
+                    queueManager.nextSong
+                )
+            }
         }
     }
 
