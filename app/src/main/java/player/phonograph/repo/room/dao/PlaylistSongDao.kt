@@ -28,7 +28,7 @@ abstract class PlaylistSongDao {
 
     @Transaction
     @RewriteQueriesToDropUnusedColumns
-    @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
+    @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
     @Query(
         "SELECT * FROM ${Tables.MEDIASTORE_SONGS} " +
                 "INNER JOIN ${Tables.PLAYLIST_SONGS} " +
@@ -36,7 +36,7 @@ abstract class PlaylistSongDao {
                 "WHERE ${Columns.PLAYLIST_ID} =:playlistId " +
                 "ORDER BY ${Columns.POSITION} ASC"
     )
-    abstract fun songs(playlistId: Long): List<PlaylistMediastoreSongEntity?>
+    abstract fun songs(playlistId: Long): List<PlaylistMediastoreSongEntity>
 
     @Query("SELECT * FROM ${Tables.PLAYLIST_SONGS} WHERE ${Columns.PLAYLIST_ID} =:id")
     abstract fun rawQuery(id: Long): List<PlaylistSongEntity>

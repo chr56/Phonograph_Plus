@@ -34,12 +34,13 @@ object RoomPlaylists : RoomLoader(), IPlaylists {
         val playlistSongDao = db.PlaylistSongDao()
         val songs = playlistSongDao.songs(id)
         return songs.map { item ->
-            if (item != null) {
-                val song = item.songEntity.let(EntityConverter::toSongModel)
-                PlaylistSong(song, item.playlistId, item.position.toLong())
-            } else {
-                PlaylistSong(Song.deleted(context.getString(R.string.state_deleted), ""), id, -1)
-            }
+            PlaylistSong(item.songEntity.let(EntityConverter::toSongModel), item.playlistId, item.position.toLong())
+            // if (item != null) {
+            //     val song = item.songEntity.let(EntityConverter::toSongModel)
+            //     PlaylistSong(song, item.playlistId, item.position.toLong())
+            // } else {
+            //     PlaylistSong(Song.deleted(context.getString(R.string.state_deleted), ""), id, -1)
+            // }
         }
     }
 
