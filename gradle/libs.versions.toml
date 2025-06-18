@@ -28,7 +28,7 @@ browser = "1.8.0"
 cardview = "1.0.0"
 palette = "1.0.0"
 room = "2.7.2"
-datastore = "1.1.4"
+datastore = "1.1.7"
 material = "1.12.0"
 compose = "1.8.3"
 #### Jetpack End
