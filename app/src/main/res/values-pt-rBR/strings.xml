@@ -377,6 +377,7 @@
     <string name="pref_title_remember_last_tab">Lembrar última aba</string>
     <string name="pref_title_remember_shuffle">Memorizar aleatorização</string>
     <string name="pref_title_resume_after_audio_focus_gain">Retomar a reprodução automaticamente após interrupções</string>
+    <string name="pref_title_seek_jump_interval">Intervalo de Busca para Avançar / Retroceder</string>
     <string name="pref_title_send_lyrics">Transmitir letras sincronizadas</string>
     <string name="pref_title_start_directory">Diretório inicial</string>
     <string name="pref_title_synchronized_lyrics_show">Exibir letras sincronizadas</string>
@@ -413,6 +414,7 @@
     <string name="pref_summary_remember_last_tab">Ir para a última aba aberta ao iniciar</string>
     <string name="pref_summary_resume_after_audio_focus_gain">Sempre retomar a reprodução após interrupções (como telefonemas ou alarme).</string>
     <string name="pref_summary_send_lyrics">\"Transmita letras sincronizadas para o módulo Xposed \"StatusBar Lyrics\"</string>
+    <string name="pref_summary_seek_jump_interval">Define o número de segundos para saltar para frente ou para trás do reprodutor ou da notificação.</string>
     <string name="pref_summary_start_directory">O diretório padrão ao navegar nos arquivos.</string>
     <string name="pref_summary_synchronized_lyrics_show">Atualmente, apenas as letras sincronizadas no formato LRC são suportadas. Incorporado ou como um arquivo separado.</string>
     <string name="pref_summary_use_legacy_favorite_playlist_impl">Se habilitar isso, o aplicativo salvará as músicas favoritas em uma lista de reprodução m3u no armazenamento em vez de salvar as músicas favoritas no banco de dados interno do aplicativo. (Você pode exportar a lista manualmente.)</string>
