@@ -1,0 +1,40 @@
+<b>Uma fork independente do Phonograph em desenvolvimento</b><br />
+
+Phonograph é um reprodutor local de músicas leve com Material Design para Android.
+Phonograph Plus é uma fork <i>independente</i> do Phonograph já que ele não é mais mantido,
+e está em manutenção e desenvolvimento desde 2021. <br />
+
+Phonograph Plus herda todos os recursos do Phonograph:
+
+
+- Leve
+- Offline, Sem anúncios e privado
+- Clássico Material Design 2
+- Modo noturno (Claro, Escuro, Preto) com suporte a troca automática
+- Cores customizáveis do tema (primária, dos detalhes) com suporte ao tema Monet
+- Função de reprodução de áudio fundamental (incluindo controle de velocidade, temporizador de sono e equalizador externo fornecido pelo sistema)
+- Gerenciamento de fila flexível (embaralhar, repetir, reorganizar livremente arrastando os itens, snapshots da fila)
+- Suporte a letras (ambas as letras .lrc sincronizadas e letras de texto, incorporadas ou externas)
+- Notificações de reprodução flexíveis e altamente personalizáveis
+- Organização de música flexível, organizada por músicas, artistas, álbuns, gêneros e pastas (achatado ou em árvore), ordenada por vários pedidos, com
+  multiplo suporte de seleção, visto em grade ou em lista com vários estilos de layout
+- Interface de usuário principal flexível e altamente personalizável
+- Suporte ao Android Auto
+- Comportamentos altamente personalizáveis para clicar
+- Filtro de caminho (modo excluído ou modo incluído)
+- Suporte à pesquisa
+- Suporte para favoritar músicas
+- Suporte a arquivos de lista de reprodução (visualização e edição básica; também Fixável)
+- Suporte ao banco de dados interno
+- Histórico de reprodução e registro de frequência, e as últimas músicas adicionadas por intervalos de tempo flexíveis
+- Visualizador de metadados de áudio aprimorado e editor de tags
+- Atalho e widgets do aplicativo
+- Múltiplas fontes de capas
+- Suporte ao backup de dados e configurações
+- Troca de idioma no aplicativo
+- ...
+
+
+Visite a página inicial do projeto no GitHub para saber mais.
+
+Phonograph Plus está disponível no GitHub Releases (Stable Channel and Preview Channel) e F-Droid (Stable Channel)
