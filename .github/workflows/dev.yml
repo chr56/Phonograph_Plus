@@ -20,6 +20,12 @@ on:
       - '**.md'
       - 'ReleaseNote*'
   workflow_dispatch:
+    inputs:
+      with_clean:
+        description: "Run Gradle clean before building"
+        type: boolean
+        default: true
+        required: false
   pull_request:
     branches:
       - 'dev'
@@ -65,9 +71,16 @@ jobs:
         run: |
           bash ${{ github.workspace }}/scripts/generate_signing_key.sh
 
-      - name: Build with Gradle
+      - name: Clean before building
+        id: gradle-clean
+        if: ${{ github.event.inputs.with_clean == 'true'}}
         run: |
-          ./gradlew assemble${{ matrix.PRODUCT_VARIANT }} --stacktrace
+          ./gradlew app:clean
+
+      - name: Build with Gradle
+        id: gradle-build
+        run: |
+          ./gradlew app:assemble${{ matrix.PRODUCT_VARIANT }} --stacktrace
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
