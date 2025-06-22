@@ -47,13 +47,6 @@ android {
 
         proguardFiles(File("proguard-rules-base.pro"), File("proguard-rules-app.pro"))
 
-
-
-        ksp {
-            arg("room.schemaLocation", "$projectDir/schemas")
-            // arg("room.incremental", "true")
-        }
-
         manifestPlaceholders["GIT_COMMIT_HASH"] = "-"
     }
 
@@ -182,6 +175,15 @@ android {
 
     kotlinOptions {
         jvmTarget = "17"
+    }
+
+    ksp {
+
+        @OptIn(com.google.devtools.ksp.KspExperimental::class)
+        useKsp2 = false // buggy sometimes due to cache
+
+        arg("room.schemaLocation", "$projectDir/schemas")
+        // arg("room.incremental", "true")
     }
 
     dependenciesInfo {
