@@ -1,33 +1,37 @@
-version: "1.10.2-dev0"
+version: "1.11.0-dev1"
 channel: "PREVIEW"
 versionCode: 1102
-timestamp: 1749750000
+timestamp: 1751690000
 notes:
   en:
     highlights: [ ]
     items:
       - "New: support customizing seek internal for forwarding and rewinding"
       - "Fix: file playlist editing may not work on some devices"
-      - "Fix: possibly crash due to the bread crumb in Files"
-      - "Fix: various issues related to soft keyboard in Search"
+      - "Fix: possibly crash due to invalid speed ratio value"
+      - "Fix: crash due to the bread crumb in Files in rare circumstance"
+      - "Fix: various unintended behaviors of soft keyboard in Search"
       - "Fix: some issues in Folders due to folder name collision"
       - "Improve: performance of playlist loading"
       - "Improve: support exporting the database of internal playlists"
       - "Modify: force to reboot application after purging the database"
-      - "Translation: update Russian (by Yurt Page)"
+      - "Translation: update Russian (by Yurt Page), Brazilian Portuguese (by FalaTudo)"
+      - "Development: cleanup codes, update dependencies"
 
   zh:
     highlights: [ ]
     items:
       - "新增 支持自定义快进和快退的间隔时间"
       - "修复 某些设备上无法正常编辑文件播放列表编辑"
-      - "修复 面包屑路径导航可能导致的崩溃"
-      - "修复 搜索页中与软键盘相关的若干问题"
+      - "修复 无效速度倍率值可能导致的崩溃"
+      - "修复 面包屑路径导航偶尔导致的崩溃"
+      - "修复 搜索页中软键盘行为异常"
       - "修复 文件夹页中当文件夹名称冲突导致的若干异常"
       - "改进 播放列表加载性能"
       - "改进 支持导出包含内部播放列表的数据库"
       - "修改 清空数据库后强制重新启动应用"
-      - "翻译 更新 俄语 (Yurt Page)"
+      - "翻译 更新 俄语 (Yurt Page), 巴西葡萄牙语 (FalaTudo)"
+      - "开发 清理代码, 更新依赖"
 
 previousVersion: "1.10.1"
 previousChannel: "STABLE"
