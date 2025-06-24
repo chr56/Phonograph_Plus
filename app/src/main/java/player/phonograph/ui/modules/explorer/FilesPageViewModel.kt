@@ -14,7 +14,6 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.util.asList
 import android.content.Context
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope
 
 class FilesPageViewModel : AbsFileViewModel() {
@@ -31,11 +30,11 @@ class FilesPageViewModel : AbsFileViewModel() {
             Setting(App.instance)[Keys.showFileImages].data = value
         }
 
-    override suspend fun listFiles(context: Context, location: Location, scope: CoroutineScope?): List<FileEntity> =
+    override suspend fun listFiles(context: Context, location: Location): List<FileEntity> =
         if (useLegacyListFile) {
-            MediaStoreFileEntities.listFilesLegacy(location, context, scope)
+            MediaStoreFileEntities.listFilesLegacy(context, location)
         } else {
-            MediaStoreFileEntities.listFilesMediaStore(location, context, scope)
+            MediaStoreFileEntities.listFilesMediaStore(context, location)
         }
 
 

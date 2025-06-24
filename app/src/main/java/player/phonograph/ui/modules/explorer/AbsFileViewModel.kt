@@ -13,7 +13,6 @@ import player.phonograph.settings.Setting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,7 +42,7 @@ sealed class AbsFileViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             _loading.value = true
 
-            _currentFiles.value = listFiles(context, location, this)
+            _currentFiles.value = listFiles(context, location)
 
             _loading.value = false
         }
@@ -62,6 +61,5 @@ sealed class AbsFileViewModel : ViewModel() {
     protected abstract suspend fun listFiles(
         context: Context,
         location: Location,
-        scope: CoroutineScope?,
     ): List<FileEntity>
 }

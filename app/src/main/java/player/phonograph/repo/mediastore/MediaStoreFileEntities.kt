@@ -18,8 +18,7 @@ import androidx.core.content.getSystemService
 import android.content.Context
 import android.os.storage.StorageManager
 import android.provider.MediaStore
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.isActive
+import kotlinx.coroutines.yield
 import java.io.File
 
 object MediaStoreFileEntities {
@@ -27,26 +26,25 @@ object MediaStoreFileEntities {
     /**
      * list files in [currentLocation] as format of FileEntity via MediaStore
      */
-    fun listFilesMediaStore(
-        currentLocation: Location,
+    suspend fun listFilesMediaStore(
         context: Context,
-        scope: CoroutineScope?,
+        currentLocation: Location,
     ): List<FileEntity> {
         val fileCursor = querySongFiles(
             context,
             "${MediaStore.MediaColumns.DATA} LIKE ?",
-            arrayOf("${currentLocation.absolutePath}%"),
+            arrayOf("${currentLocation.absolutePath}%")
         ) ?: return emptyList()
         val storageManager = context.getSystemService<StorageManager>()!!
         return fileCursor.use { cursor ->
             if (cursor.moveToFirst()) {
                 val list: MutableList<FileEntity> = ArrayList()
                 do {
-                    if (scope?.isActive == false) break
                     val item = readFileEntity(cursor, currentLocation, storageManager)
+                    yield()
                     list.put(item)
                 } while (cursor.moveToNext())
-                val sortMode = Setting(context)[Keys.fileSortMode].data
+                val sortMode = Setting(context)[Keys.fileSortMode].read()
                 list.sortedWith(FileEntityComparator(sortMode))
             } else emptyList()
         }
@@ -70,45 +68,48 @@ object MediaStoreFileEntities {
     /**
      * list files in [location] as format of FileEntity via File API
      */
-    fun listFilesLegacy(
-        location: Location,
+    suspend fun listFilesLegacy(
         context: Context,
-        scope: CoroutineScope?,
+        location: Location,
     ): List<FileEntity> {
         val directory = File(location.absolutePath).also { if (!it.isDirectory) return emptyList() }
         val files = directory.listFiles(FileScanner.audioFileFilter) ?: return emptyList()
+        yield()
         val result = ArrayList<FileEntity>()
         val storageManager = context.getSystemService<StorageManager>()!!
         for (file in files) {
-            val l = Locations.from(file.absolutePath, storageManager)
-            if (scope?.isActive == false) break
-            val item =
-                when {
-                    file.isDirectory -> {
-                        FileEntity.Folder(
-                            location = l,
-                            name = file.name,
-                            dateAdded = file.lastModified(),
-                            dateModified = file.lastModified()
-                        )
-                    }
-
-                    file.isFile      -> {
-                        FileEntity.File(
-                            location = l,
-                            name = file.name,
-                            size = file.length(),
-                            dateAdded = file.lastModified(),
-                            dateModified = file.lastModified()
-                        )
-                    }
-
-                    else             -> null
-                }
-            item?.let { result.add(it) }
+            val item = readFile(file, storageManager)
+            yield()
+            if (item != null) result.add(item)
         }
-        val sortMode = Setting(context)[Keys.fileSortMode].data
+        val sortMode = Setting(context)[Keys.fileSortMode].read()
         return result.sortedWith(FileEntityComparator(sortMode))
+    }
+
+    private fun readFile(file: File, storageManager: StorageManager): FileEntity? {
+        val location = Locations.from(file.absolutePath, storageManager)
+        return when {
+            file.isDirectory -> {
+                FileEntity.Folder(
+                    location = location,
+                    name = file.name,
+                    dateAdded = file.lastModified(),
+                    dateModified = file.lastModified()
+                )
+            }
+
+            file.isFile      -> {
+                FileEntity.File(
+                    location = location,
+                    name = file.name,
+                    size = file.length(),
+                    dateAdded = file.lastModified(),
+                    dateModified = file.lastModified()
+                )
+            }
+
+            else             -> null
+        }
     }
 
     private class FileEntityComparator(val currentSortRef: SortMode) : Comparator<FileEntity> {
