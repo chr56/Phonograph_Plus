@@ -207,7 +207,6 @@ object ClickActionProviders {
             extraFlag: Int,
         ): Boolean {
             var base = baseMode
-            val songRequest = filter(list, position, context)
 
             // pre-process extra mode
             if (MusicPlayerRemote.playingQueue.isEmpty() && extraFlag.testBit(FLAG_MASK_PLAY_QUEUE_IF_EMPTY)) {
@@ -218,10 +217,13 @@ object ClickActionProviders {
                 }
             }
 
-            if (extraFlag.testBit(FLAG_MASK_GOTO_POSITION_FIRST) && songRequest.songs == MusicPlayerRemote.playingQueue) {
-                // same queue, jump
-                MusicPlayerRemote.playSongAt(songRequest.position)
-                return true
+            if (extraFlag.testBit(FLAG_MASK_GOTO_POSITION_FIRST)) {
+                val songRequest = filter(list, position, context)
+                if (songRequest.songs == MusicPlayerRemote.playingQueue) {
+                    // same queue, jump
+                    MusicPlayerRemote.playSongAt(songRequest.position)
+                    return true
+                }
             }
 
             when (base) {
@@ -247,6 +249,7 @@ object ClickActionProviders {
                 QUEUE_SWITCH_TO_POSITION,
                 QUEUE_SHUFFLE,
                                       -> {
+                    val songRequest = filter(list, position, context)
                     val songs = songRequest.songs
                     val actualPosition = songRequest.position
 
