@@ -11,7 +11,7 @@ import player.phonograph.databinding.FragmentFileExploreBinding
 import player.phonograph.mechanism.explorer.Locations
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.Location
-import player.phonograph.model.file.defaultStartDirectory
+import player.phonograph.model.file.DefaultStartDirectory
 import player.phonograph.util.observe
 import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.getTintedDrawable
@@ -85,7 +85,7 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
             setImageDrawable(requireContext().getThemedDrawable(R.drawable.ic_nav_back_white_24dp))
             setOnClickListener { navigateUp(true) }
             setOnLongClickListener {
-                onSwitch(Locations.from(defaultStartDirectory.absolutePath, requireContext()))
+                onSwitch(Locations.from(DefaultStartDirectory, requireContext()))
                 true
             }
         }

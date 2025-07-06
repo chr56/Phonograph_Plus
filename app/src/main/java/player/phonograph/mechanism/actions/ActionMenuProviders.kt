@@ -417,7 +417,7 @@ object ActionMenuProviders {
 
         private fun setStartDirectory(context: Context, dir: FileEntity.Folder): Boolean {
             val path = dir.location.absolutePath
-            Setting(context)[Keys.startDirectory].data = File(path)
+            Setting(context)[Keys.startDirectoryPath].data = path
             Toast.makeText(
                 context,
                 String.format(context.getString(R.string.msg_new_start_directory), path),

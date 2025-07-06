@@ -2,13 +2,13 @@
  *  Copyright (c) 2022~2023 chr_56
  */
 
-@file:Suppress("ObjectPropertyName")
+@file:Suppress("ObjectPropertyName", "RemoveExplicitTypeArguments")
 
 package player.phonograph.settings
 
 import player.phonograph.model.SongClickMode
 import player.phonograph.model.coil.ImageSourceConfig
-import player.phonograph.model.file.defaultStartDirectory
+import player.phonograph.model.file.DefaultStartDirectory
 import player.phonograph.model.notification.NotificationActionsConfig
 import player.phonograph.model.pages.PagesConfig
 import player.phonograph.model.sort.SortMode
@@ -20,7 +20,6 @@ import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.model.ui.NowPlayingScreenStyle
 import player.phonograph.util.ui.MonetColor
 import util.theme.materials.MaterialColor
-import java.io.File
 import androidx.datastore.preferences.core.booleanPreferencesKey as booleanPK
 import androidx.datastore.preferences.core.floatPreferencesKey as floatPK
 import androidx.datastore.preferences.core.intPreferencesKey as intPK
@@ -117,10 +116,8 @@ object Keys {
     //</editor-fold>
 
     //<editor-fold desc="Files">
-    val _startDirectoryPath
-        get() = PrimitiveKey<String>(stringPK("start_directory")) { defaultStartDirectory.path }
-    val startDirectory
-        get() = CompositeKey<File>(StartDirectoryPreferenceProvider)
+    val startDirectoryPath
+        get() = PrimitiveKey<String>(stringPK("start_directory")) { DefaultStartDirectory }
     //</editor-fold>
 
     //<editor-fold desc="Lyrics">

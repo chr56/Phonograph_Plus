@@ -5,7 +5,6 @@
 package player.phonograph.settings
 
 import player.phonograph.model.coil.ImageSourceConfig
-import player.phonograph.model.file.defaultStartDirectory
 import player.phonograph.model.notification.NotificationActionsConfig
 import player.phonograph.model.pages.PagesConfig
 import player.phonograph.model.sort.SortMode
@@ -14,7 +13,6 @@ import player.phonograph.model.time.Duration
 import player.phonograph.model.time.TimeIntervalCalculationMode
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.model.ui.NowPlayingScreenStyle
-import player.phonograph.util.file.safeGetCanonicalPath
 import player.phonograph.util.time.TimeInterval
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -25,7 +23,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
-import java.io.File
 
 /**
  * Provider for Composite Preference (not primitive type)
@@ -72,16 +69,6 @@ data object CheckUpdateIntervalPreferenceProvider :
 
     override fun save(data: Duration): String =
         data.serialise()
-}
-
-data object StartDirectoryPreferenceProvider :
-        MonoPreferenceProvider<File, String>(Keys._startDirectoryPath, { defaultStartDirectory }) {
-
-    override fun read(flow: Flow<String>): Flow<File> = flow.map { path ->
-        File(path)
-    }
-
-    override fun save(data: File): String = safeGetCanonicalPath(data)
 }
 
 sealed class SortModePreferenceProvider(backField: PrimitiveKey<String>) :

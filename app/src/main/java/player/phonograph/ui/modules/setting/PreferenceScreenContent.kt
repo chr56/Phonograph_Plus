@@ -146,11 +146,11 @@ fun PreferenceScreenContent() {
                 summaryRes = R.string.pref_summary_start_directory
             ) {
                 val contractTool = (context as? PathSelectorRequester)?.pathSelectorContractTool
-                val preference = Setting(context)[Keys.startDirectory]
-                contractTool?.launch(preference.data.absolutePath) { path ->
+                val preference = Setting(context)[Keys.startDirectoryPath]
+                contractTool?.launch(preference.data) { path ->
                     if (path != null) {
                         val file = File(path)
-                        if (file.exists() && !file.isFile) preference.data = file
+                        if (file.exists() && !file.isFile) preference.data = path
                     }
                 }
             }

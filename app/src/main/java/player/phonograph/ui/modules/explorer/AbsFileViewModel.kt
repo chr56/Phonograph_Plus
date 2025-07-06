@@ -21,9 +21,10 @@ import kotlinx.coroutines.launch
 
 sealed class AbsFileViewModel : ViewModel() {
 
+    val defaultPath: String get() = Setting(App.instance)[Keys.startDirectoryPath].data
 
     private val _currentLocation: MutableStateFlow<Location> =
-        MutableStateFlow(Locations.from(Setting(App.instance)[Keys.startDirectory].data, App.instance))
+        MutableStateFlow(Locations.from(defaultPath, App.instance))
 
     val currentLocation = _currentLocation.asStateFlow()
 
