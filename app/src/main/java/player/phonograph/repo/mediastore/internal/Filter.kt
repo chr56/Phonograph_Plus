@@ -21,10 +21,10 @@ private val pathFilterStore: PathFilterStore by GlobalContext.get().inject()
  *  amend path with path filter SQL to SQLWhereClause
  *  @param escape true if disable path filter
  */
-fun withPathFilter(context: Context, escape: Boolean = false, block: () -> SQLWhereClause): SQLWhereClause {
+suspend fun withPathFilter(context: Context, escape: Boolean = false, block: () -> SQLWhereClause): SQLWhereClause {
     if (escape) return block()
 
-    val includeMode = !Setting(context)[Keys.pathFilterExcludeMode].data
+    val includeMode = !Setting(context)[Keys.pathFilterExcludeMode].read()
 
     val paths =
         if (includeMode)

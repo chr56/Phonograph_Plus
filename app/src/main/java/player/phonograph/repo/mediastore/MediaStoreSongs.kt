@@ -66,7 +66,7 @@ object MediaStoreSongs : ISongs {
         return cursor.intoSongs()
     }
 
-    fun search(context: Context, query: String?, title: String?, album: String?, artist: String?): List<Song> {
+    suspend fun search(context: Context, query: String?, title: String?, album: String?, artist: String?): List<Song> {
 
         val termsCombinations = listOf(
             Triple(title, album, artist),

@@ -20,26 +20,26 @@ abstract class DatabaseAgentLoader {
     /**
      * @return all songs the loader can be provided
      */
-    fun tracks(context: Context): List<Song> = queryCursorAndClear(context).intoSongs()
+    suspend fun tracks(context: Context): List<Song> = queryCursorAndClear(context).intoSongs()
 
     /**
      * query the database and return a Song cursor
      * @return Song cursor supporting (see [intoSongCursor])
      */
-    protected abstract fun queryCursorImpl(context: Context): Cursor?
+    protected abstract suspend fun queryCursorImpl(context: Context): Cursor?
 
     /**
      * clean the database
      * @param existed ids that existed in MediaStore
      */
-    protected abstract fun clean(context: Context, existed: List<Long>)
+    protected abstract suspend fun clean(context: Context, existed: List<Long>)
 
     /**
      * whether this loader needs to be cleaned frequently
      */
     protected abstract val cleanable: Boolean
 
-    private fun queryCursorAndClear(context: Context): Cursor? {
+    private suspend fun queryCursorAndClear(context: Context): Cursor? {
 
         val songCursor = queryCursorImpl(context) ?: return null
 
@@ -67,10 +67,10 @@ abstract class DatabaseAgentLoader {
      * Convert Database cursor to Song cursor
      * @param idColumnName foreign key to MediaStore song id, in Database cursor
      */
-    protected fun Cursor.intoSongCursor(context: Context, idColumnName: String): SortedLongCursor? =
+    protected suspend fun Cursor.intoSongCursor(context: Context, idColumnName: String): SortedLongCursor? =
         use { cursor -> generateSongCursor(context, cursor, idColumnName) }
 
-    private fun generateSongCursor(context: Context, cursor: Cursor, idColumnName: String): SortedLongCursor? {
+    private suspend fun generateSongCursor(context: Context, cursor: Cursor, idColumnName: String): SortedLongCursor? {
         val count = cursor.count
         val idColumnIndex = cursor.getColumnIndex(idColumnName)
 

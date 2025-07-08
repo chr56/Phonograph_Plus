@@ -18,7 +18,7 @@ import android.provider.MediaStore.Audio.AudioColumns
  * [queryAudio] but
  * using [BASE_SONG_PROJECTION]
  */
-fun querySongs(
+suspend fun querySongs(
     context: Context,
     selection: String = "",
     selectionValues: Array<String> = emptyArray(),
@@ -37,7 +37,7 @@ fun querySongs(
  * [queryAudio] but
  * using [BASE_FILE_PROJECTION]
  */
-fun querySongFiles(
+suspend fun querySongFiles(
     context: Context,
     selection: String = "",
     selectionValues: Array<String> = emptyArray(),
@@ -54,7 +54,7 @@ fun querySongFiles(
 /**
  * query audio via MediaStore
  */
-fun queryAudio(
+suspend fun queryAudio(
     context: Context,
     projection: Array<String>,
     selection: String = "",
@@ -90,7 +90,7 @@ fun queryAudio(
 /**
  * search songs by keywords for tittle, artist, album fields
  */
-fun locateSongs(
+suspend fun locateSongs(
     context: Context,
     title: String?,
     album: String?,
@@ -125,7 +125,7 @@ fun locateSongs(
  * search songs by keyword for tittle, artist, album fields
  * @param keyword keyword
  */
-fun locateSongs(
+suspend fun locateSongs(
     context: Context,
     keyword: String,
 ): Cursor? {

@@ -420,7 +420,7 @@ object MediaItemProviders {
 
 
     private object RecentlyPlayedProvider : AbsMediaItemProvider() {
-        private fun fetch(context: Context): List<Song> = RecentlyPlayedTracksLoader.get().tracks(context)
+        private suspend fun fetch(context: Context): List<Song> = RecentlyPlayedTracksLoader.get().tracks(context)
 
         override suspend fun browser(context: Context): List<MediaItem> =
             withPlayAllItems(

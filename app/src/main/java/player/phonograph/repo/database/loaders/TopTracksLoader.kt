@@ -12,13 +12,13 @@ import android.database.Cursor
 
 class TopTracksLoader(private val songPlayCountStore: SongPlayCountStore) : DatabaseAgentLoader() {
 
-    override fun queryCursorImpl(context: Context): Cursor? =
+    override suspend fun queryCursorImpl(context: Context): Cursor? =
         songPlayCountStore.getTopPlayedResults(NUMBER_OF_TOP_TRACKS)
             .intoSongCursor(context, SongPlayCountStore.SongPlayCountColumns.ID)
 
     override val cleanable: Boolean = true
 
-    override fun clean(context: Context, existed: List<Long>) {
+    override suspend fun clean(context: Context, existed: List<Long>) {
         songPlayCountStore.gc(existed)
     }
 

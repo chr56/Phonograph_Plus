@@ -99,7 +99,7 @@ object MediaStorePlaylists : IPlaylists {
     /**
      * query playlist file via MediaStore
      */
-    private fun queryPlaylists(
+    private suspend fun queryPlaylists(
         context: Context,
         selection: String?,
         selectionValues: Array<String>?,
