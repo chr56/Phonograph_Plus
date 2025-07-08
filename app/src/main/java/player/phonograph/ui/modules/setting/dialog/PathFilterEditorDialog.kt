@@ -7,9 +7,8 @@ package player.phonograph.ui.modules.setting.dialog
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.vanpra.composematerialdialogs.title
-import org.koin.core.context.GlobalContext
 import player.phonograph.R
-import player.phonograph.repo.database.store.PathFilterStore
+import player.phonograph.settings.PathFilterSetting
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.modules.explorer.PathSelectorRequester
@@ -30,9 +29,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.lifecycleScope
 import android.content.Context
 import android.widget.Toast
-import kotlin.getValue
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 abstract class PathFilterEditorDialog : ComposeViewDialogFragment() {
 
@@ -54,7 +55,7 @@ abstract class PathFilterEditorDialog : ComposeViewDialogFragment() {
 
         var version by remember { mutableIntStateOf(0) }
         LaunchedEffect(version) {
-            paths = read(mode)
+            paths = read(context, mode)
         }
 
         val actionAdd: () -> Unit = {
@@ -109,21 +110,28 @@ abstract class PathFilterEditorDialog : ComposeViewDialogFragment() {
         }
     }
 
-
-    private val pathFilterStore: PathFilterStore by GlobalContext.get().inject()
-
-
-    private fun read(mode: Boolean): List<String> =
-        with(pathFilterStore) { if (mode) blacklistPaths else whitelistPaths }
+    private suspend fun read(context: Context, mode: Boolean): List<String> =
+        PathFilterSetting.read(context, mode)
 
     private fun add(mode: Boolean, path: String) =
-        with(pathFilterStore) { if (mode) addBlacklistPath(path) else addWhitelistPath(path) }
+        lifecycleScope.launch(Dispatchers.IO) {
+            PathFilterSetting.add(requireContext(), mode, path)
+        }
 
     private fun remove(mode: Boolean, path: String) =
-        with(pathFilterStore) { if (mode) removeBlacklistPath(path) else removeWhitelistPath(path) }
+        lifecycleScope.launch(Dispatchers.IO) {
+            PathFilterSetting.remove(requireContext(), mode, path)
+        }
+
+    private fun edit(mode: Boolean, from: String, to: String) =
+        lifecycleScope.launch(Dispatchers.IO) {
+            PathFilterSetting.edit(requireContext(), mode, from, to)
+        }
 
     private fun clear(mode: Boolean) =
-        with(pathFilterStore) { if (mode) clearBlacklist() else clearWhitelist() }
+        lifecycleScope.launch(Dispatchers.IO) {
+            PathFilterSetting.clear(requireContext(), mode)
+        }
 
     private fun chooseFile(
         context: Context,

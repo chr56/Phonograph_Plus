@@ -8,7 +8,8 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import player.phonograph.R
 import player.phonograph.model.Song
-import player.phonograph.repo.database.store.PathFilterStore
+import player.phonograph.settings.Keys
+import player.phonograph.settings.Setting
 import player.phonograph.util.theme.tintButtons
 import android.content.Context
 import kotlinx.coroutines.CoroutineScope
@@ -57,8 +58,12 @@ object PathFilter {
                                     .title(R.string.tips_add_to_blacklist)
                                     .message(text = pathText)
                                     .positiveButton(android.R.string.ok) {
-                                        CoroutineScope(Dispatchers.IO).launch(Dispatchers.IO) {
-                                            PathFilterStore.get().addBlacklistPath(File(pathText as String))
+                                        CoroutineScope(Dispatchers.IO).launch {
+                                            val preference = Setting(context)[Keys.pathFilterExcludePaths]
+                                            val paths = preference.read().toMutableSet()
+                                            if (paths.add(pathText.toString())) {
+                                                preference.edit { paths }
+                                            }
                                         }
                                         parentDialog.dismiss()
                                     }
