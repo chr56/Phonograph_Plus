@@ -5,11 +5,11 @@
 package player.phonograph.mechanism.actions
 
 import player.phonograph.R
-import player.phonograph.mechanism.PathFilter
 import player.phonograph.model.Song
 import player.phonograph.model.service.ShuffleMode
 import player.phonograph.repo.loader.Playlists
 import player.phonograph.service.MusicPlayerRemote
+import player.phonograph.settings.PathFilterSetting
 import player.phonograph.ui.dialogs.DeletionDialog
 import player.phonograph.ui.modules.playlist.dialogs.AddToPlaylistDialogActivity
 import player.phonograph.ui.modules.tag.TagBrowserActivity
@@ -28,6 +28,7 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
 import android.view.View
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -111,7 +112,7 @@ fun Song.actionSetAsRingtone(context: Context): Boolean =
 
 
 fun Song.actionAddToBlacklist(context: Context): Boolean {
-    PathFilter.addToBlacklist(context, this)
+    if (data.isNotBlank()) addToBlacklist(context, data.dropLastWhile { it != '/' }.dropLast(1))
     return true
 }
 
@@ -152,3 +153,51 @@ private fun showRingtoneDialog(context: Context): AlertDialog =
             )
         }
         .create().tintButtons()
+
+fun addToBlacklist(context: Context, path: String) {
+    CoroutineScope(Dispatchers.IO).launch {
+        val candidatesPaths = mutableListOf<String>()
+        var parent: String = path // parent folder
+        while (parent.isNotEmpty()) {
+            if (parent.endsWith("/emulated/0", true)
+                or parent.endsWith("/emulated", true)
+                or parent.endsWith("/storage", true)
+            ) break
+            candidatesPaths.add(parent)
+            parent = parent.dropLastWhile { it != '/' }.dropLast(1) // last char is '/'
+        }
+        if (candidatesPaths.isEmpty()) candidatesPaths.add(path)
+
+        var selectedPathText = ""
+        withContext(Dispatchers.Main) {
+            AlertDialog.Builder(context)
+                .setTitle(R.string.label_file_path)
+                .setSingleChoiceItems(candidatesPaths.toTypedArray(), -1) { dialog, which ->
+                    selectedPathText = candidatesPaths[which]
+                }
+                .setPositiveButton(android.R.string.ok) { parentDialog, _ ->
+                    if (selectedPathText.isNotBlank()) {
+                        AlertDialog.Builder(context)
+                            .setTitle(R.string.tips_add_to_blacklist)
+                            .setMessage(selectedPathText)
+                            .setPositiveButton(android.R.string.ok) { dialog, _ ->
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    PathFilterSetting.add(context, true, selectedPathText)
+                                }
+                                dialog.dismiss()
+                                parentDialog.dismiss()
+                            }
+                            .setNegativeButton(android.R.string.cancel) { dialog, _ ->
+                                dialog.dismiss()
+                                parentDialog.dismiss()
+                            }
+                            .create().tintButtons().show()
+                    }
+                }
+                .setNegativeButton(android.R.string.cancel) { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .create().tintButtons().show()
+        }
+    }
+}
