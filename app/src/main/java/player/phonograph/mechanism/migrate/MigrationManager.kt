@@ -5,6 +5,7 @@
 package player.phonograph.mechanism.migrate
 
 import player.phonograph.foundation.error.warning
+import player.phonograph.model.migration.VersionMigrationRule
 import player.phonograph.settings.PrerequisiteSetting
 import player.phonograph.util.currentVersionCode
 import player.phonograph.util.debug
@@ -53,11 +54,11 @@ object MigrationManager {
 
         try {
             MigrateExecutor(context, from, to).apply {
-                migrate(LegacyDetailDialogMigration())
-                migrate(PlaylistFilesOperationBehaviourMigration())
-                migrate(ColoredSystemBarsMigration())
-                migrate(PreloadImagesMigration())
-                migrate(NowPlayingScreenMigration())
+                migrate(LegacyDetailDialogMigrationRule())
+                migrate(PlaylistFilesOperationBehaviourMigrationRule())
+                migrate(ColoredSystemBarsMigrationRule())
+                migrate(PreloadImagesMigrationRule())
+                migrate(NowPlayingScreenMigrationRule())
             }
 
             Log.i(TAG, "End Migration")
@@ -77,10 +78,10 @@ object MigrationManager {
         private val from: Int,
         private val to: Int,
     ) {
-        fun migrate(migration: VersionMigration) {
-            if (migration.check(from, to)) {
+        fun migrate(migration: VersionMigrationRule) {
+            if (migration.check(context, from, to)) {
+                Log.i(TAG, "Migrating ${migration.javaClass.simpleName} ...")
                 migration.execute(context)
-                Log.i(TAG, "Migrating ${javaClass.simpleName} ...")
             }
         }
     }
