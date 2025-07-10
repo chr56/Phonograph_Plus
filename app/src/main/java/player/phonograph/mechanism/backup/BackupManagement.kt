@@ -17,7 +17,6 @@ import player.phonograph.model.backup.BackupType
 import player.phonograph.repo.database.DatabaseConstants.FAVORITE_DB
 import player.phonograph.repo.database.DatabaseConstants.HISTORY_DB
 import player.phonograph.repo.database.DatabaseConstants.MUSIC_PLAYBACK_STATE_DB
-import player.phonograph.repo.database.DatabaseConstants.PATH_FILTER
 import player.phonograph.repo.database.DatabaseConstants.SONG_PLAY_COUNT_DB
 import player.phonograph.repo.room.MusicDatabase
 import player.phonograph.util.text.currentTimestamp
@@ -50,16 +49,17 @@ object Backup {
 
     private fun executor(item: BackupItem): BackupItemExecutor? = when (item) {
         BackupItem.Settings              -> SettingsDataBackupItemExecutor
-        BackupItem.PathFilter            -> PathFilterDataBackupItemExecutor
         BackupItem.Favorites             -> FavoritesDataBackupItemExecutor
         BackupItem.PlayingQueues         -> PlayingQueuesDataBackupItemExecutor
         BackupItem.InternalPlaylists     -> InternalDatabasePlaylistsDataBackupItemExecutor
         BackupItem.MainDatabase          -> RawDatabaseBackupItemExecutor(MusicDatabase.DATABASE_NAME)
         BackupItem.FavoriteDatabase      -> RawDatabaseBackupItemExecutor(FAVORITE_DB)
-        BackupItem.PathFilterDatabase    -> RawDatabaseBackupItemExecutor(PATH_FILTER)
         BackupItem.HistoryDatabase       -> RawDatabaseBackupItemExecutor(HISTORY_DB)
         BackupItem.SongPlayCountDatabase -> RawDatabaseBackupItemExecutor(SONG_PLAY_COUNT_DB)
         BackupItem.PlayingQueuesDatabase -> RawDatabaseBackupItemExecutor(MUSIC_PLAYBACK_STATE_DB)
+        // Below are deprecated since 1102 (importing only)
+        BackupItem.PathFilter            -> PathFilterDataBackupItemExecutor
+        BackupItem.PathFilterDatabase    -> LegacyPathFilterDatabaseBackupItemExecutor
     }
 
     object Export {

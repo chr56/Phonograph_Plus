@@ -10,11 +10,15 @@ import okio.buffer
 import okio.sink
 import okio.source
 import player.phonograph.foundation.error.warning
+import player.phonograph.mechanism.backup.RawDatabaseBackupItemExecutor.Companion.TAG
+import player.phonograph.mechanism.migrate.PathFilterMigrationRule
 import player.phonograph.model.backup.BackupItemExecutor
 import player.phonograph.util.file.createOrOverrideFile
 import player.phonograph.util.file.moveFile
 import player.phonograph.util.text.currentTimestamp
 import android.content.Context
+import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteException
 import java.io.File
 import java.io.IOException
 
@@ -54,5 +58,41 @@ class RawDatabaseBackupItemExecutor(val databaseName: String) : BackupItemExecut
 
     companion object {
         private const val TAG = "DatabaseManger"
+    }
+}
+
+object LegacyPathFilterDatabaseBackupItemExecutor : BackupItemExecutor {
+    // import only
+    override suspend fun export(context: Context): Buffer? {
+        return null
+    }
+
+    override suspend fun import(context: Context, source: Source): Boolean {
+        val file = File(
+            context.externalCacheDir ?: context.cacheDir,
+            "PathFilter.Backup_${currentTimestamp()}.db"
+        )
+        try {
+            file.createOrOverrideFile()
+            file.sink().buffer().use { buffer -> buffer.writeAll(source) }
+        } catch (e: IOException) {
+            warning(context, "PathFilterDatabaseBackup", "Failed to create $file", e)
+            return false
+        }
+
+        try {
+            SQLiteDatabase.openDatabase(file.absolutePath, null, SQLiteDatabase.OPEN_READONLY).use { db ->
+                PathFilterMigrationRule().import(context, db)
+            }
+            if (file.exists()) file.delete()
+        } catch (e: SQLiteException) {
+            warning(context, "PathFilterDatabaseBackup", "Failed to open $file", e)
+            return false
+        } catch (e: IOException) {
+            warning(context, "PathFilterDatabaseBackup", "Failed to process $file", e)
+            return false
+        }
+
+        return true
     }
 }
