@@ -9,6 +9,20 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
 
+//region Metadata
+
+
+/**
+ * Type of Backup
+ */
+enum class BackupType(val suffix: String) {
+    BINARY("bin"),
+    JSON("json"),
+    DATABASE("db");
+}
+
+//endregion
+
 //region Elements
 @Keep
 @Serializable

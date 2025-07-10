@@ -14,7 +14,7 @@ import android.widget.TextView
 
 class BackupChooserAdapter(
     private val config: List<BackupItem>,
-    private val all: List<BackupItem> = Backup.ALL_BACKUP_CONFIG,
+    private val all: List<BackupItem>,
 ) : SortableListAdapter<BackupItem>() {
 
     override fun fetchDataset(): SortableList<BackupItem> {

@@ -11,19 +11,9 @@ import player.phonograph.BuildConfig
 import player.phonograph.R
 import player.phonograph.foundation.error.warning
 import player.phonograph.model.backup.BackupItem
-import player.phonograph.model.backup.BackupItem.FavoriteBackup
-import player.phonograph.model.backup.BackupItem.FavoriteDatabaseBackup
-import player.phonograph.model.backup.BackupItem.HistoryDatabaseBackup
-import player.phonograph.model.backup.BackupItem.InternalPlaylistsBackup
-import player.phonograph.model.backup.BackupItem.MainDatabaseBackup
-import player.phonograph.model.backup.BackupItem.MusicPlaybackStateDatabaseBackup
-import player.phonograph.model.backup.BackupItem.PathFilterBackup
-import player.phonograph.model.backup.BackupItem.PathFilterDatabaseBackup
-import player.phonograph.model.backup.BackupItem.PlayingQueuesBackup
-import player.phonograph.model.backup.BackupItem.SettingBackup
-import player.phonograph.model.backup.BackupItem.SongPlayCountDatabaseBackup
 import player.phonograph.model.backup.BackupItemExecutor
 import player.phonograph.model.backup.BackupManifestFile
+import player.phonograph.model.backup.BackupType
 import player.phonograph.repo.database.DatabaseConstants.FAVORITE_DB
 import player.phonograph.repo.database.DatabaseConstants.HISTORY_DB
 import player.phonograph.repo.database.DatabaseConstants.MUSIC_PLAYBACK_STATE_DB
@@ -42,50 +32,34 @@ import java.io.OutputStream
 
 object Backup {
 
-    val ALL_BACKUP_CONFIG =
-        listOf(
-            SettingBackup, FavoriteBackup, PathFilterBackup, PlayingQueuesBackup,
-            InternalPlaylistsBackup,
-            MainDatabaseBackup,
-            FavoriteDatabaseBackup,
-            PathFilterDatabaseBackup,
-            HistoryDatabaseBackup,
-            SongPlayCountDatabaseBackup,
-            MusicPlaybackStateDatabaseBackup,
-        )
-
-    val ENABLE_BACKUP_CONFIG = listOf(
-        SettingBackup, FavoriteBackup, PathFilterBackup, PlayingQueuesBackup,
-    )
-
     fun displayName(backupItem: BackupItem, resources: Resources): CharSequence = with(resources) {
         when (backupItem) {
-            SettingBackup                    -> getString(R.string.action_settings)
-            PathFilterBackup                 -> getString(R.string.path_filter)
-            FavoriteBackup                   -> getString(R.string.playlist_favorites)
-            PlayingQueuesBackup              -> getString(R.string.label_playing_queue)
-            InternalPlaylistsBackup          -> getString(R.string.label_database_playlists)
-            MainDatabaseBackup               -> "[${getString(R.string.label_databases)}] ${getString(R.string.pref_header_library)}"
-            FavoriteDatabaseBackup           -> "[${getString(R.string.label_databases)}] ${getString(R.string.playlist_favorites)}"
-            PathFilterDatabaseBackup         -> "[${getString(R.string.label_databases)}] ${getString(R.string.path_filter)}"
-            HistoryDatabaseBackup            -> "[${getString(R.string.label_databases)}] ${getString(R.string.playlist_history)}"
-            SongPlayCountDatabaseBackup      -> "[${getString(R.string.label_databases)}] ${getString(R.string.playlist_my_top_tracks)}"
-            MusicPlaybackStateDatabaseBackup -> "[${getString(R.string.label_databases)}] ${getString(R.string.label_playing_queue)}"
+            BackupItem.Settings              -> getString(R.string.action_settings)
+            BackupItem.PathFilter            -> getString(R.string.path_filter)
+            BackupItem.Favorites             -> getString(R.string.playlist_favorites)
+            BackupItem.PlayingQueues         -> getString(R.string.label_playing_queue)
+            BackupItem.InternalPlaylists     -> getString(R.string.label_database_playlists)
+            BackupItem.MainDatabase          -> "[${getString(R.string.label_databases)}] ${getString(R.string.pref_header_library)}"
+            BackupItem.FavoriteDatabase      -> "[${getString(R.string.label_databases)}] ${getString(R.string.playlist_favorites)}"
+            BackupItem.PathFilterDatabase    -> "[${getString(R.string.label_databases)}] ${getString(R.string.path_filter)}"
+            BackupItem.HistoryDatabase       -> "[${getString(R.string.label_databases)}] ${getString(R.string.playlist_history)}"
+            BackupItem.SongPlayCountDatabase -> "[${getString(R.string.label_databases)}] ${getString(R.string.playlist_my_top_tracks)}"
+            BackupItem.PlayingQueuesDatabase -> "[${getString(R.string.label_databases)}] ${getString(R.string.label_playing_queue)}"
         }
     }
 
     private fun executor(item: BackupItem): BackupItemExecutor? = when (item) {
-        SettingBackup                    -> SettingsDataBackupItemExecutor
-        PathFilterBackup                 -> PathFilterDataBackupItemExecutor
-        FavoriteBackup                   -> FavoritesDataBackupItemExecutor
-        PlayingQueuesBackup              -> PlayingQueuesDataBackupItemExecutor
-        InternalPlaylistsBackup          -> InternalDatabasePlaylistsDataBackupItemExecutor
-        MainDatabaseBackup               -> RawDatabaseBackupItemExecutor(MusicDatabase.DATABASE_NAME)
-        FavoriteDatabaseBackup           -> RawDatabaseBackupItemExecutor(FAVORITE_DB)
-        PathFilterDatabaseBackup         -> RawDatabaseBackupItemExecutor(PATH_FILTER)
-        HistoryDatabaseBackup            -> RawDatabaseBackupItemExecutor(HISTORY_DB)
-        SongPlayCountDatabaseBackup      -> RawDatabaseBackupItemExecutor(SONG_PLAY_COUNT_DB)
-        MusicPlaybackStateDatabaseBackup -> RawDatabaseBackupItemExecutor(MUSIC_PLAYBACK_STATE_DB)
+        BackupItem.Settings              -> SettingsDataBackupItemExecutor
+        BackupItem.PathFilter            -> PathFilterDataBackupItemExecutor
+        BackupItem.Favorites             -> FavoritesDataBackupItemExecutor
+        BackupItem.PlayingQueues         -> PlayingQueuesDataBackupItemExecutor
+        BackupItem.InternalPlaylists     -> InternalDatabasePlaylistsDataBackupItemExecutor
+        BackupItem.MainDatabase          -> RawDatabaseBackupItemExecutor(MusicDatabase.DATABASE_NAME)
+        BackupItem.FavoriteDatabase      -> RawDatabaseBackupItemExecutor(FAVORITE_DB)
+        BackupItem.PathFilterDatabase    -> RawDatabaseBackupItemExecutor(PATH_FILTER)
+        BackupItem.HistoryDatabase       -> RawDatabaseBackupItemExecutor(HISTORY_DB)
+        BackupItem.SongPlayCountDatabase -> RawDatabaseBackupItemExecutor(SONG_PLAY_COUNT_DB)
+        BackupItem.PlayingQueuesDatabase -> RawDatabaseBackupItemExecutor(MUSIC_PLAYBACK_STATE_DB)
     }
 
     object Export {
@@ -129,14 +103,14 @@ object Backup {
                 }
 
                 if (exported != null) {
-                    val filename = "${item.key}.${item.type.suffix}"
+                    val filename = "${item.serializationName}.${item.type.suffix}"
                     val path = destinationPath / filename
                     fs.write(path, mustCreate = true) {
                         exported.use { writeAll(it) }
                     }
                     files[item] = filename
                 } else {
-                    warning(context, TAG, "No content to export for ${item.key}")
+                    warning(context, TAG, "No content to export for ${item.serializationName}")
                 }
             }
 
@@ -216,24 +190,18 @@ object Backup {
             val files = dir.list()
             if (files != null && files.isNotEmpty()) {
                 val map = mutableMapOf<BackupItem, String>()
-                for (fileName in files) {
-                    for (item in ALL_BACKUP_CONFIG) {
-                        when {
-                            fileName.endsWith(BackupItem.Type.DATABASE.suffix) -> { // special for database
-                                if (fileName.endsWith(item.type.suffix, true) &&
-                                    fileName.contains(item.key.removePrefix(BackupItem.PREFIX_DATABASE), true)
-                                ) {
-                                    map[item] = fileName
-                                }
-                            }
-
-                            else                                               -> {
-                                if (fileName.endsWith(item.type.suffix, true) &&
-                                    fileName.contains(item.key, true)
-                                ) {
-                                    map[item] = fileName
-                                }
-                            }
+                for (item in BackupItem.entries) {
+                    val expected = if (item.type == BackupType.DATABASE) {
+                        item.serializationName.removePrefix(BackupItem.PREFIX_DATABASE)
+                    } else {
+                        item.serializationName
+                    }
+                    for (fileName in files) {
+                        if (
+                            fileName.endsWith(item.type.suffix, true) &&
+                            fileName.startsWith(expected, ignoreCase = true)
+                        ) {
+                            map[item] = fileName
                         }
                     }
 
@@ -268,13 +236,12 @@ object Backup {
         private const val TMP_BACKUP_FOLDER_PREFIX = "BackupTmp"
     }
 
-    private val parser by lazy(LazyThreadSafetyMode.PUBLICATION) {
-        Json {
+    private val parser
+        get() = Json {
             ignoreUnknownKeys = true
             prettyPrint = true
             encodeDefaults = true
         }
-    }
 
     private const val TAG = "Backup"
 }

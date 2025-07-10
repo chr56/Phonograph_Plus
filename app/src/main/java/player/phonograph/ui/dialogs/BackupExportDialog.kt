@@ -10,8 +10,7 @@ import lib.storage.launcher.ICreateFileStorageAccessible
 import player.phonograph.R
 import player.phonograph.foundation.error.warning
 import player.phonograph.mechanism.backup.Backup
-import player.phonograph.mechanism.backup.Backup.ALL_BACKUP_CONFIG
-import player.phonograph.mechanism.backup.Backup.ENABLE_BACKUP_CONFIG
+import player.phonograph.model.backup.BackupItem
 import player.phonograph.util.text.currentDate
 import player.phonograph.util.text.dateTimeSuffixCompat
 import player.phonograph.util.theme.tintButtons
@@ -37,7 +36,9 @@ class BackupExportDialog : DialogFragment() {
 
         // setup view
         val view = requireActivity().layoutInflater.inflate(R.layout.recycler_view_wrapped, null)
-        adapter = BackupChooserAdapter(ENABLE_BACKUP_CONFIG, ALL_BACKUP_CONFIG).also { it.init() }
+        val allBackupConfig = BackupItem.entries.filter { !it.deprecated }
+        val enabledBackupConfig = BackupItem.entries.filter { !it.deprecated && it.enabledByDefault }
+        adapter = BackupChooserAdapter(enabledBackupConfig, allBackupConfig).also { it.init() }
         recyclerView = view.findViewById(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.adapter = adapter

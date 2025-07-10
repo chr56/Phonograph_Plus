@@ -4,6 +4,8 @@
 
 package player.phonograph.model.backup
 
+import player.phonograph.model.backup.BackupType.DATABASE
+import player.phonograph.model.backup.BackupType.JSON
 import androidx.annotation.Keep
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
@@ -15,80 +17,46 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
 @Keep
-@Serializable(with = BackupItem.Serializer::class)
-sealed class BackupItem(
-    val key: String,
-    val type: Type,
+@Serializable(BackupItem.Serializer::class)
+enum class BackupItem(
+    val serializationName: String,
+    val type: BackupType,
+    val deprecated: Boolean = false,
+    val enabledByDefault: Boolean = false,
 ) {
-
-    /**
-     * Type of Backup
-     */
-    enum class Type(val suffix: String) {
-        BINARY("bin"),
-        JSON("json"),
-        DATABASE("db");
-    }
+    // Portable
+    Settings("setting", JSON, enabledByDefault = true),
+    PathFilter("path_filter", JSON, enabledByDefault = true),
+    Favorites("favorite", JSON, enabledByDefault = true),
+    PlayingQueues("playing_queues", JSON, enabledByDefault = true),
+    InternalPlaylists("internal_playlists", JSON),
+    // Database
+    FavoriteDatabase("database_favorite", DATABASE),
+    PathFilterDatabase("database_path_filter", DATABASE),
+    HistoryDatabase("database_history", DATABASE),
+    SongPlayCountDatabase("database_song_play_count", DATABASE),
+    PlayingQueuesDatabase("database_music_playback_state", DATABASE),
+    MainDatabase("database_main", DATABASE),
+    ;
 
     class Serializer : KSerializer<BackupItem> {
-        override val descriptor: SerialDescriptor =
-            PrimitiveSerialDescriptor("BackupItem", PrimitiveKind.STRING)
+        override val descriptor: SerialDescriptor
+            get() = PrimitiveSerialDescriptor("BackupItem", PrimitiveKind.STRING)
 
-
-        override fun serialize(encoder: Encoder, value: BackupItem) {
-            encoder.encodeString(value.key)
-        }
+        override fun serialize(
+            encoder: Encoder,
+            value: BackupItem,
+        ) = encoder.encodeString(value.serializationName)
 
         override fun deserialize(decoder: Decoder): BackupItem {
-            val rawString = decoder.decodeString()
-            return fromKey(rawString) ?: throw SerializationException("Unknown key ($rawString)")
+            val serializationName = decoder.decodeString()
+            return BackupItem.entries.find { serializationName == it.serializationName }
+                ?: throw SerializationException("Unknown key ($serializationName)")
         }
     }
 
     companion object {
-        const val KEY_SETTING = "setting"
-        const val KEY_PATH_FILTER = "path_filter"
-        const val KEY_FAVORITES = "favorite"
-        const val KEY_PLAYING_QUEUES = "playing_queues"
-        const val KEY_INTERNAL_PLAYLISTS = "internal_playlists"
-
         const val PREFIX_DATABASE = "database_"
-        const val KEY_DATABASE_FAVORITE = "database_favorite"
-        const val KEY_DATABASE_PATH_FILTER = "database_path_filter"
-        const val KEY_DATABASE_HISTORY = "database_history"
-        const val KEY_DATABASE_SONG_PLAY_COUNT = "database_song_play_count"
-        const val KEY_DATABASE_MUSIC_PLAYBACK_STATE = "database_music_playback_state"
-
-        const val KEY_DATABASE_MAIN = "database_main"
-
-        private fun fromKey(key: String): BackupItem? = when (key) {
-            KEY_SETTING                       -> SettingBackup
-            KEY_PATH_FILTER                   -> PathFilterBackup
-            KEY_FAVORITES                     -> FavoriteBackup
-            KEY_PLAYING_QUEUES                -> PlayingQueuesBackup
-            KEY_INTERNAL_PLAYLISTS            -> InternalPlaylistsBackup
-            KEY_DATABASE_FAVORITE             -> FavoriteDatabaseBackup
-            KEY_DATABASE_PATH_FILTER          -> PathFilterDatabaseBackup
-            KEY_DATABASE_HISTORY              -> HistoryDatabaseBackup
-            KEY_DATABASE_SONG_PLAY_COUNT      -> SongPlayCountDatabaseBackup
-            KEY_DATABASE_MUSIC_PLAYBACK_STATE -> MusicPlaybackStateDatabaseBackup
-            KEY_DATABASE_MAIN                 -> MainDatabaseBackup
-            else                              -> null
-        }
     }
-
-    object SettingBackup : BackupItem(KEY_SETTING, Type.JSON)
-    object PathFilterBackup : BackupItem(KEY_PATH_FILTER, Type.JSON)
-    object FavoriteBackup : BackupItem(KEY_FAVORITES, Type.JSON)
-    object PlayingQueuesBackup : BackupItem(KEY_PLAYING_QUEUES, Type.JSON)
-    object InternalPlaylistsBackup : BackupItem(KEY_INTERNAL_PLAYLISTS, Type.JSON)
-
-    object FavoriteDatabaseBackup : BackupItem(KEY_DATABASE_FAVORITE, Type.DATABASE)
-    object PathFilterDatabaseBackup : BackupItem(KEY_DATABASE_PATH_FILTER, Type.DATABASE)
-    object HistoryDatabaseBackup : BackupItem(KEY_DATABASE_HISTORY, Type.DATABASE)
-    object SongPlayCountDatabaseBackup : BackupItem(KEY_DATABASE_SONG_PLAY_COUNT, Type.DATABASE)
-    object MusicPlaybackStateDatabaseBackup : BackupItem(KEY_DATABASE_MUSIC_PLAYBACK_STATE, Type.DATABASE)
-
-    object MainDatabaseBackup : BackupItem(KEY_DATABASE_MAIN, Type.DATABASE)
 }
 
