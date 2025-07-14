@@ -1,10 +1,8 @@
 package player.phonograph.ui.views
 
 import androidx.core.view.WindowInsetsCompat
-import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
-import android.view.MotionEvent
 import android.view.View
 import android.view.WindowInsets
 
@@ -16,8 +14,11 @@ class NavigationBarView : View {
 
     override fun onApplyWindowInsets(insets: WindowInsets): WindowInsets {
         val windowInsetsCompat = WindowInsetsCompat.toWindowInsetsCompat(insets, this)
-        layoutParams = layoutParams.apply {
-            height = windowInsetsCompat.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom
+        val navigationBarHeight = windowInsetsCompat.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom
+        if (navigationBarHeight != layoutParams.height) {
+            layoutParams = layoutParams.apply {
+                height = navigationBarHeight
+            }
         }
         return super.onApplyWindowInsets(insets)
     }
