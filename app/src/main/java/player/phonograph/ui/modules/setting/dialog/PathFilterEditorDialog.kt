@@ -6,16 +6,15 @@ package player.phonograph.ui.modules.setting.dialog
 
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
-import com.vanpra.composematerialdialogs.title
 import player.phonograph.R
 import player.phonograph.settings.PathFilterSetting
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
+import player.phonograph.ui.compose.components.PathEditor
 import player.phonograph.ui.modules.explorer.PathSelectorRequester
-import player.phonograph.ui.modules.setting.elements.PathFilterSettings
-import player.phonograph.util.theme.accentColoredButtonStyle
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -28,7 +27,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import android.content.Context
 import android.widget.Toast
@@ -38,14 +36,14 @@ import kotlinx.coroutines.launch
 abstract class PathFilterEditorDialog : ComposeViewDialogFragment() {
 
     class ExcludedMode : PathFilterEditorDialog() {
-        override val mode: Boolean = true
+        override val excludeMode: Boolean = true
     }
 
     class IncludedMode : PathFilterEditorDialog() {
-        override val mode: Boolean = false
+        override val excludeMode: Boolean = false
     }
 
-    protected abstract val mode: Boolean
+    protected abstract val excludeMode: Boolean
 
     @Composable
     override fun Content() {
@@ -55,12 +53,12 @@ abstract class PathFilterEditorDialog : ComposeViewDialogFragment() {
 
         var version by remember { mutableIntStateOf(0) }
         LaunchedEffect(version) {
-            paths = read(context, mode)
+            paths = read(context, excludeMode)
         }
 
         val actionAdd: () -> Unit = {
             chooseFile(context) { path ->
-                add(mode, path)
+                add(excludeMode, path)
                 version++
             }
         }
@@ -68,16 +66,22 @@ abstract class PathFilterEditorDialog : ComposeViewDialogFragment() {
             version++
         }
         val actionClear: () -> Unit = {
-            clear(mode)
+            clear(excludeMode)
             version++
         }
         val actionRemove: (String) -> Unit = { path: String ->
-            remove(mode, path)
+            remove(excludeMode, path)
+            version++
+        }
+        val actionEdit: (String, String) -> Unit = { from: String, to: String ->
+            edit(excludeMode, from, to)
             version++
         }
 
+        val title = stringResource(if (excludeMode) R.string.label_excluded_paths else R.string.label_included_paths)
+
         val description = stringResource(
-            if (mode) R.string.pref_summary_path_filter_excluded_mode
+            if (excludeMode) R.string.pref_summary_path_filter_excluded_mode
             else R.string.pref_summary_path_filter_included_mode
         )
 
@@ -85,26 +89,24 @@ abstract class PathFilterEditorDialog : ComposeViewDialogFragment() {
             MaterialDialog(
                 dialogState = rememberMaterialDialogState(true),
                 onCloseRequest = { dismiss() },
-                buttons = {
-                    positiveButton(
-                        res = android.R.string.ok, textStyle = accentColoredButtonStyle()
-                    ) { dismiss() }
-                }
             ) {
-                title(stringResource(R.string.path_filter))
-                Column(
-                    Modifier
-                        .padding(24.dp)
-                        .verticalScroll(rememberScrollState())
-                ) {
-                    PathFilterSettings(
-                        textDescription = description,
-                        paths = paths,
-                        actionAdd = actionAdd,
-                        actionRefresh = actionRefresh,
-                        actionClear = actionClear,
-                        actionRemove = actionRemove,
-                    )
+                BoxWithConstraints {
+                    Column(
+                        Modifier
+                            .heightIn(min = this.maxHeight * 0.6667f)
+                            .verticalScroll(rememberScrollState())
+                    ) {
+                        PathEditor(
+                            title = title,
+                            textDescription = description,
+                            paths = paths,
+                            actionAdd = actionAdd,
+                            actionRefresh = actionRefresh,
+                            actionClear = actionClear,
+                            actionRemove = actionRemove,
+                            actionEdit = actionEdit,
+                        )
+                    }
                 }
             }
         }
