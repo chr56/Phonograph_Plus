@@ -9,6 +9,8 @@ import player.phonograph.util.concurrent.coroutineToast
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,7 +18,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.AlertDialog
@@ -115,63 +116,62 @@ fun ColumnScope.PathEditor(
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(min = 56.dp)
-            .weight(2f)
             .align(Alignment.CenterHorizontally)
             .padding(top = 4.dp, start = 12.dp, end = 12.dp),
         style = MaterialTheme.typography.body2,
         textAlign = TextAlign.Center,
     )
 
-    val estimatedHeight = remember { (96 + min(384, 48 * paths.size)).dp }
-    LazyColumn(
+    Box(
         modifier = Modifier
             .fillMaxWidth()
             .weight(8f)
-            .heightIn(min = estimatedHeight)
-            .padding(horizontal = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+            .padding(horizontal = 8.dp)
     ) {
-        if (paths.isNotEmpty()) {
-            items(paths) { path ->
-                PathItem(
-                    path = path,
-                    actionRemove = actionRemove,
-                    actionEdit = actionEdit
-                )
-            }
-            item {
-                Spacer(Modifier.height(72.dp))
-            }
-        } else {
-            item {
-                Text(
-                    stringResource(R.string.msg_empty),
-                    Modifier
-                        .fillMaxWidth()
-                        .weight(4f)
-                        .padding(36.dp),
-                    style = MaterialTheme.typography.body2,
-                    textAlign = TextAlign.Center,
-                    color = Color.DarkGray
-                )
+        val estimatedHeight = remember { (96 + min(384, 48 * paths.size)).dp }
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = estimatedHeight),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            if (paths.isNotEmpty()) {
+                items(paths) { path ->
+                    PathItem(
+                        path = path,
+                        actionRemove = actionRemove,
+                        actionEdit = actionEdit
+                    )
+                }
+                item {
+                    Spacer(Modifier.height(72.dp))
+                }
+            } else {
+                item {
+                    Text(
+                        stringResource(R.string.msg_empty),
+                        modifier = Modifier.padding(36.dp),
+                        style = MaterialTheme.typography.body2,
+                        textAlign = TextAlign.Center,
+                        color = Color.DarkGray
+                    )
+                }
             }
         }
 
-    }
-
-
-    FloatingActionButton(
-        onClick = actionAdd,
-        backgroundColor = MaterialTheme.colors.secondary,
-        modifier = Modifier
-            .padding(16.dp)
-            .align(Alignment.End),
-    ) {
-        Icon(
-            Icons.Default.Add,
-            contentDescription = stringResource(R.string.action_add),
-            tint = MaterialTheme.colors.onPrimary
-        )
+        FloatingActionButton(
+            onClick = actionAdd,
+            backgroundColor = MaterialTheme.colors.secondary,
+            modifier = Modifier
+                .padding(16.dp)
+                .align(Alignment.BottomEnd),
+        ) {
+            Icon(
+                Icons.Default.Add,
+                contentDescription = stringResource(R.string.action_add),
+                tint = MaterialTheme.colors.onPrimary
+            )
+        }
     }
 
     if (showClearConfirmationDialog) {

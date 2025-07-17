@@ -93,7 +93,7 @@ abstract class PathFilterEditorDialog : ComposeViewDialogFragment() {
                 BoxWithConstraints {
                     Column(
                         Modifier
-                            .heightIn(min = this.maxHeight * 0.6667f)
+                            .heightIn(min = this.maxHeight * 0.8333f)
                             .verticalScroll(rememberScrollState())
                     ) {
                         PathEditor(
