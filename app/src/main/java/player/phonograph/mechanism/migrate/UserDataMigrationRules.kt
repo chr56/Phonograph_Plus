@@ -6,6 +6,8 @@ package player.phonograph.mechanism.migrate
 
 import player.phonograph.foundation.error.warning
 import player.phonograph.model.migration.VersionMigrationRule
+import player.phonograph.repo.room.MusicDatabase
+import player.phonograph.repo.room.migration.GenesisMigrations
 import player.phonograph.settings.PathFilterSetting
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
@@ -87,6 +89,37 @@ class PathFilterMigrationRule : UserDataMigrationRule(introduced = 1102) {
     }
 }
 
+class FavoritesMigrationRule : UserDataMigrationRule(introduced = 1102) {
+
+    override fun execute(context: Context) {
+        CoroutineScope(Dispatchers.IO).launch {
+            migrate(context, path = null)
+        }
+    }
+
+    suspend fun migrate(context: Context, path: String?) {
+        val result = GenesisMigrations.migrateFavoritesDatabase(context, MusicDatabase.koinInstance, path)
+        if (result != GenesisMigrations.RESULT_OK && result != GenesisMigrations.RESULT_NOT_FOUND) {
+            warning(context, TAG, "Failed to migrate $DATABASE_NAME_FAVORITES")
+        }
+    }
+
+    override fun check(context: Context, from: Int, to: Int): Boolean {
+        val databaseFile = context.getDatabasePath(DATABASE_NAME_FAVORITES)
+        val exists = try {
+            databaseFile.exists()
+        } catch (_: Exception) {
+            false
+        }
+        return super.check(context, from, to) && exists
+    }
+
+    companion object {
+        private const val DATABASE_NAME_FAVORITES = "favorite.db"
+
+        private const val TAG = "FavoritesMigrationRule"
+    }
+}
 
 sealed class UserDataMigrationRule(introduced: Int) : VersionMigrationRule(introduced) {
 
