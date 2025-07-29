@@ -60,6 +60,7 @@ object MigrationManager {
                 migrate(PreloadImagesMigrationRule())
                 migrate(NowPlayingScreenMigrationRule())
                 migrate(PathFilterMigrationRule())
+                migrate(FavoritesMigrationRule())
             }
 
             Log.i(TAG, "End Migration")
