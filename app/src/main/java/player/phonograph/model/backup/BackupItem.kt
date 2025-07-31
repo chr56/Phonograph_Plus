@@ -26,11 +26,10 @@ enum class BackupItem(
 ) {
     // Portable
     Settings("setting", JSON, enabledByDefault = true),
-    Favorites("favorite", JSON, enabledByDefault = true),
     PlayingQueues("playing_queues", JSON, enabledByDefault = true),
+    Favorites("favorite", JSON, enabledByDefault = true),
     InternalPlaylists("internal_playlists", JSON),
     // Database
-    FavoriteDatabase("database_favorite", DATABASE),
     HistoryDatabase("database_history", DATABASE),
     SongPlayCountDatabase("database_song_play_count", DATABASE),
     PlayingQueuesDatabase("database_music_playback_state", DATABASE),
@@ -38,6 +37,7 @@ enum class BackupItem(
     // Deprecated (support import only)
     PathFilter("path_filter", JSON, deprecated = true),
     PathFilterDatabase("database_path_filter", DATABASE, deprecated = true),
+    FavoriteDatabase("database_favorite", DATABASE, deprecated = true),
     ;
 
     class Serializer : KSerializer<BackupItem> {
