@@ -8,6 +8,8 @@ package player.phonograph.settings
 
 import player.phonograph.model.SongClickMode
 import player.phonograph.model.coil.ImageSourceConfig
+import player.phonograph.model.file.DefaultExcludedPaths
+import player.phonograph.model.file.DefaultIncludedPaths
 import player.phonograph.model.file.DefaultStartDirectory
 import player.phonograph.model.notification.NotificationActionsConfig
 import player.phonograph.model.pages.PagesConfig
@@ -25,6 +27,7 @@ import androidx.datastore.preferences.core.floatPreferencesKey as floatPK
 import androidx.datastore.preferences.core.intPreferencesKey as intPK
 import androidx.datastore.preferences.core.longPreferencesKey as longPK
 import androidx.datastore.preferences.core.stringPreferencesKey as stringPK
+import androidx.datastore.preferences.core.stringSetPreferencesKey as stringSetPK
 
 /**
  * All available [PreferenceKey] registered
@@ -78,6 +81,10 @@ object Keys {
     //<editor-fold desc="PathFilter">
     val pathFilterExcludeMode
         get() = PrimitiveKey<Boolean>(booleanPK("path_filter_exclude_mode")) { true }
+    val pathFilterExcludePaths
+        get() = PrimitiveKey<Set<String>>(stringSetPK("path_filter_exclude_paths")) { DefaultExcludedPaths }
+    val pathFilterIncludePaths
+        get() = PrimitiveKey<Set<String>>(stringSetPK("path_filter_include_paths")) { DefaultIncludedPaths }
     //</editor-fold>
 
     //<editor-fold desc="Images">

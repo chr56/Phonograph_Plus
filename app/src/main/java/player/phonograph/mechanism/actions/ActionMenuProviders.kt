@@ -8,7 +8,6 @@ import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import com.github.chr56.android.menu_dsl.submenu
 import player.phonograph.R
-import player.phonograph.mechanism.PathFilter
 import player.phonograph.mechanism.scanner.MediaStoreScanner
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
@@ -376,7 +375,11 @@ object ActionMenuProviders {
                         menuItem(title = getString(R.string.action_add_to_black_list)) { // id = R.id.action_add_to_black_list
                             showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                             onClick {
-                                PathFilter.addToBlacklist(context, File(file.location.absolutePath))
+                                val file = File(file.location.absolutePath)
+                                if (file.isDirectory)
+                                    addToBlacklist(context, file.absolutePath)
+                                else
+                                    addToBlacklist(context, file.absolutePath.dropLastWhile { it != '/' }.dropLast(1))
                                 true
                             }
                         }

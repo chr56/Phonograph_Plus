@@ -21,7 +21,6 @@ import player.phonograph.model.backup.ExportedPlaylist
 import player.phonograph.model.backup.ExportedSetting
 import player.phonograph.model.backup.ExportedSong
 import player.phonograph.model.playlist.Playlist
-import player.phonograph.repo.database.store.PathFilterStore
 import player.phonograph.repo.loader.FavoriteSongs
 import player.phonograph.repo.loader.PinedPlaylists
 import player.phonograph.repo.loader.Songs
@@ -31,6 +30,8 @@ import player.phonograph.repo.room.domain.RoomPlaylists
 import player.phonograph.repo.room.domain.RoomPlaylistsActions
 import player.phonograph.service.queue.MusicPlaybackQueueStore
 import player.phonograph.service.queue.QueueManager
+import player.phonograph.settings.Keys
+import player.phonograph.settings.PathFilterSetting
 import player.phonograph.settings.Setting
 import player.phonograph.settings.SettingsDataSerializer
 import androidx.datastore.preferences.core.edit
@@ -134,27 +135,17 @@ object SettingsDataBackupItemExecutor : JsonDataBackupItemExecutor() {
     private const val TAG = "SettingDataBackup"
 }
 
+// Deprecated; now for importing only.
 object PathFilterDataBackupItemExecutor : JsonDataBackupItemExecutor() {
     override suspend fun export(context: Context): Buffer? {
-        val db = PathFilterStore.get()
-        val whitelist = db.whitelistPaths
-        val blacklist = db.blacklistPaths
-
-        val exported = ExportedPathFilter(ExportedPathFilter.VERSION, whitelist, blacklist)
-        return write(context, ExportedPathFilter.serializer(), exported, "PathFilter")
+        return null
     }
 
     override suspend fun import(context: Context, source: Source): Boolean {
         val imported = read(context, ExportedPathFilter.serializer(), source, "PathFilter")
         return if (imported != null) {
-            val db = PathFilterStore.get()
-            synchronized(db) {
-                db.clearBlacklist()
-                db.addBlacklistPath(imported.blacklist)
-
-                db.clearWhitelist()
-                db.addWhitelistPath(imported.whitelist)
-            }
+            PathFilterSetting.replace(context, true, imported.blacklist)
+            PathFilterSetting.replace(context, false, imported.whitelist)
             true
         } else {
             false

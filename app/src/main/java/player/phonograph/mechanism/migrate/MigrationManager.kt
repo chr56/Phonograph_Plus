@@ -59,6 +59,7 @@ object MigrationManager {
                 migrate(ColoredSystemBarsMigrationRule())
                 migrate(PreloadImagesMigrationRule())
                 migrate(NowPlayingScreenMigrationRule())
+                migrate(PathFilterMigrationRule())
             }
 
             Log.i(TAG, "End Migration")
