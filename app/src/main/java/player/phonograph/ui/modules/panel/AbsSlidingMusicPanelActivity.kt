@@ -8,7 +8,6 @@ import player.phonograph.R
 import player.phonograph.databinding.SlidingMusicPanelLayoutBinding
 import player.phonograph.model.ui.NowPlayingScreenStyle
 import player.phonograph.model.ui.UnarySlidingUpPanelProvider
-import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.modules.player.AbsPlayerFragment
@@ -51,6 +50,7 @@ abstract class AbsSlidingMusicPanelActivity :
 
     private var playerFragment: AbsPlayerFragment? = null
     private var miniPlayerFragment: MiniPlayerFragment? = null
+    private var miniPlayerHeight: Int = 0
 
     private var _panelBinding: SlidingMusicPanelLayoutBinding? = null
     private val panelBinding: SlidingMusicPanelLayoutBinding get() = _panelBinding!!
@@ -82,8 +82,8 @@ abstract class AbsSlidingMusicPanelActivity :
 
         // setup panel
         setContentView(createContentView())
-        updateSystemBarsColor(darkenColor(primaryColor()), primaryColor()) // initial values
         miniPlayerFragment = panelBinding.miniPlayerFragment.getFragment()
+        miniPlayerHeight = resources.getDimensionPixelSize(R.dimen.mini_player_height)
         panelBinding.slidingLayout.also { layout ->
             layout.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
@@ -111,22 +111,6 @@ abstract class AbsSlidingMusicPanelActivity :
             panelBinding.navigationBar.setOnClickListener { requestToExpand() }
         }
 
-        // states
-        observe(queueViewModel.queue) { queue -> panelViewModel.updatePanelState(hidden = queue.isEmpty()) }
-        observe(panelViewModel.colorChange) { (oldColor, newColor) ->
-            if (slidingUpPanelLayout.panelState == PanelState.EXPANDED) {
-                animateSystemBarsColor(oldColor, newColor)
-            }
-        }
-        observe(panelViewModel.isPanelHidden, state = Lifecycle.State.STARTED) { hidden ->
-            if (hidden) {
-                slidingUpPanelLayout.panelHeight = 0
-                requestToCollapse()
-            } else {
-                slidingUpPanelLayout.panelHeight =
-                    panelBinding.navigationBar.height + resources.getDimensionPixelSize(R.dimen.mini_player_height)
-            }
-        }
 
         // insets
         ViewCompat.setOnApplyWindowInsetsListener(panelBinding.miniPlayerDocker) { view, windowInsets ->
@@ -135,12 +119,20 @@ abstract class AbsSlidingMusicPanelActivity :
                 rightMargin = insets.right
                 leftMargin = insets.left
             }
-            val hidden = panelViewModel.isPanelHidden.value
-            if (!hidden) {
-                slidingUpPanelLayout.panelHeight =
-                    panelBinding.navigationBar.height + resources.getDimensionPixelSize(R.dimen.mini_player_height)
-            }
+            updatePanelHiddenState(panelViewModel.isPanelHidden.value)
             windowInsets
+        }
+
+        // states
+        updateSystemBarsColor(darkenColor(primaryColor()), primaryColor()) // initial values
+        observe(queueViewModel.queue) { queue -> panelViewModel.updatePanelState(hidden = queue.isEmpty()) }
+        observe(panelViewModel.colorChange) { (oldColor, newColor) ->
+            if (slidingUpPanelLayout.panelState == PanelState.EXPANDED) {
+                animateSystemBarsColor(oldColor, newColor)
+            }
+        }
+        observe(panelViewModel.isPanelHidden, state = Lifecycle.State.STARTED) { hidden ->
+            updatePanelHiddenState(hidden)
         }
     }
 
@@ -196,6 +188,18 @@ abstract class AbsSlidingMusicPanelActivity :
         playerFragment?.userVisibleHint = true // todo: remove legacy userVisibleHint
         playerFragment?.onShow()
         onBackPressedDispatcher.addCallback(this, panelBackPressedCallback)
+    }
+
+    private fun updatePanelHiddenState(hidden: Boolean) {
+        if (hidden) requestToCollapse()
+        val targetPanelHeight: Int = if (!hidden) {
+            panelBinding.navigationBar.height + miniPlayerHeight
+        } else {
+            0
+        }
+        if (targetPanelHeight != slidingUpPanelLayout.panelHeight) {
+            slidingUpPanelLayout.panelHeight = targetPanelHeight
+        }
     }
 
     private val panelBackPressedCallback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
