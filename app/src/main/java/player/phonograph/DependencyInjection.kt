@@ -7,7 +7,6 @@ package player.phonograph
 import org.koin.dsl.module
 import player.phonograph.repo.database.loaders.RecentlyPlayedTracksLoader
 import player.phonograph.repo.database.loaders.TopTracksLoader
-import player.phonograph.repo.database.store.FavoritesStore
 import player.phonograph.repo.database.store.HistoryStore
 import player.phonograph.repo.database.store.SongPlayCountStore
 import player.phonograph.repo.room.MusicDatabase
@@ -21,7 +20,6 @@ val moduleStatus = module {
 val moduleLoaders = module {
     single { HistoryStore(get()) }
     single { SongPlayCountStore(get()) }
-    single { FavoritesStore(get()) }
     single { MusicPlaybackQueueStore(get()) }
 
     factory { TopTracksLoader(get()) }
