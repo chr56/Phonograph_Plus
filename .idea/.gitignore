@@ -7,6 +7,7 @@ AndroidProjectSystem.xml
 compiler.xml
 deploymentTargetDropDown.xml
 deploymentTargetSelector.xml
+deviceManager.xml
 gradle.xml
 kotlinc.xml
 misc.xml
