@@ -21,8 +21,8 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 
 sealed class NotificationAction(
-    @NotificationActionName val key: String,
-    @get:StringRes val stringRes: Int,
+    @param:NotificationActionName val key: String,
+    @param:StringRes val stringRes: Int,
     val action: String,
 ) {
 

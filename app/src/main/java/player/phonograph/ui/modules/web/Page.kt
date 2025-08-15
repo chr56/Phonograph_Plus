@@ -11,7 +11,7 @@ import android.content.Context
 
 val LocalPageNavigator = compositionLocalOf<Navigator<Page>?> { null }
 
-sealed class Page(@StringRes val nameRes: Int) : Navigator.IPage {
+sealed class Page(@param:StringRes val nameRes: Int) : Navigator.IPage {
     open fun title(context: Context): String = context.getString(nameRes)
 }
 
