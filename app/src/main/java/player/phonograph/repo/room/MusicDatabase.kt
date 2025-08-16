@@ -5,7 +5,9 @@
 package player.phonograph.repo.room
 
 import org.koin.core.context.GlobalContext
+import player.phonograph.repo.room.dao.FavoritesSongsDao
 import player.phonograph.repo.room.dao.MediaStoreSongDao
+import player.phonograph.repo.room.dao.PinedPlaylistsDao
 import player.phonograph.repo.room.dao.PlaylistDao
 import player.phonograph.repo.room.dao.PlaylistSongDao
 import player.phonograph.repo.room.entity.FavoriteSongEntity
@@ -37,6 +39,8 @@ abstract class MusicDatabase : RoomDatabase(), Closeable {
     abstract fun MediaStoreSongDao(): MediaStoreSongDao
     abstract fun PlaylistDao(): PlaylistDao
     abstract fun PlaylistSongDao(): PlaylistSongDao
+    abstract fun FavoritesSongsDao(): FavoritesSongsDao
+    abstract fun PinedPlaylistsDao(): PinedPlaylistsDao
     override fun close() {
         super.close()
     }

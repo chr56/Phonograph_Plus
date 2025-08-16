@@ -10,7 +10,7 @@ import okio.buffer
 import okio.sink
 import okio.source
 import player.phonograph.foundation.error.warning
-import player.phonograph.mechanism.backup.RawDatabaseBackupItemExecutor.Companion.TAG
+import player.phonograph.mechanism.migrate.FavoritesMigrationRule
 import player.phonograph.mechanism.migrate.PathFilterMigrationRule
 import player.phonograph.model.backup.BackupItemExecutor
 import player.phonograph.util.file.createOrOverrideFile
@@ -94,5 +94,39 @@ object LegacyPathFilterDatabaseBackupItemExecutor : BackupItemExecutor {
         }
 
         return true
+    }
+}
+
+object LegacyFavoritesDatabaseBackupItemExecutor : BackupItemExecutor {
+    // import only
+    override suspend fun export(context: Context): Buffer? {
+        return null
+    }
+
+    override suspend fun import(context: Context, source: Source): Boolean {
+        val file = File(
+            context.externalCacheDir ?: context.cacheDir,
+            "Favorite.Backup_${currentTimestamp()}.db"
+        )
+        try {
+            file.createOrOverrideFile()
+            file.sink().buffer().use { buffer -> buffer.writeAll(source) }
+        } catch (e: IOException) {
+            warning(context, "FavoritesDatabaseBackup", "Failed to create $file", e)
+            return false
+        }
+
+        try {
+            FavoritesMigrationRule().migrate(context, file.absolutePath)
+            if (file.exists()) file.delete()
+        } catch (e: SQLiteException) {
+            warning(context, "FavoritesDatabaseBackup", "Failed to open $file", e)
+            return false
+        } catch (e: IOException) {
+            warning(context, "FavoritesDatabaseBackup", "Failed to process $file", e)
+            return false
+        }
+
+        return false
     }
 }

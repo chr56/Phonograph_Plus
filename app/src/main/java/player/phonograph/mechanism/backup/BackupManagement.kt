@@ -49,17 +49,17 @@ object Backup {
 
     private fun executor(item: BackupItem): BackupItemExecutor? = when (item) {
         BackupItem.Settings              -> SettingsDataBackupItemExecutor
-        BackupItem.Favorites             -> FavoritesDataBackupItemExecutor
         BackupItem.PlayingQueues         -> PlayingQueuesDataBackupItemExecutor
+        BackupItem.Favorites             -> FavoritesDataBackupItemExecutor
         BackupItem.InternalPlaylists     -> InternalDatabasePlaylistsDataBackupItemExecutor
         BackupItem.MainDatabase          -> RawDatabaseBackupItemExecutor(MusicDatabase.DATABASE_NAME)
-        BackupItem.FavoriteDatabase      -> RawDatabaseBackupItemExecutor(FAVORITE_DB)
         BackupItem.HistoryDatabase       -> RawDatabaseBackupItemExecutor(HISTORY_DB)
         BackupItem.SongPlayCountDatabase -> RawDatabaseBackupItemExecutor(SONG_PLAY_COUNT_DB)
         BackupItem.PlayingQueuesDatabase -> RawDatabaseBackupItemExecutor(MUSIC_PLAYBACK_STATE_DB)
         // Below are deprecated since 1102 (importing only)
         BackupItem.PathFilter            -> PathFilterDataBackupItemExecutor
         BackupItem.PathFilterDatabase    -> LegacyPathFilterDatabaseBackupItemExecutor
+        BackupItem.FavoriteDatabase      -> LegacyFavoritesDatabaseBackupItemExecutor
     }
 
     object Export {
