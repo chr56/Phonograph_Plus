@@ -11,7 +11,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class CrashReport(
-    @Type val type: Int,
+    @param:Type val type: Int,
     val note: String,
     val stackTrace: String,
 ) : Parcelable {

@@ -2,10 +2,10 @@
 
 ## Plugins
 
-kotlin = "2.1.21"
-ksp = "2.1.21-2.0.2"
+kotlin = "2.2.10"
+ksp = "2.2.10-2.0.2"
 
-agp = "8.9.2"
+agp = "8.11.1"
 
 versionChecker = "0.51.0"
 
@@ -36,9 +36,9 @@ compose = "1.8.3"
 
 #### Popular Start
 ktxc = "1.10.2"
-ktxs-json = "1.8.1"
-ktxs-ktoml = "0.5.0"
-ktxs-kaml = "0.80.1"
+ktxs-json = "1.9.0"
+ktxs-ktoml = "0.7.0"
+ktxs-kaml = "0.90.0"
 okhttp = "4.12.0"
 retrofit = "2.11.0"
 coil = "2.7.0"

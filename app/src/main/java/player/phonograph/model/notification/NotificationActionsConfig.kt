@@ -26,7 +26,7 @@ data class NotificationActionsConfig(
     @Parcelize
     @Serializable
     data class Item(
-        @SerialName("key") @NotificationActionName val key: String,
+        @SerialName("key") @param:NotificationActionName val key: String,
         @SerialName("compat") var displayInCompat: Boolean = false,
     ) : Parcelable {
 

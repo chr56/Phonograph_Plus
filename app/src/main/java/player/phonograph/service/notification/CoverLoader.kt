@@ -29,7 +29,7 @@ import android.util.LruCache
  */
 class CoverLoader(private val context: Context) {
 
-    data class PaletteBitmap(val bitmap: Bitmap, @ColorInt val paletteColor: Int)
+    data class PaletteBitmap(val bitmap: Bitmap, @param:ColorInt val paletteColor: Int)
 
     private val cache = LruCache<Long, PaletteBitmap>(4)
     private val loader = Coil.imageLoader(context)

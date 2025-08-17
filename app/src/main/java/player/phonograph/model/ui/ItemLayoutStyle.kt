@@ -15,7 +15,7 @@ import androidx.annotation.LayoutRes
  * use [ItemLayoutStyle.Companion.from] or static value to create
  */
 @JvmInline
-value class ItemLayoutStyle private constructor(@ViewHolderType val ordinal: Int) {
+value class ItemLayoutStyle private constructor(@param:ViewHolderType val ordinal: Int) {
 
     /**
      * Layout resource id
