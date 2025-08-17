@@ -20,7 +20,7 @@ import java.io.File
 import java.io.IOException
 
 
-class PathFilterMigrationRule : UserDataMigrationRule(introduced = 1102) {
+class PathFilterMigrationRule : UserDataMigrationRule(introduced = 1104) {
 
     override fun execute(context: Context) {
         withDatabase(context, DATABASE_NAME_PATH_FILTER, ::import)
@@ -89,7 +89,7 @@ class PathFilterMigrationRule : UserDataMigrationRule(introduced = 1102) {
     }
 }
 
-class FavoritesMigrationRule : UserDataMigrationRule(introduced = 1102) {
+class FavoritesMigrationRule : UserDataMigrationRule(introduced = 1104) {
 
     override fun execute(context: Context) {
         CoroutineScope(Dispatchers.IO).launch {
