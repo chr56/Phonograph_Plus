@@ -8,6 +8,7 @@ import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import com.github.chr56.android.menu_dsl.submenu
 import player.phonograph.R
+import player.phonograph.mechanism.event.EventHub
 import player.phonograph.mechanism.scanner.MediaStoreScanner
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
@@ -271,6 +272,7 @@ object ActionMenuProviders {
                         onClick {
                             context.lifecycleScopeOrNewOne().launch(Dispatchers.IO) {
                                 PinedPlaylists.toggleState(context, playlist)
+                                EventHub.sendEvent(context, EventHub.EVENT_PLAYLISTS_CHANGED)
                             }
                             true
                         }
