@@ -92,7 +92,7 @@ object RoomPinedPlaylists : RoomLoader(), IPinedPlaylists {
         when (val location = playlist.location) {
             is FilePlaylistLocation     -> PinedPlaylistsEntity(
                 id = location.id(),
-                type = TYPE_DATABASE_PLAYLIST,
+                type = TYPE_FILE_PLAYLIST,
                 sub = location.mediastoreId,
                 data = location.path,
                 title = playlist.name,
@@ -101,7 +101,7 @@ object RoomPinedPlaylists : RoomLoader(), IPinedPlaylists {
 
             is DatabasePlaylistLocation -> PinedPlaylistsEntity(
                 id = location.id(),
-                type = TYPE_FILE_PLAYLIST,
+                type = TYPE_DATABASE_PLAYLIST,
                 sub = location.databaseId,
                 data = location.databaseId.toString(),
                 title = playlist.name,
