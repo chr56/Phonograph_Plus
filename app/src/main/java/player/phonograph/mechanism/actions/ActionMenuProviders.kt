@@ -264,7 +264,7 @@ object ActionMenuProviders {
                             }
                         }
                     }
-                    if (location is FilePlaylistLocation) menuItem {
+                    menuItem {
                         val pined = runBlocking { PinedPlaylists.isPined(context, playlist) }
                         title = getString(if (!pined) R.string.action_pin else R.string.action_unpin)
                         showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
