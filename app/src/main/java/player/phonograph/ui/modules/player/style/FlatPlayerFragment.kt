@@ -211,7 +211,6 @@ class FlatPlayerFragment : AbsPlayerFragment() {
                 ViewCompat.setOnApplyWindowInsetsListener(viewBinding.root) { view, windowInsets ->
                     val insets = windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars())
                     view.updateLayoutParams<MarginLayoutParams> {
-                        rightMargin = insets.right
                         bottomMargin = insets.bottom
                     }
                     windowInsets

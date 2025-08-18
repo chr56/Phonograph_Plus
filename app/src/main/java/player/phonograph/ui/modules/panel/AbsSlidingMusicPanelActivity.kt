@@ -17,6 +17,7 @@ import player.phonograph.util.observe
 import player.phonograph.util.theme.primaryColor
 import player.phonograph.util.theme.themeFooterColor
 import player.phonograph.util.theme.updateSystemBarsColor
+import player.phonograph.util.ui.isLandscape
 import util.theme.color.darkenColor
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.ColorInt
@@ -116,7 +117,7 @@ abstract class AbsSlidingMusicPanelActivity :
 
 
         // insets
-        ViewCompat.setOnApplyWindowInsetsListener(panelBinding.miniPlayerDocker) { view, windowInsets ->
+        ViewCompat.setOnApplyWindowInsetsListener(panelBinding.root) { view, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
             bottomNavigationBarHeight = insets.bottom
             updatePanelHiddenState(panelViewModel.isPanelHidden.value)
@@ -265,7 +266,7 @@ abstract class AbsSlidingMusicPanelActivity :
         @FloatRange(from = 0.0, to = 1.0) progress: Float,
     ) {
         val navigationbarColor: Int =
-            argbEvaluator.evaluate(progress, actualNavigationbarColor(from), translucentScrim) as Int
+            argbEvaluator.evaluate(progress, actualNavigationbarColor(from), actualNavigationbarColor(to)) as Int
         val statusbarColor: Int =
             argbEvaluator.evaluate(progress, from, actualStatusbarColor(to)) as Int
         updateSystemBarsColor(statusbarColor, navigationbarColor)
@@ -275,7 +276,7 @@ abstract class AbsSlidingMusicPanelActivity :
         if (playerFragment?.useTransparentStatusbar == true) Color.TRANSPARENT else color
 
     private fun actualNavigationbarColor(@ColorInt color: Int): Int =
-        if (panelViewModel.isPanelHidden.value) translucentScrim else color
+        if (panelViewModel.isPanelHidden.value && !isLandscape(resources)) translucentScrim else color
 
     private var animator: ValueAnimator? = null
 
