@@ -404,7 +404,8 @@ object DetailToolbarMenuProviders {
                 }
                 menuItem {
                     title = getString(R.string.action_add_to_playing_queue)
-                    showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+                    icon = getTintedDrawable(R.drawable.ic_library_add_white_24dp, iconColor)
+                    showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                     onClick {
                         context.lifecycleScope.launch {
                             item.actionAddToCurrentQueue(context)
@@ -414,7 +415,8 @@ object DetailToolbarMenuProviders {
                 }
                 menuItem {
                     title = getString(R.string.action_add_to_playlist)
-                    showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+                    icon = getTintedDrawable(R.drawable.ic_playlist_add_white_24dp, iconColor)
+                    showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                     onClick {
                         fragmentActivity(context) {
                             context.lifecycleScope.launch {
@@ -427,7 +429,8 @@ object DetailToolbarMenuProviders {
                 if (!item.isVirtual()) {
                     menuItem {
                         title = getString(R.string.action_rename)
-                        showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+                        icon = getTintedDrawable(R.drawable.ic_edit_white_24dp, iconColor)
+                        showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                         onClick {
                             fragmentActivity(context) {
                                 item.actionRenamePlaylist(it)
@@ -449,7 +452,7 @@ object DetailToolbarMenuProviders {
                     }
                 }
                 menuItem(title = getString(R.string.action_tag_editor)) { //id = R.id.action_tag_editor
-                    showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
+                    showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                     onClick {
                         context.lifecycleScope.launch(Dispatchers.IO) {
                             val paths = PlaylistSongsActions.reader(item).allSongs(context).map { it.data }
