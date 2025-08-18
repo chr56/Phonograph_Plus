@@ -1,27 +1,23 @@
-version: "1.11.0-dev2"
+version: "1.11.0-dev3"
 channel: "PREVIEW"
-versionCode: 1103
-timestamp: 1755438000
+versionCode: 1104
+timestamp: 1755532000
 notes:
   en:
     highlights: [ ]
     items:
-      - "Fix: Default start directory may not work on some circumstances"
-      - "Improve: redesign the editor of Path Filter settings"
-      - "Improve: support directly editing in Path Filter settings"
-      - "Improve: support pining database playlists"
-      - "Development: refactor storage of Path Filter, Favorite Songs and Pinned Playlists"
-      - "Development: upgrade Gradle to 8.14.3, upgrade AGP to 8.11.1, upgrade Kotlin to 2.2.10, update dependencies"
+      - "Fix: navigation bar overlaps content in landscape"
+      - "Fix: instantly blinking statusbar and fluctuating mini player with navigation bar on entering and transiting"
+      - "Fix: broken landscape player [1.11.0-dev1]"
+      - "Fix: migration of Path Filter, Favorite Songs and Pinned Playlists [1.11.0-dev2]"
 
   zh:
     highlights: [ ]
     items:
-      - "修复 默认起始目录可能失效"
-      - "改进 对路径过滤器设置的编辑器重新设计"
-      - "改进 在路径过滤器设置中，支持直接编辑"
-      - "改进 支持置顶数据库播放列表"
-      - "开发 重构路径过滤器、已收藏歌曲和已置顶播放列表的存储"
-      - "开发 更新 Gradle 至 8.14.3, 更新 AGP 至 8.11.1, 更新 Kotlin 至 2.2.10, 更新依赖"
+      - "修复 横屏下导航栏遮挡内容"
+      - "修复 进出转跳瞬间，状态栏闪烁和播放器条随导航栏跳动"
+      - "修复 横屏下播放器异常 [1.11.0-dev1]"
+      - "修复 迁移路径过滤器、已收藏歌曲和已置顶播放列表失败 [1.11.0-dev2]"
 
-previousVersion: "1.11.0-dev1"
+previousVersion: "1.11.0-dev2"
 previousChannel: "PREVIEW"
