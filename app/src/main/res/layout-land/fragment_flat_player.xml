@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <player.phonograph.ui.views.WidthFitSquareLayout
+        <player.phonograph.ui.views.HeightFitSquareLayout
             android:id="@+id/cover_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -28,7 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
-        </player.phonograph.ui.views.WidthFitSquareLayout>
+        </player.phonograph.ui.views.HeightFitSquareLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
