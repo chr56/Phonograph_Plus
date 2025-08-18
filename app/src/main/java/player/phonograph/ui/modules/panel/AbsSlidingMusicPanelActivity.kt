@@ -55,6 +55,8 @@ abstract class AbsSlidingMusicPanelActivity :
     private var _panelBinding: SlidingMusicPanelLayoutBinding? = null
     private val panelBinding: SlidingMusicPanelLayoutBinding get() = _panelBinding!!
 
+    private var bottomNavigationBarHeight: Int = 0
+
     private val slidingUpPanelLayout: SlidingUpPanelLayout get() = panelBinding.slidingLayout
 
     val panelViewModel: PanelViewModel by viewModel { parametersOf(primaryColor(), themeFooterColor(this)) }
@@ -84,6 +86,7 @@ abstract class AbsSlidingMusicPanelActivity :
         setContentView(createContentView())
         miniPlayerFragment = panelBinding.miniPlayerFragment.getFragment()
         miniPlayerHeight = resources.getDimensionPixelSize(R.dimen.mini_player_height)
+        bottomNavigationBarHeight = resources.getDimensionPixelSize(R.dimen.navigation_bar_height)
         panelBinding.slidingLayout.also { layout ->
             layout.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
@@ -115,11 +118,12 @@ abstract class AbsSlidingMusicPanelActivity :
         // insets
         ViewCompat.setOnApplyWindowInsetsListener(panelBinding.miniPlayerDocker) { view, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            bottomNavigationBarHeight = insets.bottom
+            updatePanelHiddenState(panelViewModel.isPanelHidden.value)
             view.updateLayoutParams<MarginLayoutParams> {
                 rightMargin = insets.right
                 leftMargin = insets.left
             }
-            updatePanelHiddenState(panelViewModel.isPanelHidden.value)
             windowInsets
         }
 
@@ -193,7 +197,7 @@ abstract class AbsSlidingMusicPanelActivity :
     private fun updatePanelHiddenState(hidden: Boolean) {
         if (hidden) requestToCollapse()
         val targetPanelHeight: Int = if (!hidden) {
-            panelBinding.navigationBar.height + miniPlayerHeight
+            bottomNavigationBarHeight + miniPlayerHeight
         } else {
             0
         }
