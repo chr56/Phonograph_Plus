@@ -2,6 +2,30 @@
   "versions": [
     {
       "channel": "preview",
+      "versionName": "1.11.0-dev3",
+      "versionCode": 1104,
+      "date": 1755532000,
+      "link": [
+        {
+          "name": "Github Release (Website)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.11.0-dev3"
+        },
+        {
+          "name": "Github Release Modern Variant APK (File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.11.0-dev3/PhonographPlus_1.11.0-dev3_ModernPreviewRelease.apk"
+        },
+        {
+          "name": "Github Release Legacy Variant APK (File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.11.0-dev3/PhonographPlus_1.11.0-dev3_LegacyPreviewRelease.apk"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>修复 横屏下导航栏遮挡内容</li><li>修复 进出转跳瞬间，状态栏闪烁和播放器条随导航栏跳动</li><li>修复 横屏下播放器异常 [1.11.0-dev1]</li><li>修复 迁移路径过滤器、已收藏歌曲和已置顶播放列表失败 [1.11.0-dev2]</li></ol>",
+        "en": "<ol><li>Fix: navigation bar overlaps content in landscape</li><li>Fix: instantly blinking statusbar and fluctuating mini player with navigation bar on entering and transiting</li><li>Fix: broken landscape player [1.11.0-dev1]</li><li>Fix: migration of Path Filter, Favorite Songs and Pinned Playlists [1.11.0-dev2]</li></ol>"
+      }
+    },
+    {
+      "channel": "preview",
       "versionName": "1.11.0-dev2",
       "versionCode": 1103,
       "date": 1755438000,
