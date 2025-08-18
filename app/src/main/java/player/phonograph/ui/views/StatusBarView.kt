@@ -14,8 +14,11 @@ class StatusBarView : View {
 
     override fun onApplyWindowInsets(insets: WindowInsets): WindowInsets {
         val windowInsetsCompat = WindowInsetsCompat.toWindowInsetsCompat(insets, this)
-        layoutParams = layoutParams.apply {
-            height = windowInsetsCompat.getInsets(WindowInsetsCompat.Type.statusBars()).top
+        val statusBarHeight = windowInsetsCompat.getInsets(WindowInsetsCompat.Type.statusBars()).top
+        if (statusBarHeight != layoutParams.height) {
+            layoutParams = layoutParams.apply {
+                height = statusBarHeight
+            }
         }
         return super.onApplyWindowInsets(insets)
     }

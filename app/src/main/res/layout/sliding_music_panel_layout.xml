@@ -38,12 +38,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/mini_player_height" />
 
-            <player.phonograph.ui.views.NavigationBarView
+            <View
                 android:id="@+id/navigation_bar"
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
+                android:layout_height="@dimen/navigation_bar_height"
                 android:background="@color/background_heavy_lightblack"
-                tools:layout_height="56dp" />
+                tools:layout_height="@dimen/navigation_bar_height" />
 
         </LinearLayout>
 
