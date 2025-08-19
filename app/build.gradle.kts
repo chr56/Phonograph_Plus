@@ -194,6 +194,7 @@ android {
 }
 
 androidPublish {
+    hashAlgorithm = setOf("SHA-256")
     nameStyle = listOf(NameSegment.VersionName, NameSegment.Favor)
 }
 
