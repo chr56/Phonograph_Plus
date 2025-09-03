@@ -1,23 +1,56 @@
-version: "1.11.0-dev3"
-channel: "PREVIEW"
-versionCode: 1104
-timestamp: 1755532000
+version: "1.11.0"
+channel: "STABLE"
+versionCode: 1110
+timestamp: 1756900000
 notes:
   en:
-    highlights: [ ]
+    highlights:
+      - "🎉 This is a late Phonograph Plus 4th Anniversary Version (2021.08.10 ~ 2025.08.10)"
     items:
+      - "New: support customizing seek internal for forwarding and rewinding"
+      - "Fix: file playlist editing may not work on some devices"
+      - "Fix: possibly crash due to invalid speed ratio value"
+      - "Fix: crash due to the bread crumb in Files in rare circumstance"
+      - "Fix: various unintended behaviors of soft keyboard in Search"
+      - "Fix: some issues in Folders due to folder name collision"
+      - "Fix: default start directory may not work on some circumstances"
       - "Fix: navigation bar overlaps content in landscape"
       - "Fix: instantly blinking statusbar and fluctuating mini player with navigation bar on entering and transiting"
-      - "Fix: broken landscape player [1.11.0-dev1]"
-      - "Fix: migration of Path Filter, Favorite Songs and Pinned Playlists [1.11.0-dev2]"
+      - "Improve: performance of playlist loading"
+      - "Improve: support exporting the database of internal playlists"
+      - "Improve: redesign the editor of Path Filter settings"
+      - "Improve: support directly editing in Path Filter settings"
+      - "Improve: support pining database playlists"
+      - "Modify: force to reboot application after purging the database"
+      - "Translation: update Russian (by Yurt Page), Brazilian Portuguese (by FalaTudo)"
+      - "Development: cleanup codes, refactor storage of Path Filter, Favorite Songs and Pinned Playlists"
+      - "Development: upgrade Gradle to 8.14.3, upgrade AGP to 8.11.1, upgrade Kotlin to 2.2.10, update dependencies"
+      - "Others: upload only sha256 checksum for release artifacts"
+
 
   zh:
-    highlights: [ ]
+    highlights:
+      - "🎉 此为迟到许久的 Phonograph Plus 四周年纪念版 (2021.08.10 ~ 2025.08.10)"
     items:
+      - "新增 支持自定义快进和快退的间隔时间"
+      - "修复 某些设备上无法正常编辑文件播放列表编辑"
+      - "修复 无效速度倍率值可能导致的崩溃"
+      - "修复 面包屑路径导航偶尔导致的崩溃"
+      - "修复 搜索页中软键盘行为异常"
+      - "修复 文件夹页中当文件夹名称冲突导致的若干异常"
+      - "修复 默认起始目录可能失效"
       - "修复 横屏下导航栏遮挡内容"
       - "修复 进出转跳瞬间，状态栏闪烁和播放器条随导航栏跳动"
-      - "修复 横屏下播放器异常 [1.11.0-dev1]"
-      - "修复 迁移路径过滤器、已收藏歌曲和已置顶播放列表失败 [1.11.0-dev2]"
+      - "改进 播放列表加载性能"
+      - "改进 支持导出包含内部播放列表的数据库"
+      - "改进 对路径过滤器设置的编辑器重新设计"
+      - "改进 在路径过滤器设置中，支持直接编辑"
+      - "改进 支持置顶数据库播放列表"
+      - "修改 清空数据库后强制重新启动应用"
+      - "翻译 更新 俄语 (Yurt Page), 巴西葡萄牙语 (FalaTudo)"
+      - "开发 清理代码, 重构路径过滤器、已收藏歌曲和已置顶播放列表的存储"
+      - "开发 更新 Gradle 至 8.14.3, 更新 AGP 至 8.11.1, 更新 Kotlin 至 2.2.10, 更新依赖"
+      - "其他 仅上传 sha256 校验和"
 
-previousVersion: "1.11.0-dev2"
-previousChannel: "PREVIEW"
+previousVersion: "1.10.1"
+previousChannel: "STABLE"

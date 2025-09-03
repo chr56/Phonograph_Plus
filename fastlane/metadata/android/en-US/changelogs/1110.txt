@@ -1,0 +1,9 @@
+<b>1.11.0(1110) 2025.09.03</b>
+- New: support customizing seek internal for forwarding and rewinding
+- Fix: file playlist editing may not work on some devices
+- Fix: possibly crash due to invalid speed ratio value
+- Fix: crash due to the bread crumb in Files in rare circumstance
+- Fix: various unintended behaviors of soft keyboard in Search
+- Fix: some issues in Folders due to folder name collision
+- Fix: Default start directory may not work on 
+...(Visit project homepage to see full changelogs)
