@@ -15,6 +15,7 @@ import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import android.content.Context
 import kotlinx.serialization.StringFormat
 import kotlinx.serialization.encodeToString
@@ -37,7 +38,7 @@ class SettingsDataSerializer(private val format: StringFormat, context: Context)
             is Long    -> JsonPrimitive("$SEP$TL$SEP$obj")
             is Float   -> JsonPrimitive("$SEP$TF$SEP$obj")
             is Boolean -> JsonPrimitive("$SEP$TB$SEP$obj")
-            is Set<*>  -> JsonArray(obj.map { JsonPrimitive("$SEP$TS$SEP$obj") })
+            is Set<*>  -> JsonArray(obj.map { JsonPrimitive("$SEP$TS$SEP$it") })
             else       -> throw IllegalArgumentException("unsupported type")
         }
 
@@ -53,9 +54,8 @@ class SettingsDataSerializer(private val format: StringFormat, context: Context)
 
     fun deserialize(elements: Map<String, JsonElement>): Array<Preferences.Pair<out Any>> =
         elements.mapNotNull { (jsonKey, jsonValue) ->
-            val v = (jsonValue as? JsonPrimitive)
-            if (v != null) {
-                with(v) {
+            if (jsonValue is JsonPrimitive) {
+                with(jsonValue) {
                     if (content.getOrNull(0) == SEP) {
                         val type = content[1]
                         val data = content.substring(3)
@@ -72,8 +72,13 @@ class SettingsDataSerializer(private val format: StringFormat, context: Context)
                         null
                     }
                 }
+            } else if (jsonValue is JsonArray) {
+                val strings = jsonValue.mapNotNull {
+                    (it as? JsonPrimitive)?.content?.substring(3)
+                }
+                stringSetPreferencesKey(jsonKey) to strings.toSet()
             } else {
-                warning(App.instance, TAG, "unexpected element")
+                warning(App.instance, TAG, "unexpected element at `$jsonKey`: $jsonValue")
                 null
             }
         }.toTypedArray()
