@@ -8,6 +8,7 @@ import okio.Buffer
 import okio.Source
 import okio.buffer
 import org.koin.core.context.GlobalContext
+import player.phonograph.BuildConfig
 import player.phonograph.foundation.error.warning
 import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.Song
@@ -30,10 +31,10 @@ import player.phonograph.repo.room.domain.RoomPlaylists
 import player.phonograph.repo.room.domain.RoomPlaylistsActions
 import player.phonograph.service.queue.MusicPlaybackQueueStore
 import player.phonograph.service.queue.QueueManager
-import player.phonograph.settings.Keys
 import player.phonograph.settings.PathFilterSetting
 import player.phonograph.settings.Setting
 import player.phonograph.settings.SettingsDataSerializer
+import player.phonograph.util.gitRevisionHash
 import androidx.datastore.preferences.core.edit
 import android.content.Context
 import kotlin.LazyThreadSafetyMode.NONE
@@ -45,12 +46,10 @@ import java.io.IOException
 
 
 sealed class JsonDataBackupItemExecutor : BackupItemExecutor {
-    protected val format by lazy(NONE) {
-        Json {
-            prettyPrint = true
-            ignoreUnknownKeys = true
-            isLenient = true
-        }
+    protected val format = Json {
+        prettyPrint = true
+        ignoreUnknownKeys = true
+        isLenient = true
     }
 
     protected fun <T> write(context: Context, serializer: KSerializer<T>, item: T, name: String): Buffer? = try {
@@ -95,9 +94,16 @@ object SettingsDataBackupItemExecutor : JsonDataBackupItemExecutor() {
     override suspend fun export(context: Context): Buffer? =
         try {
             val preferences = Setting(context).dataStore.data.first().asMap()
-            val content = SettingsDataSerializer(format, context).serialize(preferences)
+            val content = SettingsDataSerializer(context).serialize(preferences)
+            val exported = ExportedSetting(
+                formatVersion = ExportedSetting.VERSION,
+                appVersion = BuildConfig.VERSION_CODE,
+                commitHash = gitRevisionHash(context),
+                content = content
+            )
+            val serialized = format.encodeToString(exported)
             Buffer().apply {
-                writeString(content, Charsets.UTF_8)
+                writeString(serialized, Charsets.UTF_8)
             }
         } catch (e: Exception) {
             warning(context, TAG, "Failed to convert SharedPreferences to Json", e)
@@ -117,7 +123,7 @@ object SettingsDataBackupItemExecutor : JsonDataBackupItemExecutor() {
 
 
         val content = try {
-            SettingsDataSerializer(format, context).deserialize(json)
+            SettingsDataSerializer(context).deserialize(json)
         } catch (e: SerializationException) {
             warning(context, TAG, "Failed to deserialize setting.", e)
             emptyArray()
