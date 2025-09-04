@@ -1,100 +1,52 @@
 {
-  "versions": [
-    {
-      "channel": "preview",
-      "versionName": "1.11.0-dev3",
-      "versionCode": 1104,
-      "date": 1755532000,
-      "link": [
+    "versions": [
         {
-          "name": "Github Release (Website)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.11.0-dev3"
+            "channel": "stable",
+            "versionName": "1.11.0",
+            "versionCode": 1110,
+            "date": 1756900000,
+            "link": [
+                {
+                    "name": "Github Release (Website)",
+                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.11.0"
+                },
+                {
+                    "name": "Github Release Modern Variant APK (File Download Link)",
+                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v1.11.0/PhonographPlus_1.11.0_ModernStableRelease.apk"
+                },
+                {
+                    "name": "Github Release Legacy Variant APK (File Download Link)",
+                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v1.11.0/PhonographPlus_1.11.0_LegacyStableRelease.apk"
+                }
+            ],
+            "releaseNote": {
+                "zh-cn": "<ol><li>新增 支持自定义快进和快退的间隔时间</li><li>修复 某些设备上无法正常编辑文件播放列表编辑</li><li>修复 无效速度倍率值可能导致的崩溃</li><li>修复 面包屑路径导航偶尔导致的崩溃</li><li>修复 搜索页中软键盘行为异常</li><li>修复 文件夹页中当文件夹名称冲突导致的若干异常</li><li>修复 默认起始目录可能失效</li><li>修复 横屏下导航栏遮挡内容</li><li>修复 进出转跳瞬间，状态栏闪烁和播放器条随导航栏跳动</li><li>改进 播放列表加载性能</li><li>改进 支持导出包含内部播放列表的数据库</li><li>改进 对路径过滤器设置的编辑器重新设计</li><li>改进 在路径过滤器设置中，支持直接编辑</li><li>改进 支持置顶数据库播放列表</li><li>修改 清空数据库后强制重新启动应用</li><li>翻译 更新 俄语 (Yurt Page), 巴西葡萄牙语 (FalaTudo)</li><li>开发 清理代码, 重构路径过滤器、已收藏歌曲和已置顶播放列表的存储</li><li>开发 更新 Gradle 至 8.14.3, 更新 AGP 至 8.11.1, 更新 Kotlin 至 2.2.10, 更新依赖</li><li>其他 仅上传 sha256 校验和</li></ol>",
+                "en": "<ol><li>New: support customizing seek internal for forwarding and rewinding</li><li>Fix: file playlist editing may not work on some devices</li><li>Fix: possibly crash due to invalid speed ratio value</li><li>Fix: crash due to the bread crumb in Files in rare circumstance</li><li>Fix: various unintended behaviors of soft keyboard in Search</li><li>Fix: some issues in Folders due to folder name collision</li><li>Fix: default start directory may not work on some circumstances</li><li>Fix: navigation bar overlaps content in landscape</li><li>Fix: instantly blinking statusbar and fluctuating mini player with navigation bar on entering and transiting</li><li>Improve: performance of playlist loading</li><li>Improve: support exporting the database of internal playlists</li><li>Improve: redesign the editor of Path Filter settings</li><li>Improve: support directly editing in Path Filter settings</li><li>Improve: support pining database playlists</li><li>Modify: force to reboot application after purging the database</li><li>Translation: update Russian (by Yurt Page), Brazilian Portuguese (by FalaTudo)</li><li>Development: cleanup codes, refactor storage of Path Filter, Favorite Songs and Pinned Playlists</li><li>Development: upgrade Gradle to 8.14.3, upgrade AGP to 8.11.1, upgrade Kotlin to 2.2.10, update dependencies</li><li>Others: upload only sha256 checksum for release artifacts</li></ol>"
+            }
         },
         {
-          "name": "Github Release Modern Variant APK (File Download Link)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.11.0-dev3/PhonographPlus_1.11.0-dev3_ModernPreviewRelease.apk"
-        },
-        {
-          "name": "Github Release Legacy Variant APK (File Download Link)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.11.0-dev3/PhonographPlus_1.11.0-dev3_LegacyPreviewRelease.apk"
+            "channel": "preview",
+            "versionName": "1.11.0-dev3",
+            "versionCode": 1104,
+            "date": 1755532000,
+            "link": [
+                {
+                    "name": "Github Release (Website)",
+                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.11.0-dev3"
+                },
+                {
+                    "name": "Github Release Modern Variant APK (File Download Link)",
+                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.11.0-dev3/PhonographPlus_1.11.0-dev3_ModernPreviewRelease.apk"
+                },
+                {
+                    "name": "Github Release Legacy Variant APK (File Download Link)",
+                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.11.0-dev3/PhonographPlus_1.11.0-dev3_LegacyPreviewRelease.apk"
+                }
+            ],
+            "releaseNote": {
+                "zh-cn": "<ol><li>修复 横屏下导航栏遮挡内容</li><li>修复 进出转跳瞬间，状态栏闪烁和播放器条随导航栏跳动</li><li>修复 横屏下播放器异常 [1.11.0-dev1]</li><li>修复 迁移路径过滤器、已收藏歌曲和已置顶播放列表失败 [1.11.0-dev2]</li></ol>",
+                "en": "<ol><li>Fix: navigation bar overlaps content in landscape</li><li>Fix: instantly blinking statusbar and fluctuating mini player with navigation bar on entering and transiting</li><li>Fix: broken landscape player [1.11.0-dev1]</li><li>Fix: migration of Path Filter, Favorite Songs and Pinned Playlists [1.11.0-dev2]</li></ol>"
+            }
         }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>修复 横屏下导航栏遮挡内容</li><li>修复 进出转跳瞬间，状态栏闪烁和播放器条随导航栏跳动</li><li>修复 横屏下播放器异常 [1.11.0-dev1]</li><li>修复 迁移路径过滤器、已收藏歌曲和已置顶播放列表失败 [1.11.0-dev2]</li></ol>",
-        "en": "<ol><li>Fix: navigation bar overlaps content in landscape</li><li>Fix: instantly blinking statusbar and fluctuating mini player with navigation bar on entering and transiting</li><li>Fix: broken landscape player [1.11.0-dev1]</li><li>Fix: migration of Path Filter, Favorite Songs and Pinned Playlists [1.11.0-dev2]</li></ol>"
-      }
-    },
-    {
-      "channel": "preview",
-      "versionName": "1.11.0-dev2",
-      "versionCode": 1103,
-      "date": 1755438000,
-      "link": [
-        {
-          "name": "Github Release (Website)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.11.0-dev2"
-        },
-        {
-          "name": "Github Release Modern Variant APK (File Download Link)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.11.0-dev2/PhonographPlus_1.11.0-dev2_ModernPreviewRelease.apk"
-        },
-        {
-          "name": "Github Release Legacy Variant APK (File Download Link)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.11.0-dev2/PhonographPlus_1.11.0-dev2_LegacyPreviewRelease.apk"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>修复 默认起始目录可能失效</li><li>改进 对路径过滤器设置的编辑器重新设计</li><li>改进 在路径过滤器设置中，支持直接编辑</li><li>改进 支持置顶数据库播放列表</li><li>开发 重构路径过滤器、已收藏歌曲和已置顶播放列表的存储</li><li>开发 更新 Gradle 至 8.14.3, 更新 AGP 至 8.11.1, 更新 Kotlin 至 2.2.10, 更新依赖</li></ol>",
-        "en": "<ol><li>Fix: Default start directory may not work on some circumstances</li><li>Improve: redesign the editor of Path Filter settings</li><li>Improve: support directly editing in Path Filter settings</li><li>Improve: support pining database playlists</li><li>Development: refactor storage of Path Filter, Favorite Songs and Pinned Playlists</li><li>Development: upgrade Gradle to 8.14.3, upgrade AGP to 8.11.1, upgrade Kotlin to 2.2.10, update dependencies</li></ol>"
-      }
-    },
-    {
-      "channel": "preview",
-      "versionName": "1.11.0-dev1",
-      "versionCode": 1102,
-      "date": 1751690000,
-      "link": [
-        {
-          "name": "Github Release (Website)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.11.0-dev1"
-        },
-        {
-          "name": "Github Release Modern Variant APK (File Download Link)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.11.0-dev1/PhonographPlus_1.11.0-dev1_ModernPreviewRelease.apk"
-        },
-        {
-          "name": "Github Release Legacy Variant APK (File Download Link)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.11.0-dev1/PhonographPlus_1.11.0-dev1_LegacyPreviewRelease.apk"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>新增 支持自定义快进和快退的间隔时间</li><li>修复 某些设备上无法正常编辑文件播放列表编辑</li><li>修复 无效速度倍率值可能导致的崩溃</li><li>修复 面包屑路径导航偶尔导致的崩溃</li><li>修复 搜索页中软键盘行为异常</li><li>修复 文件夹页中当文件夹名称冲突导致的若干异常</li><li>改进 播放列表加载性能</li><li>改进 支持导出包含内部播放列表的数据库</li><li>修改 清空数据库后强制重新启动应用</li><li>翻译 更新 俄语 (Yurt Page), 巴西葡萄牙语 (FalaTudo)</li><li>开发 清理代码, 更新依赖</li></ol>",
-        "en": "<ol><li>New: support customizing seek internal for forwarding and rewinding</li><li>Fix: file playlist editing may not work on some devices</li><li>Fix: possibly crash due to invalid speed ratio value</li><li>Fix: crash due to the bread crumb in Files in rare circumstance</li><li>Fix: various unintended behaviors of soft keyboard in Search</li><li>Fix: some issues in Folders due to folder name collision</li><li>Improve: performance of playlist loading</li><li>Improve: support exporting the database of internal playlists</li><li>Modify: force to reboot application after purging the database</li><li>Translation: update Russian (by Yurt Page), Brazilian Portuguese (by FalaTudo)</li><li>Development: cleanup codes, update dependencies</li></ol>"
-      }
-    },
-    {
-      "channel": "stable",
-      "versionName": "1.10.1",
-      "versionCode": 1101,
-      "date": 1747388000,
-      "link": [
-        {
-          "name": "Github Release (Website)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.10.1"
-        },
-        {
-          "name": "Github Release Modern Variant APK (File Download Link)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v1.10.1/PhonographPlus_1.10.1_ModernStableRelease.apk"
-        },
-        {
-          "name": "Github Release Legacy Variant APK (File Download Link)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v1.10.1/PhonographPlus_1.10.1_LegacyStableRelease.apk"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>修复 睡眠定时器在 Android 14 及以上版本上可能失效</li><li>修复 列表最后一项被导航栏挡住</li><li>修复 速度控制对话框导致崩溃</li><li>修复 通过多选操作内部数据库播放列表时崩溃</li><li>修复 更改某些设置后由于主播放器导致偶尔崩溃</li><li>修改 默认播放器按钮设置</li><li>改进 支持导出内部数据库播放列表</li><li>翻译 更新 巴西葡萄牙语 (FalaTudo), 匈牙利语 (Balázs Meskó & Balázs Úr)</li></ol>",
-        "en": "<ol><li>Fix: Sleep timer possibly not working on Android 14 and above</li><li>Fix: last item behind navigation bar due to edge-to-edge</li><li>Fix: crash due to Speed Control dialog</li><li>Fix: crash when operating internal database playlists via multi-selection</li><li>Fix: occasional crash due to Main Player after some settings changed</li><li>Modify: default player buttons settings</li><li>Improve: support for exporting internal database playlists</li><li>Translation: update Brazilian Portuguese (by FalaTudo), Hungarian (by Balázs Meskó & Balázs Úr)</li></ol>"
-      }
-    }
-  ]
+    ]
 }
