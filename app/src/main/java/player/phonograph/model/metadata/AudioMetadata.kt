@@ -13,7 +13,7 @@ data class AudioMetadata(
     companion object {
         val EMPTY: AudioMetadata
             get() = AudioMetadata(
-                FileProperties("-", "", -1),
+                FileProperties("-", "", -1, 0, 0),
                 AudioProperties("", 0, "", ""),
                 MusicTagFormat.Unknown,
                 EmptyMusicMetadata,

@@ -34,8 +34,19 @@ object DefaultMetadataExtractor : MetadataExtractor {
     override fun extractSongMetadata(context: Context, song: Song): AudioMetadata {
         val songFile: File = File(song.data)
         return AudioMetadata(
-            fileProperties = FileProperties(songFile.name, songFile.absolutePath, songFile.length()),
-            audioProperties = AudioProperties(songFile.extension, song.duration, "-", "-"),
+            fileProperties = FileProperties(
+                fileName = songFile.name,
+                filePath = songFile.absolutePath,
+                fileSize = songFile.length(),
+                dateAdded = song.dateAdded,
+                dateModified = song.dateModified,
+            ),
+            audioProperties = AudioProperties(
+                audioFormat = songFile.extension,
+                trackLength = song.duration,
+                bitRate = "-",
+                samplingRate = "-",
+            ),
             audioMetadataFormat = MusicTagFormat.Unknown,
             musicMetadata = PlainMusicMetadata(
                 mapOf(

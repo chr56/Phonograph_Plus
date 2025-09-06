@@ -10,14 +10,18 @@ data class FileProperties(
     val fileName: String,
     val filePath: String,
     val fileSize: Long,
+    val dateAdded: Long,
+    val dateModified: Long,
 ) : Metadata {
 
     override fun get(key: Metadata.Key): Metadata.Field? =
         when (key) {
-            is Keys.Name -> Metadata.PlainStringField(fileName)
-            is Keys.Path -> Metadata.PlainStringField(fileName)
-            is Keys.Size -> Metadata.PlainNumberField(fileSize)
-            else         -> null
+            is Keys.Name         -> Metadata.PlainStringField(fileName)
+            is Keys.Path         -> Metadata.PlainStringField(fileName)
+            is Keys.Size         -> Metadata.PlainNumberField(fileSize)
+            is Keys.DateAdded    -> Metadata.PlainNumberField(dateAdded)
+            is Keys.DateModified -> Metadata.PlainNumberField(dateModified)
+            else                 -> null
         }
 
     override fun contains(key: Metadata.Key): Boolean = key is FilePropertiesKey
@@ -27,6 +31,8 @@ data class FileProperties(
             Metadata.PlainEntry(Keys.Name, Metadata.PlainStringField(fileName)),
             Metadata.PlainEntry(Keys.Path, Metadata.PlainStringField(fileName)),
             Metadata.PlainEntry(Keys.Size, Metadata.PlainNumberField(fileSize)),
+            Metadata.PlainEntry(Keys.DateAdded, Metadata.PlainNumberField(dateAdded)),
+            Metadata.PlainEntry(Keys.DateModified, Metadata.PlainNumberField(dateModified)),
         )
 
     sealed interface FilePropertiesKey : Metadata.Key
@@ -43,6 +49,14 @@ data class FileProperties(
 
         data object Size : FilePropertiesKey {
             override val res: Int = R.string.label_file_size
+        }
+
+        data object DateAdded : FilePropertiesKey {
+            override val res: Int = R.string.label_created_at
+        }
+
+        data object DateModified : FilePropertiesKey {
+            override val res: Int = R.string.label_last_modified_at
         }
     }
 }

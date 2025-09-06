@@ -64,6 +64,8 @@ object JAudioTaggerExtractor : MetadataExtractor {
         val fileName = songFile.name
         val filePath = songFile.absolutePath
         val fileSize = songFile.length()
+        val dateAdded = song.dateAdded
+        val dateModified = song.dateModified
 
         try {
             val audioFile: AudioFile = readAudioFile(songFile) ?: return null
@@ -72,7 +74,7 @@ object JAudioTaggerExtractor : MetadataExtractor {
             val tagFormat = readTagFormat(audioFile)
             val musicMetadata = readMusicMetadata(context, audioFile)
             return AudioMetadata(
-                fileProperties = FileProperties(fileName, filePath, fileSize),
+                fileProperties = FileProperties(fileName, filePath, fileSize, dateAdded, dateModified),
                 audioProperties = audioPropertyFields,
                 audioMetadataFormat = tagFormat,
                 musicMetadata = musicMetadata,

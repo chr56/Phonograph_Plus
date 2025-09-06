@@ -49,6 +49,8 @@
     <string name="label_file_name">文件名</string>
     <string name="label_file_path">文件路径</string>
     <string name="label_file_size">文件大小</string>
+    <string name="label_last_modified_at">修改于</string>
+    <string name="label_created_at">创建于</string>
     <string name="label_file_format">格式</string>
     <string name="label_track_length">长度</string>
     <string name="label_bit_rate">比特率</string>
