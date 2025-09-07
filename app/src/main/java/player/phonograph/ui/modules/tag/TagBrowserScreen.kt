@@ -18,6 +18,7 @@ import player.phonograph.ui.modules.tag.components.AudioImage
 import player.phonograph.ui.modules.tag.components.EditableTagItem
 import player.phonograph.ui.modules.tag.components.InsertNewButton
 import player.phonograph.ui.modules.tag.components.ReadonlyTagItem
+import player.phonograph.util.text.dateTimeTextPrecise
 import player.phonograph.util.text.getFileSizeString
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -75,6 +76,8 @@ private fun AudioProperties(metadata: AudioMetadata) {
     ReadonlyTagItem(stringResource(R.string.label_file_name), fileProperties.fileName)
     ReadonlyTagItem(stringResource(R.string.label_file_path), fileProperties.filePath)
     ReadonlyTagItem(stringResource(R.string.label_file_size), getFileSizeString(fileProperties.fileSize))
+    ReadonlyTagItem(stringResource(R.string.label_created_at), dateTimeTextPrecise(fileProperties.dateAdded))
+    ReadonlyTagItem(stringResource(R.string.label_last_modified_at), dateTimeTextPrecise(fileProperties.dateModified))
     for (audioProperty in audioProperties.fields) {
         ReadonlyTagItem(stringResource(audioProperty.key.res), value = audioProperty.field.text().toString())
     }
