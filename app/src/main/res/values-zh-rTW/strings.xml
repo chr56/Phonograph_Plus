@@ -160,6 +160,9 @@
     <string name="msg_empty_playlist">播放清單是空的</string>
     <string name="msg_no_playlists">沒有播放清單</string>
     <string name="msg_empty">空的</string>
+    <string name="msg_unknown">未知</string>
+    <string name="msg_not_available">不可用</string>
+    <string name="msg_binary">二進位制</string>
     <string name="tips_playlist_name_placeholder">播放清單名稱</string>
     <string name="label_song">歌曲</string>
     <string name="pref_summary_classic_notification">使用經典通知樣式</string>

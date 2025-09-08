@@ -255,6 +255,9 @@
     <string name="msg_no_results">No results</string>
     <string name="msg_empty_playlist">Empty playlist</string>
     <string name="msg_empty">Empty</string>
+    <string name="msg_unknown">Unknown</string>
+    <string name="msg_not_available">N/A</string>
+    <string name="msg_binary">Binary</string>
     <string name="msg_added_title_to_playing_queue">Added 1 title to the playing queue.</string>
     <string name="msg_added_x_titles_to_playing_queue">Added %1$d titles to the playing queue.</string>
     <string name="msg_inserted_x_songs_into_playlist_x">Inserted %1$d songs into the playlist %2$s.</string>
