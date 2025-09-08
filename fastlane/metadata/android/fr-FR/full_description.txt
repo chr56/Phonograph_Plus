@@ -1,0 +1,40 @@
+<b>Un fork indépendant de Phonograph en développement</b><br />
+
+Phonograph est un lecteur de musique local au style léger material design pour Android.
+Phonograph Plus est un fork <i>indépendant de</i> de Phonograph car il n'est plus maintenu,
+et est en maintenance et en développement depuis 2021. <br />
+
+Phonograph Plus hérite de toutes les fonctionnalités de Phonograph :
+
+
+- Léger
+- Hors ligne, sans pubs avec respect de la vie privée
+- Material Design Classique 2
+- Mode Nuit (Clair, Sombre, Noir) prenant en charge le changement automatique
+- Couleur du thème personnalisable (primaire, accent) avec le support Monet
+- Fonction de lecture audio (incluant le contrôle de vitesse, le minuteur de sommeil et l'égaliseur fourni en externe par le système)
+- Gestion de la file d’attente flexible (aléatoire, répéter, réarrangement libre en glisser / déposer, instantanés de la file d’attente)
+- Prise en charge des paroles (paroles synchronisées .lrc et paroles textuelles, intégrées ou externes)
+- Des notifications de lecture flexibles et hautement personnalisables
+- Organisation de musique flexible, organisée par chansons, artistes, albums, genres et dossiers (à plat ou arborescente), ordonnée par divers tris, avec
+  support de sélection multiple, vue en grille ou en liste avec différents styles de mise en page
+- Interface utilisateur principale flexible et hautement personnalisable
+- Prise en charge d'Android Auto
+- Comportements hautement personnalisables pour les clics
+- Filtre de chemins (mode exclusion ou inclusion)
+- Fonction recherche
+- Fonction morceaux favoris
+- Fonction playlist fichier (lecture et édition basique; aussi épingable )
+- Fonction playlist base de données interne
+- Jouer l'historique et les morceaux joués fréquemment, et les dernières chansons ajoutées par des intervalles de temps flexibles
+- Visualiseur amélioré de métadonnées audio et éditeur de tags
+- Raccourci de l'application et widgets
+- Sources multiples de la couverture d'album
+- Fonction sauvegarde des paramètres et des données
+- Changement de langue dans l'application
+- ...
+
+
+Visitez la page principale du projet sur GitHub pour en savoir plus.
+
+Phonograph Plus est disponible sur GitHub Releases (Branche Stable et Branche Essai) et F-Droid (Branche Stable)
