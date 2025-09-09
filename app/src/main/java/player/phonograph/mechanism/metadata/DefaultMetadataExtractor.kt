@@ -17,12 +17,9 @@ import player.phonograph.model.metadata.ConventionalMusicMetadataKey.TRACK
 import player.phonograph.model.metadata.ConventionalMusicMetadataKey.YEAR
 import player.phonograph.model.metadata.FileProperties
 import player.phonograph.model.metadata.Metadata
-import player.phonograph.model.metadata.Metadata.PlainStringField
 import player.phonograph.model.metadata.MusicMetadata
 import player.phonograph.model.metadata.MusicTagFormat
 import android.content.Context
-import kotlin.collections.component1
-import kotlin.collections.component2
 import java.io.File
 
 /**
@@ -32,7 +29,7 @@ import java.io.File
  */
 object DefaultMetadataExtractor : MetadataExtractor {
     override fun extractSongMetadata(context: Context, song: Song): AudioMetadata {
-        val songFile: File = File(song.data)
+        val songFile = File(song.data)
         return AudioMetadata(
             fileProperties = FileProperties(
                 fileName = songFile.name,
@@ -44,19 +41,19 @@ object DefaultMetadataExtractor : MetadataExtractor {
             audioProperties = AudioProperties(
                 audioFormat = songFile.extension,
                 trackLength = song.duration,
-                bitRate = "-",
-                samplingRate = "-",
+                bitRate = -1,
+                samplingRate = -1,
             ),
             audioMetadataFormat = MusicTagFormat.Unknown,
             musicMetadata = PlainMusicMetadata(
                 mapOf(
-                    TITLE to PlainStringField(song.title),
-                    ARTIST to PlainStringField(song.artistName.orEmpty()),
-                    ALBUM to PlainStringField(song.albumName.orEmpty()),
-                    ALBUM_ARTIST to PlainStringField(song.albumArtistName.orEmpty()),
-                    COMPOSER to PlainStringField(song.composer.orEmpty()),
-                    YEAR to PlainStringField(song.year.toString()),
-                    TRACK to PlainStringField(song.trackNumber.toString()),
+                    TITLE to Metadata.TextualField(song.title),
+                    ARTIST to Metadata.TextualField(song.artistName.orEmpty()),
+                    ALBUM to Metadata.TextualField(song.albumName.orEmpty()),
+                    ALBUM_ARTIST to Metadata.TextualField(song.albumArtistName.orEmpty()),
+                    COMPOSER to Metadata.TextualField(song.composer.orEmpty()),
+                    YEAR to Metadata.TextualField(song.year.toString()),
+                    TRACK to Metadata.TextualField(song.trackNumber.toString()),
                 )
             ),
         )

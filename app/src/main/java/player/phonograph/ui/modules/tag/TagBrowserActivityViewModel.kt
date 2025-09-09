@@ -21,6 +21,7 @@ import player.phonograph.model.metadata.MusicMetadata
 import player.phonograph.ui.modules.tag.MetadataUIEvent.Edit
 import player.phonograph.ui.modules.tag.MetadataUIEvent.ExtractArtwork
 import player.phonograph.ui.modules.tag.MetadataUIEvent.Save
+import player.phonograph.ui.modules.tag.util.display
 import player.phonograph.ui.modules.tag.util.fileName
 import player.phonograph.ui.modules.tag.util.loadCover
 import player.phonograph.ui.modules.tag.util.readImage
@@ -68,7 +69,7 @@ class TagBrowserActivityViewModel : AbsMetadataViewModel() {
         suspend fun modify(context: Context, event: Edit): State = when (event) {
             is Edit.AddNewTag     -> {
                 val audioMetadata = modifyMusicMetadataField { musicMetadata ->
-                    musicMetadata.genericTagFields + (event.fieldKey to Metadata.PlainStringField(""))
+                    musicMetadata.genericTagFields + (event.fieldKey to Metadata.TextualField(""))
                 }
                 copy(metadata = audioMetadata)
             }
@@ -76,7 +77,7 @@ class TagBrowserActivityViewModel : AbsMetadataViewModel() {
             is Edit.UpdateTag     -> {
                 val audioMetadata = modifyMusicMetadataField { musicMetadata ->
                     musicMetadata.genericTagFields.toMutableMap().also { genericTagFields ->
-                        genericTagFields[event.fieldKey] = Metadata.PlainStringField(event.newValue)
+                        genericTagFields[event.fieldKey] = Metadata.TextualField(event.newValue)
                     }
                 }
                 copy(metadata = audioMetadata)
@@ -151,10 +152,11 @@ class TagBrowserActivityViewModel : AbsMetadataViewModel() {
         }
     }
 
-    override fun generateMetadataDifference(): MetadataChanges {
+    override fun generateMetadataDifference(context: Context): MetadataChanges {
         val original = originalState?.metadata?.musicMetadata
         val tagDiff = pendingEditRequests.map { action ->
-            val text = if (original != null) original[action.key]?.text().toString() else ""
+            val field = original?.get(action.key)
+            val text = if (field != null) display(context, field) else ""
             Pair(action, text)
         }
         return MetadataChanges(tagDiff)

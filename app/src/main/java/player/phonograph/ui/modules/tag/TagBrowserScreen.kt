@@ -18,6 +18,7 @@ import player.phonograph.ui.modules.tag.components.AudioImage
 import player.phonograph.ui.modules.tag.components.EditableTagItem
 import player.phonograph.ui.modules.tag.components.InsertNewButton
 import player.phonograph.ui.modules.tag.components.ReadonlyTagItem
+import player.phonograph.ui.modules.tag.util.display
 import player.phonograph.util.text.dateTimeTextPrecise
 import player.phonograph.util.text.getFileSizeString
 import androidx.compose.foundation.layout.Arrangement
@@ -49,7 +50,8 @@ import android.content.Context
 
 @Composable
 fun TagBrowserScreen(viewModel: TagBrowserActivityViewModel) {
-    BrowserScreenFrame(viewModel,
+    BrowserScreenFrame(
+        viewModel,
         null,
         { ArtworkSection(viewModel) }
     ) {
@@ -71,6 +73,7 @@ fun TagBrowserScreen(viewModel: TagBrowserActivityViewModel) {
 
 @Composable
 private fun AudioProperties(metadata: AudioMetadata) {
+    val context = LocalContext.current
     val fileProperties = metadata.fileProperties
     val audioProperties = metadata.audioProperties
     ReadonlyTagItem(stringResource(R.string.label_file_name), fileProperties.fileName)
@@ -79,7 +82,7 @@ private fun AudioProperties(metadata: AudioMetadata) {
     ReadonlyTagItem(stringResource(R.string.label_created_at), dateTimeTextPrecise(fileProperties.dateAdded))
     ReadonlyTagItem(stringResource(R.string.label_last_modified_at), dateTimeTextPrecise(fileProperties.dateModified))
     for (audioProperty in audioProperties.fields) {
-        ReadonlyTagItem(stringResource(audioProperty.key.res), value = audioProperty.field.text().toString())
+        ReadonlyTagItem(stringResource(audioProperty.key.res), value = display(context, audioProperty.field))
     }
 }
 
@@ -150,7 +153,7 @@ private fun GenericTagItem(
 ) {
     val context = LocalContext.current
     val tagName = if (key.res > 0) stringResource(key.res) else key.name
-    val tagValue = field.text().toString()
+    val tagValue = display(context, field)
 
     Box(modifier = Modifier.fillMaxWidth()) {
         if (editable) {
@@ -215,9 +218,10 @@ private fun JAudioTaggerTagItem(@Suppress("UNUSED_PARAMETER") key: String, rawFi
         }
         Spacer(modifier = Modifier.height(4.dp))
         // content
+        val context = LocalContext.current
         SelectionContainer {
             Text(
-                text = value.text().toString(),
+                text = display(context, value),
                 style = TextStyle(
                     color = MaterialTheme.colors.onSurface.copy(alpha = 0.92f),
                     fontSize = 14.sp,

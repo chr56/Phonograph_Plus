@@ -17,6 +17,7 @@ import player.phonograph.model.metadata.Metadata
 import player.phonograph.ui.modules.tag.MetadataUIEvent.Edit
 import player.phonograph.ui.modules.tag.MetadataUIEvent.ExtractArtwork
 import player.phonograph.ui.modules.tag.MetadataUIEvent.Save
+import player.phonograph.ui.modules.tag.util.display
 import player.phonograph.util.permissions.navigateToStorageSetting
 import androidx.lifecycle.viewModelScope
 import android.content.Context
@@ -49,9 +50,9 @@ class MultiTagBrowserActivityViewModel : AbsMetadataViewModel() {
                         ?: DefaultMetadataExtractor.extractSongMetadata(context, song)
                 }
                 val fields = reducedTagFields(items.values)
-                val displayed = fields.mapValues {
-                    val set = it.value.toSet()
-                    if (set.size == 1) set.first().text().toString() else ""
+                val displayed = fields.mapValues { (_, values) ->
+                    val set = values.toSet()
+                    if (set.size == 1) display(context, values.first()) else ""
                 }
                 return State(items, fields, displayed)
             }
@@ -134,13 +135,14 @@ class MultiTagBrowserActivityViewModel : AbsMetadataViewModel() {
         }
     }
 
-    override fun generateMetadataDifference(): MetadataChanges {
+    override fun generateMetadataDifference(context: Context): MetadataChanges {
         val original = originalState?.metadata
         val tagDiff = pendingEditRequests.map { action ->
             val text =
-                original?.mapNotNull { metadata -> metadata.musicMetadata[action.key]?.text() }
-                    ?.fold("") { a, b -> "$a\n$b" } ?: ""
-            Pair(action, text.toString())
+                original?.mapNotNull { metadata ->
+                    metadata.musicMetadata[action.key]?.let { display(context, it) }
+                }?.fold("") { a, b -> "$a\n$b" } ?: ""
+            Pair(action, text)
         }
         return MetadataChanges(tagDiff)
     }

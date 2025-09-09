@@ -14,6 +14,7 @@ import player.phonograph.ui.modules.tag.components.EditableTagItem
 import player.phonograph.ui.modules.tag.components.FileItems
 import player.phonograph.ui.modules.tag.components.InsertNewButton
 import player.phonograph.ui.modules.tag.components.ReadonlyTagItem
+import player.phonograph.ui.modules.tag.util.display
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -46,12 +47,13 @@ fun MultiTagBrowserScreen(viewModel: MultiTagBrowserActivityViewModel) {
 
 @Composable
 private fun GenericTagItems(viewModel: MultiTagBrowserActivityViewModel) {
+    val context = LocalContext.current
     val editable by viewModel.editable.collectAsState()
     val state by viewModel.state.collectAsState()
     val displayTags = state?.displayed ?: emptyMap()
     val reducedTags = state?.fields ?: emptyMap()
     for ((key, _) in displayTags) {
-        val reducedValues = reducedTags[key]?.map { it.text().toString() }
+        val reducedValues = reducedTags[key]?.map { display(context, it) }
         val editorValue = displayTags[key]
         GenericTagItem(
             key, reducedValues, editorValue, editable, viewModel::submitEvent

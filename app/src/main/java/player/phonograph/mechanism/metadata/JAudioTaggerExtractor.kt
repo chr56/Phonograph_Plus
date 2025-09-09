@@ -4,6 +4,7 @@
 
 package player.phonograph.mechanism.metadata
 
+import okhttp3.internal.toLongOrDefault
 import org.jaudiotagger.audio.AudioFile
 import org.jaudiotagger.audio.AudioFileIO
 import org.jaudiotagger.audio.AudioHeader
@@ -55,7 +56,11 @@ object JAudioTaggerExtractor : MetadataExtractor {
         val songFile = File(song.data)
         if (!songFile.exists()) {
             Handler(Looper.getMainLooper()).post {
-                Toast.makeText(context, context.getString(R.string.err_file_not_found, songFile.path), Toast.LENGTH_SHORT)
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.err_file_not_found, songFile.path),
+                    Toast.LENGTH_SHORT
+                )
                     .show()
             }
             return null
@@ -88,8 +93,8 @@ object JAudioTaggerExtractor : MetadataExtractor {
     private fun readAudioProperties(audioHeader: AudioHeader): AudioProperties {
         val audioFormat = audioHeader.format
         val trackLength = (audioHeader.trackLength * 1000).toLong()
-        val bitRate = "${audioHeader.bitRate} kb/s"
-        val samplingRate = "${audioHeader.sampleRate} Hz"
+        val bitRate = audioHeader.bitRate.toLongOrDefault(-1)
+        val samplingRate = audioHeader.sampleRate.toLongOrDefault(-1)
         return AudioProperties(
             audioFormat = audioFormat,
             trackLength = trackLength,
@@ -139,9 +144,9 @@ object JAudioTaggerExtractor : MetadataExtractor {
         if (field != null) {
             when {
                 field.isEmpty         -> null
-                field.isBinary        -> RawBinaryField(field.rawContent)
-                field is TagTextField -> Metadata.PlainStringField(field.content)
-                else                  -> RawBinaryField(field.rawContent)
+                field.isBinary        -> Metadata.BinaryField(field.rawContent)
+                field is TagTextField -> Metadata.TextualField(field.content)
+                else                  -> Metadata.BinaryField(field.rawContent)
             }
         } else {
             null

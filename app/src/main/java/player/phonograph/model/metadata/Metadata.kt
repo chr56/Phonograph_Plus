@@ -20,28 +20,33 @@ interface Metadata {
     }
 
     interface Field {
-        fun text(): CharSequence?
+        val data: Any
+
+        @MetadataNotation
+        val notation: Int
     }
 
     data object EmptyField : Field {
-        override fun text() = "<Empty>"
+        override val data: Any = Any()
+        override val notation: Int = NOTATION_EMPTY
     }
 
-    data class PlainStringField(val data: String) : Field {
-        override fun text() = data
+    open class BinaryField(override val data: ByteArray) : Field {
+        override val notation: Int = NOTATION_BINARY
     }
 
-    data class PlainNumberField(val data: Long) : Field {
-        override fun text() = data.toString()
+    open class RawTextualField(override val data: ByteArray) : Field {
+        override val notation: Int = NOTATION_RAW_TEXT
     }
 
-    data class MultipleField(val data: Collection<Field>) : Field {
-        override fun text(): CharSequence? = data.map(Field::text).joinToString(separator = "\n")
+    data class TextualField(override val data: String) : Field {
+        override val notation: Int = NOTATION_TEXT
     }
 
-    interface BinaryField : Field {
-        override fun text(): CharSequence = "<Binary>"
-        fun binary(): ByteArray
+    data class NumericField(override val data: Long, @field:MetadataNotation override val notation: Int) : Field
+
+    data class MultipleField(override val data: Collection<Field>) : Field {
+        override val notation: Int = NOTATION_COMPOSITE
     }
 
     interface Entry {

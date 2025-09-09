@@ -9,16 +9,16 @@ import player.phonograph.R
 data class AudioProperties(
     val audioFormat: String,
     val trackLength: Long,
-    val bitRate: String,
-    val samplingRate: String,
+    val bitRate: Long,
+    val samplingRate: Long,
 ) : Metadata {
 
     override fun get(key: Metadata.Key): Metadata.Field? =
         when (key) {
-            is Keys.AudioFormat  -> Metadata.PlainStringField(audioFormat)
-            is Keys.TrackLength  -> Metadata.PlainNumberField(trackLength)
-            is Keys.BitRate      -> Metadata.PlainStringField(bitRate)
-            is Keys.SamplingRate -> Metadata.PlainStringField(samplingRate)
+            is Keys.AudioFormat  -> Metadata.TextualField(audioFormat)
+            is Keys.TrackLength  -> Metadata.NumericField(trackLength, NOTATION_DURATION)
+            is Keys.BitRate      -> Metadata.NumericField(bitRate, NOTATION_BIT_RATE)
+            is Keys.SamplingRate -> Metadata.NumericField(samplingRate, NOTATION_SAMPLING)
             else                 -> null
         }
 
@@ -26,10 +26,10 @@ data class AudioProperties(
 
     override val fields: List<Metadata.Entry>
         get() = listOf(
-            Metadata.PlainEntry(Keys.AudioFormat, Metadata.PlainStringField(audioFormat)),
-            Metadata.PlainEntry(Keys.TrackLength, Metadata.PlainNumberField(trackLength)),
-            Metadata.PlainEntry(Keys.BitRate, Metadata.PlainStringField(bitRate)),
-            Metadata.PlainEntry(Keys.SamplingRate, Metadata.PlainStringField(samplingRate)),
+            Metadata.PlainEntry(Keys.AudioFormat, Metadata.TextualField(audioFormat)),
+            Metadata.PlainEntry(Keys.TrackLength, Metadata.NumericField(trackLength, NOTATION_DURATION)),
+            Metadata.PlainEntry(Keys.BitRate, Metadata.NumericField(bitRate, NOTATION_BIT_RATE)),
+            Metadata.PlainEntry(Keys.SamplingRate, Metadata.NumericField(samplingRate, NOTATION_SAMPLING)),
         )
 
     sealed interface AudioPropertiesKey : Metadata.Key

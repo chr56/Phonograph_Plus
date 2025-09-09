@@ -16,11 +16,11 @@ data class FileProperties(
 
     override fun get(key: Metadata.Key): Metadata.Field? =
         when (key) {
-            is Keys.Name         -> Metadata.PlainStringField(fileName)
-            is Keys.Path         -> Metadata.PlainStringField(fileName)
-            is Keys.Size         -> Metadata.PlainNumberField(fileSize)
-            is Keys.DateAdded    -> Metadata.PlainNumberField(dateAdded)
-            is Keys.DateModified -> Metadata.PlainNumberField(dateModified)
+            is Keys.Name         -> Metadata.TextualField(fileName)
+            is Keys.Path         -> Metadata.TextualField(fileName)
+            is Keys.Size         -> Metadata.NumericField(fileSize, NOTATION_DATA_SIZE)
+            is Keys.DateAdded    -> Metadata.NumericField(dateAdded, NOTATION_TIMESTAMP)
+            is Keys.DateModified -> Metadata.NumericField(dateModified, NOTATION_TIMESTAMP)
             else                 -> null
         }
 
@@ -28,11 +28,11 @@ data class FileProperties(
 
     override val fields: List<Metadata.Entry>
         get() = listOf(
-            Metadata.PlainEntry(Keys.Name, Metadata.PlainStringField(fileName)),
-            Metadata.PlainEntry(Keys.Path, Metadata.PlainStringField(fileName)),
-            Metadata.PlainEntry(Keys.Size, Metadata.PlainNumberField(fileSize)),
-            Metadata.PlainEntry(Keys.DateAdded, Metadata.PlainNumberField(dateAdded)),
-            Metadata.PlainEntry(Keys.DateModified, Metadata.PlainNumberField(dateModified)),
+            Metadata.PlainEntry(Keys.Name, Metadata.TextualField(fileName)),
+            Metadata.PlainEntry(Keys.Path, Metadata.TextualField(fileName)),
+            Metadata.PlainEntry(Keys.Size, Metadata.NumericField(fileSize, NOTATION_TIMESTAMP)),
+            Metadata.PlainEntry(Keys.DateAdded, Metadata.NumericField(dateAdded, NOTATION_TIMESTAMP)),
+            Metadata.PlainEntry(Keys.DateModified, Metadata.NumericField(dateModified, NOTATION_TIMESTAMP)),
         )
 
     sealed interface FilePropertiesKey : Metadata.Key

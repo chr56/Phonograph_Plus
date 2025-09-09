@@ -67,8 +67,9 @@ fun <VM : AbsMetadataViewModel> BrowserScreenFrame(
         val context = LocalContext.current
         SaveConfirmationDialog(
             viewModel.saveConfirmationDialogState,
-            viewModel::generateMetadataDifference
-        ) { viewModel.submitEvent(context, MetadataUIEvent.Save) }
+            changes = { viewModel.generateMetadataDifference(context) },
+            onSave = { viewModel.submitEvent(context, MetadataUIEvent.Save) }
+        )
         val activity = LocalActivity.current
         ExitWithoutSavingDialog(viewModel.exitWithoutSavingDialogState) { activity?.finish() }
     }

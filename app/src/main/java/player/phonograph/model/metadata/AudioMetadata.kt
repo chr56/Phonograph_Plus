@@ -14,7 +14,7 @@ data class AudioMetadata(
         val EMPTY: AudioMetadata
             get() = AudioMetadata(
                 FileProperties("-", "", -1, 0, 0),
-                AudioProperties("", 0, "", ""),
+                AudioProperties("", 0, -1, -1),
                 MusicTagFormat.Unknown,
                 EmptyMusicMetadata,
             )

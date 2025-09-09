@@ -29,9 +29,11 @@ import player.phonograph.App
 import player.phonograph.foundation.error.warning
 import player.phonograph.mechanism.metadata.JAudioTaggerMetadata.Field
 import player.phonograph.model.metadata.Metadata
+import player.phonograph.model.metadata.Metadata.BinaryField
 import player.phonograph.model.metadata.Metadata.EmptyField
 import player.phonograph.model.metadata.Metadata.MultipleField
-import player.phonograph.model.metadata.Metadata.PlainStringField
+import player.phonograph.model.metadata.Metadata.RawTextualField
+import player.phonograph.model.metadata.Metadata.TextualField
 import java.io.UnsupportedEncodingException
 
 
@@ -42,17 +44,17 @@ sealed interface TagReader<T : Tag> {
 object ID3v1TagReaders {
 
     private fun readID3v1Tag(tag: ID3v1Tag): Map<String, Field> = mapOf(
-        "Title" to Field("Title", "Title", PlainStringField(tag.firstTitle), null),
-        "Artist" to Field("Artist", "Artist", PlainStringField(tag.firstArtist), null),
-        "Album" to Field("Album", "Album", PlainStringField(tag.firstAlbum), null),
-        "Genre" to Field("Genre", "Genre", PlainStringField(tag.firstGenre), null),
-        "Year" to Field("Year", "Year", PlainStringField(tag.firstYear), null),
-        "Comment" to Field("Comment", "Comment", PlainStringField(tag.firstComment), null),
+        "Title" to Field("Title", "Title", TextualField(tag.firstTitle), null),
+        "Artist" to Field("Artist", "Artist", TextualField(tag.firstArtist), null),
+        "Album" to Field("Album", "Album", TextualField(tag.firstAlbum), null),
+        "Genre" to Field("Genre", "Genre", TextualField(tag.firstGenre), null),
+        "Year" to Field("Year", "Year", TextualField(tag.firstYear), null),
+        "Comment" to Field("Comment", "Comment", TextualField(tag.firstComment), null),
     )
 
     private fun readID3v11Tag(tag: ID3v11Tag): Map<String, Field> {
         return readID3v1Tag(tag) + mapOf(
-            "Track" to Field("Track", "Track", PlainStringField(tag.firstTrack), null),
+            "Track" to Field("Track", "Track", TextualField(tag.firstTrack), null),
         )
     }
 
@@ -86,11 +88,20 @@ object ID3v2Readers {
                 tag.frameMap.map { (id: String, data) -> id to parse(id, data) }.toMap()
 
             private fun parse(id: String, frame: Any): Field = when (frame) {
-                is TagField -> {
+
+                is AggregatedFrame -> {
+                    val multiple = MultipleField(
+                        frame.frames.map { child -> parseTagField(id, child) }
+                    )
+                    val name = if (isCustomKey(id)) "USER DEFINED FIELDS" else queryName(id)
+                    Field(id, name, multiple, null)
+                }
+
+                is TagField        -> {
                     parseTagField(id, frame)
                 }
 
-                is List<*>  -> {
+                is List<*>         -> {
                     val multiple = MultipleField(
                         frame.map { item ->
                             if (item is TagField) {
@@ -104,7 +115,7 @@ object ID3v2Readers {
                     Field(id, name, multiple, null)
                 }
 
-                else        -> otherField(id, frame)
+                else               -> otherField(id, frame)
             }
 
             private fun parseTagField(id: String, frame: TagField): Field = try {
@@ -116,23 +127,21 @@ object ID3v2Readers {
                     }
                     val description = queryDescription(identifier)
                     val field = when (val frameBody = frame.body) {
-                        is FrameBodyTXXX -> PlainStringField("${frameBody.description}:\t${frameBody.userFriendlyValue}")
-                        else             -> preprocessTagField(frame) { PlainStringField(frameBody.userFriendlyValue) }
+                        is FrameBodyTXXX -> TextualField("${frameBody.description}:\t${frameBody.userFriendlyValue}")
+                        else             -> preprocessTagField(frame) { TextualField(frameBody.userFriendlyValue) }
                     }
                     Field(identifier, name, field, description)
                 } else {
-                    val field = preprocessTagField(frame) {
-                        PlainStringField(FieldOf(frame))
-                    }
+                    val field = preprocessTagField(frame) { processRawTextualField(it) }
                     Field(id, id, field, null)
                 }
             } catch (e: TagException) {
                 warning(App.instance, "ID3v2Reader", "Failed to process Frame $frame", e)
-                Field(id, id, PlainStringField(frame.toString()), null)
+                Field(id, id, TextualField(frame.toString()), null)
             }
 
             private fun otherField(id: String, frame: Any) =
-                Field(id, id, PlainStringField(frame.toString()), null)
+                Field(id, id, TextualField(frame.toString()), null)
         }
 
         private object ID3v24Reader : ID3v2ReaderImpl<ID3v23Tag>() {
@@ -202,8 +211,8 @@ object SimpleKeyValueReader : TagReader<AbstractTag> {
             val value = tagFields.map { tagField ->
                 preprocessTagField(tagField) {
                     when (it) {
-                        is TagTextField -> PlainStringField(it.content)
-                        else            -> PlainStringField(FieldOf(it).take(64))
+                        is TagTextField -> TextualField(it.content)
+                        else            -> processRawTextualField(it)
                     }
                 }
             }.let { MultipleField(it) }
@@ -222,12 +231,12 @@ object Mp4TagReader : TagReader<Mp4Tag> {
             val name = fieldKey?.name ?: field.id
             val description = fieldKey?.identifier ?: field.fieldType.let { "${it.name}(type${it.fileClassId})" }
             val value = when (field) {
-                is Mp4TagCoverField -> PlainStringField(field.toString())
-                is Mp4TagReverseDnsField -> PlainStringField("${field.descriptor}: ${field.content}")
-                is Mp4TagTextField -> PlainStringField(field.content)
-                is Mp4TagBinaryField -> RawBinaryField(field.rawContent)
-                is Mp4TagRawBinaryField -> RawBinaryField(field.rawContent)
-                else -> PlainStringField("Unknown: $field")
+                is Mp4TagCoverField -> TextualField(field.toString())
+                is Mp4TagReverseDnsField -> TextualField("${field.descriptor}: ${field.content}")
+                is Mp4TagTextField -> TextualField(field.content)
+                is Mp4TagBinaryField -> BinaryField(field.rawContent)
+                is Mp4TagRawBinaryField -> BinaryField(field.rawContent)
+                else -> TextualField("Unknown: $field")
             }
             id to Field(id, name, value, description)
         }
@@ -235,22 +244,22 @@ object Mp4TagReader : TagReader<Mp4Tag> {
 }
 
 object VorbisCommentTagReader : TagReader<VorbisCommentTag> {
+    val IMAGE_TAGS = listOf(
+        VorbisCommentFieldKey.METADATA_BLOCK_PICTURE.fieldName,
+        VorbisCommentFieldKey.COVERART.fieldName,
+    )
     override fun read(tag: VorbisCommentTag): Map<String, Field> {
         val mappedFields: Map<String, List<TagField>> = tag.mappedFields
         return mappedFields.mapValues { (key, tagFields) ->
             val value = tagFields.map { tagField ->
                 if (tagField is VorbisCommentTagField) {
-                    val imageTags = listOf(
-                        VorbisCommentFieldKey.METADATA_BLOCK_PICTURE.fieldName,
-                        VorbisCommentFieldKey.COVERART.fieldName,
-                    )
-                    if (key in imageTags) {
-                        PlainStringField("<BASE64_IMAGES>")
+                    if (key in IMAGE_TAGS) {
+                        TextualField("<BASE64_IMAGES>")
                     } else {
-                        PlainStringField(tagField.content)
+                        TextualField(tagField.content)
                     }
                 } else {
-                    PlainStringField("Unknown field (${FieldOf(tagField).take(24)})")
+                    processRawTextualField(tagField)
                 }
             }.let { MultipleField(it) }
             Field(key, key, value, null)
@@ -264,19 +273,16 @@ private inline fun <T : TagField> preprocessTagField(
     block: (frame: T) -> Metadata.Field,
 ): Metadata.Field =
     when {
-        frame.isBinary -> RawBinaryField(frame.rawContent)
+        frame.isBinary -> BinaryField(frame.rawContent)
         frame.isEmpty  -> EmptyField
         else           -> block(frame)
     }
 
-private fun FieldOf(field: TagField): String =
-    try {
-        field.rawContent.toString()
-    } catch (e: UnsupportedEncodingException) {
-        // ID3 AggregatedFrame may throw `UnsupportedEncodingException` but has `getContent()`
-        if (field is TagTextField) field.content else field.toString()
+private fun processRawTextualField(field: TagField): Metadata.Field {
+    val binary = try {
+        field.rawContent
+    } catch (_: UnsupportedEncodingException) {
+        ByteArray(0)
     }
-
-class RawBinaryField(val data: ByteArray) : Metadata.BinaryField {
-    override fun binary(): ByteArray = data
+    return RawTextualField(binary)
 }

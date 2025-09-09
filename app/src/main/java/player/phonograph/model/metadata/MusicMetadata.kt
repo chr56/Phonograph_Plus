@@ -5,6 +5,7 @@
 package player.phonograph.model.metadata
 
 import player.phonograph.R
+import androidx.annotation.IntDef
 
 interface MusicMetadata : Metadata {
     val genericTagFields: Map<ConventionalMusicMetadataKey, Metadata.Field>
@@ -208,4 +209,34 @@ enum class ConventionalMusicMetadataKey(override val res: Int = 0) : MusicMetada
 
 interface TagMetadataKey : MusicMetadataKey
 
+//endregion
+
+//region Field Notation
+const val NOTATION_EMPTY = 0
+const val NOTATION_BINARY = 1
+const val NOTATION_TEXT = 8
+const val NOTATION_RAW_TEXT = 9
+const val NOTATION_NUMBER = 16
+const val NOTATION_TIMESTAMP = 17
+const val NOTATION_DURATION = 18
+const val NOTATION_DATA_SIZE = 22
+const val NOTATION_BIT_RATE = 23
+const val NOTATION_SAMPLING = 24
+const val NOTATION_COMPOSITE = 254
+
+@IntDef(
+    NOTATION_EMPTY,
+    NOTATION_BINARY,
+    NOTATION_TEXT,
+    NOTATION_RAW_TEXT,
+    NOTATION_NUMBER,
+    NOTATION_TIMESTAMP,
+    NOTATION_DURATION,
+    NOTATION_DATA_SIZE,
+    NOTATION_BIT_RATE,
+    NOTATION_SAMPLING,
+    NOTATION_COMPOSITE,
+)
+@Retention(AnnotationRetention.SOURCE)
+annotation class MetadataNotation
 //endregion
