@@ -96,7 +96,7 @@ sealed class NotificationAction(
         override fun icon(status: MusicServiceStatus): Int = R.drawable.ic_close_white_24dp
     }
 
-    private object Invalid : NotificationAction(ACTION_KEY_UNKNOWN, R.string.msg_empty, ".") {
+    private object Invalid : NotificationAction(ACTION_KEY_UNKNOWN, R.string.msg_unknown, ".") {
         override fun icon(status: MusicServiceStatus): Int = R.drawable.ic_notification
     }
 

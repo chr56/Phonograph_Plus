@@ -77,7 +77,7 @@ class MiniPlayerFragment : AbsMusicServiceFragment() {
     override fun onServiceConnected() {
         val context = requireContext()
         val currentSong: Song? = MusicPlayerRemote.currentSong
-        replaceText(currentSong?.title ?: context.getString(R.string.msg_empty))
+        replaceText(currentSong?.title ?: context.getString(R.string.msg_not_available))
         replaceDrawable(miniPlayerPlayPauseDrawable)
         updatePlayPauseDrawableState(false)
     }
