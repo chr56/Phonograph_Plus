@@ -31,6 +31,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.text.selection.SelectionContainer
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -66,6 +67,14 @@ fun TagBrowserScreen(viewModel: TagBrowserActivityViewModel) {
             Spacer(modifier = Modifier.height(16.dp))
             Title(stringResource(R.string.label_music_tags), color = MaterialTheme.colors.primary)
             MusicTagItems(viewModel, metadata, editable)
+        } else {
+            Box(Modifier.fillMaxWidth()) {
+                CircularProgressIndicator(
+                    Modifier
+                        .align(Alignment.Center)
+                        .padding(64.dp)
+                )
+            }
         }
     }
 }
