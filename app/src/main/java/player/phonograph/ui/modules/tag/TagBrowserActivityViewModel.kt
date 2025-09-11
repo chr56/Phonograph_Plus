@@ -134,21 +134,26 @@ class TagBrowserActivityViewModel : AbsMetadataViewModel() {
 
     override fun submitEvent(context: Context, event: MetadataUIEvent) {
         viewModelScope.launch {
-            if (!editable.value) return@launch
             when (event) {
-                Save           -> save(context)
                 ExtractArtwork -> extractArtwork(context)
+
+                Save           -> {
+                    if (editable.value) save(context)
+                }
+
                 is Edit        -> {
-                    modifyContent(context, event)
-                    enqueueEditRequest(
-                        when (event) {
-                            is Edit.AddNewTag     -> EditAction.Update(event.fieldKey, "")
-                            is Edit.UpdateTag     -> EditAction.Update(event.fieldKey, event.newValue)
-                            is Edit.RemoveTag     -> EditAction.Delete(event.fieldKey)
-                            is Edit.RemoveArtwork -> EditAction.ImageDelete
-                            is Edit.UpdateArtwork -> EditAction.ImageReplace(event.file)
-                        }
-                    )
+                    if (editable.value) {
+                        modifyContent(context, event)
+                        enqueueEditRequest(
+                            when (event) {
+                                is Edit.AddNewTag     -> EditAction.Update(event.fieldKey, "")
+                                is Edit.UpdateTag     -> EditAction.Update(event.fieldKey, event.newValue)
+                                is Edit.RemoveTag     -> EditAction.Delete(event.fieldKey)
+                                is Edit.RemoveArtwork -> EditAction.ImageDelete
+                                is Edit.UpdateArtwork -> EditAction.ImageReplace(event.file)
+                            }
+                        )
+                    }
                 }
             }
         }
