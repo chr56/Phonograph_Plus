@@ -12,6 +12,7 @@ import player.phonograph.util.ui.paletteColor
 import androidx.annotation.ColorInt
 import androidx.compose.ui.graphics.Color
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -50,5 +51,17 @@ suspend fun readEmbeddedImage(songFilePath: String, @ColorInt fallbackColor: Int
         }
     } catch (_: Exception) {
         Pair(null, null)
+    }
+}
+
+/**
+ * Read raw embedded image from metadata of [songFilePath]
+ */
+suspend fun readRawEmbeddedImage(songFilePath: String): Bitmap? {
+    val imageBytes = withContext(Dispatchers.IO) {
+        JAudioTaggerExtractor.readImage(File(songFilePath))
+    } ?: return null
+    return withContext(Dispatchers.Default) {
+        BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size, null)
     }
 }

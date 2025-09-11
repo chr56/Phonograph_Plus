@@ -25,6 +25,7 @@ import player.phonograph.ui.modules.tag.util.display
 import player.phonograph.ui.modules.tag.util.fileName
 import player.phonograph.ui.modules.tag.util.loadCover
 import player.phonograph.ui.modules.tag.util.readEmbeddedImage
+import player.phonograph.ui.modules.tag.util.readRawEmbeddedImage
 import player.phonograph.util.concurrent.lifecycleScopeOrNewOne
 import player.phonograph.util.permissions.navigateToStorageSetting
 import player.phonograph.util.theme.themeFooterColor
@@ -183,9 +184,9 @@ class TagBrowserActivityViewModel : AbsMetadataViewModel() {
         }
     }
 
-    private fun extractArtwork(activity: Context) {
+    private suspend fun extractArtwork(activity: Context) {
         val currentState = _state.value ?: return
-        val image = currentState.image ?: return
+        val image = readRawEmbeddedImage(currentState.song.data) ?: return
         val fileName = fileName(currentState.song)
         if (activity is ICreateFileStorageAccessible) {
             val delegate = activity.createFileStorageAccessDelegate
