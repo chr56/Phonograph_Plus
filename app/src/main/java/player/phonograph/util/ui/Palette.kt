@@ -20,8 +20,19 @@ fun Bitmap.generatePalette(): Palette {
     return palette
 }
 
-fun paletteColor(bitmap: Bitmap, @ColorInt fallbackColor: Int): Int {
+/**
+ * Extracts a Palette color from a [Bitmap].
+ * @param bitmap The [Bitmap] to extract the color from. Can be null.
+ * @param fallbackColor The color to return if a suitable palette color is not available.
+ * @param recycle If true, the input [Bitmap] will be recycled after color extraction. Defaults to false.
+ * @return The extracted color (or the [fallbackColor]).
+ */
+@ColorInt
+fun paletteColor(bitmap: Bitmap?, @ColorInt fallbackColor: Int, recycle: Boolean = false): Int {
+    if (bitmap == null) return fallbackColor
     val palette = bitmap.generatePalette()
     val swatch = with(palette) { vibrantSwatch ?: mutedSwatch }
-    return swatch?.rgb ?: fallbackColor
+    val color = swatch?.rgb ?: fallbackColor
+    if (recycle) bitmap.recycle()
+    return color
 }
