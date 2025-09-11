@@ -102,7 +102,7 @@ class MultiTagBrowserActivityViewModel : AbsMetadataViewModel() {
     }
 
     fun load(context: Context, songs: Collection<Song>, asOriginal: Boolean) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val data = State.from(context, songs.toList())
             if (asOriginal) originalState = data
             _state.emit(data)
@@ -110,7 +110,7 @@ class MultiTagBrowserActivityViewModel : AbsMetadataViewModel() {
     }
 
     private fun modifyContent(context: Context, event: Edit) {
-        viewModelScope.launch { _state.emit(_state.value?.modify(context, event)) }
+        viewModelScope.launch(Dispatchers.IO) { _state.emit(_state.value?.modify(context, event)) }
     }
 
     override fun submitEvent(context: Context, event: MetadataUIEvent) {
