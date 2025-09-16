@@ -67,8 +67,8 @@ fun BooleanPreference(
     SettingsSwitch(
         value = value,
         enabled = enabled,
-        title = title(titleRes),
-        subtitle = subtitle(summaryRes),
+        title = title(res = titleRes),
+        subtitle = subtitle(res = summaryRes),
         onCheckedChange = {
             writerCoroutineScope.launch(Dispatchers.IO) { preference.edit { it } }
             onCheckedChange(it)
@@ -101,8 +101,8 @@ fun BooleanPreference(
     SettingsSwitch(
         value = value,
         enabled = enabled,
-        title = title(titleRes),
-        subtitle = subtitle(subtitle),
+        title = title(res = titleRes),
+        subtitle = subtitle(string = subtitle),
         onCheckedChange = {
             writerCoroutineScope.launch(Dispatchers.IO) {
                 preference.edit { it }
@@ -141,8 +141,8 @@ fun DialogPreference(
 
     SettingsExternal(
         enabled = enabled,
-        title = title(titleRes),
-        subtitle = subtitle(subtitle),
+        title = title(res = titleRes),
+        subtitle = subtitle(string = subtitle),
         onClick = {
             showDialog(context as FragmentActivity, dialog) { version++ }
         },
@@ -176,11 +176,11 @@ fun ListPreference(
     Box(Modifier.heightIn(64.dp, 96.dp)) {
         SettingsListDropdown(
             selected = selected,
-            title = title(titleRes),
+            title = title(res = titleRes),
             options = options,
             onOptionItemSelected = onOptionItemSelected,
             enabled = enabled,
-            subtitle = subtitle(summaryRes),
+            subtitle = subtitle(res = summaryRes),
         )
     }
 }
@@ -206,8 +206,8 @@ fun FloatPreference(
         value = staging,
         valueRange = valueRange,
         enabled = enabled,
-        title = title(titleRes),
-        subtitle = subtitle(subtitle),
+        title = title(res = titleRes),
+        subtitle = subtitle(string = subtitle),
         colors =
             SliderDefaults.colors(
                 thumbColor = MaterialTheme.colors.secondary,
@@ -251,8 +251,8 @@ fun ExternalPreference(
     onClick: () -> Unit = {},
 ) {
     SettingsMenuLink(
-        title = title(titleRes),
-        subtitle = subtitle(summaryRes),
+        title = title(res = titleRes),
+        subtitle = subtitle(res = summaryRes),
         modifier = modifier,
         enabled = enabled,
         icon = icon,
@@ -296,23 +296,18 @@ private fun header(res: Int): @Composable () -> Unit = @Composable {
     )
 }
 
-private fun title(res: Int): @Composable () -> Unit = @Composable {
+private fun title(res: Int = 0, string: String? = null): @Composable () -> Unit = @Composable {
     Text(
-        text = stringResource(id = res),
+        text = if (res != 0) stringResource(id = res) else string ?: "",
         modifier = Modifier.fillMaxWidth()
     )
 }
 
-private fun subtitle(res: Int): (@Composable () -> Unit)? =
+private fun subtitle(res: Int = 0, string: String? = null): (@Composable () -> Unit)? =
     if (res > 0) {
         @Composable { Text(text = stringResource(id = res)) }
-    } else {
-        null
-    }
-
-private fun subtitle(text: String?): (@Composable () -> Unit)? =
-    if (text != null) {
-        @Composable { Text(text = text) }
+    } else if (string != null) {
+        @Composable { Text(text = string) }
     } else {
         null
     }
