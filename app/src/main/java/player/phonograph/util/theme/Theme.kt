@@ -67,8 +67,10 @@ private fun isNightMode(context: Context): Boolean =
         else                                        -> false
     }
 
-fun systemDarkmode(resources: Resources): Boolean =
-    when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
+fun systemDarkmode(resources: Resources): Boolean = systemDarkmode(resources.configuration)
+
+fun systemDarkmode(configuration: Configuration): Boolean =
+    when (configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
         Configuration.UI_MODE_NIGHT_YES -> true
         Configuration.UI_MODE_NIGHT_NO  -> false
         else                            -> false
