@@ -110,6 +110,7 @@
     <string name="pref_header_files">文件</string>
     <string name="pref_header_notification">通知</string>
     <string name="pref_header_compatibility">兼容性</string>
+    <string name="pref_header_experiential">实验性</string>
     <string name="pref_title_now_playing_screen_style">主播放器界面样式</string>
     <string name="pref_title_player_controller_style">播放控件样式</string>
     <string name="pref_title_start_directory">起始目录</string>
