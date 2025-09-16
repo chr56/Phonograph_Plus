@@ -56,8 +56,10 @@ fun SettingsGroup(
 @Composable
 fun BooleanPreference(
     key: PreferenceKey<Boolean>,
-    @StringRes titleRes: Int,
+    @StringRes titleRes: Int = 0,
     @StringRes summaryRes: Int = 0,
+    title: String? = null,
+    summary: String? = null,
     enabled: Boolean = true,
     writerCoroutineScope: CoroutineScope = rememberCoroutineScope(),
     onCheckedChange: (Boolean) -> Unit = {},
@@ -67,8 +69,8 @@ fun BooleanPreference(
     SettingsSwitch(
         value = value,
         enabled = enabled,
-        title = title(res = titleRes),
-        subtitle = subtitle(res = summaryRes),
+        title = title(res = titleRes, string = title),
+        subtitle = subtitle(res = summaryRes, string = summary),
         onCheckedChange = {
             writerCoroutineScope.launch(Dispatchers.IO) { preference.edit { it } }
             onCheckedChange(it)
@@ -79,9 +81,11 @@ fun BooleanPreference(
 @Composable
 fun BooleanPreference(
     key: PreferenceKey<Boolean>,
-    @StringRes titleRes: Int,
+    @StringRes titleRes: Int = 0,
     @StringRes summaryRes: Int = 0,
     enabled: Boolean = true,
+    title: String? = null,
+    summary: String? = null,
     writerCoroutineScope: CoroutineScope = rememberCoroutineScope(),
     currentValueForHint: suspend (Context, Boolean) -> String?,
 ) {
@@ -90,7 +94,7 @@ fun BooleanPreference(
     val preference = rememberSettingPreference(key)
     val value by preference.flow.collectAsState(preference.default)
 
-    val defaultSubtitle = if (summaryRes != 0) stringResource(summaryRes) else null
+    val defaultSubtitle = if (summaryRes != 0) stringResource(summaryRes) else summary
     var subtitle by remember { mutableStateOf<String?>(defaultSubtitle) }
 
     var version by remember { mutableIntStateOf(0) }
@@ -101,7 +105,7 @@ fun BooleanPreference(
     SettingsSwitch(
         value = value,
         enabled = enabled,
-        title = title(res = titleRes),
+        title = title(res = titleRes, string = title),
         subtitle = subtitle(string = subtitle),
         onCheckedChange = {
             writerCoroutineScope.launch(Dispatchers.IO) {
@@ -115,8 +119,10 @@ fun BooleanPreference(
 @Composable
 fun DialogPreference(
     dialog: Class<out DialogFragment>,
-    @StringRes titleRes: Int,
+    @StringRes titleRes: Int = 0,
     @StringRes summaryRes: Int = 0,
+    title: String? = null,
+    summary: String? = null,
     enabled: Boolean = true,
     reset: (suspend (Context) -> Unit)? = null,
     writerCoroutineScope: CoroutineScope = rememberCoroutineScope(),
@@ -124,8 +130,8 @@ fun DialogPreference(
 ) {
     val context = LocalContext.current
 
-    val defaultSubtitle = if (summaryRes != 0) stringResource(summaryRes) else ""
-    var subtitle by remember { mutableStateOf<String>(defaultSubtitle) }
+    val defaultSubtitle = if (summaryRes != 0) stringResource(summaryRes) else summary
+    var subtitle by remember { mutableStateOf<String?>(defaultSubtitle) }
 
     var version by remember { mutableIntStateOf(0) }
     LaunchedEffect(version) {
@@ -141,7 +147,7 @@ fun DialogPreference(
 
     SettingsExternal(
         enabled = enabled,
-        title = title(res = titleRes),
+        title = title(res = titleRes, string = title),
         subtitle = subtitle(string = subtitle),
         onClick = {
             showDialog(context as FragmentActivity, dialog) { version++ }
@@ -154,9 +160,11 @@ fun DialogPreference(
 fun ListPreference(
     key: PreferenceKey<String>,
     optionsValues: List<String>,
-    optionsValuesLocalized: List<Int>,
-    @StringRes titleRes: Int,
+    optionsValuesLocalized: List<Int>? = null,
+    @StringRes titleRes: Int = 0,
     @StringRes summaryRes: Int = 0,
+    title: String? = null,
+    summary: String? = null,
     enabled: Boolean = true,
     writerCoroutineScope: CoroutineScope = rememberCoroutineScope(),
     onChange: (Int, String) -> Unit = { _, _ -> },
@@ -165,7 +173,7 @@ fun ListPreference(
 
     val current by preference.flow.collectAsState(preference.default)
     val selected = optionsValues.indexOf(current).coerceIn(optionsValues.indices)
-    val options = optionsValuesLocalized.map { stringResource(it) }
+    val options = optionsValuesLocalized?.map { stringResource(it) } ?: optionsValues
     val onOptionItemSelected: (Int, String) -> Unit = { index, text ->
         writerCoroutineScope.launch(Dispatchers.IO) {
             preference.edit { optionsValues[index] }
@@ -176,11 +184,11 @@ fun ListPreference(
     Box(Modifier.heightIn(64.dp, 96.dp)) {
         SettingsListDropdown(
             selected = selected,
-            title = title(res = titleRes),
+            title = title(res = titleRes, string = title),
             options = options,
             onOptionItemSelected = onOptionItemSelected,
             enabled = enabled,
-            subtitle = subtitle(res = summaryRes),
+            subtitle = subtitle(res = summaryRes, string = summary),
         )
     }
 }
@@ -190,8 +198,10 @@ fun FloatPreference(
     key: PreferenceKey<Float>,
     valueRange: ClosedFloatingPointRange<Float>,
     steps: Int = 0,
-    @StringRes titleRes: Int,
+    @StringRes titleRes: Int = 0,
     @StringRes summaryRes: Int = 0,
+    title: String? = null,
+    summary: String? = null,
     enabled: Boolean = true,
     writerCoroutineScope: CoroutineScope = rememberCoroutineScope(),
 ) {
@@ -199,14 +209,14 @@ fun FloatPreference(
     val value by preference.flow.collectAsState(preference.default)
     var staging by remember(value) { mutableFloatStateOf(value) }
 
-    val defaultSubtitle = if (summaryRes != 0) stringResource(summaryRes) else null
+    val defaultSubtitle = if (summaryRes != 0) stringResource(summaryRes) else summary
     var subtitle by remember { mutableStateOf<String?>(defaultSubtitle) }
 
     SettingsSlider(
         value = staging,
         valueRange = valueRange,
         enabled = enabled,
-        title = title(res = titleRes),
+        title = title(res = titleRes, string = title),
         subtitle = subtitle(string = subtitle),
         colors =
             SliderDefaults.colors(
