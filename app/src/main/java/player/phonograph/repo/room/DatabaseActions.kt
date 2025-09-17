@@ -4,7 +4,10 @@
 
 package player.phonograph.repo.room
 
+import player.phonograph.R
+import player.phonograph.foundation.notification.BackgroundNotification
 import player.phonograph.mechanism.event.EventHub
+import player.phonograph.model.repo.sync.SyncExecutor
 import player.phonograph.model.repo.sync.SyncResult
 import player.phonograph.repo.room.domain.BasicSyncExecutor
 import android.content.Context
@@ -49,7 +52,14 @@ object DatabaseActions {
         val syncExecutor = BasicSyncExecutor(musicDatabase)
 
         return if (syncExecutor.check(context)) {
-            syncExecutor.sync(context, null)
+            val connection = SyncProgressNotificationConnection(
+                context, System.currentTimeMillis().mod(172_800_000)
+            )
+            try {
+                syncExecutor.sync(context, connection)
+            } finally {
+                connection.onEnd()
+            }
         } else {
             null
         }
@@ -81,6 +91,26 @@ object DatabaseActions {
         synchronized(musicDatabase) {
             musicDatabase.close()
             path.delete()
+        }
+    }
+
+    class SyncProgressNotificationConnection(val context: Context, val id: Int) : SyncExecutor.SyncProgressConnection {
+        private val title = context.getString(R.string.action_refresh_database)
+        private val subtitle = context.getString(R.string.state_updating)
+        override fun onProcessUpdate(message: String?) {
+            if (message != null) BackgroundNotification.post(context, title, message, id)
+        }
+
+        override fun onProcessUpdate(current: Int, total: Int) {
+            BackgroundNotification.post(context, title, subtitle, id, current, total)
+        }
+
+        override fun onProcessUpdate(current: Int, total: Int, message: String?) {
+            BackgroundNotification.post(context, "$title: $message", title, id, current, total)
+        }
+
+        fun onEnd() {
+            BackgroundNotification.remove(context, id)
         }
     }
 
