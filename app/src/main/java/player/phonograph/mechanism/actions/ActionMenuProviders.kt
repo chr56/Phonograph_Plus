@@ -39,6 +39,7 @@ import android.widget.Toast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import java.io.File
 
 @Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE")
@@ -191,22 +192,25 @@ object ActionMenuProviders {
     }
 
     object AlbumActionMenuProvider : CompositeActionMenuProvider<Album>() {
-        override suspend fun readSongs(context: Context, album: Album): List<Song> {
-            return Songs.album(context, album.id)
-        }
+        override suspend fun readSongs(context: Context, album: Album): List<Song> =
+            withContext(Dispatchers.IO) {
+                Songs.album(context, album.id)
+            }
     }
 
 
     object ArtistActionMenuProvider : CompositeActionMenuProvider<Artist>() {
-        override suspend fun readSongs(context: Context, artist: Artist): List<Song> {
-            return Songs.artist(context, artist.id)
-        }
+        override suspend fun readSongs(context: Context, artist: Artist): List<Song> =
+            withContext(Dispatchers.IO) {
+                Songs.artist(context, artist.id)
+            }
     }
 
     object GenreActionMenuProvider : CompositeActionMenuProvider<Genre>() {
-        override suspend fun readSongs(context: Context, genre: Genre): List<Song> {
-            return Songs.genres(context, genre.id)
-        }
+        override suspend fun readSongs(context: Context, genre: Genre): List<Song> =
+            withContext(Dispatchers.IO) {
+                Songs.genres(context, genre.id)
+            }
     }
 
     object SongCollectionActionMenuProvider : CompositeActionMenuProvider<SongCollection>() {

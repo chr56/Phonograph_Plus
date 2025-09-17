@@ -32,6 +32,7 @@ import android.widget.Toast
 import kotlin.random.Random
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 object DetailToolbarMenuProviders {
 
@@ -172,7 +173,8 @@ object DetailToolbarMenuProviders {
                 true
             }
 
-        private suspend fun Album.allSongs(context: Context) = Songs.album(context, id)
+        private suspend fun Album.allSongs(context: Context) =
+            withContext(Dispatchers.IO) { Songs.album(context, id) }
     }
 
     object ArtistToolbarMenuProvider : ToolbarMenuProvider<Artist> {
@@ -311,7 +313,8 @@ object DetailToolbarMenuProviders {
                 true
             }
 
-        private suspend fun Artist.allSongs(context: Context) = Songs.artist(context, id)
+        private suspend fun Artist.allSongs(context: Context) =
+            withContext(Dispatchers.IO) { Songs.artist(context, id) }
     }
 
     object GenreEntityToolbarMenuProvider : ToolbarMenuProvider<Genre> {
@@ -360,7 +363,8 @@ object DetailToolbarMenuProviders {
                 true
             }
 
-        private suspend fun Genre.allSongs(context: Context) = Songs.genres(context, id)
+        private suspend fun Genre.allSongs(context: Context) =
+            withContext(Dispatchers.IO) { Songs.genres(context, id) }
     }
 
     object PlaylistEntityToolbarMenuProvider : ToolbarMenuProvider<Playlist> {
