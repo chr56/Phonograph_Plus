@@ -53,8 +53,10 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import android.view.View
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * Be careful when changing things in this Activity!
@@ -199,7 +201,10 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvider
         viewBinding.toolbar.title = album.title
         viewBinding.artistText.text = album.artistName
         viewBinding.songCountText.text = songCountString(this, album.songCount)
-        viewBinding.durationText.text = readableDuration(totalDuration(Songs.album(this, album.id)))
+        val songs = withContext(Dispatchers.IO) {
+            Songs.album(this@AlbumDetailActivity, album.id)
+        }
+        viewBinding.durationText.text = readableDuration(totalDuration(songs))
         viewBinding.albumYearText.text = readableYear(album.year)
     }
 

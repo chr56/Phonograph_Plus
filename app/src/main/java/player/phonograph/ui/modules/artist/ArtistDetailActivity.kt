@@ -68,7 +68,9 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.withContext
 
 class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvider, IGetContentRequester,
                              ICreateFileStorageAccessible, IOpenFileStorageAccessible, IOpenDirStorageAccessible {
@@ -221,7 +223,10 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvide
         supportActionBar!!.title = artist.name
         viewBinding.songCountText.text = songCountString(this, artist.songCount)
         viewBinding.albumCountText.text = albumCountString(this, artist.albumCount)
-        viewBinding.durationText.text = readableDuration(totalDuration(Songs.artist(this, artist.id)))
+        val songs = withContext(Dispatchers.IO) {
+            Songs.artist(this@ArtistDetailActivity, artist.id)
+        }
+        viewBinding.durationText.text = readableDuration(totalDuration(songs))
     }
 
 
