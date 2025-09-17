@@ -5,12 +5,18 @@
 package player.phonograph.ui.modules.setting
 
 import player.phonograph.R
+import player.phonograph.model.repo.LIBRARY_PROVIDERS
+import player.phonograph.repo.loader.Albums
+import player.phonograph.repo.loader.Artists
 import player.phonograph.repo.loader.FavoriteSongs
+import player.phonograph.repo.loader.Genres
+import player.phonograph.repo.loader.Songs
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.compose.ExperimentalContentThemeOverride
 import player.phonograph.ui.modules.setting.components.BooleanPreference
 import player.phonograph.ui.modules.setting.components.DialogPreference
+import player.phonograph.ui.modules.setting.components.ListPreference
 import player.phonograph.ui.modules.setting.components.SettingsGroup
 import player.phonograph.ui.modules.setting.dialog.TagSeparatorsEditorDialog
 import androidx.compose.foundation.layout.Column
@@ -59,6 +65,14 @@ fun PreferenceScreenAdvanced() {
         }
         SettingsGroup(titleRes = R.string.pref_header_experimental) {
             ExperimentalContentThemeOverride {
+                ListPreference(
+                    key = Keys.musicLibraryBackend,
+                    optionsValues = LIBRARY_PROVIDERS,
+                    title = "Music Library Provider",
+                ) { _, _ ->
+                    Songs.recreate(context) && Albums.recreate(context) &&
+                            Artists.recreate(context) && Genres.recreate(context)
+                }
                 DialogPreference(
                     dialog = TagSeparatorsEditorDialog.ArtistsSeparatorsEditor::class.java,
                     title = "Music Tag Artists Separators",
@@ -73,7 +87,6 @@ fun PreferenceScreenAdvanced() {
                         Setting(context)[Keys.tagAbbrFeatureArtists].read().joinToString(" ")
                     }
                 )
-                /*
                 DialogPreference(
                     dialog = TagSeparatorsEditorDialog.GenreSeparatorsEditor::class.java,
                     title = "Music Tag Genres Separators",
@@ -81,7 +94,6 @@ fun PreferenceScreenAdvanced() {
                         Setting(context)[Keys.tagSeparatorsGenres].read().joinToString(" ")
                     }
                 )
-                 */
             }
         }
         Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.systemBars))
