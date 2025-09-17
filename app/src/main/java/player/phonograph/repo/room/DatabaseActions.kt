@@ -6,17 +6,27 @@ package player.phonograph.repo.room
 
 import player.phonograph.foundation.notification.ProgressNotificationConnection
 import player.phonograph.mechanism.event.EventHub
-import player.phonograph.model.repo.sync.SyncExecutor
 import player.phonograph.model.repo.sync.SyncReport
+import player.phonograph.model.repo.PROVIDER_MEDIASTORE_MIRROR
+import player.phonograph.model.repo.PROVIDER_MEDIASTORE_PARSED
+import player.phonograph.model.repo.sync.SyncExecutor
 import player.phonograph.repo.room.domain.BasicSyncExecutor
 import androidx.room.withTransaction
+import player.phonograph.repo.room.domain.RelationshipSyncExecutor
+import player.phonograph.settings.Keys
+import player.phonograph.settings.Setting
 import android.content.Context
 import android.util.Log
 
 object DatabaseActions {
 
     private suspend fun loopUpSyncExecutor(context: Context, musicDatabase: MusicDatabase): SyncExecutor {
-        return BasicSyncExecutor(musicDatabase)
+        val mode = Setting(context)[Keys.musicLibraryBackend].read()
+        val syncExecutor = when (mode) {
+            PROVIDER_MEDIASTORE_PARSED -> RelationshipSyncExecutor(musicDatabase)
+            else                       -> BasicSyncExecutor(musicDatabase)
+        }
+        return syncExecutor
     }
 
     private suspend fun deleteTablesOfNonUserData(musicDatabase: MusicDatabase) {
