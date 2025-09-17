@@ -5,8 +5,10 @@
 package player.phonograph.repo.loader
 
 import player.phonograph.model.Album
+import player.phonograph.model.repo.PROVIDER_MEDIASTORE_PARSED
 import player.phonograph.model.repo.loader.IAlbums
 import player.phonograph.repo.mediastore.MediaStoreAlbums
+import player.phonograph.repo.room.domain.RoomAlbums
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import android.content.Context
@@ -15,6 +17,7 @@ object RouterAlbums : IAlbums, Delegated<IAlbums>() {
     override fun onCreateDelegate(context: Context): IAlbums {
         val preference = Setting(context)[Keys.musicLibraryBackend]
         val impl: IAlbums = when (preference.data) {
+            PROVIDER_MEDIASTORE_PARSED -> RoomAlbums
             else                       -> MediaStoreAlbums
         }
         return impl

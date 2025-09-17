@@ -5,8 +5,10 @@
 package player.phonograph.repo.loader
 
 import player.phonograph.model.Artist
+import player.phonograph.model.repo.PROVIDER_MEDIASTORE_PARSED
 import player.phonograph.model.repo.loader.IArtists
 import player.phonograph.repo.mediastore.MediaStoreArtists
+import player.phonograph.repo.room.domain.RoomArtists
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import android.content.Context
@@ -15,6 +17,7 @@ object RouterArtists : IArtists, Delegated<IArtists>() {
     override fun onCreateDelegate(context: Context): IArtists {
         val preference = Setting(context)[Keys.musicLibraryBackend]
         val impl: IArtists = when (preference.data) {
+            PROVIDER_MEDIASTORE_PARSED -> RoomArtists
             else                       -> MediaStoreArtists
         }
         return impl
