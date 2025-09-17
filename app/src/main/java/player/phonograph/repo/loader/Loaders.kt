@@ -11,20 +11,17 @@ import player.phonograph.model.repo.loader.IGenres
 import player.phonograph.model.repo.loader.IPinedPlaylists
 import player.phonograph.model.repo.loader.IPlaylists
 import player.phonograph.model.repo.loader.ISongs
-import player.phonograph.repo.mediastore.MediaStoreAlbums
-import player.phonograph.repo.mediastore.MediaStoreArtists
 import player.phonograph.repo.mediastore.MediaStoreGenres
-import player.phonograph.repo.mediastore.MediaStoreSongs
 
-object Albums : IAlbums by MediaStoreAlbums
+object Albums : IAlbums by RouterAlbums
 
-object Artists : IArtists by MediaStoreArtists
+object Artists : IArtists by RouterArtists
 
 object Genres : IGenres by MediaStoreGenres
 
 object Playlists : IPlaylists by RouterPlaylists
 
-object Songs : ISongs by MediaStoreSongs
+object Songs : ISongs by RouterSongs
 
 object FavoriteSongs: IFavoriteSongs by RouterFavoriteSongs
 
