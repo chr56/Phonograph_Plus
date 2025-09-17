@@ -6,7 +6,12 @@ package player.phonograph.ui.modules.setting
 
 import player.phonograph.R
 import player.phonograph.model.repo.PROVIDER_MEDIASTORE_DIRECT
+import player.phonograph.model.repo.PROVIDER_MEDIASTORE_PARSED
+import player.phonograph.repo.loader.Albums
+import player.phonograph.repo.loader.Artists
 import player.phonograph.repo.loader.FavoriteSongs
+import player.phonograph.repo.loader.Genres
+import player.phonograph.repo.loader.Songs
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.compose.ExperimentalContentThemeOverride
@@ -66,12 +71,16 @@ fun PreferenceScreenAdvanced() {
                     key = Keys.musicLibraryBackend,
                     optionsValues = listOf(
                         PROVIDER_MEDIASTORE_DIRECT,
+                        PROVIDER_MEDIASTORE_PARSED,
                     ),
                     optionsValuesLocalized = listOf(
                         R.string.music_library_metadata_source_mediastore,
+                        R.string.music_library_metadata_source_mediastore_parsed,
                     ),
                     title = stringResource(R.string.music_library_metadata_source),
                 ) { _, _ ->
+                    Songs.recreate(context) && Albums.recreate(context) &&
+                            Artists.recreate(context) && Genres.recreate(context)
                 }
                 DialogPreference(
                     dialog = TagSeparatorsEditorDialog.ArtistsSeparatorsEditor::class.java,
@@ -87,7 +96,6 @@ fun PreferenceScreenAdvanced() {
                         Setting(context)[Keys.tagAbbrFeatureArtists].read().joinToString(" ")
                     }
                 )
-                /*
                 DialogPreference(
                     dialog = TagSeparatorsEditorDialog.GenreSeparatorsEditor::class.java,
                     title = stringResource(R.string.pref_title_music_tags_genres_separators),
@@ -95,7 +103,6 @@ fun PreferenceScreenAdvanced() {
                         Setting(context)[Keys.tagSeparatorsGenres].read().joinToString(" ")
                     }
                 )
-                 */
             }
         }
         Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.systemBars))
