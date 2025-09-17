@@ -4,33 +4,14 @@
 
 package player.phonograph.ui.compose
 
-import player.phonograph.util.theme.systemDarkmode
 import androidx.compose.material.Colors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 
 //region Default
-
-@Composable
-fun colorSchemaAutoDark(palette: ColorPalette): Colors =
-    if (systemDarkmode(LocalConfiguration.current)) {
-        colorSchemaDark(palette)
-    } else {
-        colorSchemaLight(palette)
-    }
-
-@Composable
-fun colorSchemaAutoBlack(palette: ColorPalette): Colors =
-    if (systemDarkmode(LocalConfiguration.current)) {
-        colorSchemaBlack(palette)
-    } else {
-        colorSchemaLight(palette)
-    }
-
 
 @Composable
 fun colorSchemaLight(palette: ColorPalette): Colors {

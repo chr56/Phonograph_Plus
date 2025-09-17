@@ -76,6 +76,17 @@ fun systemDarkmode(configuration: Configuration): Boolean =
         else                            -> false
     }
 
+fun currentActualTheme(context: Context, default: String): Flow<String> =
+    Setting(context)[Keys.theme].flow.map {
+        when (it) {
+            THEME_AUTO_LIGHTBLACK -> if (systemDarkmode(context.resources)) THEME_BLACK else THEME_LIGHT
+            THEME_AUTO_LIGHTDARK  -> if (systemDarkmode(context.resources)) THEME_DARK else THEME_LIGHT
+            THEME_LIGHT           -> THEME_LIGHT
+            THEME_BLACK           -> THEME_BLACK
+            THEME_DARK            -> THEME_DARK
+            else                  -> default
+        }
+    }
 
 @StyleRes
 fun parseToStyleRes(@GeneralTheme theme: String): Int =

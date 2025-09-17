@@ -5,12 +5,10 @@
 package player.phonograph.ui.compose
 
 import player.phonograph.model.ui.GeneralTheme.Companion.THEME_AUTO_LIGHTBLACK
-import player.phonograph.model.ui.GeneralTheme.Companion.THEME_AUTO_LIGHTDARK
 import player.phonograph.model.ui.GeneralTheme.Companion.THEME_BLACK
 import player.phonograph.model.ui.GeneralTheme.Companion.THEME_DARK
 import player.phonograph.model.ui.GeneralTheme.Companion.THEME_LIGHT
-import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
+import player.phonograph.util.theme.currentActualTheme
 import player.phonograph.util.theme.setupSystemBars
 import player.phonograph.util.theme.updateSystemBarsColor
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -103,15 +101,13 @@ private fun AwareSystemUIColor(color: Color) {
 @Composable
 private fun phonographColors(): Colors {
     val context = LocalContext.current
-    val theme by Setting(context)[Keys.theme].flow.collectAsState(THEME_AUTO_LIGHTBLACK)
+    val theme by currentActualTheme(context, THEME_DARK).collectAsState(THEME_AUTO_LIGHTBLACK)
     val colorPalette: ColorPalette = defaultColorPalette()
     return when (theme) {
-        THEME_AUTO_LIGHTBLACK -> colorSchemaAutoBlack(colorPalette)
-        THEME_AUTO_LIGHTDARK  -> colorSchemaAutoDark(colorPalette)
-        THEME_DARK            -> colorSchemaDark(colorPalette)
-        THEME_BLACK           -> colorSchemaBlack(colorPalette)
-        THEME_LIGHT           -> colorSchemaLight(colorPalette)
-        else                  -> colorSchemaAutoDark(colorPalette)
+        THEME_DARK  -> colorSchemaDark(colorPalette)
+        THEME_BLACK -> colorSchemaBlack(colorPalette)
+        THEME_LIGHT -> colorSchemaLight(colorPalette)
+        else        -> colorSchemaDark(colorPalette)
     }
 }
 
