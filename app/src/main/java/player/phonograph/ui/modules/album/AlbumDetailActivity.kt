@@ -44,6 +44,7 @@ import util.theme.view.menu.tintOverflowButtonColor
 import util.theme.view.menu.tintToolbarMenuActionIcons
 import util.theme.view.toolbar.setToolbarColor
 import androidx.activity.addCallback
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.content.Context
@@ -53,6 +54,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.View
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
 /**
  * Be careful when changing things in this Activity!
@@ -137,10 +139,12 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvider
         // Links
         viewBinding.artistText.setOnClickListener {
             val album = viewModel.album.value
-            if (album.artistName != null) {
-                goToArtist(this, album.artistName, null)
-            } else {
-                goToArtist(this, album.artistId, null)
+            lifecycleScope.launch {
+                if (album.artistName != null) {
+                    goToArtist(this@AlbumDetailActivity, album.artistName, null)
+                } else {
+                    goToArtist(this@AlbumDetailActivity, album.artistId, null)
+                }
             }
         }
         // AppBar

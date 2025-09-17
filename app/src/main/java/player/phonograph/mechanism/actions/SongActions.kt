@@ -14,6 +14,7 @@ import player.phonograph.ui.dialogs.DeletionDialog
 import player.phonograph.ui.modules.playlist.dialogs.AddToPlaylistDialogActivity
 import player.phonograph.ui.modules.tag.TagBrowserActivity
 import player.phonograph.util.NavigationUtil
+import player.phonograph.util.concurrent.lifecycleScopeOrNewOne
 import player.phonograph.util.fragmentActivity
 import player.phonograph.util.permissions.checkModificationSystemSettingsPermission
 import player.phonograph.util.setRingtone
@@ -84,10 +85,12 @@ fun Song.actionGotoAlbum(context: Context, transitionView: View?): Boolean =
 fun Song.actionGotoArtist(context: Context, transitionView: View?): Boolean {
     val sharedElements: Array<Pair<View, String>>? =
         transitionView?.let { arrayOf(Pair(it, context.resources.getString(R.string.transition_artist_image))) }
-    if (artistName != null) {
-        NavigationUtil.goToArtist(context, artistName, sharedElements)
-    } else {
-        NavigationUtil.goToArtist(context, artistId, sharedElements)
+    context.lifecycleScopeOrNewOne().launch {
+        if (artistName != null) {
+            NavigationUtil.goToArtist(context, artistName, sharedElements)
+        } else {
+            NavigationUtil.goToArtist(context, artistId, sharedElements)
+        }
     }
     return true
 }

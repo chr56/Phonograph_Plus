@@ -22,15 +22,16 @@ import android.content.Intent
 import android.media.audiofx.AudioEffect
 import android.view.View
 import android.widget.Toast
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
 object NavigationUtil {
 
-    fun goToArtist(context: Context, artistName: String, sharedElements: Array<Pair<View, String>>? = null) {
-        val artists = runBlocking {
+    suspend fun goToArtist(context: Context, artistName: String, sharedElements: Array<Pair<View, String>>? = null) {
+        val artists = withContext(Dispatchers.IO) {
             splitMultiTag(artistName).flatMap { Artists.searchByName(context, it) }.toSet().toList()
         }
         when (artists.size) {
