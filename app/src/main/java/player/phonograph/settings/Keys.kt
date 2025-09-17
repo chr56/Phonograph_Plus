@@ -13,6 +13,7 @@ import player.phonograph.model.file.DefaultIncludedPaths
 import player.phonograph.model.file.DefaultStartDirectory
 import player.phonograph.model.notification.NotificationActionsConfig
 import player.phonograph.model.pages.PagesConfig
+import player.phonograph.model.repo.PROVIDER_MEDIASTORE_DIRECT
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.model.time.Duration
@@ -188,6 +189,11 @@ object Keys {
         get() = PrimitiveKey<Boolean>(booleanPK("use_legacy_status_bar_lyrics_api")) { false }
     val disableRealTimeSearch
         get() = PrimitiveKey<Boolean>(booleanPK("disable_real_time_search")) { false }
+    //</editor-fold>
+
+    //<editor-fold desc="Experiential">
+    val musicLibraryBackend
+        get() = PrimitiveKey<String>(stringPK("music_library_backend")) { PROVIDER_MEDIASTORE_DIRECT }
     //</editor-fold>
 
     //</editor-fold>
