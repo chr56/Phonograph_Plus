@@ -20,7 +20,8 @@ object Genres : IGenres, Delegated<IGenres>() {
     override fun onCreateDelegate(context: Context): IGenres {
         val preference = Setting(context)[Keys.musicLibraryBackend]
         val impl: IGenres = when (preference.data) {
-            else                       -> MediaStoreGenres
+            // PROVIDER_MEDIASTORE_PARSED -> RoomGenres
+            else -> MediaStoreGenres
         }
         return impl
     }
@@ -34,4 +35,6 @@ object Genres : IGenres, Delegated<IGenres>() {
     override suspend fun songs(context: Context, genreId: Long): List<Song> =
         MediaStoreGenres.songs(context, genreId) // todo
 
+    override suspend fun of(context: Context, songId: Long): List<Genre> =
+        MediaStoreGenres.of(context, songId) // todo
 }
