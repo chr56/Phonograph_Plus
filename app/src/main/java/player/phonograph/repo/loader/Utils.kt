@@ -17,3 +17,13 @@ fun replaceFavoriteSongDelegate(context: Context) {
         }
     }
 }
+
+fun replaceMusicLibraryDelegate(context: Context) {
+    var maxTry = MAX_TRY
+    while (maxTry > 0) {
+        maxTry--
+        if (Songs.recreate(context) && Albums.recreate(context) && Artists.recreate(context) && Genres.recreate(context)) {
+            break
+        }
+    }
+}
