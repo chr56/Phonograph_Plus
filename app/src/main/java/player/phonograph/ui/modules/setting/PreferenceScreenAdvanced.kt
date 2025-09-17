@@ -5,8 +5,11 @@
 package player.phonograph.ui.modules.setting
 
 import player.phonograph.R
+import player.phonograph.model.repo.LIBRARY_PROVIDERS
 import player.phonograph.settings.Keys
+import player.phonograph.ui.compose.ExperientialContentThemeOverride
 import player.phonograph.ui.modules.setting.components.BooleanPreference
+import player.phonograph.ui.modules.setting.components.ListPreference
 import player.phonograph.ui.modules.setting.components.SettingsGroup
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -15,6 +18,7 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
@@ -48,6 +52,17 @@ fun PreferenceScreenAdvanced() {
                 titleRes = R.string.pref_title_disable_real_time_search,
                 summaryRes = R.string.pref_summary_disable_real_time_search,
             )
+        }
+        SettingsGroup(titleRes = R.string.pref_header_experiential) {
+            ExperientialContentThemeOverride {
+                Surface {
+                    ListPreference(
+                        key = Keys.musicLibraryBackend,
+                        optionsValues = LIBRARY_PROVIDERS,
+                        title = "Music Library Provider",
+                    )
+                }
+            }
         }
         Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.systemBars))
     }
