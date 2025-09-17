@@ -99,6 +99,15 @@ private fun AwareSystemUIColor(color: Color) {
 }
 
 @Composable
+fun ExperientialContentThemeOverride(content: @Composable (() -> Unit)) {
+    MaterialTheme(
+        colors = experientialContentColors(),
+        content = content
+    )
+}
+
+
+@Composable
 private fun phonographColors(): Colors {
     val context = LocalContext.current
     val theme by currentActualTheme(context, THEME_DARK).collectAsState(THEME_AUTO_LIGHTBLACK)
@@ -110,6 +119,35 @@ private fun phonographColors(): Colors {
         else        -> colorSchemaDark(colorPalette)
     }
 }
+
+@Composable
+private fun experientialContentColors(): Colors {
+    val context = LocalContext.current
+    val theme by currentActualTheme(context, THEME_DARK).collectAsState(THEME_AUTO_LIGHTBLACK)
+    val colorPalette: ColorPalette = defaultColorPalette()
+    return when (theme) {
+        THEME_DARK  -> colorSchemaDark(colorPalette).copy(
+            surface = Color(0xFF5C1F0C),
+            onSurface = Color(0xFFFFA0A0),
+        )
+
+        THEME_BLACK -> colorSchemaBlack(colorPalette).copy(
+            surface = Color(0xFF4D0C00),
+            onSurface = Color(0xFFEE5555),
+        )
+
+        THEME_LIGHT -> colorSchemaLight(colorPalette).copy(
+            surface = Color(0xFFF6DCC8),
+            onSurface = Color(0xFF4B0000),
+        )
+
+        else        -> colorSchemaDark(colorPalette).copy(
+            surface = Color(0xFF5C1F0C),
+            onSurface = Color(0xFFFFA0A0),
+        )
+    }
+}
+
 
 // Set of Material typography styles to start with
 val Typography = Typography(
