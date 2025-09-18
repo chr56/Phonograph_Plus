@@ -35,13 +35,13 @@ class BasicSyncExecutor(private val musicDatabase: MusicDatabase) : SyncExecutor
 
     override suspend fun check(context: Context): Boolean {
 
-        val songsMediastore = songsFromMediastore(context)
+        val songsMediastore = MediaStoreSongs.all(context)
         val latestMediastore = songsMediastore.maxByOrNull { it.dateModified }
 
-        val songsDatabase = songsFromDatabase()
-        val latestDatabase = songsDatabase.maxByOrNull { it.dateModified }
+        val songsCountDatabase = musicDatabase.MediaStoreSongDao().total()
+        val latestDatabase = musicDatabase.MediaStoreSongDao().latest()
 
-        return if (songsMediastore.size != songsDatabase.size || latestDatabase == null || latestMediastore == null) {
+        return if (songsMediastore.size != songsCountDatabase || latestDatabase == null || latestMediastore == null) {
             true
         } else {
             latestMediastore.dateModified >= latestDatabase.dateModified
@@ -52,7 +52,7 @@ class BasicSyncExecutor(private val musicDatabase: MusicDatabase) : SyncExecutor
         context: Context,
         channel: ProgressConnection?,
     ): SyncResult {
-        val songsMediastore = songsFromMediastore(context)
+        val songsMediastore = MediaStoreSongs.all(context)
         val total = songsMediastore.size
         channel?.onProcessUpdate(0, total)
         musicDatabase.withTransaction {
@@ -63,11 +63,6 @@ class BasicSyncExecutor(private val musicDatabase: MusicDatabase) : SyncExecutor
         return SyncResult(success = true, modified = total)
     }
 
-    private suspend fun songsFromDatabase(): List<MediastoreSongEntity> =
-        mediaStoreSongDao.all(SortMode(SortRef.MODIFIED_DATE, true))
-
-    private suspend fun songsFromMediastore(context: Context): List<Song> =
-        MediaStoreSongs.all(context)
 }
 
 class RelationshipSyncExecutor(private val musicDatabase: MusicDatabase) : SyncExecutor {
@@ -78,10 +73,10 @@ class RelationshipSyncExecutor(private val musicDatabase: MusicDatabase) : SyncE
         val songsMediastore = MediaStoreSongs.all(context)
         val latestMediastore = songsMediastore.maxByOrNull { it.dateModified }
 
-        val songsDatabase = mediaStoreSongDao.all(SortMode(SortRef.MODIFIED_DATE, true))
-        val latestDatabase = songsDatabase.maxByOrNull { it.dateModified }
+        val songsCountDatabase = mediaStoreSongDao.total()
+        val latestDatabase = mediaStoreSongDao.latest()
 
-        return if (songsMediastore.size != songsDatabase.size || latestDatabase == null || latestMediastore == null) {
+        return if (songsMediastore.size != songsCountDatabase || latestDatabase == null || latestMediastore == null) {
             true
         } else {
             latestMediastore.dateModified >= latestDatabase.dateModified
@@ -92,18 +87,85 @@ class RelationshipSyncExecutor(private val musicDatabase: MusicDatabase) : SyncE
         context: Context,
         channel: ProgressConnection?,
     ): SyncResult {
+        // Stage I: Update or insert
+        val modified = stageRefresh(context, channel)
+        // Stage II: Delete
+        val removed = stageClean(context, channel)
+        return SyncResult(success = true, modified = modified, removed = removed)
+    }
 
-        val songs = MediaStoreSongs.all(context)
-        val total = songs.size
+    /**
+     * Insert new ones or update modified ones
+     */
+    private suspend fun stageRefresh(
+        context: Context,
+        channel: SyncExecutor.SyncProgressConnection?,
+    ): Int {
+        val latestInDatabase = musicDatabase.MediaStoreSongDao().latest()
+        val cutoff = latestInDatabase?.dateModified ?: 0
+
+        val newOrUpdated = MediaStoreSongs.since(context, timestamp = cutoff, useModifiedDate = true)
+        if (newOrUpdated.isNotEmpty()) doRefresh(context, newOrUpdated, channel)
+
+        return newOrUpdated.size
+    }
+
+    private suspend fun doRefresh(
+        context: Context,
+        newOrUpdated: List<Song>,
+        channel: SyncExecutor.SyncProgressConnection?,
+    ) {
+        val total = newOrUpdated.size
 
         channel?.onProcessUpdate(0, total)
-        for ((i, song) in songs.withIndex()) {
-            register(musicDatabase, song.let(EntityConverter::fromSongModel))
-            channel?.onProcessUpdate(i + 1, total, song.title)
+        musicDatabase.withTransaction {
+            for ((i, song) in newOrUpdated.withIndex()) {
+                register(musicDatabase, song.let(EntityConverter::fromSongModel))
+                channel?.onProcessUpdate(i + 1, total)
+            }
         }
         channel?.onProcessUpdate(total, total)
+    }
 
-        return SyncResult(success = true)
+    /**
+     * Remove deleted ones
+     */
+    private suspend fun stageClean(
+        context: Context,
+        channel: SyncExecutor.SyncProgressConnection?,
+    ): Int {
+        val includedSize = musicDatabase.MediaStoreSongDao().total()
+        val allSize = MediaStoreSongs.all(context).size
+        val deleted =
+            if (allSize != includedSize) {
+                doClean(context, channel)
+            } else {
+                0
+            }
+        return deleted
+    }
+
+    private suspend fun doClean(
+        context: Context,
+        channel: SyncExecutor.SyncProgressConnection?,
+    ): Int {
+        val allInDatabase = musicDatabase.MediaStoreSongDao().all(SortMode(SortRef.MODIFIED_DATE, true))
+        val all = allInDatabase.size
+        var deleted = 0
+
+        channel?.onProcessUpdate(0, all)
+        musicDatabase.withTransaction {
+            for ((i, song) in allInDatabase.withIndex()) {
+                if (MediaStoreSongs.id(context, song.mediastorId) == null) {
+                    unregister(musicDatabase, song)
+                    deleted += 1
+                }
+                channel?.onProcessUpdate(i + 1, all)
+            }
+        }
+        channel?.onProcessUpdate(all, all)
+
+        return deleted
     }
 
     suspend fun register(
