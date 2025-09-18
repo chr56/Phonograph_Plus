@@ -4,10 +4,10 @@
 
 package player.phonograph.ui.modules.playlist
 
-import player.phonograph.mechanism.actions.ActionMenuProviders
-import player.phonograph.mechanism.actions.ClickActionProviders
 import player.phonograph.model.QueueSong
 import player.phonograph.model.ui.UIMode
+import player.phonograph.ui.actions.ActionMenuProviders
+import player.phonograph.ui.actions.ClickActionProviders
 import player.phonograph.ui.adapter.DraggableDisplayAdapter
 import player.phonograph.ui.adapter.QueueSongBasicDisplayPresenter
 import player.phonograph.util.produceSafeId

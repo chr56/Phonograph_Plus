@@ -4,8 +4,8 @@
 
 package player.phonograph.ui.modules.explorer
 
-import player.phonograph.mechanism.actions.ClickActionProviders
 import player.phonograph.model.file.FileEntity
+import player.phonograph.ui.actions.ClickActionProviders
 import player.phonograph.ui.modules.panel.PanelViewModel
 import player.phonograph.util.observe
 import player.phonograph.util.ui.BottomViewWindowInsetsController

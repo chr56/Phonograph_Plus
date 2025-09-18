@@ -8,10 +8,10 @@ import coil.size.ViewSizeResolver
 import player.phonograph.R
 import player.phonograph.coil.loadImage
 import player.phonograph.databinding.ItemListBinding
-import player.phonograph.mechanism.actions.ActionMenuProviders
 import player.phonograph.model.file.FileEntity
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
+import player.phonograph.ui.actions.ActionMenuProviders
 import player.phonograph.ui.adapter.MultiSelectionController
 import player.phonograph.util.observe
 import player.phonograph.util.theme.getTintedDrawable

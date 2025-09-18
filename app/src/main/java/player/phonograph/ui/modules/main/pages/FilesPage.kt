@@ -10,13 +10,13 @@ import com.github.chr56.android.menu_model.MenuContext
 import com.google.android.material.appbar.AppBarLayout
 import player.phonograph.R
 import player.phonograph.databinding.FragmentFilePageBinding
-import player.phonograph.mechanism.actions.actionPlay
 import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.service.ShuffleMode
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
+import player.phonograph.ui.actions.actionPlay
 import player.phonograph.ui.modules.explorer.FilesPageExplorerFragment
 import player.phonograph.ui.modules.explorer.FilesPageViewModel
 import player.phonograph.ui.modules.popup.ListOptionsPopup

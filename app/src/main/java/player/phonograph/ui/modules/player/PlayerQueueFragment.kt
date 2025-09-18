@@ -15,7 +15,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.context.GlobalContext
 import player.phonograph.R
 import player.phonograph.databinding.FragmentQueueBinding
-import player.phonograph.mechanism.actions.ActionMenuProviders
 import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.Song
 import player.phonograph.model.service.RepeatMode
@@ -23,6 +22,7 @@ import player.phonograph.model.service.ShuffleMode
 import player.phonograph.model.ui.UnarySlidingUpPanelProvider
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.QueueManager
+import player.phonograph.ui.actions.ActionMenuProviders
 import player.phonograph.ui.dialogs.QueueSnapshotsDialog
 import player.phonograph.ui.modules.panel.AbsMusicServiceFragment
 import player.phonograph.ui.modules.panel.PanelViewModel

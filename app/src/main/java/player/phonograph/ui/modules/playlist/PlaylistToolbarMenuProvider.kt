@@ -8,13 +8,13 @@ import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import player.phonograph.R
-import player.phonograph.mechanism.actions.DetailToolbarMenuProviders
 import player.phonograph.model.playlist.PLAYLIST_TYPE_FAVORITE
 import player.phonograph.model.playlist.PLAYLIST_TYPE_LAST_ADDED
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.VirtualPlaylistLocation
 import player.phonograph.model.ui.UIMode
 import player.phonograph.repo.loader.FavoriteSongs
+import player.phonograph.ui.actions.DetailToolbarMenuProviders
 import player.phonograph.ui.modules.setting.dialog.LastAddedPlaylistIntervalDialog
 import player.phonograph.util.fragmentActivity
 import player.phonograph.util.theme.getTintedDrawable

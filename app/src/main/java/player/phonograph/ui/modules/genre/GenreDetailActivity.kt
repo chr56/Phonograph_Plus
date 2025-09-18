@@ -9,7 +9,6 @@ import lib.storage.launcher.OpenDirStorageAccessDelegate
 import lib.storage.launcher.OpenFileStorageAccessDelegate
 import player.phonograph.databinding.ActivityGenreDetailBinding
 import player.phonograph.foundation.compat.parcelable
-import player.phonograph.mechanism.actions.DetailToolbarMenuProviders
 import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.Genre
 import player.phonograph.model.Song
@@ -17,6 +16,7 @@ import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.repo.loader.Songs
+import player.phonograph.ui.actions.DetailToolbarMenuProviders
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayPresenter
 import player.phonograph.ui.adapter.SongBasicDisplayPresenter

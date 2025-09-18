@@ -6,9 +6,6 @@ package player.phonograph.ui.modules.main.pages
 
 import com.github.chr56.android.menu_model.MenuContext
 import player.phonograph.R
-import player.phonograph.mechanism.actions.ActionMenuProviders
-import player.phonograph.mechanism.actions.ClickActionProviders
-import player.phonograph.mechanism.actions.actionPlay
 import player.phonograph.model.Song
 import player.phonograph.model.SongCollection
 import player.phonograph.model.service.ShuffleMode
@@ -18,6 +15,9 @@ import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.repo.mediastore.MediaStoreSongCollections
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
+import player.phonograph.ui.actions.ActionMenuProviders
+import player.phonograph.ui.actions.ClickActionProviders
+import player.phonograph.ui.actions.actionPlay
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayPresenter
 import player.phonograph.ui.adapter.SongBasicDisplayPresenter

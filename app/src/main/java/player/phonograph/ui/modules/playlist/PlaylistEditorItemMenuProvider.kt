@@ -8,9 +8,9 @@ import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import com.github.chr56.android.menu_dsl.submenu
 import player.phonograph.R
-import player.phonograph.mechanism.actions.ActionMenuProviders.ActionMenuProvider
-import player.phonograph.mechanism.actions.actionGotoDetail
 import player.phonograph.model.QueueSong
+import player.phonograph.ui.actions.ActionMenuProviders.ActionMenuProvider
+import player.phonograph.ui.actions.actionGotoDetail
 import player.phonograph.ui.dialogs.DeletionDialog
 import player.phonograph.ui.modules.tag.TagBrowserActivity
 import androidx.fragment.app.FragmentActivity

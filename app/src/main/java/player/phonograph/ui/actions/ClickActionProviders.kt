@@ -1,8 +1,8 @@
 /*
- *  Copyright (c) 2022~2024 chr_56
+ *  Copyright (c) 2022~2025 chr_56
  */
 
-package player.phonograph.mechanism.actions
+package player.phonograph.ui.actions
 
 import player.phonograph.R
 import player.phonograph.model.Album
@@ -10,7 +10,6 @@ import player.phonograph.model.Artist
 import player.phonograph.model.Genre
 import player.phonograph.model.PlayRequest
 import player.phonograph.model.Song
-import player.phonograph.model.SongClickMode
 import player.phonograph.model.SongClickMode.FLAG_MASK_GOTO_POSITION_FIRST
 import player.phonograph.model.SongClickMode.FLAG_MASK_PLAY_QUEUE_IF_EMPTY
 import player.phonograph.model.SongClickMode.QUEUE_APPEND_QUEUE
@@ -77,7 +76,7 @@ object ClickActionProviders {
                 if (base in 100..109) {
                     base += 100
                 } else {
-                    base = SongClickMode.QUEUE_SWITCH_TO_POSITION
+                    base = QUEUE_SWITCH_TO_POSITION
                 }
             }
 

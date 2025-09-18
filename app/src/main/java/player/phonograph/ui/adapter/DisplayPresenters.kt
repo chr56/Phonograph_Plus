@@ -10,8 +10,6 @@ import lib.storage.extension.rootDirectory
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.coil.loadImage
-import player.phonograph.mechanism.actions.ActionMenuProviders
-import player.phonograph.mechanism.actions.ClickActionProviders
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Genre
@@ -22,6 +20,8 @@ import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.model.ui.ItemLayoutStyle
+import player.phonograph.ui.actions.ActionMenuProviders
+import player.phonograph.ui.actions.ClickActionProviders
 import player.phonograph.util.text.albumCountString
 import player.phonograph.util.text.dateTextShortText
 import player.phonograph.util.text.infoString

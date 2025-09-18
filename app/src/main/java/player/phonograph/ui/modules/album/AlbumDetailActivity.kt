@@ -11,7 +11,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import player.phonograph.R
 import player.phonograph.databinding.ActivityAlbumDetailBinding
-import player.phonograph.mechanism.actions.DetailToolbarMenuProviders
 import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.Album
 import player.phonograph.model.Song
@@ -20,6 +19,7 @@ import player.phonograph.model.sort.SortRef
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.model.ui.PaletteColorProvider
 import player.phonograph.repo.loader.Songs
+import player.phonograph.ui.actions.DetailToolbarMenuProviders
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayPresenter
 import player.phonograph.ui.adapter.SongBasicDisplayPresenter

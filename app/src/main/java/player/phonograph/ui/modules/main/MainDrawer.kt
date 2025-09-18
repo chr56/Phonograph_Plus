@@ -11,7 +11,6 @@ import player.phonograph.ACTUAL_PACKAGE_NAME
 import player.phonograph.R
 import player.phonograph.foundation.Reboot
 import player.phonograph.foundation.error.warning
-import player.phonograph.mechanism.actions.actionPlay
 import player.phonograph.mechanism.scanner.FileScanner
 import player.phonograph.mechanism.scanner.MediaStoreScanner
 import player.phonograph.model.DirectoryInfo
@@ -24,6 +23,7 @@ import player.phonograph.repo.loader.Songs
 import player.phonograph.service.MusicService
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
+import player.phonograph.ui.actions.actionPlay
 import player.phonograph.ui.dialogs.DatabaseMaintenanceDialog
 import player.phonograph.ui.modules.auxiliary.AboutActivity
 import player.phonograph.ui.modules.explorer.PathSelectorContractTool

@@ -1,8 +1,8 @@
 /*
- *  Copyright (c) 2022~2024 chr_56
+ *  Copyright (c) 2022~2025 chr_56
  */
 
-package player.phonograph.mechanism.actions
+package player.phonograph.ui.actions
 
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
@@ -17,7 +17,6 @@ import player.phonograph.model.Song
 import player.phonograph.model.SongCollection
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.Location
-import player.phonograph.model.playlist.FilePlaylistLocation
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.service.ShuffleMode
 import player.phonograph.repo.loader.PinedPlaylists

@@ -6,8 +6,8 @@ package player.phonograph.ui.adapter
 
 import player.phonograph.R
 import player.phonograph.foundation.error.warning
-import player.phonograph.mechanism.actions.MultiSelectionToolbarMenuProviders
 import player.phonograph.model.ui.PaletteColorProvider
+import player.phonograph.ui.actions.MultiSelectionToolbarMenuProviders
 import player.phonograph.util.debug
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.primaryColor
