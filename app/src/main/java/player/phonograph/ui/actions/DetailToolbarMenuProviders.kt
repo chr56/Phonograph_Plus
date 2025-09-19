@@ -122,11 +122,7 @@ object DetailToolbarMenuProviders {
                         showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                         onClick {
                             lifecycleScope.launch {
-                                if (item.artistName != null) {
-                                    NavigationUtil.goToArtist(context, item.artistName, null)
-                                } else {
-                                    NavigationUtil.goToArtist(context, item.artistId, null)
-                                }
+                                NavigationUtil.goToArtist(context, item, null)
                             }
                             true
                         }

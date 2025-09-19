@@ -5,7 +5,10 @@
 package player.phonograph.ui
 
 import player.phonograph.R
+import player.phonograph.model.Album
+import player.phonograph.model.Artist
 import player.phonograph.model.Genre
+import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.repo.loader.Artists
 import player.phonograph.service.MusicPlayerRemote
@@ -13,7 +16,8 @@ import player.phonograph.ui.modules.album.AlbumDetailActivity
 import player.phonograph.ui.modules.artist.ArtistDetailActivity
 import player.phonograph.ui.modules.genre.GenreDetailActivity
 import player.phonograph.ui.modules.playlist.PlaylistDetailActivity
-import player.phonograph.util.text.splitMultiTag
+import player.phonograph.util.text.SongRelationship
+import player.phonograph.util.text.parseArtist
 import player.phonograph.util.theme.tintButtons
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityOptionsCompat
@@ -34,29 +38,49 @@ import kotlinx.coroutines.withContext
  */
 object NavigationUtil {
 
-    suspend fun goToArtist(context: Context, artistName: String, sharedElements: Array<Pair<View, String>>? = null) {
-        val artists = withContext(Dispatchers.IO) {
-            splitMultiTag(artistName).flatMap { Artists.searchByName(context, it) }.toSet().toList()
+    suspend fun goToArtist(context: Context, album: Album, sharedElements: Array<Pair<View, String>>? = null) {
+        if (!album.artistName.isNullOrEmpty()) {
+            val artists = findArtists(context, listOf(album.artistName)).toList()
+            goToArtist(context, artists, sharedElements)
+        } else {
+            goToArtist(context, album.artistId, sharedElements)
         }
-        when (artists.size) {
-            0    -> Toast.makeText(context, R.string.msg_empty, Toast.LENGTH_SHORT).show()
-            1    -> goToArtist(context, artists.first().id, sharedElements)
-            else -> {
-                if (context is FragmentActivity) {
-                    AlertDialog.Builder(context)
-                        .setTitle(R.string.label_artists)
-                        .setNegativeButton(android.R.string.cancel) { dialog, _ ->
-                            dialog.dismiss()
-                        }
-                        .setSingleChoiceItems(artists.map { it.name }.toTypedArray(), -1) { dialog, selected ->
-                            goToArtist(context, artists[selected].id, sharedElements)
-                            dialog.dismiss()
-                        }
-                        .show().tintButtons()
-                } else {
-                    goToArtist(context, artists.first().id, sharedElements)
+    }
+
+    suspend fun goToArtist(context: Context, song: Song, sharedElements: Array<Pair<View, String>>? = null) {
+        val artists = findArtists(context, SongRelationship.solve(song).artists).toList()
+        if (artists.isNotEmpty()) {
+            goToArtist(context, artists, sharedElements)
+        } else {
+            goToArtist(context, song.artistId, sharedElements)
+        }
+    }
+
+    suspend fun goToArtist(context: Context, artistName: String, sharedElements: Array<Pair<View, String>>? = null) {
+        val artists = findArtists(context, parseArtist(artistName)).toList()
+        goToArtist(context, artists, sharedElements)
+    }
+
+    private suspend fun findArtists(context: Context, names: Collection<String>): Set<Artist> =
+        withContext(Dispatchers.IO) {
+            names.flatMap { Artists.searchByName(context, it) }.toSet()
+        }
+
+    fun goToArtist(context: Context, artists: List<Artist>, sharedElements: Array<Pair<View, String>>? = null) {
+        if (artists.isEmpty()) Toast.makeText(context, R.string.msg_empty, Toast.LENGTH_SHORT).show()
+        if (artists.size > 1 && context is FragmentActivity) {
+            AlertDialog.Builder(context)
+                .setTitle(R.string.label_artists)
+                .setNegativeButton(android.R.string.cancel) { dialog, _ ->
+                    dialog.dismiss()
                 }
-            }
+                .setSingleChoiceItems(artists.map { it.name }.toTypedArray(), -1) { dialog, selected ->
+                    goToArtist(context, artists[selected].id, sharedElements)
+                    dialog.dismiss()
+                }
+                .show().tintButtons()
+        } else {
+            goToArtist(context, artists.first().id, sharedElements)
         }
     }
 

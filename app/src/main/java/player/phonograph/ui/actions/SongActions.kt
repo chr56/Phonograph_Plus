@@ -86,11 +86,7 @@ fun Song.actionGotoArtist(context: Context, transitionView: View?): Boolean {
     val sharedElements: Array<Pair<View, String>>? =
         transitionView?.let { arrayOf(Pair(it, context.resources.getString(R.string.transition_artist_image))) }
     context.lifecycleScopeOrNewOne().launch {
-        if (artistName != null) {
-            NavigationUtil.goToArtist(context, artistName, sharedElements)
-        } else {
-            NavigationUtil.goToArtist(context, artistId, sharedElements)
-        }
+        NavigationUtil.goToArtist(context, this@actionGotoArtist, sharedElements)
     }
     return true
 }

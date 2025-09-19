@@ -142,11 +142,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvider
         viewBinding.artistText.setOnClickListener {
             val album = viewModel.album.value
             lifecycleScope.launch {
-                if (album.artistName != null) {
-                    goToArtist(this@AlbumDetailActivity, album.artistName, null)
-                } else {
-                    goToArtist(this@AlbumDetailActivity, album.artistId, null)
-                }
+                goToArtist(this@AlbumDetailActivity, album, null)
             }
         }
         // AppBar
