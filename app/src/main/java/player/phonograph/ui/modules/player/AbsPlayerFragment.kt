@@ -18,6 +18,7 @@ import player.phonograph.model.ui.PlayerControllerStyle
 import player.phonograph.model.ui.UnarySlidingUpPanelProvider
 import player.phonograph.repo.loader.FavoriteSongs
 import player.phonograph.service.MusicPlayerRemote
+import player.phonograph.ui.NavigationUtil
 import player.phonograph.ui.dialogs.LyricsDialog
 import player.phonograph.ui.dialogs.SleepTimerDialog
 import player.phonograph.ui.dialogs.SpeedControlDialog
@@ -27,7 +28,6 @@ import player.phonograph.ui.modules.panel.QueueViewModel
 import player.phonograph.ui.modules.player.PlayerAlbumCoverFragment.Companion.VISIBILITY_ANIM_DURATION
 import player.phonograph.ui.modules.player.controller.PlayerControllerFragment
 import player.phonograph.ui.modules.setting.dialog.NowPlayingScreenStylePreferenceDialog
-import player.phonograph.util.NavigationUtil
 import player.phonograph.util.observe
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.ui.PHONOGRAPH_ANIM_TIME

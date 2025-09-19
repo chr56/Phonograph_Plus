@@ -29,7 +29,7 @@ import player.phonograph.repo.loader.Songs
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
-import player.phonograph.util.NavigationUtil
+import player.phonograph.ui.NavigationUtil
 import player.phonograph.util.testBit
 import androidx.core.util.Pair
 import android.content.Context

@@ -1,4 +1,8 @@
-package player.phonograph.util
+/*
+ *  Copyright (c) 2022~2025 chr_56
+ */
+
+package player.phonograph.ui
 
 import player.phonograph.R
 import player.phonograph.model.Genre
@@ -57,7 +61,7 @@ object NavigationUtil {
     }
 
     fun goToArtist(context: Context, artistId: Long, sharedElements: Array<Pair<View, String>>? = null) {
-        val intent = ArtistDetailActivity.launchIntent(context.applicationContext, artistId)
+        val intent = ArtistDetailActivity.Companion.launchIntent(context.applicationContext, artistId)
         if (!sharedElements.isNullOrEmpty() && context is Activity) {
             context.startActivity(
                 intent,
@@ -71,10 +75,10 @@ object NavigationUtil {
     }
 
     fun goToAlbum(context: Context, albumId: Long) =
-        context.startActivity(AlbumDetailActivity.launchIntent(context.applicationContext, albumId))
+        context.startActivity(AlbumDetailActivity.Companion.launchIntent(context.applicationContext, albumId))
 
     fun goToAlbum(context: Context, albumId: Long, vararg sharedElements: Pair<View, String>) {
-        val intent = AlbumDetailActivity.launchIntent(context.applicationContext, albumId)
+        val intent = AlbumDetailActivity.Companion.launchIntent(context.applicationContext, albumId)
         if (sharedElements.isNotEmpty() && context is Activity) {
             context.startActivity(
                 intent,
@@ -89,11 +93,11 @@ object NavigationUtil {
 
     @Suppress("UNUSED_PARAMETER")
     fun goToGenre(context: Context, genre: Genre, vararg sharedElements: Pair<*, *>?) =
-        context.startActivity(GenreDetailActivity.launchIntent(context, genre))
+        context.startActivity(GenreDetailActivity.Companion.launchIntent(context, genre))
 
     @Suppress("UNUSED_PARAMETER")
     fun goToPlaylist(context: Context, playlist: Playlist, vararg sharedElements: Pair<*, *>?) =
-        context.startActivity(PlaylistDetailActivity.launchIntent(context, playlist))
+        context.startActivity(PlaylistDetailActivity.Companion.launchIntent(context, playlist))
 
     fun openEqualizer(activity: Activity) {
         val sessionId = MusicPlayerRemote.audioSessionId

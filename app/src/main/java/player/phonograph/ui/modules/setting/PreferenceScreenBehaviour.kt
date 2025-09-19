@@ -6,11 +6,11 @@ package player.phonograph.ui.modules.setting
 
 import player.phonograph.R
 import player.phonograph.settings.Keys
+import player.phonograph.ui.NavigationUtil
 import player.phonograph.ui.modules.setting.components.BooleanPreference
 import player.phonograph.ui.modules.setting.components.ExternalPreference
 import player.phonograph.ui.modules.setting.components.FloatPreference
 import player.phonograph.ui.modules.setting.components.SettingsGroup
-import player.phonograph.util.NavigationUtil
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

@@ -19,12 +19,12 @@ import player.phonograph.model.sort.SortRef
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.model.ui.PaletteColorProvider
 import player.phonograph.repo.loader.Songs
+import player.phonograph.ui.NavigationUtil.goToArtist
 import player.phonograph.ui.actions.DetailToolbarMenuProviders
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayPresenter
 import player.phonograph.ui.adapter.SongBasicDisplayPresenter
 import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
-import player.phonograph.util.NavigationUtil.goToArtist
 import player.phonograph.util.observe
 import player.phonograph.util.text.buildInfoString
 import player.phonograph.util.text.readableDuration

@@ -19,6 +19,7 @@
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.modules.panel.** { protected <methods>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.modules.player.** { protected <methods>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.modules.** extends androidx.lifecycle.ViewModel {public <methods>;}
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.NavigationUtil { public <methods>; }
 
 -keepclassmembernames,allowoptimization,allowshrinking interface player.phonograph.model.repo.loader.IFavoriteSongs { public <methods>; }
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.repo.mediastore.internal.QueryKt { public query*(...); }
@@ -33,7 +34,6 @@
 
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.util.file.UriKt { public void select*(...); }
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.util.file.WriteKt { public <methods>; }
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.util.NavigationUtil { public <methods>; }
 
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.lyrics.LyricsLoader { public <methods>; }
 -keepclassmembernames,allowoptimization,allowshrinking interface player.phonograph.model.migration.MigrationRule { public <methods>; }
