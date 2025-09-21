@@ -14,6 +14,7 @@ import player.phonograph.repo.room.DatabaseActions
 import player.phonograph.repo.room.MusicDatabase
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
+import player.phonograph.util.concurrent.lifecycleScopeOrNewOne
 import player.phonograph.util.theme.accentColoredButtonStyle
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
@@ -74,7 +75,7 @@ private fun MainContent(dismiss: () -> Unit) {
             title(stringResource(R.string.label_database_maintenance))
             Spacer(Modifier.height(12.dp))
             Column(Modifier.padding(horizontal = 12.dp)) {
-                OptionItemRefresh(coroutineScope, context)
+                OptionItemRefresh(context)
                 OptionItemDelete(coroutineScope, context, dismiss)
             }
             Spacer(Modifier.height(12.dp))
@@ -83,12 +84,12 @@ private fun MainContent(dismiss: () -> Unit) {
 }
 
 @Composable
-private fun OptionItemRefresh(coroutineScope: CoroutineScope, context: Context) {
+private fun OptionItemRefresh(context: Context) {
     Option(
         stringResource(R.string.action_refresh_database),
         stringResource(R.string.tips_refresh_database)
     ) {
-        coroutineScope.launch(Dispatchers.IO) {
+        context.lifecycleScopeOrNewOne().launch(Dispatchers.IO) {
             DatabaseActions.checkAndRefresh(context.applicationContext, MusicDatabase.koinInstance)
         }
     }
