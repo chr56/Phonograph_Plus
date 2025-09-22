@@ -6,9 +6,15 @@ package player.phonograph.model.repo.sync
 
 interface ProgressConnection {
 
+    fun onStart()
+
     fun onProcessUpdate(message: String?)
 
     fun onProcessUpdate(current: Int, total: Int)
 
     fun onProcessUpdate(current: Int, total: Int, message: String?)
+
+    fun onCompleted()
+
+    fun onReset()
 }
