@@ -10,89 +10,62 @@ import player.phonograph.util.file.mimeTypeIs
 import player.phonograph.util.file.safeGetCanonicalPath
 import android.content.Context
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.isActive
+import kotlinx.coroutines.yield
 import java.io.File
 import java.io.FileFilter
-import java.util.LinkedList
 
-/**
- * @author Karim Abou Zeid (kabouzeid)
- */
 object FileScanner {
 
     private const val TAG = "FileScanner"
 
     suspend fun listPaths(
         context: Context,
-        directoryInfos: DirectoryInfo,
+        directoryInfo: DirectoryInfo,
         recursive: Boolean = false,
     ): Array<String>? = coroutineScope {
         try {
-            if (directoryInfos.file.isDirectory) {
-                if (!isActive) return@coroutineScope null
-                // todo
-                val files =
-                    if (recursive) {
-                        listFilesDeep(directoryInfos.file, directoryInfos.fileFilter)
-                    } else {
-                        listFiles(directoryInfos.file, directoryInfos.fileFilter)?.toList()
-                    }
-
-                if (files.isNullOrEmpty()) return@coroutineScope null
-
-                Array(files.size) { i ->
-                    if (!isActive) return@coroutineScope null
-                    safeGetCanonicalPath(files[i])
+            val files = if (directoryInfo.file.isDirectory) {
+                if (recursive) {
+                    listFilesDeep(directoryInfo.file, directoryInfo.fileFilter)
+                } else {
+                    listFiles(directoryInfo.file, directoryInfo.fileFilter)
                 }
             } else {
-                arrayOf(safeGetCanonicalPath(directoryInfos.file))
+                listOf(directoryInfo.file)
             }
+
+            if (files.isEmpty()) return@coroutineScope null
+
+            yield()
+
+            files.map { file -> safeGetCanonicalPath(file) }.toTypedArray()
+
         } catch (e: Exception) {
-            warning(context, TAG, "Fail to Load files!", e)
+            warning(context, TAG, "Failed to list files!", e)
             null
         }
     }
 
-    val audioFileFilter: FileFilter =
-        FileFilter { file: File ->
-            !file.isHidden && (
-                    file.isDirectory ||
-                            file.mimeTypeIs("audio/*") ||
-                            file.mimeTypeIs("application/ogg")
-                    )
-        }
-
-
-    private fun listFiles(directory: File, fileFilter: FileFilter?): Array<File>? {
-        return directory.listFiles(fileFilter)
+    val audioFileFilter: FileFilter = FileFilter { file: File ->
+        !file.isHidden && (file.isDirectory || file.mimeTypeIs("audio/*") || file.mimeTypeIs("application/ogg"))
     }
 
-    private fun listFilesDeep(directory: File, fileFilter: FileFilter?): List<File>? =
-        rListFilesDeep(directory, fileFilter)
+    private fun listFiles(directory: File, fileFilter: FileFilter?): List<File> {
+        val files: Array<File>? = directory.listFiles(fileFilter)
+        return if (files.isNullOrEmpty()) emptyList() else files.toList()
+    }
 
-    private fun listFilesDeep(files: Collection<File>, fileFilter: FileFilter?): List<File>? {
-        val resFiles: MutableList<File> = LinkedList()
+    private suspend fun listFilesDeep(directory: File, fileFilter: FileFilter?): List<File> {
+        val result = mutableListOf<File>()
+        val files = directory.listFiles(fileFilter) ?: return emptyList()
+        yield()
         for (file in files) {
             if (file.isDirectory) {
-                resFiles.addAll(rListFilesDeep(file, fileFilter).orEmpty())
-            } else if (fileFilter == null || fileFilter.accept(file)) {
-                resFiles.add(file)
+                result.addAll(listFilesDeep(file, fileFilter))
+            } else {
+                result.add(file)
             }
         }
-        return if (resFiles.isEmpty()) null else resFiles
-    }
-
-    private fun rListFilesDeep(directory: File, fileFilter: FileFilter?): List<File>? {
-        val result: MutableList<File> = LinkedList()
-        directory.listFiles(fileFilter)?.let { files ->
-            for (file in files) {
-                if (file.isDirectory) {
-                    result.addAll(rListFilesDeep(file, fileFilter).orEmpty())
-                } else {
-                    result.add(file)
-                }
-            }
-        }
-        return if (result.isEmpty()) null else result
+        return if (result.isEmpty()) emptyList() else result
     }
 }
