@@ -7,7 +7,7 @@ package player.phonograph.repo.room
 import player.phonograph.R
 import player.phonograph.foundation.notification.BackgroundNotification
 import player.phonograph.mechanism.event.EventHub
-import player.phonograph.model.repo.sync.SyncExecutor
+import player.phonograph.model.repo.sync.ProgressConnection
 import player.phonograph.model.repo.sync.SyncResult
 import player.phonograph.repo.room.domain.BasicSyncExecutor
 import android.content.Context
@@ -16,7 +16,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 object DatabaseActions {
 
@@ -94,7 +93,7 @@ object DatabaseActions {
         }
     }
 
-    class SyncProgressNotificationConnection(val context: Context, val id: Int) : SyncExecutor.SyncProgressConnection {
+    class SyncProgressNotificationConnection(val context: Context, val id: Int) : ProgressConnection {
         private val title = context.getString(R.string.action_refresh_database)
         private val subtitle = context.getString(R.string.state_updating)
         override fun onProcessUpdate(message: String?) {

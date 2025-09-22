@@ -6,6 +6,7 @@ package player.phonograph.repo.room.domain
 
 import player.phonograph.model.Song
 import player.phonograph.model.repo.sync.SyncExecutor
+import player.phonograph.model.repo.sync.ProgressConnection
 import player.phonograph.model.repo.sync.SyncResult
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
@@ -38,7 +39,7 @@ class BasicSyncExecutor(private val musicDatabase: MusicDatabase) : SyncExecutor
 
     override suspend fun sync(
         context: Context,
-        channel: SyncExecutor.SyncProgressConnection?,
+        channel: ProgressConnection?,
     ): SyncResult {
         val songsMediastore = songsFromMediastore(context)
         val total = songsMediastore.size
