@@ -11,9 +11,7 @@ import player.phonograph.ACTUAL_PACKAGE_NAME
 import player.phonograph.R
 import player.phonograph.foundation.Reboot
 import player.phonograph.foundation.error.warning
-import player.phonograph.mechanism.scanner.FileScanner
 import player.phonograph.mechanism.scanner.MediaStoreScanner
-import player.phonograph.model.DirectoryInfo
 import player.phonograph.model.pages.Pages
 import player.phonograph.model.pages.PagesConfig
 import player.phonograph.model.service.ACTION_EXIT_OR_STOP
@@ -32,6 +30,7 @@ import player.phonograph.ui.modules.setting.SettingsActivity
 import player.phonograph.ui.modules.web.WebSearchLauncher
 import player.phonograph.util.concurrent.coroutineToast
 import player.phonograph.util.concurrent.runOnMainHandler
+import player.phonograph.util.file.listPaths
 import player.phonograph.util.permissions.navigateToAppDetailSetting
 import player.phonograph.util.permissions.navigateToStorageSetting
 import player.phonograph.util.theme.getTintedDrawable
@@ -51,7 +50,6 @@ import android.view.Menu
 import kotlin.random.Random
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.io.File
 
 
 /**
@@ -277,11 +275,9 @@ private suspend fun scanMedia(
 ) {
     val mediaStoreScanner = MediaStoreScanner(context)
     try {
-        val paths = FileScanner.listPaths(
-            context, DirectoryInfo(File(path), FileScanner.audioFileFilter)
-        )
-        coroutineToast(context.applicationContext, R.string.action_scan_media)
-        if (!paths.isNullOrEmpty()) {
+        val paths = listPaths(path)
+        if (paths.isNotEmpty()) {
+            coroutineToast(context.applicationContext, R.string.action_scan_media)
             mediaStoreScanner.scan(paths)
         } else {
             coroutineToast(context.applicationContext, R.string.msg_nothing_to_scan)

@@ -5,7 +5,6 @@
 package player.phonograph.repo.mediastore
 
 import player.phonograph.mechanism.explorer.Locations
-import player.phonograph.mechanism.scanner.FileScanner
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.Location
 import player.phonograph.model.sort.SortMode
@@ -14,6 +13,7 @@ import player.phonograph.repo.mediastore.internal.querySongFiles
 import player.phonograph.repo.mediastore.internal.readFileEntity
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
+import player.phonograph.util.file.audioFileFilter
 import androidx.core.content.getSystemService
 import android.content.Context
 import android.os.storage.StorageManager
@@ -73,7 +73,7 @@ object MediaStoreFileEntities {
         location: Location,
     ): List<FileEntity> {
         val directory = File(location.absolutePath).also { if (!it.isDirectory) return emptyList() }
-        val files = directory.listFiles(FileScanner.audioFileFilter) ?: return emptyList()
+        val files = directory.listFiles(audioFileFilter) ?: return emptyList()
         yield()
         val result = ArrayList<FileEntity>()
         val storageManager = context.getSystemService<StorageManager>()!!
