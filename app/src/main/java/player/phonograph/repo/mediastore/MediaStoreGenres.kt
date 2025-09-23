@@ -19,6 +19,7 @@ import player.phonograph.util.sort
 import android.content.Context
 import android.database.Cursor
 import android.os.Build
+import android.provider.BaseColumns
 import android.provider.MediaStore.Audio.Genres
 
 object MediaStoreGenres : IGenres {
@@ -56,13 +57,22 @@ object MediaStoreGenres : IGenres {
             null
         )
 
+    private fun querySongCount(context: Context, genreId: Long): Int =
+        context.contentResolver.query(
+            mediastoreUriGenreMembersExternal(genreId),
+            arrayOf(BaseColumns._ID),
+            null,
+            null,
+            null
+        )?.use { it.count } ?: 0
+
     private fun Cursor.intoGenres(context: Context): List<Genre> = this.use {
         val genres = mutableListOf<Genre>()
         if (moveToFirst()) {
             do {
                 val id = getLong(0)
                 val name = getString(1)
-                val count = querySongs(context, id)?.use { it.count } ?: 0
+                val count = querySongCount(context, id)
 
                 if (count > 0) {
                     genres.add(Genre(id = id, name = name, songCount = count))
