@@ -62,7 +62,7 @@ object MediaStoreGenres : IGenres {
             do {
                 val id = getLong(0)
                 val name = getString(1)
-                val count = querySongs(context, id)?.use { count } ?: 0
+                val count = querySongs(context, id)?.use { it.count } ?: 0
 
                 if (count > 0) {
                     genres.add(Genre(id = id, name = name, songCount = count))
