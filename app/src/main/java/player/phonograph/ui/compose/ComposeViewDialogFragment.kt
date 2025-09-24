@@ -6,6 +6,7 @@ package player.phonograph.ui.compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.DialogFragment
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -17,14 +18,18 @@ import android.view.ViewGroup
  */
 abstract class ComposeViewDialogFragment : DialogFragment() {
 
-    private lateinit var composeView: ComposeView
+    private var _composeView: ComposeView? = null
+    private val composeView: ComposeView get() = _composeView!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View = ComposeView(requireContext()).also {
-        composeView = it
+        _composeView = it
+        it.setViewCompositionStrategy(
+            ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed
+        )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -32,6 +37,11 @@ abstract class ComposeViewDialogFragment : DialogFragment() {
         composeView.setContent {
             Content()
         }
+    }
+
+    override fun onDestroyView() {
+        _composeView = null
+        super.onDestroyView()
     }
 
     /**
