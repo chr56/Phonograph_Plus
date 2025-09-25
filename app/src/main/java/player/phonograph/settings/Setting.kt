@@ -13,7 +13,7 @@ import android.content.Context
 
 class Setting(context: Context) {
 
-    val dataStore = context.settingsDatastore
+    val dataStore = context.applicationContext.settingsDatastore
 
     operator fun <T> get(key: PreferenceKey<T>): Preference<T> =
         when (key) {
