@@ -62,7 +62,7 @@ class UpgradeNotificationImpl(context: Context) : AbsNotificationImpl() {
                     .setAutoCancel(true)
                     .setOngoing(false)
                     .build()
-            notificationManager.notify(NOTIFICATION_ID_UPGRADABLE, notification)
+            notify(NOTIFICATION_ID_UPGRADABLE, notification)
         }
     }
 

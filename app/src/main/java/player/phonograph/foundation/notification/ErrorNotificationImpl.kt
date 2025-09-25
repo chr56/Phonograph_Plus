@@ -61,7 +61,7 @@ class ErrorNotificationImpl(context: Context, private val crashActivity: Class<o
                     .build()
 
             count++
-            notificationManager.notify(count, notification)
+            notify(count, notification)
         }
 
     }

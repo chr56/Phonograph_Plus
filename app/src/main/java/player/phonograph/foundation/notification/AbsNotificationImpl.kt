@@ -13,33 +13,27 @@ import android.os.Build.VERSION_CODES
 
 abstract class AbsNotificationImpl {
 
-    private var _notificationManager: NotificationManager? = null
-    protected val notificationManager: NotificationManager get() = _notificationManager!!
-
-    protected var isReady: Boolean = false
-        private set
-
     protected abstract val channelId: String
     protected abstract val channelName: CharSequence
     protected abstract val importance: Int
     protected open val channelCfg: NotificationChannel.() -> Unit = {}
 
-    protected fun init(context: Context) {
-        _notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        if (SDK_INT >= VERSION_CODES.O && _notificationManager != null) {
-            createNotificationChannel(notificationManager, channelId, channelName, importance, channelCfg)
-        }
-        isReady = true
+    protected inline fun execute(context: Context, block: NotificationManager.() -> Unit) {
+        block(notificationManager(context))
     }
 
-    protected inline fun execute(context: Context, block: NotificationManager.() -> Unit) {
-        if (!isReady) init(context)
-        block(notificationManager)
+    protected fun notificationManager(context: Context): NotificationManager {
+        val notificationManager =
+            context.applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        if (SDK_INT >= VERSION_CODES.O) {
+            checkNotificationChannel(notificationManager, channelId, channelName, importance, channelCfg)
+        }
+        return notificationManager
     }
 
 
     @RequiresApi(26)
-    private fun createNotificationChannel(
+    private fun checkNotificationChannel(
         notificationManager: NotificationManager,
         channelId: String,
         channelName: CharSequence,
@@ -48,11 +42,12 @@ abstract class AbsNotificationImpl {
     ) {
         val notificationChannel: NotificationChannel? = notificationManager.getNotificationChannel(channelId)
         if (notificationChannel == null) {
-            notificationManager.createNotificationChannel(NotificationChannel(channelId, channelName, importance)
-                .apply {
-                    enableLights(false)
-                    enableVibration(false)
-                }.apply(cfg)
+            notificationManager.createNotificationChannel(
+                NotificationChannel(channelId, channelName, importance)
+                    .apply {
+                        enableLights(false)
+                        enableVibration(false)
+                    }.apply(cfg)
             )
         }
     }

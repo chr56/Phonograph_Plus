@@ -29,7 +29,7 @@ class BackgroundNotificationImpl(context: Context) : AbsNotificationImpl() {
                     .setContentText(msg)
                     .setOngoing(onGoing)
                     .build()
-            notificationManager.notify(id, notification)
+            notify(id, notification)
         }
 
     fun post(context: Context, title: String, msg: String, id: Int, process: Int, maxProcess: Int) =
@@ -45,12 +45,12 @@ class BackgroundNotificationImpl(context: Context) : AbsNotificationImpl() {
                     .setOngoing(true)
                     .setProgress(maxProcess, process, false)
                     .build()
-            notificationManager.notify(id, notification)
+            notify(id, notification)
         }
 
     fun remove(context: Context, id: Int) {
         execute(context) {
-            notificationManager.cancel(id)
+            cancel(id)
         }
     }
 
