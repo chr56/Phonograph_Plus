@@ -12,17 +12,20 @@ import coil.request.SuccessResult
 import player.phonograph.coil.PARAMETERS_KEY_CACHE
 import player.phonograph.coil.palette.PaletteBitmapDrawable
 import player.phonograph.coil.quickCache
-import player.phonograph.coil.retriever.collectCacheSetting
+import player.phonograph.coil.retriever.SettingCollector
 import player.phonograph.model.Song
+import player.phonograph.settings.Keys
 import androidx.collection.LruCache
 
 class CacheInterceptor : Interceptor {
 
     private val lruCache = LruCache<Long, PaletteBitmapDrawable>(8)
 
+    private val collector = SettingCollector { Keys.imageCache }
+
     override suspend fun intercept(chain: Interceptor.Chain): ImageResult {
 
-        val enableCache = collectCacheSetting(chain.request.context)
+        val enableCache = collector.retrieve(chain.request.context)
 
         val request = chain.request
         if (request.parameters.quickCache(false)) {
