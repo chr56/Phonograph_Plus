@@ -30,7 +30,7 @@ palette = "1.0.0"
 room = "2.8.1"
 datastore = "1.1.7"
 material = "1.12.0"
-compose = "1.8.3"
+compose = "1.9.3"
 #### Jetpack End
 
 
