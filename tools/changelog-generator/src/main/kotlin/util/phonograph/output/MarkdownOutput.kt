@@ -78,6 +78,7 @@ class GitHubReleaseMarkdown(private val releaseNote: ReleaseNote) : Markdown() {
     @Suppress("SameParameterValue")
     private fun section(note: Notes.Note, title: String, level: Int): String = buildString {
         appendLine(title(title, level))
+        if (note.notice != null) appendLine(githubAlertBox(note.notice)).append('\n')
         if (note.highlights.isNotEmpty()) appendLine(makeUnorderedList(note.highlights)).append('\n')
         if (note.items.isNotEmpty()) appendLine(makeOrderedList(note.items)).append('\n')
     }
@@ -125,6 +126,19 @@ class GitHubReleaseMarkdown(private val releaseNote: ReleaseNote) : Markdown() {
                 append(" [Legacy](https://github.com/chr56/Phonograph_Plus/releases/download/${tag}/PhonographPlus_${version}_Legacy${channelText}Release.apk) |")
             }
 
+        private fun githubAlertBox(text: String, type: String = "NOTE"): String {
+            val lines = text.lines()
+            return buildString {
+                append("> [!$type]")
+                append('\n')
+                for (line in lines) {
+                    append("> ")
+                    append(line)
+                    append('\n')
+                }
+            }
+        }
+
         @JvmStatic
         private fun generateDiffLink(releaseNote: ReleaseNote): String =
             GITHUB_DIFF.format(releaseNote.previousTag, releaseNote.tag)
@@ -139,6 +153,7 @@ class EscapedMarkdown(private val releaseNote: ReleaseNote) : Markdown() {
 
     private fun section(note: Notes.Note, title: String): String = buildString {
         appendLine(border(title))
+        if (note.notice != null) appendLine(escapeMarkdown(note.notice)).append('\n')
         if (note.highlights.isNotEmpty()) appendLine(escapeMarkdown(makeOrderedList(note.highlights))).append('\n')
         if (note.items.isNotEmpty()) appendLine(escapeMarkdown(makeOrderedList(note.items)))
     }

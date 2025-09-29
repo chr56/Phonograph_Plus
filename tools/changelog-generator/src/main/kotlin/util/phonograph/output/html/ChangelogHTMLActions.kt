@@ -31,6 +31,13 @@ private fun generateHTMLImpl(
     note: Notes.Note,
 ) = html {
     line(htmlHeader(version, timestamp))
+    if (note.notice != null) {
+        div {
+            for (line in note.notice.lines()) {
+                line(line)
+            }
+        }
+    }
     div {
         htmlNoteItem(note.items)
     }

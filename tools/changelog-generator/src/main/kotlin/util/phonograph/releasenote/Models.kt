@@ -72,6 +72,7 @@ data class Notes(
 ) {
     @Serializable
     data class Note(
+        val notice: String? = null,
         val highlights: List<String> = emptyList(),
         val items: List<String> = emptyList(),
     )
