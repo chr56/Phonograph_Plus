@@ -18,12 +18,16 @@ object ThemeSetting {
     @CheckResult
     @StyleRes
     fun themeStyle(context: Context): Int =
-        parseToStyleRes(cachedTheme ?: updateThemeStyle(context))
+        parseToStyleRes(cachedTheme ?: updateThemeStyleCache(context))
 
     private var cachedTheme: String? = null
 
-    fun updateThemeStyle(context: Context): String {
+    fun updateThemeStyleCache(context: Context): String {
         val theme = Setting(context)[Keys.theme].data
+        return updateThemeStyleCache(theme)
+    }
+
+    fun updateThemeStyleCache(theme: String): String {
         cachedTheme = theme
         return theme
     }

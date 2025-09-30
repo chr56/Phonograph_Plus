@@ -21,6 +21,7 @@ import player.phonograph.repo.loader.Songs
 import player.phonograph.service.MusicService
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
+import player.phonograph.settings.ThemeSetting
 import player.phonograph.ui.actions.actionPlay
 import player.phonograph.ui.dialogs.DatabaseMaintenanceDialog
 import player.phonograph.ui.modules.auxiliary.AboutActivity
@@ -49,7 +50,9 @@ import android.os.Looper
 import android.view.Menu
 import kotlin.random.Random
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 /**
@@ -96,12 +99,11 @@ fun setupDrawerMenu(
                 icon = getTintedDrawable(R.drawable.ic_theme_switch_white_24dp, textColorPrimary)
                 titleRes(R.string.action_theme_switch)
                 onClick {
-                    Handler(Looper.getMainLooper()).postDelayed(
-                        {
-                            val result = toggleTheme(activity)
-                            if (result) recreate()
-                        }, 150
-                    )
+                    activity.lifecycleScope.launch {
+                        val result = withContext(Dispatchers.IO) { toggleTheme(activity) }
+                        if (result) withContext(Dispatchers.Main) { recreate() }
+                    }
+                    true
                 }
             }
         }

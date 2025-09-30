@@ -74,7 +74,7 @@ fun PreferenceScreenAppearance() {
                 ),
                 titleRes = R.string.pref_title_general_theme,
                 onChange = { _, _ ->
-                    ThemeSetting.updateThemeStyle(context)
+                    ThemeSetting.updateThemeStyleCache(context)
                 }
             )
         }

@@ -99,14 +99,17 @@ fun parseToStyleRes(@GeneralTheme theme: String): Int =
         else                  -> R.style.Theme_Phonograph_Auto_LightBlack
     }
 
-fun toggleTheme(context: Context): Boolean {
+suspend fun toggleTheme(context: Context): Boolean {
     val preference = Setting(context)[Keys.theme]
-    val theme = preference.data
-    return if (theme != THEME_AUTO_LIGHTBLACK && theme != THEME_AUTO_LIGHTDARK) {
-        when (theme) {
-            THEME_DARK, THEME_BLACK -> preference.data = THEME_LIGHT
-            THEME_LIGHT             -> preference.data = THEME_DARK
-        }
+    val oldTheme = preference.read()
+    val newTheme = when (oldTheme) {
+        THEME_DARK, THEME_BLACK -> THEME_LIGHT
+        THEME_LIGHT             -> THEME_DARK
+        else                    -> null
+    }
+    return if (newTheme != null) {
+        preference.edit { newTheme }
+        ThemeSetting.updateThemeStyleCache(newTheme)
         true
     } else {
         false
