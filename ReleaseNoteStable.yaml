@@ -1,6 +1,6 @@
-version: "1.11.1-dev1"
-channel: "PREVIEW"
-versionCode: 1110
+version: "1.11.1"
+channel: "STABLE"
+versionCode: 1111
 timestamp: 1759400000
 notes:
   en:
@@ -8,8 +8,8 @@ notes:
       - "Fix: incorrect genre song count"
       - "Fix: path filter settings importing failure (since v1.11.0)"
       - "Fix: incompleted theme switching from drawer menu action"
-      - "Fix: crash or frozen when reading VorbisComment tag with large embed images in Detail"
-      - "Fix: extract embed artwork option not working in Detail"
+      - "Fix: crash or frozen when reading opus with large images in Detail"
+      - "Fix: extract artwork option not working in Detail"
       - "Improve: display file dates in Detail"
       - "Improve: enhance 'Go to artist' menu action"
       - "Translation: update Korean (by 7829hw) and French (by Clément Lyonnet)"
@@ -20,10 +20,10 @@ notes:
       - "修复 流派页歌曲数量不正确"
       - "修复 路径过滤设置导入失败 (v1.11.0 起存在)"
       - "修复 从抽屉菜单处切换主题不完全"
-      - "修复 在详情中读取超大嵌入图像的 VorbisComment 标签时崩溃或冻结"
-      - "修复 在详情中提取嵌入图片失败"
-      - "改进 在详情中显示文件日期"
-      - "改进 增强“转到艺术家”菜单选项"
+      - "修复 在详细信息中读取大图像的 opus 时崩溃或冻结"
+      - "修复 在详细信息中提取艺术作品选项无法工作"
+      - "改进 在详细信息中显示文件日期"
+      - "改进 增强“转到艺术家”菜单操作"
       - "翻译 更新 韩语 (7829hw) 和法语 (Clément Lyonnet)"
       - "开发 清理代码"
 
