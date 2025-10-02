@@ -14,7 +14,6 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.util.asList
 import android.content.Context
-import kotlinx.coroutines.coroutineScope
 
 class FilesPageViewModel : AbsFileViewModel() {
 
@@ -40,12 +39,10 @@ class FilesPageViewModel : AbsFileViewModel() {
 
     suspend fun currentSongs(context: Context): List<Song> {
         val entities = currentFiles.value
-        return coroutineScope {
-            entities.flatMap {
-                when (it) {
-                    is FileEntity.File   -> Songs.id(context, it.id).asList()
-                    is FileEntity.Folder -> Songs.searchByPath(context, it.location.absolutePath, false)
-                }
+        return entities.flatMap {
+            when (it) {
+                is FileEntity.File   -> Songs.id(context, it.id).asList()
+                is FileEntity.Folder -> Songs.searchByPath(context, it.location.absolutePath, false)
             }
         }
     }
