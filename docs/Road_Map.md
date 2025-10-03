@@ -1,6 +1,6 @@
 # **Development Plan (or Road Map?)** & **TO-DO list**
 
-_Last Update: 2025.05.21_
+_Last Update: 2025.10.02_
 
 ## Independent Database by Jetpack Room
 
@@ -19,15 +19,7 @@ _(Completed!)_
 
 #### Stage 3 Database Favorites
 
-- [x] Tables for Favorites Songs and Favorites/Pined Playlists
-  
-- [ ] Favorites operations
-
-- [ ] Migrate from old implementation
-
-- [ ] UI adaptions
-
-- [ ] Backup support / Backward compatibility
+_(Completed!)_
 
 #### Stage 4 Solving Complex Relationship for Artists/Albums
 
@@ -41,7 +33,7 @@ _(Completed!)_
 
 - [ ] Automatically sync with MediaStore
 
-- [ ] Update loader
+- [x] Update loader
 
 #### Stage 5 Enhanced Genres
 
