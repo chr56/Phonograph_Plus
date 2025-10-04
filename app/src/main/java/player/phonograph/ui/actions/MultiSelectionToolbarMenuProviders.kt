@@ -67,8 +67,8 @@ object MultiSelectionToolbarMenuProviders {
                     showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                     onClick {
                         context.lifecycleScopeOrNewOne().launch {
-                            convertToSongs(controller.selected, context)
-                                .actionPlay(ShuffleMode.SHUFFLE, Random().nextInt(controller.selected.size))
+                            val songs = convertToSongs(controller.selected, context)
+                            songs.actionPlay(ShuffleMode.SHUFFLE, Random().nextInt(songs.size))
                         }
                         controller.unselectedAll()
                         true
