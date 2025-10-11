@@ -28,8 +28,8 @@ class ProgressNotificationConnection(
     }
 
     override fun onProcessUpdate(message: String?) {
-        if (message != null) BackgroundNotification.post(
-            context = context,
+        if (message != null) Notifications.Background.post(
+            context,
             title = title(message),
             msg = message,
             id = id,
@@ -38,8 +38,8 @@ class ProgressNotificationConnection(
     }
 
     override fun onProcessUpdate(current: Int, total: Int) {
-        BackgroundNotification.post(
-            context = context,
+        Notifications.Background.post(
+            context,
             title = title(null),
             msg = defaultMessage,
             id = id,
@@ -49,8 +49,8 @@ class ProgressNotificationConnection(
     }
 
     override fun onProcessUpdate(current: Int, total: Int, message: String?) {
-        BackgroundNotification.post(
-            context = context,
+        Notifications.Background.post(
+            context,
             title = title(message),
             msg = message ?: defaultMessage,
             id = id,
@@ -60,7 +60,7 @@ class ProgressNotificationConnection(
     }
 
     override fun onCompleted() {
-        BackgroundNotification.remove(context, id)
+        Notifications.Background.cancel(context, id)
     }
 
     override fun onReset() {

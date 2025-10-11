@@ -14,9 +14,9 @@ import org.koin.core.logger.Level
 import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.coil.createPhonographImageLoader
 import player.phonograph.foundation.Reboot
+import player.phonograph.foundation.error.crashActivity
 import player.phonograph.foundation.error.startCrashActivity
 import player.phonograph.foundation.localization.ContextLocaleDelegate
-import player.phonograph.foundation.notification.ErrorNotification
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.ui.moduleViewModels
 import player.phonograph.ui.modules.auxiliary.CrashActivity
@@ -74,7 +74,7 @@ class App : Application(), ImageLoaderFactory {
         instance = this
 
         // Exception Handler
-        ErrorNotification.crashActivity = CrashActivity::class.java
+        crashActivity = CrashActivity::class.java
         Thread.setDefaultUncaughtExceptionHandler { _, exception ->
             if (!CrashActivity.isCrashProcess(this)) {
                 startCrashActivity(this, exception, CrashActivity::class.java)

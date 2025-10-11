@@ -5,7 +5,7 @@
 package player.phonograph.mechanism.scanner
 
 import player.phonograph.R
-import player.phonograph.foundation.notification.BackgroundNotification
+import player.phonograph.foundation.notification.Notifications
 import player.phonograph.util.debug
 import android.content.Context
 import android.media.MediaScannerConnection
@@ -68,7 +68,7 @@ class MediaStoreScanner(val context: Context) : MediaScannerConnection.MediaScan
             scannerConnection.scanFile(path, null)
             if (index % 17 == 0) reportProcess(index, paths, task.id)
         }
-        BackgroundNotification.remove(context, task.id)
+        Notifications.Background.cancel(context, task.id)
     }
 
 
@@ -101,13 +101,13 @@ class MediaStoreScanner(val context: Context) : MediaScannerConnection.MediaScan
     }
 
     private fun reportProcess(current: Int, all: Array<String>, id: Int) {
-        BackgroundNotification.post(
+        Notifications.Background.post(
             context,
-            title,
-            String.format(scannedFiles, current, all.size),
-            id,
-            current,
-            all.size
+            title = title,
+            msg = String.format(scannedFiles, current, all.size),
+            id = id,
+            process = current,
+            maxProcess = all.size
         )
     }
 

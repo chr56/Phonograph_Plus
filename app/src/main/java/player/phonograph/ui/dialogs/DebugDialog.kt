@@ -5,16 +5,13 @@
 package player.phonograph.ui.dialogs
 
 import player.phonograph.App
-import player.phonograph.foundation.notification.ErrorNotification
-import player.phonograph.foundation.notification.UpgradeNotification
+import player.phonograph.foundation.error.warning
 import player.phonograph.mechanism.Update
-import player.phonograph.model.CrashReport
 import player.phonograph.model.Song
 import player.phonograph.model.version.VersionCatalog
 import player.phonograph.repo.mediastore.MediaStoreSongsActions
 import player.phonograph.ui.modules.main.MainActivity
 import player.phonograph.util.concurrent.coroutineToast
-import player.phonograph.util.currentChannel
 import player.phonograph.util.theme.tintButtons
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
@@ -45,11 +42,11 @@ class DebugDialog : DialogFragment() {
             }
         },
         "Send Crash Notification" to {
-            ErrorNotification.postErrorNotification(
+            warning(
                 App.instance,
+                "Debug",
+                "Crash Notification Test!",
                 Exception("Test"),
-                "Crash Notification Test!!",
-                CrashReport.CRASH_TYPE_CRASH
             )
         },
         "Check Overflowed Song Ids" to {
@@ -82,10 +79,9 @@ class DebugDialog : DialogFragment() {
         "Check for updates (Notification)" to {
             CoroutineScope(Dispatchers.Unconfined).launch {
                 Update.checkUpdate(true) { versionCatalog: VersionCatalog, upgradable: Boolean ->
-                    UpgradeNotification.sendUpgradeNotification(
+                    Update.sendNotification(
                         App.instance,
                         versionCatalog,
-                        currentChannel,
                         MainActivity.launchingIntent(
                             App.instance,
                             versionCatalog,

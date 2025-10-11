@@ -7,7 +7,7 @@ package player.phonograph.repo.database.store
 import org.koin.core.context.GlobalContext
 import player.phonograph.R
 import player.phonograph.foundation.error.warning
-import player.phonograph.foundation.notification.BackgroundNotification
+import player.phonograph.foundation.notification.Notifications
 import player.phonograph.repo.database.DatabaseConstants
 import player.phonograph.repo.database.store.SongPlayCountStore.SongPlayCountColumns.Companion.ID
 import player.phonograph.repo.database.store.SongPlayCountStore.SongPlayCountColumns.Companion.LAST_UPDATED_WEEK_INDEX
@@ -306,7 +306,7 @@ class SongPlayCountStore(val context: Context) :
                         i++
                         updateExistingRow(readableDatabase, cursor.getLong(0), bumpCount = false, force = true)
                         if (i.mod(31) == 0)
-                            BackgroundNotification.post(
+                            Notifications.Background.post(
                                 context,
                                 context.getString(R.string.action_refresh),
                                 context.getString(R.string.playlist_my_top_tracks),
@@ -316,7 +316,7 @@ class SongPlayCountStore(val context: Context) :
                 } catch (e: Exception) {
                     warning(context, this::class.java.simpleName, "Failed to recalculate score!", e)
                 } finally {
-                    BackgroundNotification.remove(context, NOTIFICATION_ID)
+                    Notifications.Background.cancel(context, NOTIFICATION_ID)
                 }
             }
         }
