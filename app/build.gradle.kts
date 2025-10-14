@@ -178,10 +178,6 @@ android {
     }
 
     ksp {
-
-        @OptIn(com.google.devtools.ksp.KspExperimental::class)
-        useKsp2 = false // buggy sometimes due to cache
-
         arg("room.schemaLocation", "$projectDir/schemas")
         // arg("room.incremental", "true")
     }
