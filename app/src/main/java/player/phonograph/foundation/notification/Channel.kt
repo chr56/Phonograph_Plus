@@ -68,12 +68,16 @@ enum class Channel(
     @RequiresApi(VERSION_CODES.O)
     fun check(context: Context, notificationManager: NotificationManagerCompat) {
         val notificationChannel: NotificationChannel? = notificationManager.getNotificationChannel(id)
-        if (notificationChannel == null) {
-            notificationManager.createNotificationChannel(asNotificationChannel(context))
+        if (!refreshed || notificationChannel == null) {
+            notificationManager.createNotificationChannels(entries.map { it.asNotificationChannel(context) })
+            refreshed = true
         }
     }
 
     companion object {
+
+        @JvmStatic
+        private var refreshed = false
 
         @JvmStatic
         fun id(channelId: String): Channel? {
