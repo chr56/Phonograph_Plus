@@ -6,10 +6,10 @@ package player.phonograph.foundation.notification
 
 import player.phonograph.R
 import player.phonograph.model.notification.ChannelID
-import player.phonograph.model.notification.NOTIFICATION_CHANNEL_ID_BACKGROUND
+import player.phonograph.model.notification.NOTIFICATION_CHANNEL_ID_APP_UPDATE
+import player.phonograph.model.notification.NOTIFICATION_CHANNEL_ID_BACKGROUND_TASKS
 import player.phonograph.model.notification.NOTIFICATION_CHANNEL_ID_DEFAULT
-import player.phonograph.model.notification.NOTIFICATION_CHANNEL_ID_ERROR
-import player.phonograph.model.notification.NOTIFICATION_CHANNEL_ID_UPGRADE
+import player.phonograph.model.notification.NOTIFICATION_CHANNEL_ID_ERROR_REPORT
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
@@ -76,7 +76,7 @@ sealed class Notifications {
     }
 
     object Background : Notifications() {
-        private const val TARGET_CHANNEL = NOTIFICATION_CHANNEL_ID_BACKGROUND
+        private const val TARGET_CHANNEL = NOTIFICATION_CHANNEL_ID_BACKGROUND_TASKS
         fun post(context: Context, title: String, msg: String, id: Int, onGoing: Boolean = true) =
             post(context, TARGET_CHANNEL, id) {
                 setCategory(NotificationCompat.CATEGORY_PROGRESS)
@@ -98,7 +98,7 @@ sealed class Notifications {
     }
 
     object Error : Notifications() {
-        private const val TARGET_CHANNEL = NOTIFICATION_CHANNEL_ID_ERROR
+        private const val TARGET_CHANNEL = NOTIFICATION_CHANNEL_ID_ERROR_REPORT
         fun post(
             context: Context,
             title: String,
@@ -127,7 +127,7 @@ sealed class Notifications {
 
     object Upgrade : Notifications() {
         private const val NOTIFICATION_ID_UPGRADABLE = 8747233
-        private const val TARGET_CHANNEL = NOTIFICATION_CHANNEL_ID_UPGRADE
+        private const val TARGET_CHANNEL = NOTIFICATION_CHANNEL_ID_APP_UPDATE
 
         fun post(
             context: Context,

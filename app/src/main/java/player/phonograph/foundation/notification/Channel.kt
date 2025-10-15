@@ -6,10 +6,10 @@ package player.phonograph.foundation.notification
 
 import player.phonograph.R
 import player.phonograph.model.notification.ChannelID
-import player.phonograph.model.notification.NOTIFICATION_CHANNEL_ID_BACKGROUND
+import player.phonograph.model.notification.NOTIFICATION_CHANNEL_ID_BACKGROUND_TASKS
 import player.phonograph.model.notification.NOTIFICATION_CHANNEL_ID_DEFAULT
-import player.phonograph.model.notification.NOTIFICATION_CHANNEL_ID_ERROR
-import player.phonograph.model.notification.NOTIFICATION_CHANNEL_ID_UPGRADE
+import player.phonograph.model.notification.NOTIFICATION_CHANNEL_ID_ERROR_REPORT
+import player.phonograph.model.notification.NOTIFICATION_CHANNEL_ID_APP_UPDATE
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.core.app.NotificationManagerCompat
@@ -29,22 +29,25 @@ enum class Channel(
 ) {
     DEFAULT(
         NOTIFICATION_CHANNEL_ID_DEFAULT,
-        nameResources = R.string.pref_header_notification,
+        nameResources = R.string.notification_default_name,
+        descriptionResources = R.string.notification_default_description,
     ),
-    ERROR(
-        NOTIFICATION_CHANNEL_ID_ERROR,
+    ERROR_REPORT(
+        NOTIFICATION_CHANNEL_ID_ERROR_REPORT,
         nameResources = R.string.notification_error_name,
+        descriptionResources = R.string.notification_error_description,
         importance = NotificationManager.IMPORTANCE_HIGH,
     ),
-    UPGRADE(
-        NOTIFICATION_CHANNEL_ID_UPGRADE,
+    APP_UPDATE(
+        NOTIFICATION_CHANNEL_ID_APP_UPDATE,
         nameResources = R.string.notification_update_name,
         descriptionResources = R.string.notification_update_description,
         importance = NotificationManager.IMPORTANCE_HIGH,
     ),
-    BACKGROUND(
-        NOTIFICATION_CHANNEL_ID_BACKGROUND,
+    BACKGROUND_TASKS(
+        NOTIFICATION_CHANNEL_ID_BACKGROUND_TASKS,
         nameResources = R.string.notification_background_name,
+        descriptionResources = R.string.notification_background_description,
         importance = NotificationManager.IMPORTANCE_HIGH,
     ),
     ;
@@ -75,11 +78,11 @@ enum class Channel(
         @JvmStatic
         fun id(channelId: String): Channel? {
             val channel = when (channelId) {
-                NOTIFICATION_CHANNEL_ID_ERROR      -> ERROR
-                NOTIFICATION_CHANNEL_ID_UPGRADE    -> UPGRADE
-                NOTIFICATION_CHANNEL_ID_BACKGROUND -> BACKGROUND
-                NOTIFICATION_CHANNEL_ID_DEFAULT    -> DEFAULT
-                else                               -> null
+                NOTIFICATION_CHANNEL_ID_ERROR_REPORT     -> ERROR_REPORT
+                NOTIFICATION_CHANNEL_ID_APP_UPDATE       -> APP_UPDATE
+                NOTIFICATION_CHANNEL_ID_BACKGROUND_TASKS -> BACKGROUND_TASKS
+                NOTIFICATION_CHANNEL_ID_DEFAULT          -> DEFAULT
+                else                                     -> null
             }
             return channel
         }
