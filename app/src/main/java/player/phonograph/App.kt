@@ -20,6 +20,7 @@ import player.phonograph.foundation.localization.ContextLocaleDelegate
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.ui.moduleViewModels
 import player.phonograph.ui.modules.auxiliary.CrashActivity
+import player.phonograph.util.HandlerContainer
 import player.phonograph.util.concurrent.postDelayedOnceHandlerCallback
 import player.phonograph.util.debug
 import player.phonograph.util.logMetrics
@@ -35,6 +36,9 @@ import android.os.Looper
 import android.os.Process
 import android.util.Log
 import kotlin.system.exitProcess
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -87,6 +91,8 @@ class App : Application(), ImageLoaderFactory {
 
         if (CrashActivity.isCrashProcess(this)) return
 
+        handlerContainer.onCreate()
+
         // night mode
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
 
@@ -103,9 +109,19 @@ class App : Application(), ImageLoaderFactory {
 
     override fun onTerminate() {
         GlobalContext.get().get<QueueManager>().release()
+        handlerContainer.onDestroy()
         super.onTerminate()
     }
 
     // for coil ImageLoader singleton
     override fun newImageLoader(): ImageLoader = createPhonographImageLoader(this)
+
+    //region Concurrent
+    val appScope by lazy { CoroutineScope(SupervisorJob() + Dispatchers.Default) }
+
+    private val handlerContainer: HandlerContainer = HandlerContainer("app")
+    val appHandler: Handler get() = handlerContainer.handler
+    val appHandlerThread get() = handlerContainer.thread
+    //endregion
+
 }

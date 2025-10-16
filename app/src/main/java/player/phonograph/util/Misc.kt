@@ -26,6 +26,8 @@ import android.content.Context
 import android.content.Intent
 import android.media.RingtoneManager
 import android.net.Uri
+import android.os.Handler
+import android.os.HandlerThread
 import android.util.Log
 import java.io.File
 import java.io.FileNotFoundException
@@ -108,6 +110,28 @@ fun logMetrics(stage: String) {
 //
 // Other
 //
+
+class HandlerContainer(val name: String) {
+    private var _handler: Handler? = null
+    val handler: Handler get() = _handler!!
+
+    private var _thread: HandlerThread? = null
+    val thread: HandlerThread get() = _thread!!
+
+    fun onCreate() {
+        _thread = HandlerThread(name)
+        thread.start()
+        _handler = Handler(thread.looper)
+    }
+
+    fun onDestroy() {
+        thread.quitSafely()
+        handler.looper.quitSafely()
+        _thread = null
+        _handler = null
+    }
+}
+
 
 
 fun openOutputStreamSafe(context: Context, uri: Uri, mode: String): OutputStream? =
