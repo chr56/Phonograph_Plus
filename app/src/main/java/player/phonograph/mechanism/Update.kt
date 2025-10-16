@@ -13,6 +13,7 @@ import player.phonograph.UpdateConfig.requestUriCodeberg
 import player.phonograph.UpdateConfig.requestUriFastGit
 import player.phonograph.UpdateConfig.requestUriGitHub
 import player.phonograph.UpdateConfig.requestUriJsdelivr
+import player.phonograph.foundation.notification.Notifications
 import player.phonograph.model.version.VersionCatalog
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
@@ -20,6 +21,8 @@ import player.phonograph.util.NetworkUtil.invokeRequest
 import player.phonograph.util.currentChannel
 import player.phonograph.util.debug
 import player.phonograph.util.text.dateText
+import android.content.Context
+import android.content.Intent
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -51,6 +54,21 @@ object Update {
         }
     }
 
+    fun sendNotification(
+        context: Context,
+        catalog: VersionCatalog,
+        handlerIntent: Intent,
+    ) {
+        val version =
+            catalog.versions.filter { it.channel == currentChannel.determiner }.maxByOrNull { it.versionCode } ?: return
+
+        val title = version.versionName
+        val note = version.releaseNote.parsed(context.resources)
+
+        Notifications.Upgrade.post(
+            context, title, note, handlerIntent
+        )
+    }
 
 }
 

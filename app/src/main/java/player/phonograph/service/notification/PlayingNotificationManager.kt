@@ -67,6 +67,8 @@ class PlayingNotificationManager : ServiceComponent {
 
     private var implementation: Implementation? = null
 
+    private var channelCreated: Boolean = false
+
     override fun onCreate(musicService: MusicService) {
         _service = musicService
 
@@ -75,7 +77,7 @@ class PlayingNotificationManager : ServiceComponent {
 
         val channel: NotificationChannelCompat? =
             notificationManager.getNotificationChannelCompat(NOTIFICATION_CHANNEL_ID)
-        if (channel == null) {
+        if (!channelCreated || channel == null) {
             notificationManager.createNotificationChannel(
                 NotificationChannelCompat.Builder(NOTIFICATION_CHANNEL_ID, NotificationManagerCompat.IMPORTANCE_LOW)
                     .setName(musicService.getString(R.string.notification_playing_name))
@@ -84,6 +86,7 @@ class PlayingNotificationManager : ServiceComponent {
                     .setVibrationEnabled(false)
                     .build()
             )
+            channelCreated = true
         }
 
         settingObserver = SettingObserver(service, service.coroutineScope)

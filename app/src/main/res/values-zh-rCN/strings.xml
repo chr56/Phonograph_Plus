@@ -235,8 +235,6 @@
     <string name="app_shortcut_shuffle_all_short">随机播放</string>
     <string name="app_shortcut_top_tracks_short">最喜欢的歌曲</string>
     <string name="app_shortcut_last_added_short">最近添加</string>
-    <string name="notification_playing_description">正在播放通知提供了播放/暂停等便捷操作</string>
-    <string name="notification_playing_name">正在播放通知</string>
     <string name="about_eugene_cheung_summary">因他对源代码的贡献</string>
     <string name="about_adrian_summary">因为他完成了专辑页面的设计</string>
     <string name="action_add">添加</string>
@@ -302,8 +300,6 @@
     <string name="pref_summary_broadcast_current_player_state">公开广播当前播放状态，以提供给其他应用，如 Musixmatch</string>
     <string name="pref_title_display_lyrics_time_axis">显示歌词时间轴</string>
     <string name="pref_summary_display_lyrics_time_axis">在歌词对话框中显示同步歌词时间轴</string>
-    <string name="notification_update_name">更新</string>
-    <string name="notification_update_description">应用更新通知</string>
     <string name="action_add_to_black_list">加入黑名单</string>
     <string name="sort_order_song">歌曲</string>
     <string name="sort_order_duration">时长</string>
@@ -329,8 +325,6 @@
     <string name="label_embedded_lyrics">内嵌歌词</string>
     <string name="label_external_lyrics">外部歌词</string>
     <string name="option_lyrics_following">歌词滚动</string>
-    <string name="notification_error_name">错误报告</string>
-    <string name="notification_background_name">后台消息</string>
     <string name="sort_order_song_count">歌曲数量</string>
     <string name="sort_order_album_count">专辑数量</string>
     <string name="label_name">名称</string>
@@ -553,4 +547,16 @@
     <string name="title_corrupted_data_error">内部数据错误</string>
     <string name="pref_title_seek_jump_interval">快进与快退跳跃时间间隔</string>
     <string name="pref_summary_seek_jump_interval">从通知或者播放器按钮进行快进或快时，跳过的秒数</string>
+    <string name="notification_playing_name">播放控制</string>
+    <string name="notification_playing_description">显示当前播放的项目并提供播放控制</string>
+    <string name="notification_default_name">默认</string>
+    <string name="notification_default_description">默认渠道，用于未分类的通知</string>
+    <string name="notification_update_name">应用更新</string>
+    <string name="notification_update_description">可用新版本的通知</string>
+    <string name="notification_error_name">内部错误报告</string>
+    <string name="notification_error_description">以查看发生非致命内部错误后错误报告</string>
+    <string name="notification_background_name">后台任务</string>
+    <string name="notification_background_description">正在后台运行的任务</string>
+    <string name="notification_database_name">数据库同步</string>
+    <string name="notification_database_description">后台数据库同步任务</string>
 </resources>

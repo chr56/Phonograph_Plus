@@ -7,7 +7,7 @@ package player.phonograph.mechanism.metadata.edit
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.foundation.error.warning
-import player.phonograph.foundation.notification.BackgroundNotification
+import player.phonograph.foundation.notification.Notifications
 import player.phonograph.mechanism.scanner.MediaStoreScanner
 import player.phonograph.model.metadata.EditAction
 import android.content.Context
@@ -26,12 +26,13 @@ abstract class AudioMetadataEditor(
     suspend fun execute(context: Context) {
         if (editRequest.isEmpty()) return
         withContext(Dispatchers.Default) {
+            val notifications = Notifications.BackgroundTasks.Default
             // notify user first
-            BackgroundNotification.post(
+            notifications.post(
                 context,
-                App.instance.getString(R.string.action_tag_editor),
-                App.instance.getString(R.string.state_saving_changes),
-                TAG_EDITOR_NOTIFICATION_CODE
+                title = App.instance.getString(R.string.action_tag_editor),
+                msg = App.instance.getString(R.string.state_saving_changes),
+                id = TAG_EDITOR_NOTIFICATION_CODE
             )
             // process
             withContext(Dispatchers.IO) {
@@ -44,7 +45,7 @@ abstract class AudioMetadataEditor(
                 }
             }
             // notify user
-            BackgroundNotification.remove(context, TAG_EDITOR_NOTIFICATION_CODE)
+            notifications.cancel(context, TAG_EDITOR_NOTIFICATION_CODE)
             if (logs.isNotEmpty()) warning(context, LOG_TAG, logs.joinToString(separator = "\n"))
             yield()
             // refresh media store
