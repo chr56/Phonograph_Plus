@@ -557,4 +557,6 @@
     <string name="notification_error_description">在發生非致命性內部錯誤後查看錯誤報告</string>
     <string name="notification_background_name">背景任務</string>
     <string name="notification_background_description">正在背景執行的任務</string>
+    <string name="notification_database_name">資料庫同步</string>
+    <string name="notification_database_description">後臺資料庫同步任務</string>
 </resources>

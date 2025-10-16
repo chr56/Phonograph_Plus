@@ -10,6 +10,7 @@ import player.phonograph.model.notification.NOTIFICATION_CHANNEL_ID_BACKGROUND_T
 import player.phonograph.model.notification.NOTIFICATION_CHANNEL_ID_DEFAULT
 import player.phonograph.model.notification.NOTIFICATION_CHANNEL_ID_ERROR_REPORT
 import player.phonograph.model.notification.NOTIFICATION_CHANNEL_ID_APP_UPDATE
+import player.phonograph.model.notification.NOTIFICATION_CHANNEL_ID_DATABASE_SYNC
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.core.app.NotificationManagerCompat
@@ -50,6 +51,12 @@ enum class Channel(
         descriptionResources = R.string.notification_background_description,
         importance = NotificationManager.IMPORTANCE_HIGH,
     ),
+    DATABASE_SYNC(
+        NOTIFICATION_CHANNEL_ID_DATABASE_SYNC,
+        nameResources = R.string.notification_database_name,
+        descriptionResources = R.string.notification_database_description,
+        importance = NotificationManager.IMPORTANCE_LOW,
+    ),
     ;
 
     fun name(context: Context) = context.getString(nameResources)
@@ -85,6 +92,7 @@ enum class Channel(
                 NOTIFICATION_CHANNEL_ID_ERROR_REPORT     -> ERROR_REPORT
                 NOTIFICATION_CHANNEL_ID_APP_UPDATE       -> APP_UPDATE
                 NOTIFICATION_CHANNEL_ID_BACKGROUND_TASKS -> BACKGROUND_TASKS
+                NOTIFICATION_CHANNEL_ID_DATABASE_SYNC -> DATABASE_SYNC
                 NOTIFICATION_CHANNEL_ID_DEFAULT          -> DEFAULT
                 else                                     -> null
             }

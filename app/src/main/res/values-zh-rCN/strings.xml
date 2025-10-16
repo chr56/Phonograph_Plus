@@ -557,4 +557,6 @@
     <string name="notification_error_description">以查看发生非致命内部错误后错误报告</string>
     <string name="notification_background_name">后台任务</string>
     <string name="notification_background_description">正在后台运行的任务</string>
+    <string name="notification_database_name">数据库同步</string>
+    <string name="notification_database_description">后台数据库同步任务</string>
 </resources>
