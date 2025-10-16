@@ -88,6 +88,7 @@ sealed class Notifications {
                 setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 setContentTitle(title)
                 setContentText(msg)
+                setAutoCancel(true)
                 setOngoing(onGoing)
             }
 
@@ -97,7 +98,8 @@ sealed class Notifications {
                 setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 setContentTitle(title)
                 setContentText(msg)
-                setOngoing(true)
+                setAutoCancel(true)
+                setOngoing(false)
                 setProgress(maxProcess, process, false)
             }
     }
