@@ -26,8 +26,9 @@ abstract class AudioMetadataEditor(
     suspend fun execute(context: Context) {
         if (editRequest.isEmpty()) return
         withContext(Dispatchers.Default) {
+            val notifications = Notifications.BackgroundTasks.Default
             // notify user first
-            Notifications.Background.post(
+            notifications.post(
                 context,
                 title = App.instance.getString(R.string.action_tag_editor),
                 msg = App.instance.getString(R.string.state_saving_changes),
@@ -44,7 +45,7 @@ abstract class AudioMetadataEditor(
                 }
             }
             // notify user
-            Notifications.Background.cancel(context, TAG_EDITOR_NOTIFICATION_CODE)
+            notifications.cancel(context, TAG_EDITOR_NOTIFICATION_CODE)
             if (logs.isNotEmpty()) warning(context, LOG_TAG, logs.joinToString(separator = "\n"))
             yield()
             // refresh media store

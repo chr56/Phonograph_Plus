@@ -8,6 +8,7 @@ import player.phonograph.R
 import player.phonograph.model.notification.ChannelID
 import player.phonograph.model.notification.NOTIFICATION_CHANNEL_ID_APP_UPDATE
 import player.phonograph.model.notification.NOTIFICATION_CHANNEL_ID_BACKGROUND_TASKS
+import player.phonograph.model.notification.NOTIFICATION_CHANNEL_ID_DATABASE_SYNC
 import player.phonograph.model.notification.NOTIFICATION_CHANNEL_ID_DEFAULT
 import player.phonograph.model.notification.NOTIFICATION_CHANNEL_ID_ERROR_REPORT
 import androidx.core.app.NotificationCompat
@@ -75,10 +76,14 @@ sealed class Notifications {
         NotificationManagerCompat.from(context).cancel(id)
     }
 
-    object Background : Notifications() {
-        private const val TARGET_CHANNEL = NOTIFICATION_CHANNEL_ID_BACKGROUND_TASKS
+    class BackgroundTasks(private val channel: String) : Notifications() {
+        companion object {
+            val Database get() = BackgroundTasks(NOTIFICATION_CHANNEL_ID_DATABASE_SYNC)
+            val Default get() = BackgroundTasks(NOTIFICATION_CHANNEL_ID_BACKGROUND_TASKS)
+        }
+
         fun post(context: Context, title: String, msg: String, id: Int, onGoing: Boolean = true) =
-            post(context, TARGET_CHANNEL, id) {
+            post(context, channel, id) {
                 setCategory(NotificationCompat.CATEGORY_PROGRESS)
                 setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 setContentTitle(title)
@@ -87,7 +92,7 @@ sealed class Notifications {
             }
 
         fun post(context: Context, title: String, msg: String, id: Int, process: Int, maxProcess: Int) =
-            post(context, TARGET_CHANNEL, id) {
+            post(context, channel, id) {
                 setCategory(NotificationCompat.CATEGORY_PROGRESS)
                 setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 setContentTitle(title)

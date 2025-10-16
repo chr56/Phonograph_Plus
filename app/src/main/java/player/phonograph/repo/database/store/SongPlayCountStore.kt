@@ -298,6 +298,7 @@ class SongPlayCountStore(val context: Context) :
      */
     fun reCalculateScore(context: Context) {
         readableDatabase.query(NAME, arrayOf(ID), null, null, null, null, null).use { cursor ->
+            val notifications = Notifications.BackgroundTasks.Database
             if (cursor.moveToFirst()) {
                 val totalCount = cursor.count
                 try {
@@ -306,7 +307,7 @@ class SongPlayCountStore(val context: Context) :
                         i++
                         updateExistingRow(readableDatabase, cursor.getLong(0), bumpCount = false, force = true)
                         if (i.mod(31) == 0)
-                            Notifications.Background.post(
+                            notifications.post(
                                 context,
                                 context.getString(R.string.action_refresh),
                                 context.getString(R.string.playlist_my_top_tracks),
@@ -316,7 +317,7 @@ class SongPlayCountStore(val context: Context) :
                 } catch (e: Exception) {
                     warning(context, this::class.java.simpleName, "Failed to recalculate score!", e)
                 } finally {
-                    Notifications.Background.cancel(context, NOTIFICATION_ID)
+                    notifications.cancel(context, NOTIFICATION_ID)
                 }
             }
         }

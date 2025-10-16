@@ -18,6 +18,7 @@ import android.widget.Toast
 class MediaStoreScanner(val context: Context) : MediaScannerConnection.MediaScannerConnectionClient {
 
     private val scannerConnection = MediaScannerConnection(context, this)
+    private val notifications = Notifications.BackgroundTasks.Default
 
     class Task(
         val target: Array<String>,
@@ -68,7 +69,7 @@ class MediaStoreScanner(val context: Context) : MediaScannerConnection.MediaScan
             scannerConnection.scanFile(path, null)
             if (index % 17 == 0) reportProcess(index, paths, task.id)
         }
-        Notifications.Background.cancel(context, task.id)
+        notifications.cancel(context, task.id)
     }
 
 
@@ -101,7 +102,7 @@ class MediaStoreScanner(val context: Context) : MediaScannerConnection.MediaScan
     }
 
     private fun reportProcess(current: Int, all: Array<String>, id: Int) {
-        Notifications.Background.post(
+        notifications.post(
             context,
             title = title,
             msg = String.format(scannedFiles, current, all.size),

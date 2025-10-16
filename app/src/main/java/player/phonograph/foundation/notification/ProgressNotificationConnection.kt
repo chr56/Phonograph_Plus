@@ -5,14 +5,17 @@
 package player.phonograph.foundation.notification
 
 import player.phonograph.R
+import player.phonograph.model.notification.NOTIFICATION_CHANNEL_ID_DATABASE_SYNC
 import player.phonograph.model.repo.sync.ProgressConnection
 import android.content.Context
 
 class ProgressNotificationConnection(
     val context: Context,
     titlePrefixRes: Int,
+    channel: String = NOTIFICATION_CHANNEL_ID_DATABASE_SYNC,
 ) : ProgressConnection {
 
+    private val notifications = Notifications.BackgroundTasks(channel)
     private val titlePrefix = context.getString(titlePrefixRes)
     private val defaultMessage = context.getString(R.string.state_updating)
 
@@ -28,7 +31,7 @@ class ProgressNotificationConnection(
     }
 
     override fun onProcessUpdate(message: String?) {
-        if (message != null) Notifications.Background.post(
+        if (message != null) notifications.post(
             context,
             title = title(message),
             msg = message,
@@ -38,7 +41,7 @@ class ProgressNotificationConnection(
     }
 
     override fun onProcessUpdate(current: Int, total: Int) {
-        Notifications.Background.post(
+        notifications.post(
             context,
             title = title(null),
             msg = defaultMessage,
@@ -49,7 +52,7 @@ class ProgressNotificationConnection(
     }
 
     override fun onProcessUpdate(current: Int, total: Int, message: String?) {
-        Notifications.Background.post(
+        notifications.post(
             context,
             title = title(message),
             msg = message ?: defaultMessage,
@@ -60,7 +63,7 @@ class ProgressNotificationConnection(
     }
 
     override fun onCompleted() {
-        Notifications.Background.cancel(context, id)
+        notifications.cancel(context, id)
     }
 
     override fun onReset() {
