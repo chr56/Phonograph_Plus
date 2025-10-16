@@ -98,5 +98,5 @@ object PathFilterSetting {
         Setting(context)[if (excludeMode) Keys.pathFilterExcludePaths else Keys.pathFilterIncludePaths]
 
     private fun notifyMediaStoreChanged(context: Context) =
-        EventHub.sendEvent(context.applicationContext, EventHub.EVENT_MEDIASTORE_CHANGED)
+        EventHub.sendEvent(context.applicationContext, EventHub.EVENT_MUSIC_LIBRARY_CHANGED)
 }

@@ -6,6 +6,7 @@ package player.phonograph.repo.room
 
 import player.phonograph.R
 import player.phonograph.foundation.notification.ProgressNotificationConnection
+import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.repo.sync.SyncResult
 import player.phonograph.repo.room.domain.BasicSyncExecutor
 import android.content.Context
@@ -27,6 +28,7 @@ object DatabaseActions {
                 syncExecutor.sync(context, connection)
             } finally {
                 connection.onCompleted()
+                EventHub.sendEvent(context.applicationContext, EventHub.EVENT_MUSIC_LIBRARY_CHANGED)
             }
         } else {
             null

@@ -178,7 +178,7 @@ class PlayerQueueFragment : AbsMusicServiceFragment() {
     fun onHide() {}
 
     private inner class MediaStoreListener(context: Context) :
-            EventHub.LifeCycleEventReceiver(context, EventHub.EVENT_MEDIASTORE_CHANGED) {
+            EventHub.LifeCycleEventReceiver(context, EventHub.EVENT_MUSIC_LIBRARY_CHANGED) {
         override fun onEventReceived(context: Context, intent: Intent) {
             lifecycleScope.launch(Dispatchers.Main) {
                 withStarted {

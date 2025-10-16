@@ -24,6 +24,7 @@ import android.provider.MediaStore.Audio.Media
 
 object EventHub {
 
+    const val EVENT_MUSIC_LIBRARY_CHANGED = "${PACKAGE_NAME}.music_library_changed"
     const val EVENT_MEDIASTORE_CHANGED = "${PACKAGE_NAME}.mediastore_changed"
     const val EVENT_PLAYLISTS_CHANGED = "${PACKAGE_NAME}.playlists_changed"
     const val EVENT_FAVORITES_CHANGED = "${PACKAGE_NAME}.favorites_changed"
@@ -112,6 +113,7 @@ object EventHub {
 
         override fun run() {
             sendEvent(App.instance, EVENT_MEDIASTORE_CHANGED)
+            sendEvent(App.instance, EVENT_MUSIC_LIBRARY_CHANGED)
         }
 
         companion object {

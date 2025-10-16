@@ -211,7 +211,8 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvider
         tintOverflowButtonColor(this, iconColor)
     }
 
-    private inner class MediaStoreListener : EventHub.LifeCycleEventReceiver(this, EventHub.EVENT_MEDIASTORE_CHANGED) {
+    private inner class MediaStoreListener :
+            EventHub.LifeCycleEventReceiver(this, EventHub.EVENT_MUSIC_LIBRARY_CHANGED) {
         override fun onEventReceived(context: Context, intent: Intent) {
             viewModel.loadDataSet(this@AlbumDetailActivity)
         }
