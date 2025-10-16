@@ -85,7 +85,7 @@ sealed class Notifications {
         fun post(context: Context, title: String, msg: String, id: Int, onGoing: Boolean = true) =
             post(context, channel, id) {
                 setCategory(NotificationCompat.CATEGORY_PROGRESS)
-                setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                setPriority(NotificationCompat.PRIORITY_HIGH)
                 setContentTitle(title)
                 setContentText(msg)
                 setAutoCancel(true)
@@ -95,7 +95,7 @@ sealed class Notifications {
         fun post(context: Context, title: String, msg: String, id: Int, process: Int, maxProcess: Int) =
             post(context, channel, id) {
                 setCategory(NotificationCompat.CATEGORY_PROGRESS)
-                setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                setPriority(NotificationCompat.PRIORITY_HIGH)
                 setContentTitle(title)
                 setContentText(msg)
                 setAutoCancel(true)

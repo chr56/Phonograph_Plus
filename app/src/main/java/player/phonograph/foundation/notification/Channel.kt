@@ -24,6 +24,7 @@ enum class Channel(
     @get:StringRes val nameResources: Int,
     @get:StringRes val descriptionResources: Int = 0,
     val importance: Int = NotificationManager.IMPORTANCE_DEFAULT,
+    val muted: Boolean = false,
     val showBadge: Boolean = false,
     val lights: Boolean = false,
     val vibration: Boolean = false,
@@ -50,12 +51,14 @@ enum class Channel(
         nameResources = R.string.notification_background_name,
         descriptionResources = R.string.notification_background_description,
         importance = NotificationManager.IMPORTANCE_HIGH,
+        muted = true,
     ),
     DATABASE_SYNC(
         NOTIFICATION_CHANNEL_ID_DATABASE_SYNC,
         nameResources = R.string.notification_database_name,
         descriptionResources = R.string.notification_database_description,
-        importance = NotificationManager.IMPORTANCE_LOW,
+        importance = NotificationManager.IMPORTANCE_HIGH,
+        muted = true,
     ),
     ;
 
@@ -70,6 +73,7 @@ enum class Channel(
             enableLights(lights)
             enableVibration(vibration)
             setShowBadge(showBadge)
+            if (muted) setSound(null, null)
         }
 
     @RequiresApi(VERSION_CODES.O)
