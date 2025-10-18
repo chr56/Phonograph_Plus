@@ -90,7 +90,7 @@ private fun OptionItemRefresh(context: Context) {
         stringResource(R.string.tips_refresh_database)
     ) {
         context.lifecycleScopeOrNewOne().launch(Dispatchers.IO) {
-            DatabaseActions.checkAndRefresh(context.applicationContext, MusicDatabase.koinInstance)
+            DatabaseActions.sync(context.applicationContext, MusicDatabase.koinInstance)
         }
     }
 }

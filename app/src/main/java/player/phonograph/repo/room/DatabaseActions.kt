@@ -16,11 +16,11 @@ object DatabaseActions {
      * Sync Database:
      * check MediaStore, refresh database if have changes
      */
-    suspend fun checkAndRefresh(context: Context, musicDatabase: MusicDatabase): SyncResult? {
+    suspend fun sync(context: Context, musicDatabase: MusicDatabase, force: Boolean = false): SyncResult? {
 
         val syncExecutor = BasicSyncExecutor(musicDatabase)
 
-        return if (syncExecutor.check(context)) {
+        return if (force || syncExecutor.check(context)) {
             val connection = ProgressNotificationConnection(context, R.string.action_refresh_database)
             try {
                 connection.onStart()

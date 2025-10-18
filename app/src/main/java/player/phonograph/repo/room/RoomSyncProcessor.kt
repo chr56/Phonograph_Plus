@@ -29,7 +29,7 @@ class RoomSyncProcessor(
 
     private fun execute(context: Context) {
         coroutineScope.launch {
-            if (database.isOpen) DatabaseActions.checkAndRefresh(context, database)
+            if (database.isOpen) DatabaseActions.sync(context, database)
         }
     }
 
