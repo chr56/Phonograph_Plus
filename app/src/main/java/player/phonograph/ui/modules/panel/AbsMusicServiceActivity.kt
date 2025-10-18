@@ -5,6 +5,7 @@
 package player.phonograph.ui.modules.panel
 
 import org.koin.android.ext.android.inject
+import player.phonograph.mechanism.event.MediaStoreObservation
 import player.phonograph.model.service.MusicServiceConnection
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.MusicPlayerRemote.ServiceToken
@@ -29,6 +30,9 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
     protected val queueManager: QueueManager by inject()
     protected val queueViewModel: QueueViewModel by viewModels()
 
+    private val contentLifecycleObserver: MediaStoreObservation.LifecycleObserver =
+        MediaStoreObservation.LifecycleObserver()
+
     private var serviceToken: ServiceToken? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,6 +47,7 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
         lifecycleScope.launch {
             checkStorageReadPermission()
         }
+        lifecycle.addObserver(contentLifecycleObserver)
         volumeControlStream = AudioManager.STREAM_MUSIC
     }
 

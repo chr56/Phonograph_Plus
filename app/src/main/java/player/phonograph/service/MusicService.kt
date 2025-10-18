@@ -108,7 +108,6 @@ class MusicService : MediaBrowserServiceCompat(),
             seekJumpInterval = (interval * 1000).toInt()
         }
         // misc
-        EventHub.setUpMediaStoreObserver(this, controller.handler) // todo use other handler
         AppWidgetUpdateReceiver.register(this)
         sendBroadcast(Intent("player.phonograph.PHONOGRAPH_MUSIC_SERVICE_CREATED"))
     }
@@ -183,7 +182,6 @@ class MusicService : MediaBrowserServiceCompat(),
         mediaSessionController.onDestroy(this)
         coverLoader.terminate()
         AppWidgetUpdateReceiver.unRegister(this)
-        EventHub.unregisterMediaStoreObserver(this)
         controller.removeObserver(this)
         controller.onDestroy(this)
         queueManager.removeObserver(this)
