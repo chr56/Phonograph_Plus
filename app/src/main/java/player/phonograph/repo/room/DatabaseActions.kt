@@ -6,40 +6,11 @@ package player.phonograph.repo.room
 
 import player.phonograph.R
 import player.phonograph.foundation.notification.ProgressNotificationConnection
-import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.repo.sync.SyncResult
 import player.phonograph.repo.room.domain.BasicSyncExecutor
 import android.content.Context
-import android.content.Intent
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
 
 object DatabaseActions {
-
-    fun syncWithMediastore(context: Context, musicDatabase: MusicDatabase): EventHub.EventReceiver {
-        class PersistentListener : EventHub.EventReceiver(EventHub.EVENT_MEDIASTORE_CHANGED) {
-
-            override fun onEventReceived(context: Context, intent: Intent) {
-                refresh()
-            }
-
-            fun refresh() {
-                coroutineScope.launch {
-                    if (musicDatabase.isOpen) checkAndRefresh(context, musicDatabase)
-                }
-            }
-
-            val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
-        }
-
-        return PersistentListener().apply {
-            refresh()
-            registerSelf(context)
-        }
-    }
-
 
     /**
      * Sync Database:
