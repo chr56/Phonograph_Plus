@@ -1,7 +1,7 @@
-version: "1.11.2-dev0"
-channel: "PREVIEW"
-versionCode: 1111
-timestamp: 1761500000
+version: "1.11.2"
+channel: "STABLE"
+versionCode: 1112
+timestamp: 1762150000
 notes:
   en:
     items:
