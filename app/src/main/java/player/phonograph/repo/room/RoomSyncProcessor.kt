@@ -12,28 +12,43 @@ import android.content.Intent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.concurrent.atomic.AtomicLong
 
 class RoomSyncProcessor(
     private val database: MusicDatabase,
     private val coroutineScope: CoroutineScope,
 ) : SyncProcessor {
+    private val lastSyncTimestamp = AtomicLong(0)
 
     override fun onSyncFirstTime(context: Context) {
-        execute(context)
+        coroutineScope.launch { execute(context) }
     }
 
     override fun onSyncTriggered(context: Context) {
-        execute(context)
+        coroutineScope.launch { execute(context) }
     }
 
-    private fun execute(context: Context) {
-        coroutineScope.launch {
-            if (database.isOpen) DatabaseActions.sync(context, database)
+    private suspend fun execute(context: Context) {
+        val current = System.currentTimeMillis()
+        val last = lastSyncTimestamp.get()
+        if (current - last > THROTTLE_INTERVAL) {
+            if (lastSyncTimestamp.compareAndSet(last, current)) {
+                impl(context)
+            }
+        } else {
+            delay(THROTTLE_INTERVAL)
+            onSyncTriggered(context)
         }
     }
 
+    private suspend fun impl(context: Context) {
+        if (database.isOpen) DatabaseActions.sync(context, database)
+    }
+
     companion object {
+        private const val THROTTLE_INTERVAL = 800L
 
         fun observeMediastoreForSync(context: Context, musicDatabase: MusicDatabase): EventHub.EventReceiver {
 
