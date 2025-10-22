@@ -5,6 +5,7 @@
 package player.phonograph.coil.retriever
 
 import coil.request.Parameters
+import player.phonograph.App
 import player.phonograph.coil.PARAMETERS_KEY_IMAGE_SOURCE_CONFIG
 import player.phonograph.model.coil.ImageSource
 import player.phonograph.model.coil.ImageSourceConfig
@@ -31,7 +32,7 @@ class SettingCollector<T>(val preferenceKey: () -> PreferenceKey<T>) {
         val key = preferenceKey()
         val flow = Setting(context)[key].flow
         if (job == null) {
-            job = CoroutineScope(Dispatchers.IO).launch {
+            job = coroutineScope(context).launch {
                 flow.collect { current = it }
             }
         } else {
@@ -39,6 +40,15 @@ class SettingCollector<T>(val preferenceKey: () -> PreferenceKey<T>) {
         }
         return withContext(Dispatchers.IO) { flow.first() }
     }
+
+    private fun coroutineScope(context: Context): CoroutineScope {
+        val appScope = (context.applicationContext as? App)?.appScope
+        return appScope ?: (scope ?: CoroutineScope(Dispatchers.IO).also {
+            scope = it
+        })
+    }
+
+    private var scope: CoroutineScope? = null
 }
 
 private fun ImageSource.retriever(): ImageRetriever = when (key) {
