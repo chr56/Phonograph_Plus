@@ -6,6 +6,8 @@
 
 package player.phonograph.foundation.localization
 
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES
 import java.util.Locale
 
 fun Locale.display(currentLocale: Locale): String {
@@ -74,9 +76,25 @@ fun parseAndroidTag(tag: String): Locale {
         val r = tag.split("-r", limit = 2)
         val lang = r[0]
         val region = r[1]
-        Locale(lang, region)
+        localeOf(lang, region)
     } else {
         // without regions
-        Locale(tag)
+        localeOf(tag)
     }
 }
+
+fun localeOf(lang: String, region: String): Locale =
+    if (SDK_INT >= VERSION_CODES.BAKLAVA) {
+        Locale.of(lang, region)
+    } else {
+        @Suppress("DEPRECATION")
+        Locale(lang, region)
+    }
+
+fun localeOf(lang: String): Locale =
+    if (SDK_INT >= VERSION_CODES.BAKLAVA) {
+        Locale.of(lang)
+    } else {
+        @Suppress("DEPRECATION")
+        Locale(lang)
+    }

@@ -86,7 +86,7 @@ class LocalizationStore private constructor(context: Context) {
 
     private fun parseLocale(language: String?, region: String?): Locale? =
         if (language != null) {
-            if (region != null) Locale(language, region) else Locale(language)
+            if (region != null) localeOf(language, region) else localeOf(language)
         } else {
             null
         }
