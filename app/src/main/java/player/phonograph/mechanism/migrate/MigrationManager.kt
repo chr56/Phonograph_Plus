@@ -23,7 +23,13 @@ object MigrationManager {
     fun shouldMigration(context: Context): Boolean {
         val currentVersion = currentVersionCode(context)
         val previousVersion = PrerequisiteSetting.instance(context).previousVersion
-        return currentVersion != previousVersion
+        return if (previousVersion < 0) {
+            // first installation
+            PrerequisiteSetting.instance(context).previousVersion = currentVersion // initialization
+            false
+        } else {
+            currentVersion != previousVersion
+        }
     }
 
     fun migrate(context: Context): Int {
