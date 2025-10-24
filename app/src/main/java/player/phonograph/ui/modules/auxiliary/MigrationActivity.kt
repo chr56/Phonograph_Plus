@@ -21,10 +21,12 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -34,7 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -50,14 +52,13 @@ import kotlinx.coroutines.withContext
 
 class MigrationActivity : ComposeActivity() {
 
-    private val isCompletedFlow = MutableStateFlow(false)
     private val migrationResultFlow = MutableStateFlow<Int?>(null)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val isCompleted by isCompletedFlow.collectAsState()
-            val color = remember { derivedStateOf { if (isCompleted) colorDone else colorProcess } }
+            val result by migrationResultFlow.collectAsState()
+            val color = remember { derivedStateOf { if (result != null) colorDone else colorProcess } }
             PhonographTheme(color) {
                 SystemBarsPadded {
                     Scaffold(
@@ -69,14 +70,14 @@ class MigrationActivity : ComposeActivity() {
                         }
                     ) {
                         Column(Modifier.padding(it)) {
-                            if (isCompleted) {
-                                ResultScreen()
+                            if (result != null) {
+                                ResultScreen(result)
                             } else {
                                 OngoingScreen()
                             }
                         }
                         SideEffect {
-                            migrateImpl()
+                            executeMigration()
                         }
                     }
                 }
@@ -84,52 +85,62 @@ class MigrationActivity : ComposeActivity() {
         }
     }
 
-    @Composable
-    private fun ColumnScope.ResultScreen() {
-        val code = migrationResultFlow.collectAsState()
-        if (code.value == MigrationManager.CODE_SUCCESSFUL) SuccessScreen() else FailedScreen(code.value)
-    }
-
-    @Composable
-    private fun ColumnScope.SuccessScreen() {
-        ResultScreenTemplate(stringResource(R.string.success), Icons.Default.Done, hasButton = true, autoJump = true)
-    }
-
-    @Composable
-    private fun ColumnScope.FailedScreen(code: Int?) {
-        val message = errorMessage(code, LocalContext.current.resources)
-        val ignorable = ignorableError(code)
-        ResultScreenTemplate(message, Icons.Default.Warning, hasButton = ignorable, autoJump = false)
-    }
-
-    private fun errorMessage(code: Int?, resources: Resources): String {
-        return when (code) {
-            MigrationManager.CODE_NO_ACTION -> "No Need to Migrate!"
-            MigrationManager.CODE_WARNING   ->
-                "${resources.getString(R.string.version_migration_hint_too_old)}\n${resources.getString(R.string.version_migration_hint_suggest_to_wipe_data)}"
-
-            MigrationManager.CODE_FORBIDDEN ->
-                "${resources.getString(R.string.version_migration_hint_too_old)}\n${resources.getString(R.string.version_migration_hint_required_to_wipe_data)}"
-
-            else                            -> resources.getString(R.string.failed)
-        }
-    }
-
-    private fun ignorableError(code: Int?): Boolean {
-        return when (code) {
-            MigrationManager.CODE_FORBIDDEN -> false
-            else                            -> true
-        }
-        return true
-    }
-
-    @Composable
-    private fun ColumnScope.ResultScreenTemplate(
-        text: String,
-        icon: ImageVector,
-        hasButton: Boolean = true,
-        autoJump: Boolean = false,
+    private enum class ResultScreenContent(
+        val icon: ImageVector,
+        val continuable: Boolean = true,
+        val autoJumpCountdown: Long = 1000,
     ) {
+        Success(
+            Icons.Default.Done, true, 0
+        ) {
+            override fun text(resources: Resources): String =
+                resources.getString(R.string.success)
+        },
+        Skipped(
+            Icons.Default.Done, true, 500
+        ) {
+            override fun text(resources: Resources): String =
+                resources.getString(R.string.version_migration_message_skipped)
+        },
+        Warning(
+            Icons.Default.Warning, true, -1
+        ) {
+            override fun text(resources: Resources): String =
+                "${resources.getString(R.string.version_migration_hint_too_old)}\n${resources.getString(R.string.version_migration_hint_suggest_to_wipe_data)}"
+        },
+        Forbidden(
+            Icons.Default.Warning, false, -1
+        ) {
+            override fun text(resources: Resources): String =
+                "${resources.getString(R.string.version_migration_hint_too_old)}\n${resources.getString(R.string.version_migration_hint_required_to_wipe_data)}"
+        },
+        Error(
+            Icons.Default.Close, false, -1
+        ) {
+            override fun text(resources: Resources): String =
+                resources.getString(R.string.failed)
+        },
+        ;
+
+        abstract fun text(resources: Resources): String
+
+    }
+
+    @Composable
+    private fun ColumnScope.ResultScreen(resultCode: Int?) {
+
+        val content = when (resultCode) {
+            MigrationManager.CODE_SUCCESSFUL -> ResultScreenContent.Success
+            MigrationManager.CODE_NO_ACTION -> ResultScreenContent.Skipped
+            MigrationManager.CODE_WARNING -> ResultScreenContent.Warning
+            MigrationManager.CODE_FORBIDDEN -> ResultScreenContent.Forbidden
+            MigrationManager.CODE_UNKNOWN_ERROR -> ResultScreenContent.Error
+            else -> ResultScreenContent.Skipped
+        }
+
+        val resources = LocalResources.current
+        val text = content.text(resources)
+        val icon = content.icon
         Image(
             icon, text,
             Modifier
@@ -143,7 +154,7 @@ class MigrationActivity : ComposeActivity() {
                 .align(Alignment.CenterHorizontally),
             textAlign = TextAlign.Center
         )
-        if (hasButton) TextButton(
+        if (content.continuable) TextButton(
             ::gotoMainActivity,
             Modifier.align(Alignment.CenterHorizontally),
         ) {
@@ -152,8 +163,11 @@ class MigrationActivity : ComposeActivity() {
                 Modifier.padding(4.dp)
             )
         }
-        if (autoJump) SideEffect {
-            jumpToMainActivity()
+        LaunchedEffect(content) {
+            if (content.autoJumpCountdown > -1) {
+                delay(content.autoJumpCountdown)
+                gotoMainActivity()
+            }
         }
     }
 
@@ -186,22 +200,12 @@ class MigrationActivity : ComposeActivity() {
     }
 
 
-    private fun migrateImpl() {
+    private fun executeMigration() {
         lifecycleScope.launch {
-            delay(1000)
+            delay(500)
             withContext(Dispatchers.IO) {
-                migrationResultFlow.emit(
-                    MigrationManager.migrate(this@MigrationActivity)
-                )
-                isCompletedFlow.value = true
+                migrationResultFlow.value = MigrationManager.migrate(this@MigrationActivity)
             }
-        }
-    }
-
-    private fun jumpToMainActivity() {
-        lifecycleScope.launch {
-            delay(1000)
-            gotoMainActivity()
         }
     }
 
@@ -212,7 +216,7 @@ class MigrationActivity : ComposeActivity() {
 
     companion object {
         private val colorProcess = Color(red = 33, green = 121, blue = 158)
-        private val colorDone = Color(red = 5, green = 141, blue = 124, alpha = 255)
+        private val colorDone = Color(red = 5, green = 141, blue = 124)
     }
 }
 
