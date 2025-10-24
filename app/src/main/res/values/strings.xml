@@ -528,6 +528,7 @@
     <string name="time_interval_text">%1$s %2$d %3$s</string>
     <string name="version_migration">Version Migration</string>
     <string name="version_migration_summary">Upgrading from old version…</string>
+    <string name="version_migration_message_skipped">Skipped! No action is needed for migration.</string>
     <string name="version_migration_hint_too_old">You are upgrading from a very old version! </string>
     <string name="version_migration_hint_suggest_to_wipe_data">Try to wipe app data!</string>
     <string name="version_migration_hint_required_to_wipe_data">Please wipe app data!</string>

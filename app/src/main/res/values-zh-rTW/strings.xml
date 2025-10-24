@@ -540,6 +540,7 @@
     <string name="tips_delete_database">刪除資料庫，包括所有資料庫播放列表和已索引歌曲！</string>
     <string name="version_migration">版本遷移</string>
     <string name="version_migration_summary">正在從舊版本升級</string>
+    <string name="version_migration_message_skipped">已跳過！無需遷移操作</string>
     <string name="version_migration_hint_too_old">您正在從極其陳舊的版本升級！</string>
     <string name="version_migration_hint_suggest_to_wipe_data">請考慮抹除應用程式資料！</string>
     <string name="version_migration_hint_required_to_wipe_data">請務必抹除應用程式資料！</string>
