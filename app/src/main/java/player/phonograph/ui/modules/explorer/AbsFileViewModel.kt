@@ -6,7 +6,7 @@ package player.phonograph.ui.modules.explorer
 
 import player.phonograph.App
 import player.phonograph.mechanism.explorer.Locations
-import player.phonograph.model.file.FileEntity
+import player.phonograph.model.file.FileItem
 import player.phonograph.model.file.Location
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
@@ -49,7 +49,7 @@ sealed class AbsFileViewModel : ViewModel() {
         }
     }
 
-    private val _currentFiles: MutableStateFlow<List<FileEntity>> = MutableStateFlow(emptyList())
+    private val _currentFiles: MutableStateFlow<List<FileItem>> = MutableStateFlow(emptyList())
     val currentFiles = _currentFiles.asStateFlow()
 
     private val _loading: MutableStateFlow<Boolean> = MutableStateFlow(false)
@@ -62,5 +62,5 @@ sealed class AbsFileViewModel : ViewModel() {
     protected abstract suspend fun listFiles(
         context: Context,
         location: Location,
-    ): List<FileEntity>
+    ): List<FileItem>
 }

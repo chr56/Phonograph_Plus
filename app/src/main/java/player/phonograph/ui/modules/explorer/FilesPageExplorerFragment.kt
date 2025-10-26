@@ -4,7 +4,7 @@
 
 package player.phonograph.ui.modules.explorer
 
-import player.phonograph.model.file.FileEntity
+import player.phonograph.model.file.FileItem
 import player.phonograph.ui.actions.ClickActionProviders
 import player.phonograph.ui.modules.panel.PanelViewModel
 import player.phonograph.util.observe
@@ -18,25 +18,22 @@ class FilesPageExplorerFragment : AbsFilesExplorerFragment<FilesPageViewModel, F
 
     override val model: FilesPageViewModel by viewModels({ requireActivity() })
 
-    override fun updateFilesDisplayed(items: List<FileEntity>) {
+    override fun updateFilesDisplayed(items: List<FileItem>) {
         adapter.dataSet = items.toMutableList()
     }
 
     override fun createAdapter(): FilesPageAdapter =
         FilesPageAdapter(requireActivity(), model.currentFiles.value) { fileEntities, position ->
-            when (val item = fileEntities[position]) {
-                is FileEntity.Folder -> {
-                    onSwitch(item.location)
-                }
-
-                is FileEntity.File   -> {
-                    ClickActionProviders.FileEntityClickActionProvider().listClick(
-                        fileEntities,
-                        position,
-                        requireContext(),
-                        null
-                    )
-                }
+            val item = fileEntities[position]
+            if (item.isFolder) {
+                onSwitch(item.location)
+            } else {
+                ClickActionProviders.FileEntityClickActionProvider().listClick(
+                    fileEntities,
+                    position,
+                    requireContext(),
+                    null
+                )
             }
         }//todo
 

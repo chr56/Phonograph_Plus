@@ -7,16 +7,10 @@ package player.phonograph.coil.audiofile
 import coil.map.Mapper
 import coil.request.Options
 import player.phonograph.coil.model.SongImage
-import player.phonograph.model.file.FileEntity
-import player.phonograph.repo.loader.Songs
-import kotlinx.coroutines.runBlocking
-import java.io.File
+import player.phonograph.model.file.FileItem
 
-class FileEntityMapper : Mapper<FileEntity.File, SongImage> {
-    override fun map(data: FileEntity.File, options: Options): SongImage? {
-        val available =
-            runCatching { File(data.location.absolutePath).exists() }.getOrElse { false } // if file is  available
-        val song = runBlocking { Songs.id(options.context, data.id) } ?: return null
-        return if (available) SongImage.from(song) else null
+class FileEntityMapper : Mapper<FileItem, SongImage> {
+    override fun map(data: FileItem, options: Options): SongImage? {
+        return if (data.content is FileItem.SongContent) SongImage.from(data.content.song) else null
     }
 }

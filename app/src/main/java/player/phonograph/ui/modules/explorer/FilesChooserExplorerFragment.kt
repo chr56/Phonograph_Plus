@@ -4,22 +4,22 @@
 
 package player.phonograph.ui.modules.explorer
 
-import player.phonograph.model.file.FileEntity
+import player.phonograph.model.file.FileItem
 import androidx.fragment.app.viewModels
 
 class FilesChooserExplorerFragment : AbsFilesExplorerFragment<FilesChooserViewModel, FilesChooserAdapter>() {
 
     override val model: FilesChooserViewModel by viewModels({ requireActivity() })
 
-    override fun updateFilesDisplayed(items: List<FileEntity>) {
+    override fun updateFilesDisplayed(items: List<FileItem>) {
         adapter.dataSet = items.toMutableList()
     }
 
     override fun createAdapter(): FilesChooserAdapter =
         FilesChooserAdapter(requireActivity(), model.currentFiles.value) {
-            when (it) {
-                is FileEntity.Folder -> onSwitch(it.location)
-                is FileEntity.File   -> {}
+            when {
+                it.isFolder -> onSwitch(it.location)
+                else        -> Unit
             }
         }
 

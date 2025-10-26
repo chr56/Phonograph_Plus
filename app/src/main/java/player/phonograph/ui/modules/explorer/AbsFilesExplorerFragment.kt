@@ -9,7 +9,7 @@ import lib.storage.extension.rootDirectory
 import player.phonograph.R
 import player.phonograph.databinding.FragmentFileExploreBinding
 import player.phonograph.mechanism.explorer.Locations
-import player.phonograph.model.file.FileEntity
+import player.phonograph.model.file.FileItem
 import player.phonograph.model.file.Location
 import player.phonograph.util.observe
 import player.phonograph.util.theme.accentColor
@@ -153,7 +153,7 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
         }
     }
 
-    abstract fun updateFilesDisplayed(items: List<FileEntity>)
+    abstract fun updateFilesDisplayed(items: List<FileItem>)
 
 
     /**

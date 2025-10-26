@@ -6,7 +6,7 @@ package player.phonograph.ui.modules.explorer
 
 import player.phonograph.App
 import player.phonograph.model.Song
-import player.phonograph.model.file.FileEntity
+import player.phonograph.model.file.FileItem
 import player.phonograph.model.file.Location
 import player.phonograph.repo.loader.Songs
 import player.phonograph.repo.mediastore.MediaStoreFileEntities
@@ -29,7 +29,7 @@ class FilesPageViewModel : AbsFileViewModel() {
             Setting(App.instance)[Keys.showFileImages].data = value
         }
 
-    override suspend fun listFiles(context: Context, location: Location): List<FileEntity> =
+    override suspend fun listFiles(context: Context, location: Location): List<FileItem> =
         if (useLegacyListFile) {
             MediaStoreFileEntities.listFilesLegacy(context, location)
         } else {
@@ -39,10 +39,11 @@ class FilesPageViewModel : AbsFileViewModel() {
 
     suspend fun currentSongs(context: Context): List<Song> {
         val entities = currentFiles.value
-        return entities.flatMap {
-            when (it) {
-                is FileEntity.File   -> Songs.id(context, it.id).asList()
-                is FileEntity.Folder -> Songs.searchByPath(context, it.location.absolutePath, false)
+        return entities.flatMap { item ->
+            if (item.content is FileItem.SongContent) {
+                item.content.song.asList()
+            } else {
+                Songs.searchByPath(context, item.location.absolutePath, false)
             }
         }
     }

@@ -22,7 +22,7 @@ import player.phonograph.model.SongClickMode.SONG_APPEND_QUEUE
 import player.phonograph.model.SongClickMode.SONG_PLAY_NEXT
 import player.phonograph.model.SongClickMode.SONG_PLAY_NOW
 import player.phonograph.model.SongClickMode.SONG_SINGLE_PLAY
-import player.phonograph.model.file.FileEntity
+import player.phonograph.model.file.FileItem
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.service.ShuffleMode
 import player.phonograph.repo.loader.Songs
@@ -181,9 +181,9 @@ object ClickActionProviders {
 
     }
 
-    class FileEntityClickActionProvider : ClickActionProvider<FileEntity> {
+    class FileEntityClickActionProvider : ClickActionProvider<FileItem> {
         override fun listClick(
-            list: List<FileEntity>,
+            list: List<FileItem>,
             position: Int,
             context: Context,
             imageView: ImageView?,
@@ -200,7 +200,7 @@ object ClickActionProviders {
          */
         private suspend fun fileClick(
             context: Context,
-            list: List<FileEntity>,
+            list: List<FileItem>,
             position: Int,
             baseMode: Int,
             extraFlag: Int,
@@ -217,7 +217,7 @@ object ClickActionProviders {
             }
 
             if (extraFlag.testBit(FLAG_MASK_GOTO_POSITION_FIRST)) {
-                val songRequest = filter(list, position, context)
+                val songRequest = filter(list, position)
                 if (songRequest.songs == MusicPlayerRemote.playingQueue) {
                     // same queue, jump
                     MusicPlayerRemote.playSongAt(songRequest.position)
@@ -231,8 +231,12 @@ object ClickActionProviders {
                 SONG_APPEND_QUEUE,
                 SONG_SINGLE_PLAY,
                                       -> {
-                    val fileEntity = list[position] as? FileEntity.File ?: return false
-                    val song = Songs.id(context, fileEntity.id) ?: return false
+                    val file = list[position]
+                    val song = when (file.content) {
+                        FileItem.MediaContent   -> Songs.path(context, file.location.absolutePath)
+                        is FileItem.SongContent -> file.content.song
+                        else                    -> null
+                    } ?: return false
                     when (base) {
                         SONG_PLAY_NEXT    -> song.actionPlayNext()
                         SONG_PLAY_NOW     -> song.actionPlayNow()
@@ -248,7 +252,7 @@ object ClickActionProviders {
                 QUEUE_SWITCH_TO_POSITION,
                 QUEUE_SHUFFLE,
                                       -> {
-                    val songRequest = filter(list, position, context)
+                    val songRequest = filter(list, position)
                     val songs = songRequest.songs
                     val actualPosition = songRequest.position
 
@@ -274,18 +278,17 @@ object ClickActionProviders {
         /**
          * filter folders and relocate position
          */
-        private suspend fun filter(list: List<FileEntity>, position: Int, context: Context): PlayRequest.SongsRequest {
-            var actualPosition: Int = position
-            val actualFileList = ArrayList<Song>(position)
+        private fun filter(list: List<FileItem>, clickPosition: Int): PlayRequest.SongsRequest {
+            var actualPosition: Int = clickPosition
+            val actualSongList = mutableListOf<Song>()
             for ((index, item) in list.withIndex()) {
-                if (item is FileEntity.File) {
-                    val song = Songs.id(context, item.id) ?: continue
-                    actualFileList.add(song)
+                if (item.content is FileItem.SongContent) {
+                    actualSongList.add(item.content.song)
                 } else {
-                    if (index < position) actualPosition--
+                    if (index < clickPosition) actualPosition--
                 }
             }
-            return PlayRequest.SongsRequest(actualFileList, actualPosition)
+            return PlayRequest.SongsRequest(actualSongList, actualPosition)
         }
     }
 

@@ -27,14 +27,12 @@ val BASE_SONG_PROJECTION = arrayOf(
     AudioColumns.COMPOSER, // 13 (hidden api before R)
 )
 
-val BASE_FILE_PROJECTION = arrayOf(
-    BaseColumns._ID, // 0
-    AudioColumns.DISPLAY_NAME, // 1
-    AudioColumns.DATA, // 2
-    AudioColumns.SIZE, // 3
-    AudioColumns.DATE_ADDED, // 4
-    AudioColumns.DATE_MODIFIED, // 5
-)
+val EXTENDED_SONG_PROJECTION =
+    BASE_SONG_PROJECTION + arrayOf(
+        /////////////////////////////////////////////////
+        AudioColumns.SIZE, // 14
+        AudioColumns.DISPLAY_NAME, // 15
+    )
 
 const val BASE_AUDIO_SELECTION =
     "${AudioColumns.IS_MUSIC} =1 "
