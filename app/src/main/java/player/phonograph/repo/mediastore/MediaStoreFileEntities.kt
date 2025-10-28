@@ -17,6 +17,7 @@ import androidx.core.content.getSystemService
 import android.content.Context
 import android.database.Cursor
 import android.os.storage.StorageManager
+import android.os.storage.StorageVolume
 import android.provider.MediaStore
 import kotlinx.coroutines.yield
 import java.io.File
@@ -35,12 +36,12 @@ object MediaStoreFileEntities {
             "${MediaStore.MediaColumns.DATA} LIKE ?",
             arrayOf("${currentLocation.absolutePath}%")
         ) ?: return emptyList()
-        val storageManager = context.getSystemService<StorageManager>()!!
+        val rootVolume = currentVolume(context, currentLocation)
         return fileCursor.use { cursor ->
             if (cursor.moveToFirst()) {
                 val list = mutableListOf<FileItem>()
                 do {
-                    list.register(readFileItem(cursor, currentLocation, storageManager))
+                    list.register(readFileItem(cursor, currentLocation, rootVolume))
                 } while (cursor.moveToNext())
                 val sortMode = Setting(context)[Keys.fileSortMode].read()
                 list.sortedWith(FileItem.SortedComparator(sortMode))
@@ -68,12 +69,13 @@ object MediaStoreFileEntities {
     /**
      * Read audio file from non-empty [cursor] to [FileItem]
      * @param root root path location
+     * @param rootVolume current [StorageVolume]
      * @see [EXTENDED_SONG_PROJECTION]
      */
     private fun readFileItem(
         cursor: Cursor,
         root: Location,
-        storageManager: StorageManager,
+        rootVolume: StorageVolume,
     ): FileItem {
 
         val song = readSong(cursor)
@@ -87,7 +89,7 @@ object MediaStoreFileEntities {
             // folder
             FileItem(
                 name = folderName,
-                location = Locations.from(folderPath, storageManager),
+                location = Locations.from(folderPath, rootVolume),
                 dateAdded = song.dateAdded,
                 dateModified = song.dateModified,
                 content = FileItem.FolderContent(0),
@@ -98,7 +100,7 @@ object MediaStoreFileEntities {
             // file
             FileItem(
                 name = displayName,
-                location = Locations.from(song.data, storageManager),
+                location = Locations.from(song.data, rootVolume),
                 dateAdded = song.dateAdded,
                 dateModified = song.dateModified,
                 size = size,
@@ -119,14 +121,14 @@ object MediaStoreFileEntities {
         val files = directory.listFiles(audioFileFilter) ?: return emptyList()
         if (files.isEmpty()) return emptyList()
         yield()
-        val storageManager = context.getSystemService<StorageManager>()!!
-        val result = files.map { file -> parse(file, storageManager) }
+        val rootVolume = currentVolume(context, location)
+        val result = files.map { file -> parse(file, rootVolume) }
         val sortMode = Setting(context)[Keys.fileSortMode].read()
         return result.sortedWith(FileItem.SortedComparator(sortMode))
     }
 
-    private fun parse(file: File, storageManager: StorageManager): FileItem {
-        val location = Locations.from(file.absolutePath, storageManager)
+    private fun parse(file: File, volume: StorageVolume): FileItem {
+        val location = Locations.from(file.absolutePath, volume)
         return FileItem(
             name = file.name,
             location = location,
@@ -135,6 +137,18 @@ object MediaStoreFileEntities {
             size = file.length(),
             content = if (file.isDirectory) FileItem.FolderContent(-1) else FileItem.MediaContent,
         )
+    }
+
+    // Discuss: maybe storage volume could be nested?
+    // jut mount a volume at another, currently we know that all mounted typically under /storage/ without nesting.
+    /**
+     * Get current [StorageVolume] from a [root].
+     * (We presume that they could not be nested.)
+     */
+    private fun currentVolume(context: Context, root: Location): StorageVolume {
+        val storageManager = context.getSystemService<StorageManager>()!!
+        val rootVolume = storageManager.getStorageVolume(File(root.absolutePath))
+        return rootVolume ?: storageManager.primaryStorageVolume
     }
 
 }
