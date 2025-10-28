@@ -27,11 +27,11 @@ object Locations {
     fun from(path: String, storageManager: StorageManager): Location =
         from(File(path), storageManager)
 
-    fun from(file: File, storageManager: StorageManager): Location {
-        val storageVolume = file.getStorageVolume(storageManager)
-        val absolutePath = file.absolutePath.ifBlank { "/" }
-        return ActualLocation(absolutePath, storageVolume)
-    }
+    fun from(file: File, storageManager: StorageManager): Location =
+        from(file.absolutePath, file.getStorageVolume(storageManager))
+
+    fun from(absolutePath: String, storageVolume: StorageVolume): Location =
+        ActualLocation(absolutePath = absolutePath.ifBlank { "/" }, storageVolume = storageVolume)
 
     /**
      * get parent of current [location]
