@@ -5,9 +5,9 @@
 package player.phonograph.ui.modules.explorer
 
 import player.phonograph.App
-import player.phonograph.mechanism.explorer.Locations
+import player.phonograph.mechanism.explorer.MediaPaths
 import player.phonograph.model.file.FileItem
-import player.phonograph.model.file.Location
+import player.phonograph.model.file.MediaPath
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import androidx.lifecycle.ViewModel
@@ -23,27 +23,27 @@ sealed class AbsFileViewModel : ViewModel() {
 
     val defaultPath: String get() = Setting(App.instance)[Keys.startDirectoryPath].data
 
-    private val _currentLocation: MutableStateFlow<Location> =
-        MutableStateFlow(Locations.from(defaultPath, App.instance))
+    private val _currentPath: MutableStateFlow<MediaPath> =
+        MutableStateFlow(MediaPaths.from(defaultPath, App.instance))
 
-    val currentLocation = _currentLocation.asStateFlow()
+    val currentPath = _currentPath.asStateFlow()
 
 
     // adapter position history
-    private val history: MutableMap<Location, Int> = mutableMapOf()
-    val historyPosition: Int get() = history[_currentLocation.value] ?: 0
-    fun changeLocation(context: Context, position: Int, newLocation: Location) {
-        val oldLocation = _currentLocation.value
+    private val history: MutableMap<MediaPath, Int> = mutableMapOf()
+    val historyPosition: Int get() = history[_currentPath.value] ?: 0
+    fun changeDirectory(context: Context, position: Int, newLocation: MediaPath) {
+        val oldLocation = _currentPath.value
         history[oldLocation] = position
-        _currentLocation.value = newLocation
+        _currentPath.value = newLocation
         refreshFiles(context, newLocation)
     }
 
-    fun refreshFiles(context: Context, location: Location = currentLocation.value) {
+    fun refreshFiles(context: Context, path: MediaPath = currentPath.value) {
         viewModelScope.launch(Dispatchers.IO) {
             _loading.value = true
 
-            _currentFiles.value = listFiles(context, location)
+            _currentFiles.value = listFiles(context, path)
 
             _loading.value = false
         }
@@ -61,6 +61,6 @@ sealed class AbsFileViewModel : ViewModel() {
 
     protected abstract suspend fun listFiles(
         context: Context,
-        location: Location,
+        path: MediaPath,
     ): List<FileItem>
 }

@@ -11,7 +11,7 @@ import player.phonograph.model.sort.SortRef
 
 class FileItem(
     val name: String,
-    val location: Location,
+    val mediaPath: MediaPath,
     val dateAdded: Long = -1,
     val dateModified: Long = -1,
     val size: Long = -1,
@@ -25,18 +25,20 @@ class FileItem(
     class PlaylistContent(val playlist: Playlist) : Content
     class FolderContent(var count: Int) : Content
 
+
+    val path: String get() = mediaPath.path
     val isFolder: Boolean get() = content is FolderContent
     val isFile: Boolean get() = content !is FolderContent
 
     //region Object methods
 
-    // only location matters
-    override fun toString(): String = location.toString()
-    override fun hashCode(): Int = location.hashCode()
+    // only path matters
+    override fun toString(): String = mediaPath.toString()
+    override fun hashCode(): Int = mediaPath.hashCode()
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is FileItem) return false
-        if (location != other.location) return false
+        if (mediaPath != other.mediaPath) return false
         return true
     }
 

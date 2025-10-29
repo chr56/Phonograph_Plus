@@ -18,7 +18,7 @@ class FilesChooserExplorerFragment : AbsFilesExplorerFragment<FilesChooserViewMo
     override fun createAdapter(): FilesChooserAdapter =
         FilesChooserAdapter(requireActivity(), model.currentFiles.value) {
             when {
-                it.isFolder -> onSwitch(it.location)
+                it.isFolder -> onSwitch(it.mediaPath)
                 else        -> Unit
             }
         }

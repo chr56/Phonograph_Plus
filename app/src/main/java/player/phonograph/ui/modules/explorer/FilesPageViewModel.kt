@@ -7,7 +7,7 @@ package player.phonograph.ui.modules.explorer
 import player.phonograph.App
 import player.phonograph.model.Song
 import player.phonograph.model.file.FileItem
-import player.phonograph.model.file.Location
+import player.phonograph.model.file.MediaPath
 import player.phonograph.repo.loader.Songs
 import player.phonograph.repo.mediastore.MediaStoreFileEntities
 import player.phonograph.settings.Keys
@@ -29,11 +29,11 @@ class FilesPageViewModel : AbsFileViewModel() {
             Setting(App.instance)[Keys.showFileImages].data = value
         }
 
-    override suspend fun listFiles(context: Context, location: Location): List<FileItem> =
+    override suspend fun listFiles(context: Context, path: MediaPath): List<FileItem> =
         if (useLegacyListFile) {
-            MediaStoreFileEntities.listFilesLegacy(context, location)
+            MediaStoreFileEntities.listFilesLegacy(context, path)
         } else {
-            MediaStoreFileEntities.listFilesMediaStore(context, location)
+            MediaStoreFileEntities.listFilesMediaStore(context, path)
         }
 
 
@@ -43,7 +43,7 @@ class FilesPageViewModel : AbsFileViewModel() {
             if (item.content is FileItem.SongContent) {
                 item.content.song.asList()
             } else {
-                Songs.searchByPath(context, item.location.absolutePath, false)
+                Songs.searchByPath(context, item.path, false)
             }
         }
     }

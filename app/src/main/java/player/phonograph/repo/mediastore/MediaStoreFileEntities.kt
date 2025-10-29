@@ -6,9 +6,9 @@ package player.phonograph.repo.mediastore
 
 import player.phonograph.foundation.mediastore.EXTENDED_SONG_PROJECTION
 import player.phonograph.foundation.mediastore.readSong
-import player.phonograph.mechanism.explorer.Locations
+import player.phonograph.mechanism.explorer.MediaPaths
 import player.phonograph.model.file.FileItem
-import player.phonograph.model.file.Location
+import player.phonograph.model.file.MediaPath
 import player.phonograph.repo.mediastore.internal.queryMediaFiles
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
@@ -25,23 +25,22 @@ import java.io.File
 object MediaStoreFileEntities {
 
     /**
-     * list files in [currentLocation] as format of FileItem via MediaStore
+     * list files in [path] as format of FileItem via MediaStore
      */
     suspend fun listFilesMediaStore(
         context: Context,
-        currentLocation: Location,
+        path: MediaPath,
     ): List<FileItem> {
         val fileCursor = queryMediaFiles(
             context,
-            "${MediaStore.MediaColumns.DATA} LIKE ?",
-            arrayOf("${currentLocation.absolutePath}%")
+            "${MediaStore.MediaColumns.DATA} LIKE ?", arrayOf("${path.path}%")
         ) ?: return emptyList()
-        val rootVolume = currentVolume(context, currentLocation)
+        val rootVolume = currentVolume(context, path)
         return fileCursor.use { cursor ->
             if (cursor.moveToFirst()) {
                 val list = mutableListOf<FileItem>()
                 do {
-                    list.register(readFileItem(cursor, currentLocation, rootVolume))
+                    list.register(readFileItem(cursor, path, rootVolume))
                 } while (cursor.moveToNext())
                 val sortMode = Setting(context)[Keys.fileSortMode].read()
                 list.sortedWith(FileItem.SortedComparator(sortMode))
@@ -74,14 +73,14 @@ object MediaStoreFileEntities {
      */
     private fun readFileItem(
         cursor: Cursor,
-        root: Location,
+        root: MediaPath,
         rootVolume: StorageVolume,
     ): FileItem {
 
         val song = readSong(cursor)
 
         val absolutePath = song.data
-        val relativePath = absolutePath.substringAfter(root.absolutePath).removePrefix("/")
+        val relativePath = absolutePath.substringAfter(root.path).removePrefix("/")
 
         return if (relativePath.contains('/')) {
             val folderName = relativePath.substringBefore('/')
@@ -89,7 +88,7 @@ object MediaStoreFileEntities {
             // folder
             FileItem(
                 name = folderName,
-                location = Locations.from(folderPath, rootVolume),
+                mediaPath = MediaPaths.from(folderPath, rootVolume),
                 dateAdded = song.dateAdded,
                 dateModified = song.dateModified,
                 content = FileItem.FolderContent(0),
@@ -100,7 +99,7 @@ object MediaStoreFileEntities {
             // file
             FileItem(
                 name = displayName,
-                location = Locations.from(song.data, rootVolume),
+                mediaPath = MediaPaths.from(song.data, rootVolume, song.id),
                 dateAdded = song.dateAdded,
                 dateModified = song.dateModified,
                 size = size,
@@ -111,27 +110,27 @@ object MediaStoreFileEntities {
 
 
     /**
-     * list files in [location] as format of FileItem via File API
+     * list files in [path] as format of FileItem via File API
      */
     suspend fun listFilesLegacy(
         context: Context,
-        location: Location,
+        path: MediaPath,
     ): List<FileItem> {
-        val directory = File(location.absolutePath).also { if (!it.isDirectory) return emptyList() }
+        val directory = File(path.path).also { if (!it.isDirectory) return emptyList() }
         val files = directory.listFiles(audioFileFilter) ?: return emptyList()
         if (files.isEmpty()) return emptyList()
         yield()
-        val rootVolume = currentVolume(context, location)
+        val rootVolume = currentVolume(context, path)
         val result = files.map { file -> parse(file, rootVolume) }
         val sortMode = Setting(context)[Keys.fileSortMode].read()
         return result.sortedWith(FileItem.SortedComparator(sortMode))
     }
 
     private fun parse(file: File, volume: StorageVolume): FileItem {
-        val location = Locations.from(file.absolutePath, volume)
+        val location = MediaPaths.from(file.absolutePath, volume)
         return FileItem(
             name = file.name,
-            location = location,
+            mediaPath = location,
             dateAdded = file.lastModified(),
             dateModified = file.lastModified(),
             size = file.length(),
@@ -142,12 +141,12 @@ object MediaStoreFileEntities {
     // Discuss: maybe storage volume could be nested?
     // jut mount a volume at another, currently we know that all mounted typically under /storage/ without nesting.
     /**
-     * Get current [StorageVolume] from a [root].
+     * Get current [StorageVolume] from a [root] path.
      * (We presume that they could not be nested.)
      */
-    private fun currentVolume(context: Context, root: Location): StorageVolume {
+    private fun currentVolume(context: Context, root: MediaPath): StorageVolume {
         val storageManager = context.getSystemService<StorageManager>()!!
-        val rootVolume = storageManager.getStorageVolume(File(root.absolutePath))
+        val rootVolume = storageManager.getStorageVolume(File(root.path))
         return rootVolume ?: storageManager.primaryStorageVolume
     }
 

@@ -233,7 +233,7 @@ object ClickActionProviders {
                                       -> {
                     val file = list[position]
                     val song = when (file.content) {
-                        FileItem.MediaContent   -> Songs.path(context, file.location.absolutePath)
+                        FileItem.MediaContent   -> Songs.path(context, file.path)
                         is FileItem.SongContent -> file.content.song
                         else                    -> null
                     } ?: return false

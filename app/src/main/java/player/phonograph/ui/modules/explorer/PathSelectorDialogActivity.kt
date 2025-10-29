@@ -33,7 +33,6 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.LinearLayout.LayoutParams
 import android.widget.Space
-import kotlin.collections.iterator
 
 class PathSelectorDialogActivity : DialogActivity() {
 
@@ -84,7 +83,7 @@ class PathSelectorDialogActivity : DialogActivity() {
         setResult(
             RESULT_CODE_SUCCESS,
             Intent().apply {
-                putExtra(EXTRA_KEY_PATH, model.currentLocation.value.absolutePath)
+                putExtra(EXTRA_KEY_PATH, model.currentPath.value.path)
             }
         )
         finish()

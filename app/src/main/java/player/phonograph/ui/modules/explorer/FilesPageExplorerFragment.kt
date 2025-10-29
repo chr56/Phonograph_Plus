@@ -26,7 +26,7 @@ class FilesPageExplorerFragment : AbsFilesExplorerFragment<FilesPageViewModel, F
         FilesPageAdapter(requireActivity(), model.currentFiles.value) { fileEntities, position ->
             val item = fileEntities[position]
             if (item.isFolder) {
-                onSwitch(item.location)
+                onSwitch(item.mediaPath)
             } else {
                 ClickActionProviders.FileEntityClickActionProvider().listClick(
                     fileEntities,

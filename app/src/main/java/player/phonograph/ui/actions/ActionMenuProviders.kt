@@ -349,7 +349,7 @@ object ActionMenuProviders {
                     menuItem(title = getString(R.string.action_tag_editor)) { //id = R.id.action_tag_editor
                         showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                         onClick {
-                            TagBrowserActivity.launch(context, file.location.absolutePath)
+                            TagBrowserActivity.launch(context, file.path)
                             true
                         }
                     }
@@ -370,7 +370,7 @@ object ActionMenuProviders {
                     menuItem(title = getString(R.string.action_add_to_black_list)) { // id = R.id.action_add_to_black_list
                         showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                         onClick {
-                            val file = File(file.location.absolutePath)
+                            val file = File(file.path)
                             if (file.isDirectory) addToBlacklist(context, file.absolutePath)
                             else addToBlacklist(context, file.absolutePath.dropLastWhile { it != '/' }.dropLast(1))
                             true
@@ -389,8 +389,10 @@ object ActionMenuProviders {
         private suspend fun filter(file: FileItem, context: Context): Song? =
             if (file.content is FileItem.SongContent) {
                 file.content.song
+            } else if (file.mediaPath.mediastoreId > 0) {
+                Songs.id(context, file.mediaPath.mediastoreId)
             } else {
-                Songs.searchByPath(context, file.location.absolutePath, true).firstOrNull()
+                Songs.searchByPath(context, file.path, true).firstOrNull()
             }
 
         private inline fun action(
@@ -403,7 +405,7 @@ object ActionMenuProviders {
 
         private fun scan(context: Context, dir: FileItem) {
             context.lifecycleScopeOrNewOne().launch(Dispatchers.IO) {
-                val files = File(dir.location.absolutePath).listFiles() ?: return@launch
+                val files = File(dir.path).listFiles() ?: return@launch
                 val paths: Array<String> = Array(files.size) { files[it].path }
 
                 MediaStoreScanner(context).scan(paths)
@@ -411,7 +413,7 @@ object ActionMenuProviders {
         }
 
         private fun setStartDirectory(context: Context, dir: FileItem): Boolean {
-            val path = dir.location.absolutePath
+            val path = dir.path
             Setting(context)[Keys.startDirectoryPath].data = path
             Toast.makeText(
                 context, String.format(context.getString(R.string.msg_new_start_directory), path), Toast.LENGTH_SHORT
