@@ -66,6 +66,18 @@ object MediaPaths {
         }
     }
 
+    // Discuss: maybe storage volume could be nested?
+    // jut mount a volume at another, currently we know that all mounted typically under /storage/ without nesting.
+    /**
+     * Get current [StorageVolume] from a [root] path.
+     * (We presume that they could not be nested.)
+     */
+    fun volumeOf(context: Context, root: MediaPath): StorageVolume {
+        val storageManager = context.getSystemService<StorageManager>()!!
+        val rootVolume = storageManager.getStorageVolume(File(root.path))
+        return rootVolume ?: storageManager.primaryStorageVolume
+    }
+
     private class ActualMediaPath(
         override val path: String,
         override val volume: MediaPath.Volume,

@@ -35,7 +35,7 @@ object MediaStoreFileEntities {
             context,
             "${MediaStore.MediaColumns.DATA} LIKE ?", arrayOf("${path.path}%")
         ) ?: return emptyList()
-        val rootVolume = currentVolume(context, path)
+        val rootVolume = MediaPaths.volumeOf(context, path)
         return fileCursor.use { cursor ->
             if (cursor.moveToFirst()) {
                 val list = mutableListOf<FileItem>()
@@ -120,7 +120,7 @@ object MediaStoreFileEntities {
         val files = directory.listFiles(audioFileFilter) ?: return emptyList()
         if (files.isEmpty()) return emptyList()
         yield()
-        val rootVolume = currentVolume(context, path)
+        val rootVolume = MediaPaths.volumeOf(context, path)
         val result = files.map { file -> parse(file, rootVolume) }
         val sortMode = Setting(context)[Keys.fileSortMode].read()
         return result.sortedWith(FileItem.SortedComparator(sortMode))
@@ -136,18 +136,6 @@ object MediaStoreFileEntities {
             size = file.length(),
             content = if (file.isDirectory) FileItem.FolderContent(-1) else FileItem.MediaContent,
         )
-    }
-
-    // Discuss: maybe storage volume could be nested?
-    // jut mount a volume at another, currently we know that all mounted typically under /storage/ without nesting.
-    /**
-     * Get current [StorageVolume] from a [root] path.
-     * (We presume that they could not be nested.)
-     */
-    private fun currentVolume(context: Context, root: MediaPath): StorageVolume {
-        val storageManager = context.getSystemService<StorageManager>()!!
-        val rootVolume = storageManager.getStorageVolume(File(root.path))
-        return rootVolume ?: storageManager.primaryStorageVolume
     }
 
 }
