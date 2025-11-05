@@ -32,10 +32,15 @@ import player.phonograph.util.permissions.permissionDescription
 import player.phonograph.util.permissions.permissionName
 import util.theme.materials.MaterialColor
 import androidx.annotation.StringRes
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.setMargins
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import android.content.pm.PackageManager
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES.VANILLA_ICE_CREAM
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -44,6 +49,7 @@ import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+import android.view.ViewGroup.MarginLayoutParams
 import android.widget.LinearLayout
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
@@ -56,6 +62,18 @@ class PhonographIntroActivity : AppIntro(), IOpenFileStorageAccessible, IRequest
     private fun config() {
         isWizardMode = true
         showStatusBar(true)
+        if (SDK_INT >= VANILLA_ICE_CREAM) {
+            ViewCompat.setOnApplyWindowInsetsListener(window.decorView) { view, windowInsets ->
+                val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+                view.findViewById<View>(android.R.id.content)?.updateLayoutParams<MarginLayoutParams> {
+                    topMargin = insets.top
+                    bottomMargin = insets.bottom
+                    leftMargin = insets.left
+                    rightMargin = insets.right
+                }
+                windowInsets
+            }
+        }
         setStatusBarColorRes(MaterialColor.Black._1000.asResource)
         setNavBarColorRes(MaterialColor.Black._1000.asResource)
         isColorTransitionsEnabled = true
