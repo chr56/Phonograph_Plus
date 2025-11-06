@@ -25,27 +25,26 @@ import android.widget.ImageView
 open class DisplayAdapter<I>(
     val activity: FragmentActivity,
     var presenter: DisplayPresenter<I>,
+    allowMultiSelection: Boolean = true,
+    stableId: Boolean = true,
 ) : RecyclerView.Adapter<DisplayAdapter.DisplayViewHolder<I>>(),
     FastScrollRecyclerView.SectionedAdapter,
     IMultiSelectableAdapter<I> {
 
 
     var dataset: List<I> = emptyList()
-        @SuppressLint("NotifyDataSetChanged")
         set(value) {
             field = value
+            @SuppressLint("NotifyDataSetChanged")
             notifyDataSetChanged()
         }
 
     init {
-        @Suppress("LeakingThis")
-        setHasStableIds(true)
+        setHasStableIds(stableId)
     }
 
-    protected val controller: MultiSelectionController<I>
-            by lazy { MultiSelectionController(this, activity, allowMultiSelection) }
-
-    protected open val allowMultiSelection: Boolean get() = true
+    protected val controller: MultiSelectionController<I> =
+        MultiSelectionController(this, activity, allowMultiSelection)
 
     override fun getItemId(position: Int): Long = presenter.getItemID(dataset[position])
     override fun getItem(datasetPosition: Int): I = dataset[datasetPosition]
@@ -77,6 +76,9 @@ open class DisplayAdapter<I>(
         return text ?: "-"
     }
 
+    fun setMultiSelectionEnabled(value: Boolean) {
+        controller.enable = value
+    }
 
     open class DisplayViewHolder<I>(itemView: View) : UniversalMediaEntryViewHolder(itemView) {
 

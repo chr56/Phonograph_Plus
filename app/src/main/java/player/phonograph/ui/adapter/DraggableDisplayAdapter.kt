@@ -19,7 +19,10 @@ import android.view.ViewGroup
 abstract class DraggableDisplayAdapter<I>(
     activity: FragmentActivity,
     presenter: DisplayPresenter<I>,
-) : DisplayAdapter<I>(activity, presenter), DraggableItemAdapter<DraggableDisplayAdapter.DraggableViewHolder<I>> {
+    allowMultiSelection: Boolean = true,
+    stableId: Boolean = true,
+) : DisplayAdapter<I>(activity, presenter, allowMultiSelection = allowMultiSelection, stableId = stableId),
+    DraggableItemAdapter<DraggableDisplayAdapter.DraggableViewHolder<I>> {
 
     abstract fun editableMode(): Boolean
 

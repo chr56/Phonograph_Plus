@@ -40,7 +40,7 @@ interface IMultiSelectableAdapter<I> {
 class MultiSelectionController<I>(
     private val linkedAdapter: IMultiSelectableAdapter<I>,
     private val activity: ComponentActivity,
-    private val enable: Boolean,
+    var enable: Boolean = true,
 ) {
     private val _selected: MutableList<I> = mutableListOf()
     val selected: List<I> get() = _selected.toList()

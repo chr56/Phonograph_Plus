@@ -28,7 +28,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 
 class PlayingQueueAdapter(activity: FragmentActivity) :
-        DraggableDisplayAdapter<Song>(activity, PlayingQueuePresenter) {
+        DraggableDisplayAdapter<Song>(activity, PlayingQueuePresenter, allowMultiSelection = false) {
 
     var current: Int = -1
         @SuppressLint("NotifyDataSetChanged") // number 0 is moving, meaning all items' number is changing
@@ -36,8 +36,6 @@ class PlayingQueueAdapter(activity: FragmentActivity) :
             field = value
             notifyDataSetChanged()
         }
-
-    override val allowMultiSelection: Boolean get() = false
 
     override fun getItemId(position: Int): Long = produceSafeId(presenter.getItemID(dataset[position]), position)
 
