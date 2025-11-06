@@ -91,8 +91,11 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
 
         // Bread Crumb
         binding.breadCrumb.apply {
-            path = model.currentPath.value
-            callBack = ::onSwitch
+            val current = model.currentPath.value
+            setCrumbs(current.volume.name, generateCrumbs(current.basePath))
+            setOnCrumbClick { crumbs: List<String> ->
+                onSwitch(buildMediaPathFromCrumbs(context, current.volumeRoot, crumbs))
+            }
         }
 
         binding.container.apply {
@@ -118,6 +121,14 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
         model.refreshFiles(requireContext())
     }
 
+    private fun generateCrumbs(path: String): List<String> = path.split("/").filter { it.isNotEmpty() }
+
+    private fun buildMediaPathFromCrumbs(context: Context, volumePath: String, crumbs: List<String>): MediaPath {
+        val basePath = crumbs.joinToString(prefix = "/", separator = "/")
+        val path = "$volumePath$basePath"
+        return MediaPaths.from(path, context)
+    }
+
     abstract fun createAdapter(): A
 
     protected open fun setupObservers() {
@@ -125,7 +136,7 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
             lifecycle.withStateAtLeast(Lifecycle.State.STARTED) {
                 // Bread Crumb
                 binding.breadCrumb.apply {
-                    path = newPath
+                    setCrumbs(newPath.volume.name, generateCrumbs(newPath.basePath))
                     layoutManager.scrollHorizontallyBy(
                         binding.breadCrumb.width / 4,
                         recyclerView.Recycler(),

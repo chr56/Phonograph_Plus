@@ -6,8 +6,6 @@ package player.phonograph.ui.views
 
 import player.phonograph.R
 import player.phonograph.databinding.ItemTextBinding
-import player.phonograph.mechanism.explorer.MediaPaths
-import player.phonograph.model.file.MediaPath
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import util.theme.color.primaryTextColor
@@ -34,17 +32,8 @@ class BreadCrumbView : FrameLayout {
         context, attrs, defStyleAttr, defStyleRes
     )
 
-    var callBack: (MediaPath) -> Unit
-        get() = adapter.callBack
-        set(value) {
-            adapter.callBack = value
-        }
-
-    var path: MediaPath? = null
-        set(value) {
-            field = value
-            adapter.path = value
-        }
+    fun setCrumbs(root: String, crumbs: List<String>): Unit = adapter.update(root, crumbs)
+    fun setOnCrumbClick(callback: (crumbs: List<String>) -> Unit) = adapter.setOnCrumbClick(callback)
 
     val recyclerView: RecyclerView
     val adapter: BreadCrumbAdapter
@@ -53,7 +42,6 @@ class BreadCrumbView : FrameLayout {
     init {
         recyclerView = RecyclerView(context)
         adapter = BreadCrumbAdapter(context)
-        adapter.path = path
         layoutManager = LinearLayoutManager(context).apply { orientation = LinearLayoutManager.HORIZONTAL }
         recyclerView.adapter = adapter
         recyclerView.layoutManager = layoutManager
@@ -69,45 +57,49 @@ class BreadCrumbView : FrameLayout {
             })
     }
 
-    class BreadCrumbAdapter(val context: Context) : RecyclerView.Adapter<BreadCrumbAdapter.ViewHolder>() {
+    class BreadCrumbAdapter(
+        private val context: Context,
+    ) : RecyclerView.Adapter<BreadCrumbAdapter.ViewHolder>() {
 
-        private var segmentations: List<String> = emptyList()
+        private var _root: String? = null
+        val root: String? get() = _root
 
-        var callBack: (MediaPath) -> Unit = {}
+        private val _crumbs: MutableList<String> = mutableListOf()
+        val crumbs: List<String> get() = _crumbs
 
-        var path: MediaPath? = null
-            @SuppressLint("NotifyDataSetChanged") set(value) {
-                field = value
-                segmentations = (if (value != null) generateSegmentation(value.basePath) else emptyList())
-                notifyDataSetChanged()
-            }
+        fun update(root: String?, crumbs: List<String>) {
+            _root = root
+            _crumbs.clear()
+            _crumbs.addAll(crumbs)
 
-        private fun generateSegmentation(path: String): List<String> = path.split("/").filter { it.isNotEmpty() }
-        private fun locationAt(position: Int): MediaPath? {
-            val volumePath = path?.volume?.root ?: return null
-            val targetSegments = segmentations.run { subList(0, position.coerceAtMost(size)) }
-            val basePath = targetSegments.joinToString(prefix = "/", separator = "/")
-            val path = "$volumePath$basePath"
-            return MediaPaths.from(path, context)
+            @SuppressLint("NotifyDataSetChanged")
+            notifyDataSetChanged()
         }
 
-        override fun getItemCount(): Int = segmentations.size + 1
+        private var onClick: (List<String>) -> Unit = {}
+        fun setOnCrumbClick(callback: (crumbs: List<String>) -> Unit) {
+            onClick = callback
+        }
+
+
+        override fun getItemCount(): Int = crumbs.size + 1
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             return ViewHolder(ItemTextBinding.inflate(LayoutInflater.from(context), parent, false))
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            val text = if (position == 0) path?.volume?.name ?: "" else segmentations[position - 1]
-            val location = locationAt(position)
-            holder.bind(text) { if (location != null) callBack(location) }
+            val text = if (position == 0) root ?: "" else crumbs[position - 1]
+            holder.bind(text) {
+                onClick(crumbs.subList(0, position.coerceAtLeast(0)))
+            }
         }
 
 
         class ViewHolder(val viewBinding: ItemTextBinding) : RecyclerView.ViewHolder(viewBinding.root) {
-            fun bind(segment: String, onClick: (View) -> Unit) {
+            fun bind(crumb: String, onClick: (View) -> Unit) {
                 val context = viewBinding.root.context
-                viewBinding.text.text = segment
+                viewBinding.text.text = crumb
                 viewBinding.text.setTextColor(context.primaryTextColor(context.nightMode))
                 itemView.setOnClickListener(onClick)
             }
