@@ -14,14 +14,13 @@ import player.phonograph.model.Genre
 import player.phonograph.model.QueueSong
 import player.phonograph.model.Song
 import player.phonograph.model.SongCollection
-import player.phonograph.model.file.FileEntity
+import player.phonograph.model.file.FileItem
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.service.ShuffleMode
 import player.phonograph.repo.loader.Songs
 import player.phonograph.ui.adapter.MultiSelectionController
 import player.phonograph.ui.modules.tag.MultiTagBrowserActivity
 import player.phonograph.ui.modules.tag.TagBrowserActivity
-import player.phonograph.util.asList
 import player.phonograph.util.concurrent.lifecycleScopeOrNewOne
 import player.phonograph.util.theme.getTintedDrawable
 import android.content.Context
@@ -185,16 +184,10 @@ object MultiSelectionToolbarMenuProviders {
                     is Genre          -> Songs.genres(context, it.id)
                     is Playlist       -> PlaylistSongsActions.reader(it).allSongs(context)
                     is SongCollection -> it.songs
-                    is FileEntity     -> convertFileEntityToSong(context, it)
+                    is FileItem       -> it.songs(context)
                     else              -> emptyList()
                 }
             }
         }
 
-    private suspend fun convertFileEntityToSong(context: Context, fileEntity: FileEntity): List<Song> {
-        return when (fileEntity) {
-            is FileEntity.File   -> Songs.id(context, fileEntity.id).asList()
-            is FileEntity.Folder -> Songs.searchByPath(context, fileEntity.location.absolutePath, false)
-        }
-    }
 }

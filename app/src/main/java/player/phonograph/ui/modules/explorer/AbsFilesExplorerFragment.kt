@@ -5,12 +5,15 @@
 package player.phonograph.ui.modules.explorer
 
 import com.google.android.material.snackbar.Snackbar
-import lib.storage.extension.rootDirectory
 import player.phonograph.R
 import player.phonograph.databinding.FragmentFileExploreBinding
-import player.phonograph.mechanism.explorer.Locations
-import player.phonograph.model.file.FileEntity
-import player.phonograph.model.file.Location
+import player.phonograph.mechanism.explorer.MediaPaths
+import player.phonograph.model.file.FileItem
+import player.phonograph.model.file.MediaPath
+import player.phonograph.ui.actions.ActionMenuProviders
+import player.phonograph.ui.actions.ClickActionProviders
+import player.phonograph.ui.adapter.DisplayAdapter
+import player.phonograph.ui.adapter.DisplayPresenter
 import player.phonograph.util.observe
 import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.getTintedDrawable
@@ -21,8 +24,8 @@ import util.theme.color.primaryTextColor
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.getSystemService
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
@@ -32,22 +35,21 @@ import androidx.recyclerview.widget.RecyclerView
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.os.Environment
-import android.os.storage.StorageManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 
-sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<*>> : Fragment() {
+sealed class AbsFilesExplorerFragment : Fragment() {
 
     // view binding
     private var _viewBinding: FragmentFileExploreBinding? = null
     protected val binding get() = _viewBinding!!
     // view model
-    protected abstract val model: M
+    protected val model: FileExplorerViewModel by viewModels({ requireActivity() })
     // adapter
-    protected lateinit var adapter: A
+    protected lateinit var adapter: DisplayAdapter<FileItem>
+    protected lateinit var presenter: DisplayPresenter<FileItem>
     protected lateinit var layoutManager: LinearLayoutManager
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -75,7 +77,7 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
             }
 
             override fun onResume(owner: LifecycleOwner) {
-                updateBackPressedDispatcher(model.currentLocation.value)
+                updateBackPressedDispatcher(model.currentPath.value)
             }
         })
 
@@ -84,15 +86,18 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
             setImageDrawable(requireContext().getThemedDrawable(R.drawable.ic_nav_back_white_24dp))
             setOnClickListener { navigateUp(true) }
             setOnLongClickListener {
-                onSwitch(Locations.from(model.defaultPath, it.context))
+                onSwitch(MediaPaths.startDirectory(it.context))
                 true
             }
         }
 
         // Bread Crumb
         binding.breadCrumb.apply {
-            location = model.currentLocation.value
-            callBack = ::onSwitch
+            val current = model.currentPath.value
+            setCrumbs(current.volume.name, current.basePathSegments)
+            setOnCrumbClick { crumbs: List<String> ->
+                onSwitch(MediaPaths.from(current.volumeRoot, crumbs, context))
+            }
         }
 
         binding.container.apply {
@@ -104,7 +109,16 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
         }
 
         // Recycle View
-        adapter = createAdapter()
+        presenter = FileItemPresenter(
+            clickActionProvider = createClickActionProvider(),
+            menuProvider = createMenuProvider(),
+        )
+        adapter = DisplayAdapter(
+            activity = requireActivity(),
+            presenter = presenter,
+            allowMultiSelection = allowMultiSelection,
+            stableId = false,
+        )
         layoutManager = LinearLayoutManager(activity)
         binding.recyclerView.setUpFastScrollRecyclerViewColor(requireContext(), accentColor)
 
@@ -118,14 +132,16 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
         model.refreshFiles(requireContext())
     }
 
-    abstract fun createAdapter(): A
+    abstract val allowMultiSelection: Boolean
+    abstract fun createClickActionProvider(): ClickActionProviders.ClickActionProvider<FileItem>
+    abstract fun createMenuProvider(): ActionMenuProviders.ActionMenuProvider<FileItem>?
 
     protected open fun setupObservers() {
-        observe(model.currentLocation) { newLocation ->
+        observe(model.currentPath) { newPath ->
             lifecycle.withStateAtLeast(Lifecycle.State.STARTED) {
                 // Bread Crumb
                 binding.breadCrumb.apply {
-                    location = newLocation
+                    setCrumbs(newPath.volume.name, newPath.basePathSegments)
                     layoutManager.scrollHorizontallyBy(
                         binding.breadCrumb.width / 4,
                         recyclerView.Recycler(),
@@ -134,18 +150,18 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
                 }
                 binding.buttonBack.setImageDrawable(
                     requireContext().getThemedDrawable(
-                        if (newLocation.isRoot) {
+                        if (newPath.isRoot) {
                             R.drawable.ic_sdcard_white_24dp
                         } else {
                             R.drawable.ic_nav_back_white_24dp
                         }
                     )
                 )
-                updateBackPressedDispatcher(newLocation)
+                updateBackPressedDispatcher(newPath)
             }
         }
         observe(model.currentFiles) { items ->
-            updateFilesDisplayed(items)
+            adapter.dataset = items
             layoutManager.scrollToPosition(model.historyPosition)
         }
         observe(model.loading) { loading ->
@@ -153,11 +169,8 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
         }
     }
 
-    abstract fun updateFilesDisplayed(items: List<FileEntity>)
-
-
     /**
-     * reload all files (determined by [AbsFileViewModel.currentLocation])
+     * reload all files (determined by [FileExplorerViewModel.currentPath])
      */
     protected fun refreshFiles() {
         model.refreshFiles(requireContext())
@@ -168,28 +181,20 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
      * @return true if dialog created
      */
     private fun requireChangeVolume(): Boolean {
-        if (context == null) return false
-        val storageManager = requireContext().getSystemService<StorageManager>()
-        val volumes = storageManager?.storageVolumes
-            ?.filter { it.state == Environment.MEDIA_MOUNTED || it.state == Environment.MEDIA_MOUNTED_READ_ONLY }
-            ?: emptyList()
-        if (volumes.isEmpty()) {
+        val volumes = model.volumes(requireContext())
+        if (volumes.names.isEmpty()) {
             Snackbar.make(binding.root, getString(R.string.err_no_volume_found), Snackbar.LENGTH_SHORT).show()
             return false
         }
-        val volumesNames = volumes.map { "${it.getDescription(context)}\n(${it.rootDirectory()?.path ?: "N/A"})" }
-        val currentLocation = model.currentLocation.value
-        val currentVolume = volumes.find { it.uuid.orEmpty() == currentLocation.volumeUUID }
-        val selected = volumes.indexOf(currentVolume)
         AlertDialog.Builder(requireContext())
             .setTitle(R.string.label_storage_volumes)
-            .setSingleChoiceItems(volumesNames.toTypedArray(), selected) { dialog, choice ->
+            .setSingleChoiceItems(volumes.names.toTypedArray(), volumes.current) { dialog, choice ->
                 dialog.dismiss()
-                val rootDirectory = volumes[choice].rootDirectory()
-                if (rootDirectory == null) {
-                    Toast.makeText(context, R.string.tips_not_available_now, Toast.LENGTH_SHORT).show()
+                val volumeRoot = volumes.paths[choice]
+                if (volumeRoot != null) {
+                    onSwitch(volumeRoot)
                 } else {
-                    onSwitch(Locations.from(rootDirectory, requireContext())) // todo
+                    Toast.makeText(context, R.string.tips_not_available_now, Toast.LENGTH_SHORT).show()
                 }
             }
             .show().tintButtons()
@@ -202,8 +207,8 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
      */
     protected fun navigateUp(allowToChangeVolume: Boolean): Boolean {
         if (activity == null) return false
-        val current = model.currentLocation.value
-        val parent = Locations.parent(current, requireContext())
+        val current = model.currentPath.value
+        val parent = MediaPaths.parent(current, requireContext())
         return if (parent != null) {
             onSwitch(parent)
             true
@@ -217,13 +222,15 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
         }
     }
 
-    protected fun onSwitch(location: Location) {
+    protected fun onSwitch(item: FileItem) = onSwitch(item.mediaPath)
+
+    protected fun onSwitch(target: MediaPath) {
         val position = layoutManager.findLastVisibleItemPosition()
-        model.changeLocation(requireContext(), position, location)
+        model.changeDirectory(requireContext(), position, target)
     }
 
-    private fun updateBackPressedDispatcher(location: Location) {
-        if (!location.isRoot && isResumed) {
+    private fun updateBackPressedDispatcher(path: MediaPath) {
+        if (!path.isRoot && isResumed) {
             requireActivity().onBackPressedDispatcher.addCallback(
                 viewLifecycleOwner, navigateUpBackPressedCallback
             )

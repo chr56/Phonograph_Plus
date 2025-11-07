@@ -5,8 +5,8 @@
 package player.phonograph.repo.mediastore.internal
 
 import player.phonograph.foundation.error.record
-import player.phonograph.foundation.mediastore.BASE_FILE_PROJECTION
 import player.phonograph.foundation.mediastore.BASE_SONG_PROJECTION
+import player.phonograph.foundation.mediastore.EXTENDED_SONG_PROJECTION
 import player.phonograph.foundation.mediastore.mediastoreUriSongsExternal
 import player.phonograph.repo.mediastore.defaultSongQuerySortOrder
 import android.content.Context
@@ -35,16 +35,16 @@ suspend fun querySongs(
 
 /**
  * [queryAudio] but
- * using [BASE_FILE_PROJECTION]
+ * using [EXTENDED_SONG_PROJECTION]
  */
-suspend fun querySongFiles(
+suspend fun queryMediaFiles(
     context: Context,
     selection: String = "",
     selectionValues: Array<String> = emptyArray(),
     sortOrder: String? = defaultSongQuerySortOrder(context),
 ): Cursor? = queryAudio(
     context,
-    BASE_FILE_PROJECTION,
+    EXTENDED_SONG_PROJECTION,
     selection,
     selectionValues,
     sortOrder,

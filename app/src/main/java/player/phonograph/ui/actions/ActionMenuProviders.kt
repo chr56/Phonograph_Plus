@@ -15,8 +15,7 @@ import player.phonograph.model.Artist
 import player.phonograph.model.Genre
 import player.phonograph.model.Song
 import player.phonograph.model.SongCollection
-import player.phonograph.model.file.FileEntity
-import player.phonograph.model.file.Location
+import player.phonograph.model.file.FileItem
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.service.ShuffleMode
 import player.phonograph.repo.loader.PinedPlaylists
@@ -25,7 +24,6 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.modules.tag.TagBrowserActivity
-import player.phonograph.util.asList
 import player.phonograph.util.concurrent.lifecycleScopeOrNewOne
 import player.phonograph.util.fragmentActivity
 import androidx.lifecycle.lifecycleScope
@@ -191,25 +189,22 @@ object ActionMenuProviders {
     }
 
     object AlbumActionMenuProvider : CompositeActionMenuProvider<Album>() {
-        override suspend fun readSongs(context: Context, album: Album): List<Song> =
-            withContext(Dispatchers.IO) {
-                Songs.album(context, album.id)
-            }
+        override suspend fun readSongs(context: Context, album: Album): List<Song> = withContext(Dispatchers.IO) {
+            Songs.album(context, album.id)
+        }
     }
 
 
     object ArtistActionMenuProvider : CompositeActionMenuProvider<Artist>() {
-        override suspend fun readSongs(context: Context, artist: Artist): List<Song> =
-            withContext(Dispatchers.IO) {
-                Songs.artist(context, artist.id)
-            }
+        override suspend fun readSongs(context: Context, artist: Artist): List<Song> = withContext(Dispatchers.IO) {
+            Songs.artist(context, artist.id)
+        }
     }
 
     object GenreActionMenuProvider : CompositeActionMenuProvider<Genre>() {
-        override suspend fun readSongs(context: Context, genre: Genre): List<Song> =
-            withContext(Dispatchers.IO) {
-                Songs.genres(context, genre.id)
-            }
+        override suspend fun readSongs(context: Context, genre: Genre): List<Song> = withContext(Dispatchers.IO) {
+            Songs.genres(context, genre.id)
+        }
     }
 
     object SongCollectionActionMenuProvider : CompositeActionMenuProvider<SongCollection>() {
@@ -219,7 +214,6 @@ object ActionMenuProviders {
     object PlaylistActionMenuProvider : ActionMenuProvider<Playlist> {
         override fun inflateMenu(menu: Menu, context: Context, playlist: Playlist, position: Int) = context.run {
             attach(menu) {
-                val location = playlist.location
                 menuItem {
                     title = getString(R.string.action_play)
                     onClick {
@@ -282,9 +276,8 @@ object ActionMenuProviders {
                     }
                 }
                 menuItem {
-                    title =
-                        if (!playlist.isVirtual()) getString(R.string.action_delete)
-                        else getString(R.string.action_clear)
+                    title = if (!playlist.isVirtual()) getString(R.string.action_delete)
+                    else getString(R.string.action_clear)
                     onClick {
                         fragmentActivity(context) {
                             playlist.actionDeletePlaylist(it)
@@ -305,8 +298,8 @@ object ActionMenuProviders {
         }
     }
 
-    object FileEntityActionMenuProvider : ActionMenuProvider<FileEntity> {
-        override fun inflateMenu(menu: Menu, context: Context, file: FileEntity, position: Int) = context.run {
+    object FileItemActionMenuProvider : ActionMenuProvider<FileItem> {
+        override fun inflateMenu(menu: Menu, context: Context, file: FileItem, position: Int) = context.run {
             attach(menu) {
                 menuItem(title = getString(R.string.action_play)) { // id = R.id.action_play
                     showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
@@ -332,63 +325,56 @@ object ActionMenuProviders {
                         action(context, file) { it.actionAddToPlaylist(context) } //todo
                     }
                 }
-                when (file) {
-                    is FileEntity.File   -> {
-                        menuItem(title = getString(R.string.action_details)) { // id = R.id.action_details
-                            showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
-                            onClick {
-                                fragmentActivity(context) {
-                                    lifecycleScopeOrNewOne().launch {
-                                        Songs.id(context, file.id)?.actionGotoDetail(it)
-                                    }
-                                    true
-                                }
-                            }
-                        }
-                        menuItem(title = getString(R.string.action_share)) { // id = R.id.action_share
-                            showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
-                            onClick {
+                if (file.isFile) {
+                    menuItem(title = getString(R.string.action_details)) { // id = R.id.action_details
+                        showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+                        onClick {
+                            fragmentActivity(context) {
                                 lifecycleScopeOrNewOne().launch {
-                                    Songs.id(context, file.id)?.actionShare(context)
+                                    filter(file, context)?.actionGotoDetail(it)
                                 }
-                                true
-                            }
-                        }
-                        menuItem(title = getString(R.string.action_tag_editor)) { //id = R.id.action_tag_editor
-                            showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
-                            onClick {
-                                TagBrowserActivity.launch(context, file.location.absolutePath)
                                 true
                             }
                         }
                     }
-
-                    is FileEntity.Folder -> {
-                        menuItem(title = getString(R.string.action_scan)) {
-                            showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
-                            onClick {
-                                scan(context, file)
-                                true
+                    menuItem(title = getString(R.string.action_share)) { // id = R.id.action_share
+                        showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+                        onClick {
+                            lifecycleScopeOrNewOne().launch {
+                                filter(file, context)?.actionShare(context)
                             }
+                            true
                         }
-                        menuItem(title = getString(R.string.action_set_as_start_directory)) {
-                            showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
-                            onClick {
-                                setStartDirectory(context, file)
-                            }
+                    }
+                    menuItem(title = getString(R.string.action_tag_editor)) { //id = R.id.action_tag_editor
+                        showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
+                        onClick {
+                            TagBrowserActivity.launch(context, file.path)
+                            true
                         }
-                        menuItem(title = getString(R.string.action_add_to_black_list)) { // id = R.id.action_add_to_black_list
-                            showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
-                            onClick {
-                                val file = File(file.location.absolutePath)
-                                if (file.isDirectory)
-                                    addToBlacklist(context, file.absolutePath)
-                                else
-                                    addToBlacklist(context, file.absolutePath.dropLastWhile { it != '/' }.dropLast(1))
-                                true
-                            }
+                    }
+                } else {
+                    menuItem(title = getString(R.string.action_scan)) {
+                        showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+                        onClick {
+                            scan(context, file)
+                            true
                         }
-
+                    }
+                    menuItem(title = getString(R.string.action_set_as_start_directory)) {
+                        showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+                        onClick {
+                            setStartDirectory(context, file)
+                        }
+                    }
+                    menuItem(title = getString(R.string.action_add_to_black_list)) { // id = R.id.action_add_to_black_list
+                        showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+                        onClick {
+                            val file = File(file.path)
+                            if (file.isDirectory) addToBlacklist(context, file.absolutePath)
+                            else addToBlacklist(context, file.absolutePath.dropLastWhile { it != '/' }.dropLast(1))
+                            true
+                        }
                     }
                 }
                 menuItem(title = getString(R.string.action_delete_from_device)) { // id = R.id.action_delete_from_device
@@ -400,41 +386,41 @@ object ActionMenuProviders {
             }
         }
 
-        private inline fun action(
-            context: Context,
-            fileItem: FileEntity,
-            crossinline block: (List<Song>) -> Boolean,
-        ): Boolean =
-            runBlocking {
-                block(
-                    when (fileItem) {
-                        is FileEntity.File   -> Songs.id(context, fileItem.id).asList()
-                        is FileEntity.Folder -> Songs.searchByPath(context, sqlQuery(fileItem.location), false)
-                    }
-                )
+        private suspend fun filter(file: FileItem, context: Context): Song? =
+            if (file.content is FileItem.SongContent) {
+                file.content.song
+            } else if (file.mediaPath.mediastoreId > 0) {
+                Songs.id(context, file.mediaPath.mediastoreId)
+            } else {
+                Songs.searchByPath(context, file.path, true).firstOrNull()
             }
 
-        private fun scan(context: Context, dir: FileEntity.Folder) {
+        private inline fun action(
+            context: Context,
+            fileItem: FileItem,
+            crossinline block: (List<Song>) -> Boolean,
+        ): Boolean = runBlocking {
+            block(fileItem.songs(context))
+        }
+
+        private fun scan(context: Context, dir: FileItem) {
             context.lifecycleScopeOrNewOne().launch(Dispatchers.IO) {
-                val files = File(dir.location.absolutePath).listFiles() ?: return@launch
+                val files = File(dir.path).listFiles() ?: return@launch
                 val paths: Array<String> = Array(files.size) { files[it].path }
 
                 MediaStoreScanner(context).scan(paths)
             }
         }
 
-        private fun setStartDirectory(context: Context, dir: FileEntity.Folder): Boolean {
-            val path = dir.location.absolutePath
+        private fun setStartDirectory(context: Context, dir: FileItem): Boolean {
+            val path = dir.path
             Setting(context)[Keys.startDirectoryPath].data = path
             Toast.makeText(
-                context,
-                String.format(context.getString(R.string.msg_new_start_directory), path),
-                Toast.LENGTH_SHORT
+                context, String.format(context.getString(R.string.msg_new_start_directory), path), Toast.LENGTH_SHORT
             ).show()
             return true
         }
 
-        private fun sqlQuery(location: Location): String = "%${location.absolutePath}%"
     }
 
     object EmptyActionMenuProvider : ActionMenuProvider<Any> {
