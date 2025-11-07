@@ -36,7 +36,7 @@ import android.widget.Space
 
 class PathSelectorDialogActivity : DialogActivity() {
 
-    private val model: FilesChooserViewModel by viewModels()
+    private val model: FileExplorerViewModel by viewModels()
 
     private lateinit var explorerFragment: FilesChooserExplorerFragment
 

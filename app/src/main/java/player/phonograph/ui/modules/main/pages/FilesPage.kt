@@ -8,18 +8,23 @@ import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import com.github.chr56.android.menu_model.MenuContext
 import com.google.android.material.appbar.AppBarLayout
+import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.databinding.FragmentFilePageBinding
 import player.phonograph.mechanism.event.EventHub
+import player.phonograph.model.Song
+import player.phonograph.model.file.FileItem
 import player.phonograph.model.service.ShuffleMode
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
+import player.phonograph.repo.loader.Songs
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.actions.actionPlay
+import player.phonograph.ui.modules.explorer.FileExplorerViewModel
 import player.phonograph.ui.modules.explorer.FilesPageExplorerFragment
-import player.phonograph.ui.modules.explorer.FilesPageViewModel
 import player.phonograph.ui.modules.popup.ListOptionsPopup
+import player.phonograph.util.asList
 import player.phonograph.util.concurrent.coroutineToast
 import player.phonograph.util.observe
 import player.phonograph.util.theme.getTintedDrawable
@@ -52,7 +57,7 @@ class FilesPage : AbsPage() {
     private val binding get() = _viewBinding!!
 
     private lateinit var explorer: FilesPageExplorerFragment
-    private val model: FilesPageViewModel by viewModels({ requireActivity() })
+    private val model: FileExplorerViewModel by viewModels({ requireActivity() })
 
     private lateinit var listener: MediaStoreListener
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -167,7 +172,7 @@ class FilesPage : AbsPage() {
 
     private suspend fun play(context: Context, shuffle: Boolean) {
         coroutineToast(context, R.string.state_process)
-        val allSongs = model.currentSongs(context)
+        val allSongs = collectSongs(context, model.currentFiles.value)
         val size = allSongs.size
         if (size > 0) {
             coroutineToast(
@@ -187,6 +192,15 @@ class FilesPage : AbsPage() {
         }
     }
 
+    suspend fun collectSongs(context: Context, files: List<FileItem>): List<Song> =
+        files.flatMap { item ->
+            if (item.content is FileItem.SongContent) {
+                item.content.song.asList()
+            } else {
+                Songs.searchByPath(context, item.path, false)
+            }
+        }
+
     private fun headerText(resources: Resources, size: Int): CharSequence =
         resources.getQuantityString(R.plurals.item_files, size, size)
 
@@ -201,23 +215,35 @@ class FilesPage : AbsPage() {
             arrayOf(SortRef.DISPLAY_NAME, SortRef.ADDED_DATE, SortRef.MODIFIED_DATE, SortRef.SIZE)
 
         popup.showFileOption = true
-        popup.useLegacyListFiles = model.useLegacyListFile
-        popup.showFilesImages = model.showFilesImages
+        popup.useLegacyListFiles = useLegacyListFile
+        popup.showFilesImages = showFilesImages
     }
 
     private fun dismissPopup(popup: ListOptionsPopup) {
         val context = popup.contentView.context
         Setting(context)[Keys.fileSortMode].data =
             SortMode(popup.sortRef, popup.revert)
-        model.useLegacyListFile = popup.useLegacyListFiles
+        useLegacyListFile = popup.useLegacyListFiles
         @SuppressLint("NotifyDataSetChanged")
-        if (model.showFilesImages != popup.showFilesImages) {
-            model.showFilesImages = popup.showFilesImages
-            Setting(context)[Keys.showFileImages].data = model.showFilesImages
+        if (showFilesImages != popup.showFilesImages) {
+            showFilesImages = popup.showFilesImages
+            Setting(context)[Keys.showFileImages].data = showFilesImages
         }
         model.refreshFiles(context)
     }
     //endregion
+
+    var useLegacyListFile: Boolean
+        get() = Setting(App.instance)[Keys.useLegacyListFilesImpl].data
+        set(value) {
+            Setting(App.instance)[Keys.useLegacyListFilesImpl].data = value
+        }
+
+    var showFilesImages: Boolean
+        get() = Setting(App.instance)[Keys.showFileImages].data
+        set(value) {
+            Setting(App.instance)[Keys.showFileImages].data = value
+        }
 
     //region MediaStore
     private inner class MediaStoreListener(context: Context) :

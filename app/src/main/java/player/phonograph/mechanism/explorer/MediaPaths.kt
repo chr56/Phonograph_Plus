@@ -7,8 +7,11 @@ package player.phonograph.mechanism.explorer
 import lib.storage.extension.rootDirectory
 import player.phonograph.App
 import player.phonograph.model.file.MediaPath
+import player.phonograph.settings.Keys
+import player.phonograph.settings.Setting
 import androidx.core.content.getSystemService
 import android.content.Context
+import android.os.Environment
 import android.os.storage.StorageManager
 import android.os.storage.StorageVolume
 import android.util.Log
@@ -17,6 +20,17 @@ import java.io.File
 
 object MediaPaths {
     private const val TAG = "MediaPaths"
+
+    fun startDirectory(context: Context): MediaPath {
+        val path = Setting(context.applicationContext)[Keys.startDirectoryPath].data
+        return from(path, context)
+    }
+
+    fun from(prefix: String, segments: List<String>, context: Context): MediaPath {
+        val basePath = segments.joinToString(prefix = "/", separator = "/")
+        val path = "$prefix$basePath"
+        return from(path, context)
+    }
 
     fun from(path: String, context: Context): MediaPath =
         from(File(path), context)
@@ -78,6 +92,17 @@ object MediaPaths {
         return rootVolume ?: storageManager.primaryStorageVolume
     }
 
+    /**
+     * get all [StorageVolume]
+     */
+    fun volumes(context: Context): List<StorageVolume> {
+        val storageManager = context.getSystemService<StorageManager>()
+        val volumes = storageManager?.storageVolumes
+            ?.filter { it.state == Environment.MEDIA_MOUNTED || it.state == Environment.MEDIA_MOUNTED_READ_ONLY }
+            ?: emptyList()
+        return volumes
+    }
+
     private class ActualMediaPath(
         override val path: String,
         override val volume: MediaPath.Volume,
@@ -87,6 +112,8 @@ object MediaPaths {
         override val volumeRoot: String get() = volume.root
 
         override val basePath: String get() = path.substringAfter(volume.root)
+
+        override val basePathSegments: List<String> get() = basePath.split("/").filter { it.isNotEmpty() }
 
         override val isRoot: Boolean get() = path == volume.root
 

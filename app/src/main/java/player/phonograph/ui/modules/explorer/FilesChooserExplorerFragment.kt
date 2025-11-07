@@ -5,22 +5,34 @@
 package player.phonograph.ui.modules.explorer
 
 import player.phonograph.model.file.FileItem
-import androidx.fragment.app.viewModels
+import player.phonograph.ui.actions.ActionMenuProviders
+import player.phonograph.ui.actions.ClickActionProviders
+import android.content.Context
+import android.widget.ImageView
 
-class FilesChooserExplorerFragment : AbsFilesExplorerFragment<FilesChooserViewModel, FilesChooserAdapter>() {
+class FilesChooserExplorerFragment : AbsFilesExplorerFragment() {
 
-    override val model: FilesChooserViewModel by viewModels({ requireActivity() })
+    override val allowMultiSelection: Boolean = false
 
-    override fun updateFilesDisplayed(items: List<FileItem>) {
-        adapter.dataSet = items.toMutableList()
-    }
+    override fun createClickActionProvider(): ClickActionProviders.ClickActionProvider<FileItem> =
+        FilesChooserClickActionProvider(::onSwitch)
 
-    override fun createAdapter(): FilesChooserAdapter =
-        FilesChooserAdapter(requireActivity(), model.currentFiles.value) {
+    override fun createMenuProvider(): ActionMenuProviders.ActionMenuProvider<FileItem>? = null
+
+    class FilesChooserClickActionProvider(private val onSwitch: (FileItem) -> Unit) :
+            ClickActionProviders.ClickActionProvider<FileItem> {
+        override fun listClick(
+            list: List<FileItem>,
+            position: Int,
+            context: Context,
+            imageView: ImageView?,
+        ): Boolean {
+            val item = list[position]
             when {
-                it.isFolder -> onSwitch(it.mediaPath)
-                else        -> Unit
+                item.isFolder -> onSwitch(item)
+                else          -> Unit
             }
+            return true
         }
-
+    }
 }

@@ -36,6 +36,11 @@ interface MediaPath {
     val basePath: String
 
     /**
+     * relative path segments from [volumeRoot],
+     */
+    val basePathSegments: List<String>
+
+    /**
      * true if it is root directory of current StorageVolume
      */
     val isRoot: Boolean
