@@ -15,6 +15,7 @@ import player.phonograph.util.ui.BottomViewWindowInsetsController
 import player.phonograph.util.ui.applyControllableWindowInsetsAsBottomView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.View
@@ -64,6 +65,8 @@ class FilesPageExplorerFragment : AbsFilesExplorerFragment() {
         SettingObserver(view.context, lifecycleScope).apply {
             collect(Keys.showFileImages) { value ->
                 (adapter.presenter as? FileItemPresenter)?.loadCover = value
+                @SuppressLint("NotifyDataSetChanged")
+                adapter.notifyDataSetChanged()
             }
             collect(Keys.useLegacyListFilesImpl) { value ->
                 model.optionUseLegacyListFile = value
