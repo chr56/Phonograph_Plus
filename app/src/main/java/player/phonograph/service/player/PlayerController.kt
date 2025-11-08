@@ -478,7 +478,16 @@ class PlayerController : ServiceComponent, Controller {
             Handler(Looper.getMainLooper()).post {
                 Toast.makeText(service, msg, Toast.LENGTH_SHORT).show()
             }
-            pauseReason = PauseReason.PAUSE_ERROR
+            if (queueManager.isQueueEnded()) {
+                handler.request {
+                    pause(false, reason = PauseReason.PAUSE_FOR_QUEUE_ENDED)
+                }
+            } else {
+                handler.request {
+                    playAt(queueManager.nextSongPosition)
+                    controller.updateLyrics()
+                }
+            }
         }
 
         private fun dumpState(position: Int): String =
