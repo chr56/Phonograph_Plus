@@ -1,11 +1,15 @@
-version: "1.11.2-dev0"
+version: "1.11.2-dev1"
 channel: "PREVIEW"
 versionCode: 1111
-timestamp: 1761500000
+timestamp: 1762585000
 notes:
   en:
     items:
       - "Fix: occasional crash when using 'shuffle all' from the multi-selection menu"
+      - "Fix: automatic library refresh failing once Service quits"
+      - "Fix: buttons in Startup Guide blocked by navigation bar on Android 15 and above"
+      - "Improve: accelerate loading speed in Files Tab"
+      - "Improve: throttle sync progress notifications"
       - "Modify: mute some notifications, and update notification channels"
       - "Development: upgrade Kotlin to 2.2.20, update dependencies"
       - "Development: cleanup codes"
@@ -13,6 +17,10 @@ notes:
   zh:
     items:
       - "修复 从多选菜单进行随机播放时偶尔崩溃"
+      - "修复 在 Android 15 及其以上，设置向导的按钮被导航栏遮挡"
+      - "修复 服务退出后自动媒体库刷新失败"
+      - "优化 提升文件页中加载速度"
+      - "优化 同步进度通知发送节流"
       - "修改 静音部分通知，更新通知渠道"
       - "更新 Kotlin 至 2.2.20, 更新依赖"
       - "开发 清理代码"
