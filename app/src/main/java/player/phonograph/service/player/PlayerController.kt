@@ -489,8 +489,20 @@ class PlayerController : ServiceComponent, Controller {
             val msg = makeErrorMessage(service.resources, what, extra, audioPlayer.currentDataSource)
             Handler(Looper.getMainLooper()).post {
                 Toast.makeText(service, msg, Toast.LENGTH_SHORT).show()
+            }        
+            if (queueManager.isQueueEnded()) {
+                handler.request { pause(true, reason = PauseReason.PAUSE_FOR_QUEUE_ENDED) }
+                controller.broadcastStopLyric()
+                for (observer in controller.observers) {
+                    observer.onReceivingMessage(PlayerStateObserver.Companion.MSG_NO_MORE_SONGS)
+                }
+            } else {
+                handler.request {
+                    prepareNextPlayer(queueManager.nextSong)
+                    queueManager.moveToNextSong(false)
+                    playAt(queueManager.currentSongPosition)
+                }
             }
-            pauseReason = PauseReason.PAUSE_ERROR
         }
 
         private fun dumpState(position: Int): String =
