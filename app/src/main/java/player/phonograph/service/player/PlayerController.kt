@@ -150,6 +150,9 @@ class PlayerController : ServiceComponent, Controller {
                 }
             }
         }
+        settingObserver.collect(Keys.autoSkipUnplayable) { value ->
+            shouldAutoSkipUnplayable = value
+        }
         settingObserver.collect(Keys.broadcastSynchronizedLyrics) { value ->
             broadcastSynchronizedLyrics = value
         }
@@ -482,11 +485,13 @@ class PlayerController : ServiceComponent, Controller {
                 handler.request {
                     pause(false, reason = PauseReason.PAUSE_FOR_QUEUE_ENDED)
                 }
-            } else {
+            } else if (controller.shouldAutoSkipUnplayable) {
                 handler.request {
                     playAt(queueManager.nextSongPosition)
                     controller.updateLyrics()
                 }
+            } else {
+                pause(false, reason = PauseReason.PAUSE_ERROR)
             }
         }
 
@@ -644,6 +649,8 @@ class PlayerController : ServiceComponent, Controller {
     private var audioDucking: Boolean = true
 
     private var broadcastSynchronizedLyrics: Boolean = false
+
+    private var shouldAutoSkipUnplayable: Boolean = false
 
     fun saveCurrentMills() = handler.request {
         QueuePreferenceManager(service).currentMillisecond = impl.songProgressMillis
