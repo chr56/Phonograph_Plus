@@ -68,6 +68,11 @@ fun PreferenceScreenBehaviour() {
                 summaryRes = R.string.pref_summary_broadcast_current_player_state,
                 titleRes = R.string.pref_title_broadcast_current_player_state,
             )
+            BooleanPreference(
+                key = Keys.autoSkipUnplayable,
+                summaryRes = R.string.pref_summary_auto_skip_unplayable_files,
+                titleRes = R.string.pref_title_auto_skip_unplayable_files,
+            )
             FloatPreference(
                 key = Keys.seekJumpInterval,
                 titleRes = R.string.pref_title_seek_jump_interval,

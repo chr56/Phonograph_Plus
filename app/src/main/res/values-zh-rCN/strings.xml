@@ -560,4 +560,6 @@
     <string name="notification_background_description">正在后台运行的任务</string>
     <string name="notification_database_name">数据库同步</string>
     <string name="notification_database_description">后台数据库同步任务</string>
+    <string name="pref_title_auto_skip_unplayable_files">自动跳过无法播放的文件</string>
+    <string name="pref_summary_auto_skip_unplayable_files">在播放时自动跳过无法播放的文件，而不是暂停</string>
 </resources>
