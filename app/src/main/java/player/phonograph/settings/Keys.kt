@@ -157,6 +157,8 @@ object Keys {
         get() = PrimitiveKey<Boolean>(booleanPK("gapless_playback")) { false }
     val broadcastCurrentPlayerState
         get() = PrimitiveKey<Boolean>(booleanPK("broadcast_current_player_state")) { true }
+    val autoSkipUnplayable
+        get() = PrimitiveKey<Boolean>(booleanPK("auto_skip_unplayable")) { false }
     val seekJumpInterval
         get() = PrimitiveKey<Float>(floatPK("seek_jump_interval")) { 5f }
     //</editor-fold>
