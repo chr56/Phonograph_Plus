@@ -172,8 +172,6 @@ object MusicPlayerRemote {
         override fun onPlayerStateChanged(oldState: PlayerState, newState: PlayerState) {
             _currentState.update { newState }
         }
-
-        override fun onReceivingMessage(msg: Int) {}
     }
 
 

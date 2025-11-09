@@ -283,7 +283,7 @@ class PlayerController : ServiceComponent, Controller {
                 prepareCurrentPlayer(queueManager.currentSong).also { setCurrentSuccess ->
                     prepareNextPlayer(if (setCurrentSuccess) queueManager.nextSong else null)
 
-                    controller.notifyNowPlayingChanged()
+                    controller.updateLyrics()
 
                     log("prepareSongs:After", dumpState(position))
                 }
@@ -359,9 +359,6 @@ class PlayerController : ServiceComponent, Controller {
             controller.broadcastStopLyric()
             controller.playerState = PlayerState.STOPPED
             controller.releaseTakenResources()
-            for (observer in controller.observers) {
-                observer.onReceivingMessage(PlayerStateObserver.Companion.MSG_PLAYER_STOPPED)
-            }
         }
 
         override fun togglePlayPause() {
@@ -425,9 +422,6 @@ class PlayerController : ServiceComponent, Controller {
                 playAt(position)
             } else {
                 pause(false, reason = PauseReason.PAUSE_FOR_QUEUE_ENDED)
-                for (observer in controller.observers) {
-                    observer.onReceivingMessage(PlayerStateObserver.Companion.MSG_NO_MORE_SONGS)
-                }
             }
         }
 
@@ -457,8 +451,7 @@ class PlayerController : ServiceComponent, Controller {
             }
             handler.request {
                 queueManager.moveToNextSong(false)
-                controller.notifyNowPlayingChanged()
-                prepareNextPlayer(queueManager.nextSong)
+                controller.updateLyrics()
             }
         }
 
@@ -470,17 +463,12 @@ class PlayerController : ServiceComponent, Controller {
             }
             if (queueManager.isQueueEnded()) {
                 handler.request {
-                    pause(true, reason = PauseReason.PAUSE_FOR_QUEUE_ENDED)
-                }
-                controller.broadcastStopLyric()
-                for (observer in controller.observers) {
-                    observer.onReceivingMessage(PlayerStateObserver.Companion.MSG_NO_MORE_SONGS)
+                    pause(false, reason = PauseReason.PAUSE_FOR_QUEUE_ENDED)
                 }
             } else {
                 handler.request {
-                    prepareNextPlayer(queueManager.nextSong)
-                    queueManager.moveToNextSong(false)
-                    playAt(queueManager.currentSongPosition)
+                    playAt(queueManager.nextSongPosition)
+                    controller.updateLyrics()
                 }
             }
         }
@@ -545,15 +533,6 @@ class PlayerController : ServiceComponent, Controller {
         }
         //endregion
 
-    }
-
-    private fun notifyNowPlayingChanged() {
-        for (observer in observers) {
-            observer.onReceivingMessage(PlayerStateObserver.Companion.MSG_NOW_PLAYING_CHANGED)
-        }
-        service.coroutineScope.launch(SupervisorJob()) {
-            lyricsUpdater.updateViaSong(service, queueManager.currentSong)
-        }
     }
 
     fun prepareNext() {
@@ -774,6 +753,12 @@ class PlayerController : ServiceComponent, Controller {
             lyricsUpdater.updateViaLyrics(lyrics)
         } else {
             lyricsUpdater.clear()
+        }
+    }
+
+    fun updateLyrics() {
+        service.coroutineScope.launch(SupervisorJob()) {
+            lyricsUpdater.updateViaSong(service, queueManager.currentSong)
         }
     }
 

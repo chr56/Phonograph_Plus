@@ -241,9 +241,6 @@ class MusicService : MediaBrowserServiceCompat(),
         notifyChange(EVENT_PLAY_STATE_CHANGED)
     }
 
-    override fun onReceivingMessage(msg: Int) {
-    }
-
     override fun onCurrentPositionChanged(newPosition: Int) {
         notifyChange(EVENT_META_CHANGED)
         controller.prepareNext()
