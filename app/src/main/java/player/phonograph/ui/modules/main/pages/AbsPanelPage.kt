@@ -272,12 +272,21 @@ sealed class AbsPanelPage : AbsPage() {
     }
 
     private fun validConfig(displayConfig: PageDisplayConfig) {
-        var warningLayout: Boolean =
+        val warningLayout: Boolean = if (isLandscape(resources)) {
             when (displayConfig.layout) {
-                ItemLayoutStyle.GRID    -> displayConfig.gridSize <= 2
-                ItemLayoutStyle.LIST_3L -> displayConfig.gridSize > 3
-                else                    -> displayConfig.gridSize > 2
+                ItemLayoutStyle.GRID             -> displayConfig.gridSize < 3
+                ItemLayoutStyle.LIST_3L          -> displayConfig.gridSize > 5
+                ItemLayoutStyle.LIST_3L_EXTENDED -> displayConfig.gridSize > 5
+                else                             -> displayConfig.gridSize > 4
             }
+        } else {
+            when (displayConfig.layout) {
+                ItemLayoutStyle.GRID             -> displayConfig.gridSize < 2
+                ItemLayoutStyle.LIST_3L          -> displayConfig.gridSize > 3
+                ItemLayoutStyle.LIST_3L_EXTENDED -> displayConfig.gridSize > 3
+                else                             -> displayConfig.gridSize > 2
+            }
+        }
         if (warningLayout) {
             Toast.makeText(requireContext(), R.string.warning_inappropriate_config, Toast.LENGTH_SHORT).show()
         }
