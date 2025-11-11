@@ -253,6 +253,7 @@ sealed class AbsPanelPage : AbsPage() {
             if (coloredFootersSelected != currentDisplayConfig.colorFooter) {
                 currentDisplayConfig.colorFooter = coloredFootersSelected
                 shouldUpdate = true
+                shouldRecreate = true
             }
         }
 
