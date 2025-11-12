@@ -14,13 +14,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicLong
 
 class RoomSyncProcessor(
     private val database: MusicDatabase,
     private val coroutineScope: CoroutineScope,
 ) : SyncProcessor {
-    private val lastSyncTimestamp = AtomicLong(0)
+    private val syncFlag = AtomicBoolean(false)
+    private val lastSync = AtomicLong(0)
 
     override fun onSyncFirstTime(context: Context) {
         coroutineScope.launch { execute(context) }
@@ -31,14 +33,17 @@ class RoomSyncProcessor(
     }
 
     private suspend fun execute(context: Context) {
-        val current = System.currentTimeMillis()
-        val last = lastSyncTimestamp.get()
+        val current = System.currentTimeMillis() / INTERVAL_UNIT
+        val last = lastSync.get()
         if (current - last > THROTTLE_INTERVAL) {
-            if (lastSyncTimestamp.compareAndSet(last, current)) {
+            if (lastSync.compareAndSet(last, current)
+                && syncFlag.compareAndSet(false, true)
+            ) {
                 impl(context)
+                syncFlag.set(false)
             }
         } else {
-            delay(THROTTLE_INTERVAL)
+            delay(THROTTLE_INTERVAL * INTERVAL_UNIT)
             onSyncTriggered(context)
         }
     }
@@ -48,7 +53,8 @@ class RoomSyncProcessor(
     }
 
     companion object {
-        private const val THROTTLE_INTERVAL = 800L
+        private const val THROTTLE_INTERVAL = 8L
+        private const val INTERVAL_UNIT = 100
 
         fun observeMediastoreForSync(context: Context, musicDatabase: MusicDatabase): EventHub.EventReceiver {
 
