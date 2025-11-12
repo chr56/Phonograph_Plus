@@ -284,7 +284,11 @@ sealed class AbsPanelPage : AbsPage() {
                 displayConfig.gridSize > (if (isLandscape(resources) || isTablet(resources)) 4 else 2)
             }
         if (warningLayout) {
-            Toast.makeText(requireContext(), R.string.warning_inappropriate_config, Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                requireContext(),
+                R.string.warning_inappropriate_display_item_grid_size,
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
     //endregion
