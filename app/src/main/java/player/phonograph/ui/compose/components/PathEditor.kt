@@ -6,12 +6,9 @@ package player.phonograph.ui.compose.components
 
 import player.phonograph.R
 import player.phonograph.util.concurrent.coroutineToast
-import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,9 +26,7 @@ import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.TextFieldDefaults
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
@@ -46,7 +41,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalContext
@@ -60,129 +54,107 @@ import android.content.ClipData
 import kotlin.math.min
 
 @Composable
-fun ColumnScope.PathEditor(
+fun PathEditor(
+    modifier: Modifier,
     title: String,
     textDescription: String,
     paths: List<String>,
+    onDismissRequest: () -> Unit,
     actionAdd: () -> Unit,
     actionRefresh: () -> Unit,
     actionClear: () -> Unit,
     actionRemove: (target: String) -> Unit,
     actionEdit: (oldPath: String, newPath: String) -> Unit,
 ) {
-
     var showClearConfirmationDialog by remember { mutableStateOf(false) }
-
-    val onBackPressedDispatcherOwner = LocalOnBackPressedDispatcherOwner.current
-    var exit: Boolean by remember { mutableStateOf(false) }
-    LaunchedEffect(exit) {
-        if (exit && onBackPressedDispatcherOwner != null) {
-            onBackPressedDispatcherOwner.onBackPressedDispatcher.onBackPressed()
-        }
-    }
-
-    TopAppBar(
-        title = { Text(title) },
-        navigationIcon = {
-            IconButton(onClick = { exit = true }) {
-                Icon(
-                    Icons.AutoMirrored.Default.ArrowBack,
-                    contentDescription = stringResource(R.string.action_exit),
-                    tint = MaterialTheme.colors.onPrimary
-                )
-            }
-        },
-        actions = {
-            IconButton(onClick = actionRefresh) {
-                Icon(
-                    Icons.Default.Refresh,
-                    contentDescription = stringResource(R.string.action_refresh),
-                    tint = MaterialTheme.colors.onPrimary
-                )
-            }
-            IconButton(onClick = { showClearConfirmationDialog = true }) {
-                Icon(
-                    Icons.Default.Delete,
-                    contentDescription = stringResource(R.string.action_clear),
-                    tint = MaterialTheme.colors.onPrimary
-                )
-            }
-        },
-        modifier = Modifier.fillMaxWidth()
-    )
-
-    Text(
-        textDescription,
-        modifier = Modifier
-            .fillMaxWidth()
-            .heightIn(min = 56.dp)
-            .align(Alignment.CenterHorizontally)
-            .padding(top = 4.dp, start = 12.dp, end = 12.dp),
-        style = MaterialTheme.typography.body2,
-        textAlign = TextAlign.Center,
-    )
-
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .weight(8f)
-            .padding(horizontal = 8.dp)
+    AdvancedDialogFrame(
+        modifier = modifier,
+        title = title,
+        onDismissRequest = onDismissRequest,
+        actions = listOf(
+            ActionItem(
+                imageVector = Icons.Default.Refresh,
+                textRes = R.string.action_refresh,
+                onClick = actionRefresh,
+            ),
+            ActionItem(
+                imageVector = Icons.Default.Delete,
+                textRes = R.string.action_clear,
+                onClick = { showClearConfirmationDialog = true },
+            ),
+        )
     ) {
-        val estimatedHeight = remember { (96 + min(384, 48 * paths.size)).dp }
-        LazyColumn(
+        Text(
+            textDescription,
             modifier = Modifier
                 .fillMaxWidth()
-                .heightIn(min = estimatedHeight),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+                .heightIn(min = 56.dp)
+                .align(Alignment.CenterHorizontally)
+                .padding(top = 4.dp, start = 12.dp, end = 12.dp),
+            style = MaterialTheme.typography.body2,
+            textAlign = TextAlign.Center,
+        )
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(8f)
+                .padding(horizontal = 8.dp)
         ) {
-            if (paths.isNotEmpty()) {
-                items(paths) { path ->
-                    PathItem(
-                        path = path,
-                        actionRemove = actionRemove,
-                        actionEdit = actionEdit
-                    )
-                }
-                item {
-                    Spacer(Modifier.height(72.dp))
-                }
-            } else {
-                item {
-                    Text(
-                        stringResource(R.string.msg_empty),
-                        modifier = Modifier.padding(36.dp),
-                        style = MaterialTheme.typography.body2,
-                        textAlign = TextAlign.Center,
-                        color = Color.DarkGray
-                    )
+            val estimatedHeight = remember { (96 + min(384, 48 * paths.size)).dp }
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = estimatedHeight),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                if (paths.isNotEmpty()) {
+                    items(paths) { path ->
+                        PathItem(
+                            path = path,
+                            actionRemove = actionRemove,
+                            actionEdit = actionEdit
+                        )
+                    }
+                    item {
+                        Spacer(Modifier.height(72.dp))
+                    }
+                } else {
+                    item {
+                        Text(
+                            stringResource(R.string.msg_empty),
+                            modifier = Modifier.padding(36.dp),
+                            style = MaterialTheme.typography.body2,
+                            textAlign = TextAlign.Center,
+                            color = Color.DarkGray
+                        )
+                    }
                 }
             }
-        }
 
-        FloatingActionButton(
-            onClick = actionAdd,
-            backgroundColor = MaterialTheme.colors.secondary,
-            modifier = Modifier
-                .padding(16.dp)
-                .align(Alignment.BottomEnd),
-        ) {
-            Icon(
-                Icons.Default.Add,
-                contentDescription = stringResource(R.string.action_add),
-                tint = MaterialTheme.colors.onPrimary
+            FloatingActionButton(
+                onClick = actionAdd,
+                backgroundColor = MaterialTheme.colors.secondary,
+                modifier = Modifier
+                    .padding(16.dp)
+                    .align(Alignment.BottomEnd),
+            ) {
+                Icon(
+                    Icons.Default.Add,
+                    contentDescription = stringResource(R.string.action_add),
+                    tint = MaterialTheme.colors.onPrimary
+                )
+            }
+        }
+        if (showClearConfirmationDialog) {
+            ConfirmationDialog(
+                stringResource(R.string.action_clear),
+                stringResource(R.string.tips_are_you_sure),
+                { actionClear() },
+                { showClearConfirmationDialog = false }
             )
         }
     }
-
-    if (showClearConfirmationDialog) {
-        ConfirmationDialog(
-            stringResource(R.string.action_clear),
-            stringResource(R.string.tips_are_you_sure),
-            { actionClear },
-            { showClearConfirmationDialog = false }
-        )
-    }
-
 }
 
 
@@ -298,24 +270,32 @@ private fun PathItem(
 private fun ConfirmationDialog(
     title: String,
     text: String,
-    doAction: () -> Unit,
-    onDismiss: () -> Unit,
+    onConfirmation: () -> Unit,
+    onDismissRequest: () -> Unit,
+    confirmButtonText: String = stringResource(android.R.string.ok),
+    dismissButtonText: String = stringResource(android.R.string.cancel),
 ) {
     AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(title) },
-        text = { Text(text) },
+        onDismissRequest = onDismissRequest,
+        title = { Text(title, style = MaterialTheme.typography.h6) },
+        text = { Text(text, style = MaterialTheme.typography.body1) },
         confirmButton = {
             TextButton(onClick = {
-                doAction()
-                onDismiss()
+                onConfirmation()
+                onDismissRequest()
             }) {
-                Text(stringResource(android.R.string.ok), color = MaterialTheme.colors.primary)
+                Text(
+                    confirmButtonText, color = MaterialTheme.colors.primary,
+                    style = MaterialTheme.typography.button
+                )
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text(stringResource(android.R.string.cancel), color = MaterialTheme.colors.primary)
+            TextButton(onClick = onDismissRequest) {
+                Text(
+                    dismissButtonText, color = MaterialTheme.colors.primary,
+                    style = MaterialTheme.typography.button
+                )
             }
         }
     )
