@@ -19,6 +19,8 @@ import player.phonograph.util.logMetrics
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import player.phonograph.util.ui.isLandscape
+import player.phonograph.util.ui.isTablet
+import player.phonograph.util.ui.isWideScreen
 import util.theme.color.primaryTextColor
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
@@ -272,21 +274,15 @@ sealed class AbsPanelPage : AbsPage() {
     }
 
     private fun validConfig(displayConfig: PageDisplayConfig) {
-        val warningLayout: Boolean = if (isLandscape(resources)) {
-            when (displayConfig.layout) {
-                ItemLayoutStyle.GRID             -> displayConfig.gridSize < 3
-                ItemLayoutStyle.LIST_3L          -> displayConfig.gridSize > 5
-                ItemLayoutStyle.LIST_3L_EXTENDED -> displayConfig.gridSize > 5
-                else                             -> displayConfig.gridSize > 4
+        val layout = displayConfig.layout
+        val warningLayout: Boolean =
+            if (layout.isGrid) {
+                displayConfig.gridSize < (if (isLandscape(resources) || isWideScreen(resources)) 3 else 2)
+            } else if (layout.compatInWidth) {
+                displayConfig.gridSize > (if (isLandscape(resources) || isTablet(resources)) 5 else 3)
+            } else {
+                displayConfig.gridSize > (if (isLandscape(resources) || isTablet(resources)) 4 else 2)
             }
-        } else {
-            when (displayConfig.layout) {
-                ItemLayoutStyle.GRID             -> displayConfig.gridSize < 2
-                ItemLayoutStyle.LIST_3L          -> displayConfig.gridSize > 3
-                ItemLayoutStyle.LIST_3L_EXTENDED -> displayConfig.gridSize > 3
-                else                             -> displayConfig.gridSize > 2
-            }
-        }
         if (warningLayout) {
             Toast.makeText(requireContext(), R.string.warning_inappropriate_config, Toast.LENGTH_SHORT).show()
         }

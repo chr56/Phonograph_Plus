@@ -27,6 +27,14 @@ fun isTablet(resources: Resources): Boolean {
     return resources.configuration.smallestScreenWidthDp >= 600
 }
 
+fun isWideScreen(resources: Resources): Boolean {
+    return (resources.configuration.screenWidthDp / resources.configuration.screenHeightDp) >= 1.0f
+}
+
+fun isLongScreen(resources: Resources): Boolean {
+    return (resources.configuration.screenHeightDp / resources.configuration.screenWidthDp) >= 1.8f
+}
+
 fun isLandscape(resources: Resources): Boolean {
     return resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 }

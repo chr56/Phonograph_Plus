@@ -41,6 +41,23 @@ value class ItemLayoutStyle private constructor(@param:ViewHolderType val ordina
             else                  -> true
         }
 
+    val compatInWidth: Boolean
+        get() = when (ordinal) {
+            TYPE_LIST_3L          -> true
+            TYPE_LIST_3L_EXTENDED -> true
+            TYPE_LIST_3L_NO_IMAGE -> true
+            TYPE_LIST_NO_IMAGE    -> true
+            else                  -> false
+        }
+
+    val isGrid: Boolean
+        get() = when (ordinal) {
+            TYPE_GRID                 -> true
+            TYPE_GRID_CARD_HORIZONTAL -> true
+            else                      -> false
+        }
+
+
     companion object {
 
 
