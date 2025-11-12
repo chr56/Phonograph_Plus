@@ -18,7 +18,6 @@ import player.phonograph.util.concurrent.lifecycleScopeOrNewOne
 import player.phonograph.util.theme.accentColoredButtonStyle
 import player.phonograph.util.ui.ColorPalette
 import player.phonograph.util.ui.MonetColor
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
@@ -33,11 +32,11 @@ import kotlinx.coroutines.launch
 
 class MonetColorPickerDialog : ComposeViewDialogFragment() {
 
-    private lateinit var mode: String
+    private lateinit var mode: ColorPalette.Variant
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mode = requireArguments().getString(KEY_MODE)!!
+        mode = ColorPalette.Variant.valueOf(requireArguments().getString(KEY_MODE)!!)
     }
 
     @Composable
@@ -61,7 +60,18 @@ class MonetColorPickerDialog : ComposeViewDialogFragment() {
                 title(res = R.string.dynamic_colors)
                 customView {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                        MonetColorPickerDialogContent(ColorPalette.Variant.valueOf(mode), onDismiss = ::dismiss)
+                        val context = LocalContext.current
+                        MonetColorPicker { type: Int, depth: Int ->
+                            context.lifecycleScopeOrNewOne().launch {
+                                val palette = MonetColor.MonetColorPalette(type, depth)
+                                val key = when (mode) {
+                                    ColorPalette.Variant.Primary -> Keys.monetPalettePrimaryColor
+                                    ColorPalette.Variant.Accent  -> Keys.monetPaletteAccentColor
+                                }
+                                Setting(context)[key].edit { palette.value }
+                                dismiss()
+                            }
+                        }
                     }
                 }
             }
@@ -80,24 +90,5 @@ class MonetColorPickerDialog : ComposeViewDialogFragment() {
 
         fun showColorChooserDialog(context: Context, variant: ColorPalette.Variant) =
             create(variant).show((context as FragmentActivity).supportFragmentManager, null)
-    }
-}
-
-@RequiresApi(Build.VERSION_CODES.S)
-@Composable
-private fun MonetColorPickerDialogContent(
-    variant: ColorPalette.Variant,
-    onDismiss: () -> Unit,
-) {
-    val context = LocalContext.current
-    MonetColorPicker { type: Int, depth: Int ->
-        context.lifecycleScopeOrNewOne().launch {
-            val palette = MonetColor.MonetColorPalette(type, depth)
-            when (variant) {
-                ColorPalette.Variant.Primary -> Setting(context)[Keys.monetPalettePrimaryColor].edit { palette.value }
-                ColorPalette.Variant.Accent  -> Setting(context)[Keys.monetPaletteAccentColor].edit { palette.value }
-            }
-            onDismiss()
-        }
     }
 }

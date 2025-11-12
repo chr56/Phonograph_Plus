@@ -18,7 +18,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -37,7 +37,7 @@ fun PresetColorPicker(
 ) {
     Box(Modifier.fillMaxWidth()) {
         LazyVerticalGrid(
-            columns = GridCells.Adaptive(minSize = 48.dp),
+            columns = GridCells.Fixed(4),
             contentPadding = contentPadding,
         ) {
             items(colors.size) { index ->
@@ -65,7 +65,7 @@ fun MonetColorPicker(
 ) {
     val context = LocalContext.current
     val group = remember { ColorPalette.dynamicColors(context).map { Color(it) } }
-    var selectedGroup: Int by remember { mutableStateOf(0) }
+    var selectedGroup: Int by remember { mutableIntStateOf(0) }
     val colors = remember { ColorPalette.allDynamicColors(context) }
 
     Column(modifier = Modifier.fillMaxSize()) {
