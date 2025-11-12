@@ -268,7 +268,6 @@
     <string name="msg_notification_is_disabled">Уведомление отключено!</string>
     <string name="warning_can_not_retract">Это действие нельзя будет отменить!</string>
     <string name="warning_clear_all_preference_msg"><b>Warning</b>: это приведет к сбросу <b>ALL</b> настроек/настроек приложения! \n\nЭто может быть очень полезно, если приложение вылетает при запуске. \nВы уверены?</string>
-    <string name="warning_inappropriate_config">Ваша текущая конфигурация считается «неуместной».</string>
     <string name="err_illegal_operation">Операция не соответствует её требованию.</string>
     <string name="err_unstoppable_service">Не могу выйти из музыкального сервиса на переднем плане или при использовании.</string>
     <string name="err_could_not_create_playlist">Не удалось создать плейлист</string>

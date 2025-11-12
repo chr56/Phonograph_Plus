@@ -269,7 +269,6 @@
     <string name="msg_notification_is_disabled">Notification désactivée !</string>
     <string name="warning_can_not_retract">Cette action ne peut pas être annulée !</string>
     <string name="warning_clear_all_preference_msg"><b>Avertissement</b>: cela réinitialisera <b>TOUTES</b> les préférences / paramètres de l\'application ! \n\nCela peut être très utile si l\'application plante au démarrage. \nÊtes-vous sûr ?</string>
-    <string name="warning_inappropriate_config">Votre configuration actuelle est considérée comme \"inappropriée\".</string>
     <string name="err_illegal_operation">Cette configuration ne correspond pas aux prérequis.</string>
     <string name="err_unstoppable_service">Impossible de quitter le service de musique au premier plan ou en cours d\'utilisation.</string>
     <string name="err_could_not_create_playlist">Impossible de créer la playlist.</string>

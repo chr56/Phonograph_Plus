@@ -265,7 +265,6 @@
     <string name="msg_notification_is_disabled">Powiadomienia są wyłączone</string>
     <string name="warning_can_not_retract">Tej czynności nie można cofnąć</string>
     <string name="warning_clear_all_preference_msg"><b>Ostrzeżenie</b>: spowoduje to zresetowanie <b>WSZYSTKICH</b> ustawień aplikacji! \n\nMoże to być bardzo pomocne w przypadku awarii aplikacji przy uruchomieniu. \nJesteś pewien?</string>
-    <string name="warning_inappropriate_config">Twoja aktualna konfiguracja jest uważana za \"nieodpowiednią\".</string>
     <string name="err_illegal_operation">Operacja nie spełnia wymagań.</string>
     <string name="err_unstoppable_service">Nie można zamknąć usługi muzycznej na pierwszym planie lub w użyciu.</string>
     <string name="err_could_not_create_playlist">Nie mo\u017cna utworzy\u0107 listy odtwarzania</string>

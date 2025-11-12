@@ -219,7 +219,6 @@
     <string name="msg_copied_device_info_to_clipboard">Kopioitiin laitteen tiedot leikepöydälle.</string>
     <string name="warning_can_not_retract">Tätä toimintoa ei voi kumota!</string>
     <string name="warning_clear_all_preference_msg"><b>Varoitus</b>: Tämä nollaa <b>KAIKKI</b> sovelluksen asetukset! \n\nTämä saattaa olla hyödyllistä, jos sovellus kaatuu käynnistettäessä. \nOletko varmaa?</string>
-    <string name="warning_inappropriate_config">Nykyinen konfiguraatiosi katsotaan \"sopimattomaksi\".</string>
     <string name="err_could_not_create_playlist">Soittolistan luominen ep\u00e4onnistui.</string>
     <string name="err_failed_to_save_playlist">Soittolistan tallentaminen epäonnistui (%s).</string>
     <string name="err_biography_unavailable">El\u00e4m\u00e4nkertaa ei l\u00f6ytynyt t\u00e4lle artistille.</string>

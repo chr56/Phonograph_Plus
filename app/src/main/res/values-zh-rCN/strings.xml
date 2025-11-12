@@ -494,7 +494,6 @@
     <string name="item_layout_list_3l_extended">列表 (3行, 扩展)</string>
     <string name="item_layout_list_3l_no_image">列表 (3行, 无图)</string>
     <string name="item_layout_grid">网格</string>
-    <string name="warning_inappropriate_config">当前配置疑似不妥!</string>
     <string name="warning_inappropriate_display_item_grid_size">当前网格列数可能并非最佳!</string>
     <string name="title_internal_error">内部错误</string>
     <string name="label_storage_volumes">储存卷</string>

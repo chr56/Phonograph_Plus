@@ -241,7 +241,6 @@
     <string name="msg_notification_is_disabled">Benachrichtigung ist deaktiviert!</string>
     <string name="warning_can_not_retract">Diese Aktion kann nicht rückgängig gemacht werden!</string>
     <string name="warning_clear_all_preference_msg"><b>Warnung</b>: Dies wird <b>ALLE</b> App-Parameter/Einstellungen zurücksetzen! \n\nDies könnte sehr hilfreich sein, wenn die Anwendung beim Start abstürzt. \nBist du sicher?</string>
-    <string name="warning_inappropriate_config">Ihre aktuelle Konfiguration wird als „unangemessen“ betrachtet.</string>
     <string name="err_illegal_operation">Der Vorgang entspricht nicht der Anforderung.</string>
     <string name="err_unstoppable_service">Der Musik-Dienst kann nicht im Vordergrund oder in Verwendung beendet werden.</string>
     <string name="err_could_not_create_playlist">Wiedergabeliste konnte nicht erstellt werden.</string>

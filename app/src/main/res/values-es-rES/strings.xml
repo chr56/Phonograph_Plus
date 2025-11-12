@@ -256,7 +256,6 @@
     <string name="msg_notification_is_disabled">¡Notificación desactivada!</string>
     <string name="warning_can_not_retract">¡Esta acción es irrevocable!</string>
     <string name="warning_clear_all_preference_msg"><b>Advertencia</b>: esto restablecirá <b>TODAS</b> las configuraciones de la aplicación! \n\nEsto puede ser muy útil si la aplicación se bloquea al iniciar. \n¿Estás seguro?</string>
-    <string name="warning_inappropriate_config">Tú configuración actual se considera \"inapropiada\".</string>
     <string name="err_illegal_operation">La operación no coincide con su requerimiento.</string>
     <string name="err_unstoppable_service">No se puede salir del servicio de música en primer plano o en uso.</string>
     <string name="err_could_not_create_playlist">No se pudo crear la lista de reproducción</string>

@@ -274,7 +274,6 @@
     <string name="msg_notification_is_disabled">Notification is disabled!</string>
     <string name="warning_can_not_retract">This action can not be retracted!</string>
     <string name="warning_clear_all_preference_msg"><b>Warning</b>: this will reset <b>ALL</b> app preferences/settings! \n\nThis might be very helpful if application crashes on launching. \nAre you sure?</string>
-    <string name="warning_inappropriate_config">Your current configuration is considered as \"Inappropriate\".</string>
     <string name="warning_inappropriate_display_item_grid_size">The current grid size may not be optimal!</string>
     <string name="err_illegal_operation">The operation does not match its requirement.</string>
     <string name="err_unstoppable_service">Can not exit music service in foreground or in use.</string>

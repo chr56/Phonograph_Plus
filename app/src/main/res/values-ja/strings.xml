@@ -238,7 +238,6 @@
     <string name="msg_copied_device_info_to_clipboard">端末情報をクリップボードにコピーしました。</string>
     <string name="warning_can_not_retract">この操作は元に戻せません!</string>
     <string name="warning_clear_all_preference_msg"><b>警告</b>: これは <b>すべての</b> アプリ設定がリセットされます! \n\nアプリ起動時にクラッシュする場合には効果があるかもしれません。 \n実行してよろしいですか?</string>
-    <string name="warning_inappropriate_config">現在の設定は「不適切」とみなされます。</string>
     <string name="err_could_not_create_playlist">プレイリストを作成できません</string>
     <string name="err_failed_to_save_playlist">プレイリスト(%s)の保存に失敗しました。</string>
     <string name="err_biography_unavailable">このアーティストのバイオグラフィーの登録を見つけられません</string>

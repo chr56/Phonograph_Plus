@@ -266,7 +266,6 @@
     <string name="msg_notification_is_disabled">Az értesítés letiltva!</string>
     <string name="warning_can_not_retract">Ezt a műveletet nem lehet visszavonni!</string>
     <string name="warning_clear_all_preference_msg"><b>Figyelmeztetés</b>: ez visszaállítja az <b>ÖSSZES</b> alkalmazásbeállítást!\n\nEz akkor lehet nagyon hasznos, ha az alkalmazás összeomlik az indításkor.\nBiztos benne?</string>
-    <string name="warning_inappropriate_config">A jelenlegi beállítása „nem megfelelőnek” van minősítve.</string>
     <string name="err_illegal_operation">A művelet nem felel meg a követelményeinek.</string>
     <string name="err_unstoppable_service">Nem lehet kilépni az előtérben vagy használatban lévő zenei szolgáltatásból.</string>
     <string name="err_could_not_create_playlist">Nem sikerült létrehozni a lejátszási listát.</string>
