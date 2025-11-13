@@ -8,6 +8,8 @@ import player.phonograph.model.file.FileItem
 import player.phonograph.ui.actions.ActionMenuProviders
 import player.phonograph.ui.actions.ClickActionProviders
 import android.content.Context
+import android.os.Bundle
+import android.view.View
 import android.widget.ImageView
 
 class FilesChooserExplorerFragment : AbsFilesExplorerFragment() {
@@ -34,5 +36,10 @@ class FilesChooserExplorerFragment : AbsFilesExplorerFragment() {
             }
             return true
         }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        model.optionUseLegacyListFile = true
     }
 }
