@@ -4,78 +4,96 @@
 
 package player.phonograph.ui.modules.setting.dialog
 
-import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.customview.customView
 import player.phonograph.R
 import player.phonograph.model.pages.Pages
 import player.phonograph.model.pages.PagesConfig
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.adapter.SortableListAdapter
-import player.phonograph.util.theme.tintButtons
-import androidx.fragment.app.DialogFragment
+import player.phonograph.ui.compose.components.ActionItem
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import android.app.Dialog
-import android.os.Bundle
-import android.util.Log
+import android.annotation.SuppressLint
 import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 
-class HomeTabConfigDialog : DialogFragment() {
-    private lateinit var adapter: PageTabConfigAdapter
-    private lateinit var recyclerView: RecyclerView
+class HomeTabConfigDialog : AbsSettingsDialog() {
+    private var adapter: PageTabConfigAdapter? = null
 
-    @Suppress("DEPRECATION")
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val view = requireActivity().layoutInflater.inflate(R.layout.recycler_view_wrapped, null)
+    @Composable
+    override fun Content() {
+        SettingsDialog(
+            modifier = Modifier,
+            title = stringResource(R.string.label_library_categories),
+            actions = listOf(
+                ActionItem(
+                    Icons.Default.Refresh,
+                    textRes = R.string.action_reset,
+                    onClick = { actionReset() }
+                ),
+                ActionItem(
+                    Icons.Default.Check,
+                    textRes = android.R.string.ok,
+                    onClick = { actionApply() }
+                ),
+            )
+        ) {
+            AndroidView(
+                modifier = Modifier.fillMaxWidth(),
+                factory = { context ->
+                    @SuppressLint("UseGetLayoutInflater", "InflateParams")
+                    val view = LayoutInflater.from(context).inflate(R.layout.recycler_view_wrapped, null)
+                    val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view)
 
+                    val config: PagesConfig = Setting(requireContext())[Keys.homeTabConfig].data
+                    val configAdapter = PageTabConfigAdapter(config).also { it.init() }
 
-        val config: PagesConfig = Setting(requireContext())[Keys.homeTabConfig].data
+                    adapter = configAdapter
 
-        adapter = PageTabConfigAdapter(config).also { it.init() }
-        recyclerView = view.findViewById(R.id.recycler_view)
-        recyclerView.layoutManager = LinearLayoutManager(activity)
-        recyclerView.adapter = adapter
-        adapter.attachToRecyclerView(recyclerView)
+                    recyclerView.layoutManager = LinearLayoutManager(context)
+                    recyclerView.adapter = adapter
+                    configAdapter.attachToRecyclerView(recyclerView)
 
-        Log.v(TAG, adapter.getState())
-
-        val dialog = MaterialDialog(requireContext())
-            .title(R.string.label_library_categories)
-            .customView(view = view, dialogWrapContent = false)
-            .noAutoDismiss()
-            .positiveButton(android.R.string.ok) {
-                Log.v(TAG, adapter.getState())
-                val pageConfig = adapter.currentConfig
-                if (pageConfig != null) {
-                    Setting(requireContext())[Keys.homeTabConfig].data = pageConfig
-                    dismiss()
-                } else {
-                    Toast.makeText(
-                        it.context,
-                        R.string.tips_select_at_least_one_category,
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    view
                 }
-            }
-            .negativeButton(android.R.string.cancel) { dismiss(); Log.i(TAG, adapter.getState()) }
-            .neutralButton(R.string.action_reset) {
-                Setting(requireContext())[Keys.homeTabConfig].data = PagesConfig.DEFAULT_CONFIG
-                Log.v(TAG, adapter.getState())
-                dismiss()
-            }
-            .tintButtons()
-
-        return dialog
+            )
+        }
     }
 
-    companion object {
-        private const val TAG = "HomeTabConfigDialog"
-        fun newInstance(): HomeTabConfigDialog = HomeTabConfigDialog()
+    override fun onDestroyView() {
+        super.onDestroyView()
+        adapter = null
+    }
+
+    private fun actionApply() {
+        val pageConfig = adapter?.currentConfig
+        if (pageConfig != null) {
+            Setting(requireContext())[Keys.homeTabConfig].data = pageConfig
+            dismiss()
+        } else {
+            Toast.makeText(
+                requireContext(),
+                R.string.tips_select_at_least_one_category,
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
+    private fun actionReset() {
+        Setting(requireContext())[Keys.homeTabConfig].data = PagesConfig.DEFAULT_CONFIG
+        dismiss()
     }
 
     private class PageTabConfigAdapter(private val pagesConfig: PagesConfig) : SortableListAdapter<String>() {
@@ -110,4 +128,10 @@ class HomeTabConfigDialog : DialogFragment() {
             private const val TAG = "PageTabConfigAdapter"
         }
     }
+
+    companion object {
+        private const val TAG = "HomeTabConfigDialog"
+        fun newInstance(): HomeTabConfigDialog = HomeTabConfigDialog()
+    }
+
 }

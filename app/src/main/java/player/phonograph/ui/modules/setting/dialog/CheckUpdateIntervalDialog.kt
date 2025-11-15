@@ -4,22 +4,16 @@
 
 package player.phonograph.ui.modules.setting.dialog
 
-import com.vanpra.composematerialdialogs.MaterialDialog
-import com.vanpra.composematerialdialogs.rememberMaterialDialogState
-import com.vanpra.composematerialdialogs.title
-import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.model.time.Duration
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
-import player.phonograph.ui.compose.ComposeViewDialogFragment
-import player.phonograph.ui.compose.PhonographTheme
+import player.phonograph.ui.compose.components.ActionItem
 import player.phonograph.ui.modules.setting.elements.CheckUpdateIntervalSettings
-import player.phonograph.util.theme.accentColoredButtonStyle
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,47 +21,44 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 
-class CheckUpdateIntervalDialog : ComposeViewDialogFragment() {
+class CheckUpdateIntervalDialog : AbsSettingsDialog() {
     @Composable
     override fun Content() {
         val context = LocalContext.current
-        var duration: Duration by remember {
-            mutableStateOf(Setting(context)[Keys.checkUpdateInterval].data)
-        }
-        PhonographTheme {
-            MaterialDialog(
-                dialogState = rememberMaterialDialogState(true),
-                onCloseRequest = { dismiss() },
-                buttons = {
-                    negativeButton(
-                        res = android.R.string.cancel,
-                        textStyle = accentColoredButtonStyle()
-                    ) { dismiss() }
-                    positiveButton(
-                        res = android.R.string.ok,
-                        textStyle = accentColoredButtonStyle()
-                    ) {
+        val key = remember { Keys.checkUpdateInterval }
+        val preference = remember { Setting(context)[key] }
+        var duration by remember { mutableStateOf(preference.data) }
+        SettingsDialog(
+            modifier = Modifier,
+            title = stringResource(R.string.pref_title_check_for_updates_interval),
+            actions = listOf(
+                ActionItem(
+                    Icons.Default.Refresh,
+                    textRes = R.string.action_reset,
+                    onClick = {
+                        preference.data = key.valueProvider.defaultValue()
                         dismiss()
-                        synchronized(this) {
-                            Setting(App.instance)[Keys.checkUpdateInterval].data = duration
-                        }
                     }
-                }
-            ) {
-                title(res = R.string.pref_title_check_for_updates_interval)
-                Column(
-                    Modifier
-                        .padding(24.dp)
-                        .verticalScroll(rememberScrollState())
-                ) {
-                    CheckUpdateIntervalSettings(
-                        currentSelectedDuration = duration,
-                        onChangeDuration = { duration = it },
-                        previewTextTemplate = R.string.tips_preview_next_updates_check
-                    )
-                }
+                ),
+                ActionItem(
+                    Icons.Default.Check,
+                    textRes = android.R.string.ok,
+                    onClick = {
+                        preference.data = duration
+                        dismiss()
+                    }
+                ),
+            )
+        ) {
+            Column(Modifier.padding(16.dp)) {
+                CheckUpdateIntervalSettings(
+                    currentSelectedDuration = duration,
+                    onChangeDuration = { duration = it },
+                    previewTextTemplate = R.string.tips_preview_next_updates_check
+                )
             }
         }
     }
