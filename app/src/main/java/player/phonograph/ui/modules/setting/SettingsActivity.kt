@@ -5,9 +5,6 @@
 
 package player.phonograph.ui.modules.setting
 
-import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.WhichButton
-import com.afollestad.materialdialogs.actions.getActionButton
 import lib.activityresultcontract.registerActivityResultLauncherDelegate
 import lib.storage.launcher.CreateFileStorageAccessDelegate
 import lib.storage.launcher.ICreateFileStorageAccessible
@@ -29,6 +26,7 @@ import player.phonograph.ui.modules.explorer.PathSelectorContractTool
 import player.phonograph.ui.modules.explorer.PathSelectorRequester
 import util.theme.materials.MaterialColor
 import androidx.activity.compose.setContent
+import androidx.appcompat.app.AlertDialog
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
@@ -144,11 +142,13 @@ class SettingsActivity : ComposeActivity(),
     @Composable
     private fun menuItemClearAll(context: Context): Pair<String, Function0<Unit>> =
         stringResource(id = R.string.action_clear_all_preference) to {
-            MaterialDialog(context).show {
-                title(R.string.action_clear_all_preference)
-                message(R.string.warning_clear_all_preference_msg)
-                negativeButton(android.R.string.cancel)
-                positiveButton(R.string.action_clear_all_preference) { dialog ->
+            AlertDialog.Builder(context)
+                .setTitle(R.string.action_clear_all_preference)
+                .setMessage(R.string.warning_clear_all_preference_msg)
+                .setNegativeButton(android.R.string.cancel) { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .setPositiveButton(R.string.action_clear_all_preference) { dialog, _ ->
                     dialog.dismiss()
                     runBlocking {
                         if (Setting(context).clearAll()) {
@@ -159,9 +159,13 @@ class SettingsActivity : ComposeActivity(),
                         }
                     }
                 }
-                cancelOnTouchOutside(true)
-                getActionButton(WhichButton.POSITIVE).updateTextColor(MaterialColor.Red._A700.asColor)
-            }
+                .create().apply {
+                    setOnShowListener {
+                        (it as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(
+                            MaterialColor.Red._A700.asColor
+                        )
+                    }
+                }.show()
         }
 
     @Composable

@@ -3,9 +3,7 @@
 
     <style name="Theme.Phonograph.Auto.LightDark" parent="Theme.MaterialComponents.DayNight.NoActionBar.Bridge">
         <item name="android:windowBackground">@color/background_heavy_lightdark</item>
-        <item name="md_background_color">@color/background_medium_lightdark</item>
 
-        <item name="md_corner_radius">0dp</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowSharedElementsUseOverlay">false</item>
 
@@ -19,7 +17,6 @@
         <item name="rectSelector">@drawable/rect_selector_auto</item>
         <item name="rectSelectorStrong">@drawable/rect_selector_strong_auto</item>
 
-        <item name="md_color_button_text">@color/primary_text_default</item>
         <item name="cardBackgroundColor">@color/background_medium_lightdark</item>
         <item name="colorBackgroundFloating">@color/background_medium_lightdark</item>
         <item name="defaultFooterColor">@color/background_footer_lightdark</item>
@@ -32,9 +29,7 @@
 
     <style name="Theme.Phonograph.Dark" parent="Theme.MaterialComponents.NoActionBar.Bridge">
         <item name="android:windowBackground">@color/background_heavy_dark</item>
-        <item name="md_background_color">@color/background_medium_dark</item>
 
-        <item name="md_corner_radius">0dp</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowSharedElementsUseOverlay">false</item>
 
@@ -49,7 +44,6 @@
         <item name="rectSelector">@drawable/rect_selector_auto</item>
         <item name="rectSelectorStrong">@drawable/rect_selector_strong_dark</item>
 
-        <item name="md_color_button_text">@color/primary_text_default_darkmode</item>
         <item name="cardBackgroundColor">@color/background_medium_dark</item>
         <item name="colorBackgroundFloating">@color/background_medium_dark</item>
         <item name="defaultFooterColor">@color/background_footer_dark</item>
@@ -62,9 +56,7 @@
 
     <style name="Theme.Phonograph.Light" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
         <item name="android:windowBackground">@color/background_heavy_light</item>
-        <item name="md_background_color">@color/background_medium_light</item>
 
-        <item name="md_corner_radius">0dp</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowSharedElementsUseOverlay">false</item>
 
@@ -79,7 +71,6 @@
         <item name="rectSelector">@drawable/rect_selector_light</item>
         <item name="rectSelectorStrong">@drawable/rect_selector_strong_light</item>
 
-        <item name="md_color_button_text">@color/primary_text_default_lightmode</item>
         <item name="cardBackgroundColor">@color/background_medium_light</item>
         <item name="colorBackgroundFloating">@color/background_heavy_light</item>
         <item name="defaultFooterColor">@color/background_footer_light</item>
@@ -92,7 +83,6 @@
 
     <style name="Theme.Phonograph.Auto.LightBlack" parent="@style/Theme.Phonograph.Auto.LightDark">
         <item name="android:windowBackground">@color/background_heavy_lightblack</item>
-        <item name="md_background_color">@color/background_medium_lightblack</item>
 
         <item name="cardBackgroundColor">@color/background_medium_lightblack</item>
         <item name="colorBackgroundFloating">@color/background_heavy_lightblack</item>
@@ -102,7 +92,6 @@
 
     <style name="Theme.Phonograph.Black" parent="@style/Theme.Phonograph.Dark">
         <item name="android:windowBackground">@color/background_heavy_black</item>
-        <item name="md_background_color">@color/background_medium_black</item>
 
         <item name="cardBackgroundColor">@color/background_medium_black</item>
         <item name="colorBackgroundFloating">@color/background_medium_black</item>

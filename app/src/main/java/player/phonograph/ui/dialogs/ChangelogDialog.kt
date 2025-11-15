@@ -1,7 +1,6 @@
 package player.phonograph.ui.dialogs
 
-import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.customview.customView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import player.phonograph.R
 import player.phonograph.foundation.error.warning
 import player.phonograph.foundation.localization.LocalizationStore
@@ -13,6 +12,7 @@ import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.nightMode
 import player.phonograph.util.theme.themeCardBackgroundColor
 import player.phonograph.util.theme.tintButtons
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import android.annotation.SuppressLint
 import android.app.Dialog
@@ -39,21 +39,22 @@ class ChangelogDialog : DialogFragment() {
                 val msg =
                     "This device doesn't support web view, which is necessary to view the change log. It is missing a system component."
                 warning(requireContext(), "ChangelogDialog", msg, e)
-                return MaterialDialog(requireActivity())
-                    .title(android.R.string.dialog_alert_title)
-                    .message(text = msg)
-                    .positiveButton(android.R.string.ok)
+                return AlertDialog.Builder(requireActivity())
+                    .setTitle(android.R.string.dialog_alert_title)
+                    .setMessage(msg)
+                    .setPositiveButton(android.R.string.ok, null)
+                    .create()
                     .tintButtons()
             }
 
-        val dialog: MaterialDialog = MaterialDialog(requireActivity())
-            .title(R.string.label_changelog)
-            .customView(view = customView, noVerticalPadding = false)
-            .positiveButton(android.R.string.ok) {
-                it.dismiss()
+        val dialog = MaterialAlertDialogBuilder(requireActivity())
+            .setTitle(R.string.label_changelog)
+            .setView(customView)
+            .setPositiveButton(android.R.string.ok) { dialog, which ->
                 val context = requireContext()
                 PrerequisiteSetting.instance(context).lastChangelogVersion = currentVersionCode(context)
             }
+            .create()
             .tintButtons()
 
         val webView = customView.findViewById<WebView>(R.id.web_view)
