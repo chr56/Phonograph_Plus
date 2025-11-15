@@ -261,6 +261,7 @@ dependencies {
     implementation(libs.advrecyclerview)
     implementation(libs.recyclerviewFastscroll)
     implementation(libs.composeReorderable)
+    implementation(libs.composePipette)
     implementation(libs.statusBarLyricsApi)
     implementation(libs.lyricsGetterAPi)
 
