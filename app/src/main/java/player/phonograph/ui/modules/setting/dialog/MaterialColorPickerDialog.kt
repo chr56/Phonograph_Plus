@@ -4,23 +4,40 @@
 
 package player.phonograph.ui.modules.setting.dialog
 
-import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.color.colorChooser
 import player.phonograph.R
 import player.phonograph.mechanism.PhonographShortcutManager
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
-import player.phonograph.util.theme.tintButtons
+import player.phonograph.ui.compose.ComposeViewDialogFragment
+import player.phonograph.ui.compose.PhonographTheme
+import player.phonograph.ui.compose.components.ActionItem
+import player.phonograph.ui.compose.components.AdvancedDialogFrame
+import player.phonograph.ui.compose.components.ColorPalettePicker
+import player.phonograph.ui.compose.components.ColorPicker
+import player.phonograph.ui.compose.components.LimitedDialog
 import player.phonograph.util.ui.ColorPalette
-import androidx.fragment.app.DialogFragment
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
-import android.annotation.SuppressLint
-import android.app.Dialog
 import android.content.Context
-import android.os.Build
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES
 import android.os.Bundle
 
-class MaterialColorPickerDialog : DialogFragment() {
+class MaterialColorPickerDialog : ComposeViewDialogFragment() {
 
     private lateinit var mode: String
     private var initialColor: Int = 0
@@ -31,49 +48,93 @@ class MaterialColorPickerDialog : DialogFragment() {
         initialColor = requireArguments().getInt(KEY_INITIAL_COLOR)
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =
-        colorPicker(requireContext(), initialColor, ColorPalette.Variant.valueOf(mode))
+    enum class Page {
+        Material, HSV, Monet
+    }
 
-    @SuppressLint("CheckResult")
-    private fun colorPicker(context: Context, defaultColor: Int, variant: ColorPalette.Variant): Dialog =
-        MaterialDialog(context).apply {
-            title(R.string.pref_header_colors)
-            colorChooser(
-                colors = ColorPalette.colors,
-                subColors = ColorPalette.subColors,
-                allowCustomArgb = true,
-                initialSelection = defaultColor
-            ) { _, color ->
-                applyNewColor(context, color, variant)
-            }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                @Suppress("DEPRECATION")
-                neutralButton(res = R.string.dynamic_colors) {
-                    MaterialDialog(context).title(R.string.dynamic_colors)
-                        .colorChooser(
-                            colors = ColorPalette.dynamicColors(context),
-                            subColors = ColorPalette.allDynamicColors(context)
-                        ) { _, color ->
-                            applyNewColor(context, color, variant)
-                        }.positiveButton {
-                            it.dismiss()
-                            dismiss()
-                        }.negativeButton {
-                            it.dismiss()
-                        }.tintButtons().show()
+    @Composable
+    override fun Content() {
+        PhonographTheme {
+            LimitedDialog(onDismiss = ::dismiss) {
+                val context = LocalContext.current
+                var colorSelected: Color by remember { mutableStateOf(Color(initialColor)) }
+                var page: Page by remember { mutableStateOf(Page.Material) }
+
+                AdvancedDialogFrame(
+                    modifier = Modifier,
+                    title = stringResource(R.string.pref_header_colors),
+                    actions = listOf(
+                        ActionItem(
+                            imageRes = R.drawable.ic_edit_white_24dp,
+                            textRes = R.string.pref_category_advanced,
+                            onClick = {
+                                page = if (SDK_INT >= VERSION_CODES.S) {
+                                    when (page) {
+                                        Page.Material -> Page.HSV
+                                        Page.HSV      -> Page.Monet
+                                        Page.Monet    -> Page.Material
+                                    }
+                                } else {
+                                    when (page) {
+                                        Page.Material -> Page.HSV
+                                        else          -> Page.Material
+                                    }
+                                }
+                            }
+                        ),
+                        ActionItem(
+                            Icons.Default.Check,
+                            textRes = R.string.action_select,
+                            onClick = {
+                                applyNewColor(
+                                    context,
+                                    colorSelected.toArgb(),
+                                    ColorPalette.Variant.valueOf(mode)
+                                )
+                            }
+                        )
+                    ),
+                    onDismissRequest = ::dismiss
+                ) {
+                    when (page) {
+                        Page.Material -> {
+                            ColorPalettePicker(
+                                groupColors = ColorPalette.colors.map { Color(it) },
+                                allColors = ColorPalette.subColors.map { colors -> colors.map { Color(it) } },
+                                selected = colorSelected,
+                            ) { _, _, color -> colorSelected = color }
+                        }
+
+                        Page.Monet    -> {
+                            if (SDK_INT >= VERSION_CODES.S) {
+                                ColorPalettePicker(
+                                    groupColors = ColorPalette.dynamicColors(context).map { Color(it) },
+                                    allColors = ColorPalette.allDynamicColors(context)
+                                        .map { colors -> colors.map { Color(it) } },
+                                    selected = colorSelected,
+                                ) { _, _, color -> colorSelected = color }
+                            }
+                        }
+
+                        Page.HSV      -> {
+                            ColorPicker(
+                                selected = colorSelected,
+                                modifier = Modifier.padding(32.dp)
+                            ) { colorSelected = it }
+                        }
+                    }
                 }
             }
-            positiveButton(res = android.R.string.ok)
-            negativeButton(res = android.R.string.cancel)
-            tintButtons()
         }
+    }
+
 
     private fun applyNewColor(context: Context, color: Int, variant: ColorPalette.Variant) {
         when (variant) {
             ColorPalette.Variant.Primary -> Setting(context)[Keys.selectedPrimaryColor].data = color
             ColorPalette.Variant.Accent  -> Setting(context)[Keys.selectedAccentColor].data = color
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+        if (SDK_INT >= VERSION_CODES.N_MR1) {
             PhonographShortcutManager.updateDynamicShortcuts(context)
         }
     }
