@@ -147,10 +147,6 @@ androidx-test-espresso-core = { module = "androidx.test.espresso:espresso-core",
 
 androidGradlePluginAPI = { module = "com.android.tools.build:gradle-api", version.ref = "agp" } # for Plugin development
 
-materialDialogs-core = { group = "com.afollestad.material-dialogs", name = "core", version.ref = "materialDialogs" }
-materialDialogs-input = { group = "com.afollestad.material-dialogs", name = "input", version.ref = "materialDialogs" }
-materialDialogs-color = { group = "com.afollestad.material-dialogs", name = "color", version.ref = "materialDialogs" }
-
 composeMaterialDialogs = { module = "io.github.vanpra.compose-material-dialogs:core", version.ref = "composeMaterialDialogs" }
 
 themeUtils-materials = { group = "com.github.chr56.ThemeUtils", name = "materials-util", version.ref = "themeUtil" }
@@ -196,11 +192,6 @@ androidx-datastore = [
 androidx-room = [
     "androidx-room-runtime",
     "androidx-room-ktx",
-]
-
-materialDialogs = [
-    "materialDialogs-core",
-    "materialDialogs-color",
 ]
 
 themeUtil = [

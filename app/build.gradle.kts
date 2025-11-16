@@ -242,7 +242,6 @@ dependencies {
     implementation(libs.seekArc)
     implementation(libs.slidingUpPanel)
 
-    implementation(libs.bundles.materialDialogs)
     implementation(libs.composeMaterialDialogs)
 
     implementation(libs.okhttp3)
