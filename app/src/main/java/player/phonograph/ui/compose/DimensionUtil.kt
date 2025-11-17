@@ -39,9 +39,9 @@ fun dialogHorizontalPadding(container: WindowInfo, force: Boolean = false): Dp {
     val ratio: Int = DIALOG_SUPPOSED_WIDTH / remains
     return if (ratio > 8) {
         (4 * DIALOG_HORIZONTAL_PADDING).dp
-    } else if (ratio > 4) {
+    } else if (ratio > 6) {
         (3 * DIALOG_HORIZONTAL_PADDING).dp
-    } else if (ratio > 2) {
+    } else if (ratio > 4) {
         (2 * DIALOG_HORIZONTAL_PADDING).dp
     } else {
         DIALOG_HORIZONTAL_PADDING.dp

@@ -23,6 +23,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
@@ -64,34 +67,139 @@ fun LimitedDialog(
 
 
 /**
- * Basic Frame for some advanced or complex dialogs that feel likes a subpage
+ * Basic Frame for advanced or complex dialogs that feel likes a page, in full screen
  */
 @Composable
 fun AdvancedDialogFrame(
     modifier: Modifier,
     title: String,
     onDismissRequest: () -> Unit,
-    actions: List<ActionItem>,
+    navigationButtonIcon: Painter? = rememberVectorPainter(Icons.AutoMirrored.Default.ArrowBack),
+    actions: List<ActionItem> = emptyList(),
     content: @Composable ColumnScope.() -> Unit,
 ) {
     Column(modifier) {
         TopAppBar(
             title = { Text(title) },
             modifier = Modifier.fillMaxWidth(),
-            navigationIcon = {
-                ActionIconButton(
-                    Icons.AutoMirrored.Default.ArrowBack,
-                    tint = MaterialTheme.colors.onPrimary,
-                    text = stringResource(R.string.action_exit),
-                    onClick = onDismissRequest
-                )
-            },
-            actions = {
-                for (item in actions) {
-                    ActionIconButton(item)
-                }
-            }
+            navigationIcon = navigationIcon(navigationButtonIcon, onDismissRequest),
+            actions = { for (item in actions) ActionIconButton(item) }
         )
         content()
     }
 }
+
+interface DialogBuilderScope {
+
+    fun title(text: String)
+
+    fun navigationButton(painter: Painter?)
+
+    fun actionButton(
+        imageVector: ImageVector? = null,
+        imageRes: Int = -1,
+        text: String? = null,
+        textRes: Int = -1,
+        tint: Color? = null,
+        onClick: () -> Unit,
+    )
+
+    fun actionButton(item: ActionItem)
+
+    fun actionButtons(items: List<ActionItem>)
+
+    fun content(block: @Composable ColumnScope.() -> Unit)
+
+    fun onDismissRequest(block: () -> Unit)
+
+}
+
+/**
+ * Basic Frame for advanced or complex dialogs that feel likes a page, in full screen
+ */
+@Composable
+fun AdvancedDialogFrame(
+    modifier: Modifier,
+    specification: @Composable DialogBuilderScope.() -> Unit,
+) {
+    DialogBuilder().apply {
+        specification()
+        Build(modifier)
+    }
+}
+
+private class DialogBuilder() : DialogBuilderScope {
+
+    private var _title: String = ""
+    private var _painter: Painter? = null
+    private val _actionButtons: MutableList<ActionItem> = mutableListOf()
+    private var _content: @Composable (ColumnScope.() -> Unit) = {}
+    private var _onDismissRequest: () -> Unit = {}
+
+    override fun title(text: String) {
+        _title = text
+    }
+
+    override fun navigationButton(painter: Painter?) {
+        _painter = painter
+    }
+
+    override fun actionButton(
+        imageVector: ImageVector?,
+        imageRes: Int,
+        text: String?,
+        textRes: Int,
+        tint: Color?,
+        onClick: () -> Unit,
+    ) {
+        _actionButtons.add(
+            ActionItem(
+                imageVector = imageVector,
+                imageRes = imageRes,
+                text = text,
+                textRes = textRes,
+                tint = tint,
+                onClick = onClick
+            )
+        )
+    }
+
+    override fun actionButton(item: ActionItem) {
+        _actionButtons.add(item)
+    }
+
+    override fun actionButtons(items: List<ActionItem>) {
+        _actionButtons.addAll(items)
+    }
+
+    override fun content(block: @Composable (ColumnScope.() -> Unit)) {
+        _content = block
+    }
+
+    override fun onDismissRequest(block: () -> Unit) {
+        _onDismissRequest = block
+    }
+
+    @Composable
+    fun Build(modifier: Modifier) {
+        Column(modifier) {
+            TopAppBar(
+                title = { Text(_title) },
+                modifier = Modifier.fillMaxWidth(),
+                navigationIcon = navigationIcon(_painter, _onDismissRequest),
+                actions = { for (item in _actionButtons) ActionIconButton(item) }
+            )
+            _content()
+        }
+    }
+}
+
+
+@Composable
+private fun navigationIcon(painter: Painter?, onClick: () -> Unit) =
+    optionalActionIconButton(
+        painter,
+        tint = MaterialTheme.colors.onPrimary,
+        text = stringResource(R.string.action_exit),
+        onClick = onClick
+    )
