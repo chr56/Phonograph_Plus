@@ -19,7 +19,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.stringResource
 import androidx.fragment.compose.AndroidFragment
 import android.content.Context
@@ -41,7 +43,8 @@ class PathSelectorDialogActivity : ComposeActivity() {
                         AdvancedDialogFrame(
                             modifier = Modifier.height(this.maxHeight * 0.833f),
                             title = stringResource(R.string.label_path_selector),
-                            onDismissRequest = { finish() },
+                            navigationButtonIcon= rememberVectorPainter(Icons.Default.Close),
+                            onDismissRequest = ::finish,
                             actions = listOf(
                                 ActionItem(
                                     imageVector = Icons.Default.Check,

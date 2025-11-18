@@ -18,6 +18,7 @@ import player.phonograph.util.ui.MonetColor
 import androidx.annotation.RequiresApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.fragment.app.FragmentActivity
@@ -68,6 +70,8 @@ class MonetColorPickerDialog : ComposeViewDialogFragment() {
                 AdvancedDialogFrame(
                     modifier = Modifier,
                     title = stringResource(R.string.dynamic_colors),
+                    navigationButtonIcon= rememberVectorPainter(Icons.Default.Close),
+                    onDismissRequest = ::dismiss,
                     actions = listOf(
                         ActionItem(
                             Icons.Default.Check,
@@ -75,7 +79,6 @@ class MonetColorPickerDialog : ComposeViewDialogFragment() {
                             onClick = { save(selected) }
                         )
                     ),
-                    onDismissRequest = ::dismiss
                 ) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                         MonetColorPicker(selected) { selected = it }

@@ -19,7 +19,7 @@ import player.phonograph.util.ui.ColorPalette
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,6 +28,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -63,6 +64,8 @@ class MaterialColorPickerDialog : ComposeViewDialogFragment() {
                 AdvancedDialogFrame(
                     modifier = Modifier,
                     title = stringResource(R.string.pref_header_colors),
+                    navigationButtonIcon= rememberVectorPainter(Icons.Default.Close),
+                    onDismissRequest = ::dismiss,
                     actions = listOf(
                         ActionItem(
                             imageRes = R.drawable.ic_edit_white_24dp,
@@ -94,7 +97,6 @@ class MaterialColorPickerDialog : ComposeViewDialogFragment() {
                             }
                         )
                     ),
-                    onDismissRequest = ::dismiss
                 ) {
                     when (page) {
                         Page.Material -> {
