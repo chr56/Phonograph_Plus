@@ -11,12 +11,7 @@ import player.phonograph.settings.Preference
 import player.phonograph.settings.Setting
 import player.phonograph.ui.compose.components.ActionItem
 import player.phonograph.ui.modules.setting.elements.NowPlayingScreenStyleSettings
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Refresh
@@ -66,24 +61,15 @@ class NowPlayingScreenStylePreferenceDialog : AbsSettingsDialog() {
                         dismiss()
                     }
                 ),
-            )
+            ),
+            scrollable = true,
+            innerShadow = true,
         ) {
-            Surface(
-                modifier = Modifier
-                    .heightIn(min = 120.dp, max = 480.dp)
-                    .padding(vertical = 16.dp),
-                elevation = 8.dp
-            ) {
-                Column(
-                    Modifier
-                        .padding(horizontal = 24.dp)
-                        .verticalScroll(rememberScrollState())
-                ) {
-                    NowPlayingScreenStyleSettings(currentConfig) { newConfig ->
-                        state.value = newConfig
-                    }
-                }
-            }
+            NowPlayingScreenStyleSettings(
+                current = currentConfig,
+                update = { newConfig -> state.value = newConfig },
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
         }
 
     }

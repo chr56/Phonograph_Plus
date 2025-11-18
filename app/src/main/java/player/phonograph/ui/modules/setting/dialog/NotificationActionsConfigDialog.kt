@@ -12,6 +12,7 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.adapter.SortableListAdapter
 import player.phonograph.ui.compose.components.ActionItem
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
@@ -22,7 +23,6 @@ import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -32,7 +32,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
-import android.widget.TextView
 import android.widget.Toast
 
 class NotificationActionsConfigDialog : AbsSettingsDialog() {
@@ -54,32 +53,34 @@ class NotificationActionsConfigDialog : AbsSettingsDialog() {
                     textRes = android.R.string.ok,
                     onClick = { actionApply() }
                 ),
-            )
+            ),
         ) {
-            Text(
-                stringResource(R.string.tips_notification_actions),
-                style = MaterialTheme.typography.caption,
-                modifier = Modifier.padding(vertical = 8.dp, horizontal = 24.dp)
-            )
-            AndroidView(
-                modifier = Modifier.fillMaxWidth(),
-                factory = { context ->
-                    @SuppressLint("UseGetLayoutInflater", "InflateParams")
-                    val view = LayoutInflater.from(context).inflate(R.layout.recycler_view_wrapped, null)
-                    val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view)
+            Column {
+                Text(
+                    stringResource(R.string.tips_notification_actions),
+                    style = MaterialTheme.typography.caption,
+                    modifier = Modifier.padding(vertical = 8.dp, horizontal = 24.dp)
+                )
+                AndroidView(
+                    modifier = Modifier.fillMaxWidth(),
+                    factory = { context ->
+                        @SuppressLint("UseGetLayoutInflater", "InflateParams")
+                        val view = LayoutInflater.from(context).inflate(R.layout.recycler_view_wrapped, null)
+                        val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view)
 
-                    val config: NotificationActionsConfig = Setting(context)[Keys.notificationActions].data
-                    val configAdapter = ActionConfigAdapter(config).also { it.init() }
+                        val config: NotificationActionsConfig = Setting(context)[Keys.notificationActions].data
+                        val configAdapter = ActionConfigAdapter(config).also { it.init() }
 
-                    adapter = configAdapter
+                        adapter = configAdapter
 
-                    recyclerView.layoutManager = LinearLayoutManager(context)
-                    recyclerView.adapter = adapter
-                    configAdapter.attachToRecyclerView(recyclerView)
+                        recyclerView.layoutManager = LinearLayoutManager(context)
+                        recyclerView.adapter = adapter
+                        configAdapter.attachToRecyclerView(recyclerView)
 
-                    view
-                }
-            )
+                        view
+                    }
+                )
+            }
         }
     }
 

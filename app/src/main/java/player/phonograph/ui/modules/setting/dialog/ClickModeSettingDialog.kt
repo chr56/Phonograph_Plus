@@ -12,13 +12,7 @@ import player.phonograph.ui.modules.setting.elements.ClickModeSettings
 import player.phonograph.util.setBit
 import player.phonograph.util.testBit
 import player.phonograph.util.unsetBit
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.runtime.Composable
@@ -64,26 +58,16 @@ class ClickModeSettingDialog : AbsSettingsDialog() {
                     onClick = { dismiss() }
                 )
             ),
+            scrollable = true,
+            innerShadow = true,
         ) {
-            Surface(
-                modifier = Modifier
-                    .heightIn(min = 120.dp, max = 480.dp)
-                    .padding(vertical = 16.dp),
-                elevation = 8.dp
-            ) {
-                Column(
-                    Modifier
-                        .padding(horizontal = 16.dp)
-                        .verticalScroll(rememberScrollState())
-                ) {
-                    ClickModeSettings(
-                        currentMode = currentMode,
-                        setCurrentMode = setCurrentMode,
-                        currentExtraFlag = currentExtraFlag,
-                        flipExtraFlagBit = flipExtraFlagBit,
-                    )
-                }
-            }
+            ClickModeSettings(
+                currentMode = currentMode,
+                setCurrentMode = setCurrentMode,
+                currentExtraFlag = currentExtraFlag,
+                flipExtraFlagBit = flipExtraFlagBit,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
         }
     }
 }

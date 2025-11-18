@@ -9,12 +9,7 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.compose.components.ActionItem
 import player.phonograph.ui.modules.setting.elements.ExternalPlayRequestSettings
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.runtime.Composable
@@ -75,30 +70,20 @@ class ExternalPlayRequestSettingDialog : AbsSettingsDialog() {
                     onClick = { dismiss() }
                 )
             ),
+            scrollable = true,
+            innerShadow = true,
         ) {
-            Surface(
-                modifier = Modifier
-                    .heightIn(min = 120.dp, max = 480.dp)
-                    .padding(vertical = 16.dp),
-                elevation = 8.dp
-            ) {
-                Column(
-                    Modifier
-                        .padding(horizontal = 24.dp)
-                        .verticalScroll(rememberScrollState())
-                ) {
-                    ExternalPlayRequestSettings(
-                        showPrompt = showPrompt,
-                        flipUseDefault = flipUseDefault,
-                        silence = silence,
-                        flipSilence = flipSilence,
-                        currentModeSingle = currentModeSingle,
-                        setCurrentModeSingle = setCurrentModeSingle,
-                        currentModeMultiple = currentModeMultiple,
-                        setCurrentModeMultiple = setCurrentModeMultiple,
-                    )
-                }
-            }
+            ExternalPlayRequestSettings(
+                showPrompt = showPrompt,
+                flipUseDefault = flipUseDefault,
+                silence = silence,
+                flipSilence = flipSilence,
+                currentModeSingle = currentModeSingle,
+                setCurrentModeSingle = setCurrentModeSingle,
+                currentModeMultiple = currentModeMultiple,
+                setCurrentModeMultiple = setCurrentModeMultiple,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
         }
     }
 }

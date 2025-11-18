@@ -9,7 +9,6 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.compose.components.ActionItem
 import player.phonograph.ui.modules.setting.elements.CheckUpdateIntervalSettings
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -53,13 +52,12 @@ class CheckUpdateIntervalDialog : AbsSettingsDialog() {
                 ),
             )
         ) {
-            Column(Modifier.padding(16.dp)) {
-                CheckUpdateIntervalSettings(
-                    currentSelectedDuration = duration,
-                    onChangeDuration = { duration = it },
-                    previewTextTemplate = R.string.tips_preview_next_updates_check
-                )
-            }
+            CheckUpdateIntervalSettings(
+                currentSelectedDuration = duration,
+                onChangeDuration = { duration = it },
+                previewTextTemplate = R.string.tips_preview_next_updates_check,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+            )
         }
     }
 }

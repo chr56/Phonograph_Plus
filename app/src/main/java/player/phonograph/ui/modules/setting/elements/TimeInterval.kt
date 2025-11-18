@@ -10,15 +10,15 @@ import player.phonograph.model.time.TimeIntervalCalculationMode
 import player.phonograph.model.time.TimeUnit
 import player.phonograph.model.time.displayText
 import player.phonograph.ui.compose.components.WheelPicker
-import player.phonograph.util.debug
-import player.phonograph.util.time.TimeInterval.past
-import player.phonograph.util.time.TimeInterval.recently
+import player.phonograph.util.time.TimeInterval
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -28,23 +28,24 @@ import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.unit.dp
 import android.content.res.Resources
-import android.util.Log
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 @Composable
-fun ColumnScope.LastAddedPlaylistIntervalSettings(
+fun LastAddedPlaylistIntervalSettings(
     currentSelectedMode: TimeIntervalCalculationMode,
     onChangeMode: (TimeIntervalCalculationMode) -> Unit,
     currentSelectedDuration: Duration,
     onChangeDuration: (Duration) -> Unit,
     @StringRes previewTextTemplate: Int,
+    modifier: Modifier = Modifier,
 ) {
-    val resources = LocalContext.current.resources
+    val resources = LocalResources.current
     var preview by remember { mutableStateOf("") }
 
     var version by remember { mutableIntStateOf(0) }
@@ -59,39 +60,36 @@ fun ColumnScope.LastAddedPlaylistIntervalSettings(
 
     val supportedDurationTimeUnits = remember { TimeUnit.entries }
     val supportedDurationValue = remember { (1..30).toList() }
-    IntervalPicker(
-        selectedDuration = currentSelectedDuration,
-        supportedDurationTimeUnits = supportedDurationTimeUnits,
-        supportedDurationValue = supportedDurationValue,
-        onChangeDuration = { duration ->
-            version++
-            onChangeDuration(duration)
-            debug { Log.v(TAG, "Duration: $duration") }
-        },
-        selectedMode = currentSelectedMode,
-        supportedMode = remember { TimeIntervalCalculationMode.entries },
-        onChangeMode = { calculationMode ->
-            version++
-            onChangeMode(calculationMode)
-            debug { Log.v(TAG, "CalculationMode: ${calculationMode.name}") }
-        },
-    )
 
-    Text(
-        preview,
-        Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 8.dp)
-    )
+    Column(modifier) {
+        IntervalPicker(
+            selectedDuration = currentSelectedDuration,
+            supportedDurationTimeUnits = supportedDurationTimeUnits,
+            supportedDurationValue = supportedDurationValue,
+            onChangeDuration = { duration ->
+                version++
+                onChangeDuration(duration)
+            },
+            selectedMode = currentSelectedMode,
+            supportedMode = remember { TimeIntervalCalculationMode.entries },
+            onChangeMode = { calculationMode ->
+                version++
+                onChangeMode(calculationMode)
+            },
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        )
+        PreviewDescription(preview)
+    }
 }
 
 @Composable
-fun ColumnScope.CheckUpdateIntervalSettings(
+fun CheckUpdateIntervalSettings(
     currentSelectedDuration: Duration,
     onChangeDuration: (Duration) -> Unit,
     @StringRes previewTextTemplate: Int,
+    modifier: Modifier = Modifier,
 ) {
-    val resources = LocalContext.current.resources
+    val resources = LocalResources.current
     var preview by remember { mutableStateOf("") }
 
     var version by remember { mutableIntStateOf(0) }
@@ -105,23 +103,19 @@ fun ColumnScope.CheckUpdateIntervalSettings(
 
     val supportedDurationTimeUnits = remember { listOf(TimeUnit.Week, TimeUnit.Day, TimeUnit.Hour) }
     val supportedDurationValue = remember { (1..24).toList() }
-    IntervalPicker(
-        selectedDuration = currentSelectedDuration,
-        supportedDurationTimeUnits = supportedDurationTimeUnits,
-        supportedDurationValue = supportedDurationValue,
-        onChangeDuration = { duration ->
-            version++
-            onChangeDuration(duration)
-            debug { Log.v(TAG, "Duration: $duration") }
-        },
-    )
-
-    Text(
-        preview,
-        Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 8.dp)
-    )
+    Column(modifier) {
+        IntervalPicker(
+            selectedDuration = currentSelectedDuration,
+            supportedDurationTimeUnits = supportedDurationTimeUnits,
+            supportedDurationValue = supportedDurationValue,
+            onChangeDuration = { duration ->
+                version++
+                onChangeDuration(duration)
+            },
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        )
+        PreviewDescription(preview)
+    }
 }
 
 @Composable
@@ -130,12 +124,12 @@ fun IntervalPicker(
     supportedDurationTimeUnits: List<TimeUnit>,
     supportedDurationValue: List<Int>,
     onChangeDuration: (Duration) -> Unit,
+    modifier: Modifier = Modifier,
     selectedMode: TimeIntervalCalculationMode? = null,
     supportedMode: List<TimeIntervalCalculationMode> = emptyList(),
     onChangeMode: ((TimeIntervalCalculationMode) -> Unit)? = null,
-    modifier: Modifier = Modifier,
 ) {
-    val resources = LocalContext.current.resources
+    val resources = LocalResources.current
 
     var currentNumber by remember { mutableLongStateOf(selectedDuration.value) }
     var currentUnit by remember { mutableStateOf(selectedDuration.unit) }
@@ -181,6 +175,18 @@ fun IntervalPicker(
 }
 
 
+@Composable
+private fun ColumnScope.PreviewDescription(preview: String) {
+    Text(
+        text = preview,
+        modifier = Modifier
+            .align(Alignment.CenterHorizontally)
+            .padding(horizontal = 12.dp, vertical = 8.dp)
+            .fillMaxWidth(),
+        style = MaterialTheme.typography.body2
+    )
+}
+
 private fun previewText(
     resources: Resources,
     @StringRes text: Int,
@@ -188,8 +194,8 @@ private fun previewText(
     duration: Duration,
 ): String {
     val timestamp = System.currentTimeMillis() - when (calculationMode) {
-        TimeIntervalCalculationMode.PAST   -> past(duration)
-        TimeIntervalCalculationMode.RECENT -> recently(duration)
+        TimeIntervalCalculationMode.PAST   -> TimeInterval.past(duration)
+        TimeIntervalCalculationMode.RECENT -> TimeInterval.recently(duration)
     }
     val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
     val timeText = formatter.format(timestamp)

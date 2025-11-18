@@ -11,8 +11,8 @@ import player.phonograph.model.ui.PlayerControllerStyle
 import player.phonograph.model.ui.PlayerOptions
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,7 +25,6 @@ import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowDropDown
@@ -43,17 +42,20 @@ import androidx.compose.ui.unit.dp
 
 
 @Composable
-fun ColumnScope.NowPlayingScreenStyleSettings(
+fun NowPlayingScreenStyleSettings(
     current: NowPlayingScreenStyle,
     update: (NowPlayingScreenStyle) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    val playerBaseStyle = current.baseStyle
-    val controllerStyle = current.controllerStyle
-    val options = current.options
-    PlayerBaseStyle(playerBaseStyle) { update(current.copy(baseStyle = it)) }
-    PlayerControllerStyle(controllerStyle) { update(current.copy(controllerStyle = it)) }
-    PlayerControllerButtonFunctions(controllerStyle) { update(current.copy(controllerStyle = it)) }
-    PlayerStyleOptions(options) { update(current.copy(options = it)) }
+    Column(modifier.fillMaxWidth()) {
+        val playerBaseStyle = current.baseStyle
+        val controllerStyle = current.controllerStyle
+        val options = current.options
+        PlayerBaseStyle(playerBaseStyle) { update(current.copy(baseStyle = it)) }
+        PlayerControllerStyle(controllerStyle) { update(current.copy(controllerStyle = it)) }
+        PlayerControllerButtonFunctions(controllerStyle) { update(current.copy(controllerStyle = it)) }
+        PlayerStyleOptions(options) { update(current.copy(options = it)) }
+    }
 }
 
 
@@ -179,7 +181,7 @@ private fun ListOption(
     options: List<String>,
     onOptionSelected: (Int, String) -> Unit,
 ) {
-    Surface(
+    Box(
         Modifier
             .padding(horizontal = 8.dp, vertical = 8.dp)
             .fillMaxWidth()
@@ -249,10 +251,11 @@ private fun CheckBoxOption(
     checked: Boolean,
     onChanged: (Boolean) -> Unit,
 ) {
-    Row(Modifier
-        .clickable { onChanged(!checked) }
-        .heightIn(64.dp, 96.dp)
-        .padding(horizontal = 8.dp)
+    Row(
+        Modifier
+            .clickable { onChanged(!checked) }
+            .heightIn(64.dp, 96.dp)
+            .padding(horizontal = 8.dp)
     ) {
         Text(
             text = title,

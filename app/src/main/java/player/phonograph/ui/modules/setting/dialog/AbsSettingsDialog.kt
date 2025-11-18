@@ -4,21 +4,13 @@
 
 package player.phonograph.ui.modules.setting.dialog
 
-import player.phonograph.R
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.ActionItem
-import player.phonograph.ui.compose.components.AdvancedDialogFrame
 import player.phonograph.ui.compose.components.LimitedDialog
-import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import player.phonograph.ui.compose.components.SettingsDialogFrame
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 
 abstract class AbsSettingsDialog : ComposeViewDialogFragment() {
 
@@ -27,27 +19,22 @@ abstract class AbsSettingsDialog : ComposeViewDialogFragment() {
         modifier: Modifier,
         title: String,
         actions: List<ActionItem>,
-        content: @Composable ColumnScope.() -> Unit,
+        scrollable: Boolean = false,
+        innerShadow: Boolean = false,
+        content: @Composable () -> Unit,
     ) {
         PhonographTheme {
             LimitedDialog(onDismiss = ::dismiss) {
-                AdvancedDialogFrame(
+                SettingsDialogFrame(
                     modifier = modifier,
-                    title = stringResource(R.string.action_settings),
+                    title = title,
                     onDismissRequest = ::dismiss,
                     actions = actions,
-                ) {
-                    Text(
-                        title,
-                        style = MaterialTheme.typography.h6,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 16.dp, start = 24.dp, end = 16.dp)
-                    )
-                    content()
-                }
+                    scrollable = scrollable,
+                    innerShadow = innerShadow,
+                    content = content,
+                )
             }
         }
     }
-
 }

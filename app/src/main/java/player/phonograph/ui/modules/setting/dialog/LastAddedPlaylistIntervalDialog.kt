@@ -11,12 +11,7 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.compose.components.ActionItem
 import player.phonograph.ui.modules.setting.elements.LastAddedPlaylistIntervalSettings
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.runtime.Composable
@@ -59,19 +54,14 @@ class LastAddedPlaylistIntervalDialog : AbsSettingsDialog() {
                 )
             ),
         ) {
-            Column(
-                Modifier
-                    .padding(horizontal = 24.dp, vertical = 16.dp)
-                    .verticalScroll(rememberScrollState())
-            ) {
-                LastAddedPlaylistIntervalSettings(
-                    currentSelectedMode = currentlySelectedMode,
-                    onChangeMode = { calculationMode -> currentlySelectedMode = calculationMode },
-                    currentSelectedDuration = currentlySelected,
-                    onChangeDuration = { duration -> currentlySelected = duration },
-                    previewTextTemplate = R.string.tips_preview_cutoff_time_interval
-                )
-            }
+            LastAddedPlaylistIntervalSettings(
+                currentSelectedMode = currentlySelectedMode,
+                onChangeMode = { calculationMode -> currentlySelectedMode = calculationMode },
+                currentSelectedDuration = currentlySelected,
+                onChangeDuration = { duration -> currentlySelected = duration },
+                previewTextTemplate = R.string.tips_preview_cutoff_time_interval,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+            )
         }
     }
 }
