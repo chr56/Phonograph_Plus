@@ -26,28 +26,21 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun ColorCircle(color: Color, modifier: Modifier = Modifier, selected: Boolean = false, onClick: () -> Unit) {
     Box(
+        contentAlignment = Alignment.Center,
         modifier = modifier
             .fillMaxSize()
             .aspectRatio(1f)
-
+            .clickable(onClick = onClick)
+            .clip(CircleShape)
+            .border(1.dp, if (MaterialTheme.colors.isLight) Color.Gray else Color.White, CircleShape)
+            .background(color)
     ) {
-        Box(
-            modifier = Modifier
-                .align(Alignment.Center)
-                .fillMaxSize()
-                .clickable(onClick = onClick)
-                .clip(CircleShape)
-                .border(1.dp, if (MaterialTheme.colors.isLight) Color.Gray else Color.White, CircleShape)
-                .background(color)
-        )
-        if (selected)
-            Box(modifier = Modifier.align(Alignment.Center)) {
-                Icon(
-                    Icons.Default.Check,
-                    contentDescription = Icons.Default.Check.name,
-                    tint = if (color.isColorLight()) Color.Black else Color.White,
-                    modifier = Modifier.align(Alignment.Center)
-                )
-            }
+        if (selected) {
+            Icon(
+                Icons.Default.Check,
+                contentDescription = Icons.Default.Check.name,
+                tint = if (color.isColorLight()) Color.Black else Color.White
+            )
+        }
     }
 }

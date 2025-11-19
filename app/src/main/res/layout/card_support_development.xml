@@ -33,7 +33,7 @@
             android:background="?attr/rectSelector"
             android:clickable="true"
             android:gravity="center_vertical"
-            android:minHeight="@dimen/md_listitem_height"
+            android:minHeight="@dimen/list_item_height"
             android:orientation="horizontal"
             android:paddingLeft="16dp"
             android:paddingRight="16dp">
@@ -64,7 +64,7 @@
             android:background="?attr/rectSelector"
             android:clickable="true"
             android:gravity="center_vertical"
-            android:minHeight="@dimen/md_listitem_height"
+            android:minHeight="@dimen/list_item_height"
             android:orientation="horizontal"
             android:paddingLeft="16dp"
             android:paddingRight="16dp">
@@ -108,7 +108,7 @@
             android:background="?attr/rectSelector"
             android:clickable="true"
             android:gravity="center_vertical"
-            android:minHeight="@dimen/md_listitem_height"
+            android:minHeight="@dimen/list_item_height"
             android:orientation="horizontal"
             android:paddingLeft="16dp"
             android:paddingRight="16dp">
@@ -152,7 +152,7 @@
             android:background="?attr/rectSelector"
             android:gravity="center_vertical"
             android:clickable="true"
-            android:minHeight="@dimen/md_listitem_height"
+            android:minHeight="@dimen/list_item_height"
             android:orientation="horizontal"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"

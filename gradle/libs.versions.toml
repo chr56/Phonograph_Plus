@@ -112,6 +112,7 @@ compose-material = { group = "androidx.compose.material", name = "material", ver
 compose-material-icons = { group = "androidx.compose.material", name = "material-icons-core", version = "1.7.8" } # removed since 1.8.0
 
 compose-activity = { group = "androidx.activity", name = "activity-compose", version.ref = "activity" }
+compose-fragment = { group = "androidx.fragment", name = "fragment-compose", version.ref = "fragment" }
 
 #
 # popular
@@ -146,10 +147,6 @@ androidx-test-espresso-core = { module = "androidx.test.espresso:espresso-core",
 
 androidGradlePluginAPI = { module = "com.android.tools.build:gradle-api", version.ref = "agp" } # for Plugin development
 
-materialDialogs-core = { group = "com.afollestad.material-dialogs", name = "core", version.ref = "materialDialogs" }
-materialDialogs-input = { group = "com.afollestad.material-dialogs", name = "input", version.ref = "materialDialogs" }
-materialDialogs-color = { group = "com.afollestad.material-dialogs", name = "color", version.ref = "materialDialogs" }
-
 composeMaterialDialogs = { module = "io.github.vanpra.compose-material-dialogs:core", version.ref = "composeMaterialDialogs" }
 
 themeUtils-materials = { group = "com.github.chr56.ThemeUtils", name = "materials-util", version.ref = "themeUtil" }
@@ -167,6 +164,7 @@ jaudiotagger = { module = "com.github.chr56:jaudiotagger", version = "0.0.3" }
 observablescrollview = { module = "com.github.chr56:Android-ObservableScrollView-Retro", version = "0.0.1" }
 appIntro = { module = "com.github.AppIntro:AppIntro", version = "6.3.1" }
 advrecyclerview = { module = "com.h6ah4i.android.widget.advrecyclerview:advrecyclerview", version = "1.0.0" }
+composePipette = { module = "dev.zt64.compose.pipette:compose-pipette", version = "1.0.1" }
 composeReorderable = { module = "org.burnoutcrew.composereorderable:reorderable", version = "0.9.6" }
 composeAnnotatedText = { module = "io.github.aghajari:AnnotatedText", version = "1.0.3" }
 statusBarLyricsApi = { module = "com.github.577fkj:StatusBarApiExample", version = "2.0" }
@@ -181,6 +179,7 @@ compose = [
     "compose-material",
     "compose-material-icons",
     "compose-activity",
+    "compose-fragment",
 ]
 
 androidx-datastore = [
@@ -193,11 +192,6 @@ androidx-datastore = [
 androidx-room = [
     "androidx-room-runtime",
     "androidx-room-ktx",
-]
-
-materialDialogs = [
-    "materialDialogs-core",
-    "materialDialogs-color",
 ]
 
 themeUtil = [

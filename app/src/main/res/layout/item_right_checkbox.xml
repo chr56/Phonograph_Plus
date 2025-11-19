@@ -8,7 +8,7 @@
     android:focusable="true"
     android:foreground="@drawable/rect_selector_auto"
     android:orientation="horizontal"
-    android:paddingHorizontal="@dimen/md_listitem_vertical_margin_choice"
+    android:paddingHorizontal="@dimen/list_item_vertical_margin_choice"
     tools:gravity="start|center_vertical">
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -18,8 +18,8 @@
         android:layout_weight="1"
         android:ellipsize="end"
         android:gravity="center|start"
-        android:paddingStart="@dimen/md_listitem_control_margin"
-        android:paddingEnd="@dimen/md_listitem_control_margin"
+        android:paddingStart="@dimen/list_item_control_margin"
+        android:paddingEnd="@dimen/list_item_control_margin"
         tools:text="Item" />
 
     <player.phonograph.ui.views.AccentColorCheckBox

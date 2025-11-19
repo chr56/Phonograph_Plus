@@ -242,7 +242,6 @@ dependencies {
     implementation(libs.seekArc)
     implementation(libs.slidingUpPanel)
 
-    implementation(libs.bundles.materialDialogs)
     implementation(libs.composeMaterialDialogs)
 
     implementation(libs.okhttp3)
@@ -261,6 +260,7 @@ dependencies {
     implementation(libs.advrecyclerview)
     implementation(libs.recyclerviewFastscroll)
     implementation(libs.composeReorderable)
+    implementation(libs.composePipette)
     implementation(libs.statusBarLyricsApi)
     implementation(libs.lyricsGetterAPi)
 

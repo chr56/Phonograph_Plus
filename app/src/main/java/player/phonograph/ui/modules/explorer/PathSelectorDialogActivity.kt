@@ -5,91 +5,77 @@
 package player.phonograph.ui.modules.explorer
 
 import player.phonograph.R
-import player.phonograph.settings.ThemeSetting
-import player.phonograph.ui.basis.DialogActivity
-import player.phonograph.util.permissions.navigateToStorageSetting
+import player.phonograph.ui.basis.ComposeActivity
+import player.phonograph.ui.compose.PhonographTheme
+import player.phonograph.ui.compose.components.ActionItem
+import player.phonograph.ui.compose.components.AdvancedDialogFrame
+import player.phonograph.ui.compose.components.LimitedDialog
+import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.viewModels
-import androidx.appcompat.widget.AppCompatButton
-import androidx.appcompat.widget.ButtonBarLayout
-import androidx.core.util.valueIterator
-import androidx.core.view.setMargins
-import androidx.fragment.app.commit
-import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.res.stringResource
+import androidx.fragment.compose.AndroidFragment
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
-import android.util.SparseArray
-import android.view.Gravity
-import android.view.View
-import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
-import android.widget.Button
-import android.widget.FrameLayout
-import android.widget.LinearLayout
-import android.widget.LinearLayout.LayoutParams
-import android.widget.Space
 
-class PathSelectorDialogActivity : DialogActivity() {
+class PathSelectorDialogActivity : ComposeActivity() {
 
     private val model: FileExplorerViewModel by viewModels()
 
-    private lateinit var explorerFragment: FilesChooserExplorerFragment
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        explorerFragment = FilesChooserExplorerFragment()
-        setContentView(dialogView())
         setResult(RESULT_CODE_CANCELED)
+        setContent {
+            PhonographTheme {
+                LimitedDialog(onDismiss = ::finish) {
+                    BoxWithConstraints {
+                        AdvancedDialogFrame(
+                            modifier = Modifier.height(this.maxHeight * 0.833f),
+                            title = stringResource(R.string.label_path_selector),
+                            navigationButtonIcon= rememberVectorPainter(Icons.Default.Close),
+                            onDismissRequest = ::finish,
+                            actions = listOf(
+                                ActionItem(
+                                    imageVector = Icons.Default.Check,
+                                    textRes = R.string.action_select,
+                                    onClick = ::onSelect,
+                                )
+                            ),
+                        ) {
+                            Box(Modifier.fillMaxSize()) {
+                                AndroidFragment<FilesChooserExplorerFragment>(
+                                    modifier = Modifier.fillMaxSize()
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
-    private fun dialogView(): ViewGroup {
-        val contentPanel = contentPanel(this) {
-            id = R.id.container
-            setPadding(0, 0, 0, 24 + 128)
-        }
-
-        val buttonPanel = buttonPanel(this) {
-            button(0, getString(R.string.action_grant_permission), accentColor) {
-                navigateToStorageSetting(this@PathSelectorDialogActivity)
-            }
-            space(1)
-            button(2, getString(R.string.action_select), accentColor) {
-                onSelect()
-            }
-        }
-
-        val rootContainer = FrameLayout(this).apply {
-            addView(
-                contentPanel.panel, 0, FrameLayout.LayoutParams(
-                    MATCH_PARENT, WRAP_CONTENT, Gravity.TOP
-                )
-            )
-            addView(buttonPanel.panel, 1, FrameLayout.LayoutParams(
-                MATCH_PARENT, WRAP_CONTENT, Gravity.BOTTOM
-            ).apply { setMargins(8) })
-            supportFragmentManager.commit {
-                replace(R.id.container, explorerFragment, "FilesChooserExplorer")
-            }
-        }
-        return rootContainer
-    }
 
     private fun onSelect() {
+        val path = model.currentPath.value.path
         setResult(
             RESULT_CODE_SUCCESS,
             Intent().apply {
-                putExtra(EXTRA_KEY_PATH, model.currentPath.value.path)
+                putExtra(EXTRA_KEY_PATH, path)
             }
         )
         finish()
     }
-
-    private val accentColor by lazy { ThemeSetting.accentColor(this) }
 
     class PathSelectorActivityResultContract : ActivityResultContract<String?, String?>() {
         override fun createIntent(context: Context, input: String?): Intent =
@@ -104,76 +90,13 @@ class PathSelectorDialogActivity : DialogActivity() {
             }
     }
 
-    fun contentPanel(context: Context, constructor: FrameLayout.() -> Unit): ContentPanel {
-        val contentPanel = FrameLayout(context).apply(constructor)
-        return ContentPanel(contentPanel)
-    }
+    companion object {
+        private const val TAG = "PathSelector"
 
-    class ContentPanel(val panel: FrameLayout)
+        private const val RESULT_CODE_SUCCESS = 0
+        private const val RESULT_CODE_CANCELED = -1
 
-    private fun buttonPanel(context: Context, constructor: ButtonPanel.Builder.() -> Unit): ButtonPanel =
-        ButtonPanel.Builder(context).apply(constructor).build()
+        private const val EXTRA_KEY_PATH = "path"
 
-    @SuppressLint("RestrictedApi")
-    class ButtonPanel(val panel: ButtonBarLayout, val buttons: SparseArray<View> = SparseArray(3)) {
-        class Builder(private val context: Context) {
-
-            private val buttons: SparseArray<View> = SparseArray(2)
-            var orientation: Int = LinearLayout.HORIZONTAL
-
-            fun button(index: Int, buttonText: String, color: Int, onClick: (View) -> Unit): Builder {
-                buttons.put(index, createButton(context, buttonText, color, onClick))
-                return this
-            }
-
-            fun space(index: Int): Builder {
-                buttons.put(index, Space(context))
-                return this
-            }
-
-            fun build(): ButtonPanel {
-                val panel = ButtonBarLayout(context, null)
-                val buttonLayoutParams = LayoutParams(WRAP_CONTENT, WRAP_CONTENT, 0f)
-                val spaceLayoutParams = LayoutParams(WRAP_CONTENT, WRAP_CONTENT, 1f)
-
-                panel.orientation = this.orientation
-
-                //todo
-                for (button in buttons.valueIterator()) {
-                    panel.addView(
-                        button,
-                        if (button is Space) spaceLayoutParams else buttonLayoutParams
-                    )
-                }
-
-                return ButtonPanel(panel, buttons)
-            }
-
-            private fun createButton(
-                context: Context,
-                buttonText: String,
-                color: Int,
-                onClick: (View) -> Unit,
-            ): Button {
-                return AppCompatButton(context).apply {
-                    text = buttonText
-                    textSize = 14f
-                    isSingleLine = true
-                    gravity = Gravity.CENTER
-                    setPadding(12, 0, 12, 0)
-                    minWidth = 64
-                    background = ColorDrawable(Color.TRANSPARENT)
-                    setTextColor(color)
-                    setOnClickListener { onClick(it) }
-                }
-            }
-        }
     }
 }
-
-private const val TAG = "PathSelector"
-
-private const val RESULT_CODE_SUCCESS = 0
-private const val RESULT_CODE_CANCELED = -1
-
-private const val EXTRA_KEY_PATH = "path"

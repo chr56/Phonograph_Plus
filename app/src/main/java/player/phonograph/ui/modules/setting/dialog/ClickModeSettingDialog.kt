@@ -4,25 +4,17 @@
 
 package player.phonograph.ui.modules.setting.dialog
 
-import com.vanpra.composematerialdialogs.MaterialDialog
-import com.vanpra.composematerialdialogs.rememberMaterialDialogState
-import com.vanpra.composematerialdialogs.title
 import player.phonograph.R
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
-import player.phonograph.ui.compose.ComposeViewDialogFragment
-import player.phonograph.ui.compose.PhonographTheme
+import player.phonograph.ui.compose.components.ActionItem
 import player.phonograph.ui.modules.setting.elements.ClickModeSettings
 import player.phonograph.util.setBit
 import player.phonograph.util.testBit
-import player.phonograph.util.theme.accentColoredButtonStyle
 import player.phonograph.util.unsetBit
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -30,9 +22,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 
-class ClickModeSettingDialog : ComposeViewDialogFragment() {
+class ClickModeSettingDialog : AbsSettingsDialog() {
     @Composable
     override fun Content() {
         val context = LocalContext.current
@@ -55,35 +48,26 @@ class ClickModeSettingDialog : ComposeViewDialogFragment() {
             currentExtraFlag = new
             Setting(context)[Keys.songItemClickExtraFlag].data = new
         }
-        PhonographTheme {
-            MaterialDialog(
-                dialogState = rememberMaterialDialogState(true),
-                elevation = 0.dp,
-                onCloseRequest = { dismiss() },
-                buttons = {
-                    positiveButton(
-                        res = android.R.string.ok,
-                        textStyle = accentColoredButtonStyle()
-                    ) {
-                        dismiss()
-                    }
-                }
-            ) {
-                Spacer(modifier = Modifier.height(16.dp))
-                title(res = R.string.pref_title_click_behavior)
-                Column(
-                    Modifier
-                        .padding(24.dp)
-                        .verticalScroll(rememberScrollState())
-                ) {
-                    ClickModeSettings(
-                        currentMode = currentMode,
-                        setCurrentMode = setCurrentMode,
-                        currentExtraFlag = currentExtraFlag,
-                        flipExtraFlagBit = flipExtraFlagBit,
-                    )
-                }
-            }
+        SettingsDialog(
+            modifier = Modifier,
+            title = stringResource(R.string.pref_title_click_behavior),
+            actions = listOf(
+                ActionItem(
+                    Icons.Default.Check,
+                    textRes = android.R.string.ok,
+                    onClick = { dismiss() }
+                )
+            ),
+            scrollable = true,
+            innerShadow = true,
+        ) {
+            ClickModeSettings(
+                currentMode = currentMode,
+                setCurrentMode = setCurrentMode,
+                currentExtraFlag = currentExtraFlag,
+                flipExtraFlagBit = flipExtraFlagBit,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
         }
     }
 }

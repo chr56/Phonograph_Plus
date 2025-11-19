@@ -3,9 +3,7 @@
 
     <style name="Theme.Phonograph.Auto.LightDark" parent="Theme.MaterialComponents.DayNight.NoActionBar.Bridge">
         <item name="android:windowBackground">@color/background_heavy_lightdark</item>
-        <item name="md_background_color">@color/background_medium_lightdark</item>
 
-        <item name="md_corner_radius">0dp</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowSharedElementsUseOverlay">false</item>
 
@@ -14,12 +12,13 @@
 
         <item name="android:actionOverflowButtonStyle">@style/Widget.ActionButton.Overflow</item>
         <item name="toolbarPopupTheme">@style/ThemeOverlay.AppCompat.DayNight.ActionBar</item>
+        <item name="alertDialogTheme">@style/Theme.Phonograph.AlertDialog.Auto.LightDark</item>
+        <item name="materialAlertDialogTheme">@style/Theme.Phonograph.AlertDialog.Auto.LightDark</item>
 
         <item name="roundSelector">@drawable/round_selector_auto</item>
         <item name="rectSelector">@drawable/rect_selector_auto</item>
         <item name="rectSelectorStrong">@drawable/rect_selector_strong_auto</item>
 
-        <item name="md_color_button_text">@color/primary_text_default</item>
         <item name="cardBackgroundColor">@color/background_medium_lightdark</item>
         <item name="colorBackgroundFloating">@color/background_medium_lightdark</item>
         <item name="defaultFooterColor">@color/background_footer_lightdark</item>
@@ -32,9 +31,7 @@
 
     <style name="Theme.Phonograph.Dark" parent="Theme.MaterialComponents.NoActionBar.Bridge">
         <item name="android:windowBackground">@color/background_heavy_dark</item>
-        <item name="md_background_color">@color/background_medium_dark</item>
 
-        <item name="md_corner_radius">0dp</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowSharedElementsUseOverlay">false</item>
 
@@ -44,12 +41,13 @@
         <!-- necessary to find the overflow button later in the layout-->
         <item name="android:actionOverflowButtonStyle">@style/Widget.ActionButton.Overflow</item>
         <item name="toolbarPopupTheme">@style/ThemeOverlay.AppCompat.ActionBar</item>
+        <item name="alertDialogTheme">@style/Theme.Phonograph.AlertDialog.Dark</item>
+        <item name="materialAlertDialogTheme">@style/Theme.Phonograph.AlertDialog.Dark</item>
 
         <item name="roundSelector">@drawable/round_selector_dark</item>
         <item name="rectSelector">@drawable/rect_selector_auto</item>
         <item name="rectSelectorStrong">@drawable/rect_selector_strong_dark</item>
 
-        <item name="md_color_button_text">@color/primary_text_default_darkmode</item>
         <item name="cardBackgroundColor">@color/background_medium_dark</item>
         <item name="colorBackgroundFloating">@color/background_medium_dark</item>
         <item name="defaultFooterColor">@color/background_footer_dark</item>
@@ -62,9 +60,7 @@
 
     <style name="Theme.Phonograph.Light" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
         <item name="android:windowBackground">@color/background_heavy_light</item>
-        <item name="md_background_color">@color/background_medium_light</item>
 
-        <item name="md_corner_radius">0dp</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowSharedElementsUseOverlay">false</item>
 
@@ -74,12 +70,13 @@
         <!-- necessary to find the overflow button later in the layout-->
         <item name="android:actionOverflowButtonStyle">@style/Widget.ActionButton.Overflow</item>
         <item name="toolbarPopupTheme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+        <item name="alertDialogTheme">@style/Theme.Phonograph.AlertDialog.Light</item>
+        <item name="materialAlertDialogTheme">@style/Theme.Phonograph.AlertDialog.Light</item>
 
         <item name="roundSelector">@drawable/round_selector_light</item>
         <item name="rectSelector">@drawable/rect_selector_light</item>
         <item name="rectSelectorStrong">@drawable/rect_selector_strong_light</item>
 
-        <item name="md_color_button_text">@color/primary_text_default_lightmode</item>
         <item name="cardBackgroundColor">@color/background_medium_light</item>
         <item name="colorBackgroundFloating">@color/background_heavy_light</item>
         <item name="defaultFooterColor">@color/background_footer_light</item>
@@ -92,22 +89,26 @@
 
     <style name="Theme.Phonograph.Auto.LightBlack" parent="@style/Theme.Phonograph.Auto.LightDark">
         <item name="android:windowBackground">@color/background_heavy_lightblack</item>
-        <item name="md_background_color">@color/background_medium_lightblack</item>
 
         <item name="cardBackgroundColor">@color/background_medium_lightblack</item>
         <item name="colorBackgroundFloating">@color/background_heavy_lightblack</item>
         <item name="defaultFooterColor">@color/background_footer_lightblack</item>
         <item name="dividerColor">@color/divider_lightblack</item>
+
+        <item name="alertDialogTheme">@style/Theme.Phonograph.AlertDialog.Auto.LightBlack</item>
+        <item name="materialAlertDialogTheme">@style/Theme.Phonograph.AlertDialog.Auto.LightBlack</item>
     </style>
 
     <style name="Theme.Phonograph.Black" parent="@style/Theme.Phonograph.Dark">
         <item name="android:windowBackground">@color/background_heavy_black</item>
-        <item name="md_background_color">@color/background_medium_black</item>
 
         <item name="cardBackgroundColor">@color/background_medium_black</item>
         <item name="colorBackgroundFloating">@color/background_medium_black</item>
         <item name="defaultFooterColor">@color/background_footer_black</item>
         <item name="dividerColor">@color/divider_black</item>
+
+        <item name="alertDialogTheme">@style/Theme.Phonograph.AlertDialog.Black</item>
+        <item name="materialAlertDialogTheme">@style/Theme.Phonograph.AlertDialog.Black</item>
     </style>
 
     <!-- Theme for app intro -->
@@ -142,6 +143,43 @@
 
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:background">@null</item>
+    </style>
+
+    <!--  Dialogs  -->
+    <style name="Theme.Phonograph.AlertDialog.Auto.LightDark" parent="Theme.AppCompat.DayNight.Dialog.Alert">
+        <item name="colorSurface">@color/background_medium_lightdark</item>
+        <item name="android:background">@color/background_medium_lightdark</item>
+        <item name="dialogCornerRadius">0dp</item>
+        <item name="colorAccent">@color/grey_highlight</item>
+        <item name="colorControlActivated">@color/grey_highlight</item>
+    </style>
+    <style name="Theme.Phonograph.AlertDialog.Auto.LightBlack" parent="Theme.AppCompat.DayNight.Dialog.Alert">
+        <item name="colorSurface">@color/background_medium_lightblack</item>
+        <item name="android:background">@color/background_medium_lightblack</item>
+        <item name="dialogCornerRadius">0dp</item>
+        <item name="colorAccent">@color/grey_highlight</item>
+        <item name="colorControlActivated">@color/grey_highlight</item>
+    </style>
+    <style name="Theme.Phonograph.AlertDialog.Light" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorSurface">@color/background_medium_light</item>
+        <item name="android:background">@color/background_medium_light</item>
+        <item name="dialogCornerRadius">0dp</item>
+        <item name="colorAccent">@color/grey_highlight</item>
+        <item name="colorControlActivated">@color/grey_highlight</item>
+    </style>
+    <style name="Theme.Phonograph.AlertDialog.Dark" parent="Theme.AppCompat.Dialog.Alert">
+        <item name="colorSurface">@color/background_medium_dark</item>
+        <item name="android:background">@color/background_medium_dark</item>
+        <item name="dialogCornerRadius">0dp</item>
+        <item name="colorAccent">@color/grey_highlight</item>
+        <item name="colorControlActivated">@color/grey_highlight</item>
+    </style>
+    <style name="Theme.Phonograph.AlertDialog.Black" parent="Theme.AppCompat.Dialog.Alert">
+        <item name="colorSurface">@color/background_medium_black</item>
+        <item name="android:background">@color/background_medium_black</item>
+        <item name="dialogCornerRadius">0dp</item>
+        <item name="colorAccent">@color/grey_highlight</item>
+        <item name="colorControlActivated">@color/grey_highlight</item>
     </style>
 
 </resources>

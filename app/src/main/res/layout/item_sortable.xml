@@ -8,12 +8,12 @@
     android:descendantFocusability="blocksDescendants"
     android:focusable="true"
     android:foreground="@drawable/rect_selector_auto"
-    android:minHeight="@dimen/md_listitem_height"
+    android:minHeight="@dimen/list_item_height"
     android:orientation="horizontal"
-    android:paddingStart="@dimen/md_dialog_frame_margin"
-    android:paddingLeft="@dimen/md_dialog_frame_margin"
-    android:paddingEnd="@dimen/md_dialog_frame_margin"
-    android:paddingRight="@dimen/md_dialog_frame_margin"
+    android:paddingStart="@dimen/dialog_frame_margin"
+    android:paddingLeft="@dimen/dialog_frame_margin"
+    android:paddingEnd="@dimen/dialog_frame_margin"
+    android:paddingRight="@dimen/dialog_frame_margin"
     tools:gravity="start|center_vertical">
 
     <player.phonograph.ui.views.AccentColorCheckBox
@@ -32,11 +32,11 @@
         android:layout_weight="1"
         android:ellipsize="end"
         android:gravity="center_vertical"
-        android:minHeight="@dimen/md_listitem_height"
-        android:paddingStart="@dimen/md_listitem_control_margin"
-        android:paddingTop="@dimen/md_listitem_vertical_margin_choice"
-        android:paddingEnd="@dimen/md_listitem_control_margin"
-        android:paddingBottom="@dimen/md_listitem_vertical_margin_choice"
+        android:minHeight="@dimen/list_item_height"
+        android:paddingStart="@dimen/list_item_control_margin"
+        android:paddingTop="@dimen/list_item_vertical_margin_choice"
+        android:paddingEnd="@dimen/list_item_control_margin"
+        android:paddingBottom="@dimen/list_item_vertical_margin_choice"
         tools:text="Item" />
 
     <player.phonograph.ui.views.IconImageView
@@ -46,7 +46,7 @@
         android:layout_gravity="end|center_vertical"
         android:clickable="false"
         android:focusable="false"
-        android:minHeight="@dimen/md_listitem_height"
+        android:minHeight="@dimen/list_item_height"
         android:tintMode="src_in"
         app:srcCompat="@drawable/ic_drag_vertical_white_24dp"
         tools:ignore="ContentDescription" />
