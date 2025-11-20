@@ -68,7 +68,7 @@ class AppWidgetBig : BaseAppWidget() {
                     if (bitmap == null) {
                         view.setImageViewResource(R.id.image, R.drawable.default_album_art)
                     } else {
-                        updateImage(context, view, bitmap)
+                        updateImage(context, view, limitBitmap(bitmap))
                     }
                     pushUpdate(context.applicationContext, appWidgetIds, view)
                 }

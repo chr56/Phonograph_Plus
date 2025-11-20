@@ -85,7 +85,7 @@ class AppWidgetSmall : BaseAppWidget() {
         appWidgetView.bindDrawable(context, R.id.button_next, R.drawable.ic_skip_next_white_24dp, color)
         appWidgetView.bindDrawable(context, R.id.button_prev, R.drawable.ic_skip_previous_white_24dp, color)
 
-        updateImage(context, appWidgetView, bitmap)
+        updateImage(context, appWidgetView, limitBitmap(bitmap))
     }
 
     override fun updateImage(

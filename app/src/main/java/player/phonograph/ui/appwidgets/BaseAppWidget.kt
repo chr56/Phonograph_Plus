@@ -29,6 +29,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.createBitmap
+import androidx.core.graphics.scale
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
@@ -48,6 +49,7 @@ import android.graphics.drawable.Drawable
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES
 import android.widget.RemoteViews
+import kotlin.math.sqrt
 
 abstract class BaseAppWidget : AppWidgetProvider() {
 
@@ -79,6 +81,19 @@ abstract class BaseAppWidget : AppWidgetProvider() {
         bitmap: Bitmap?,
     )
 
+    protected fun limitBitmap(bitmap: Bitmap?): Bitmap? {
+        if (bitmap == null) return null
+        val total = bitmap.byteCount
+        val limit = 3_145_728 // 3MB
+        if (total > limit) {
+            // resize bitmap
+            val scalingFactor = sqrt(limit.toDouble() / total)
+            val newWidth = (bitmap.width * scalingFactor).toInt()
+            val newHeight = (bitmap.height * scalingFactor).toInt()
+            return bitmap.scale(newWidth, newHeight)
+        }
+        return bitmap
+    }
 
     /**
      * Update App Widget
@@ -112,7 +127,7 @@ abstract class BaseAppWidget : AppWidgetProvider() {
             remoteViews.setupLaunchingClick(context)
             if (song != null) updateText(context, remoteViews, song)
             if (cachedCover != null) {
-                updateImage(context, remoteViews, cachedCover)
+                updateImage(context, remoteViews, limitBitmap(cachedCover))
             } else {
                 remoteViews.setImageViewResource(R.id.image, R.drawable.default_album_art)
             }
