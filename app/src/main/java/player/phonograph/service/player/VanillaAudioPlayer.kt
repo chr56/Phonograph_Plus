@@ -216,7 +216,7 @@ class VanillaAudioPlayer(private val context: Context, override var gaplessPlayb
         get() = _speed
         set(value) {
             if (isPlaying) {
-                playWithSpeed(currentMediaPlayer, _speed)
+                playWithSpeed(currentMediaPlayer, value)
             } else {
                 _speed = value
             }
