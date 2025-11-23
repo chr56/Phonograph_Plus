@@ -2,6 +2,30 @@
     "versions": [
         {
             "channel": "preview",
+            "versionName": "1.11.2-dev2",
+            "versionCode": 1111,
+            "date": 1763820000,
+            "link": [
+                {
+                    "name": "Github Release (Website)",
+                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.11.2-dev2"
+                },
+                {
+                    "name": "Github Release Modern Variant APK (File Download Link)",
+                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.11.2-dev2/PhonographPlus_1.11.2-dev2_ModernPreviewRelease.apk"
+                },
+                {
+                    "name": "Github Release Legacy Variant APK (File Download Link)",
+                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.11.2-dev2/PhonographPlus_1.11.2-dev2_LegacyPreviewRelease.apk"
+                }
+            ],
+            "releaseNote": {
+                "zh-cn": "<ol><li>修复 路径选择器 (自v1.11.2-dev1)</li><li>修复 除非暂停播放速度设置无法生效 (自v1.11.0)</li><li>修复 页脚着色设置不立即生效</li><li>新增 支持自动跳过队列中的不可播放项 (可选)</li><li>改进 统一所有设置对话框的样式</li><li>修改 更新不适合的网格大小警告条件</li><li>修改 限制小部件图像分辨率，以防止在更新时崩溃</li></ol>",
+                "en": "<ol><li>Fix: path selector (since v1.11.2-dev1)</li><li>Fix: speed settings could be applied unless it's paused (since v1.11.0)</li><li>Fix: color footer settings not taking effect immediately</li><li>New: support of automatically skipping unplayable items in queue (optional)</li><li>Improve: standardize styles across all settings dialogs</li><li>Modify: update conditions for warning inappropriate grid size</li><li>Modify: limit image resolution to prevent crashes during App Widgets updating</li></ol>"
+            }
+        },
+        {
+            "channel": "preview",
             "versionName": "1.11.2-dev1",
             "versionCode": 1111,
             "date": 1762585000,
