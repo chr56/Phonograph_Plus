@@ -1,0 +1,8 @@
+<b>1.11.2(1112) 2025.11.26</b>
+- Fix: occasional crash by 'shuffle all' from multi-selection
+- Fix: buttons in Startup Guide blocked by navigation bar on Android 15 and above
+- Fix: speed settings could be applied unless it's paused
+- Fix: color footer settings not taking effect immediately
+- Improve: standardize styles across all settings dialogs
+- Improve: accelerate loading speed in Files Tab
+...(Visit project homepage to see full changelogs)
