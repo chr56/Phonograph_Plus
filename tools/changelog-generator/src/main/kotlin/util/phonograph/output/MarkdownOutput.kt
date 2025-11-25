@@ -51,22 +51,21 @@ abstract class Markdown : OutputFormat {
     companion object {
 
         private const val PREVIEW_WARNING_EN =
-            "This is a _Preview Channel_ Release (with package name suffix `preview`), which might have potential bugs."
+            "This is a _Preview Channel_ Release (identified by `preview` suffix in the package name), stability and quality are not guaranteed."
         private const val PREVIEW_WARNING_ZH =
-            "此为预览通道版本 (包名后缀`preview`), 可能存在潜在问题!"
+            "此为预览通道版本 (包名后缀`preview`), 不保证可靠性!"
 
         private const val PREVIEW_WARNING_EN_ESCAPED =
-            "This is a _Preview Channel_ Release \\(with package name suffix `preview`\\)\\, which might have potential bugs\\."
-
+            "This is a _Preview Channel_ Release \\(identified by `preview` suffix in the package name\\)\\, stability and quality are not guaranteed.\\."
         private const val PREVIEW_WARNING_ZH_ESCAPED =
-            "此为预览通道版本 \\(包名后缀`preview`\\), 可能存在潜在问题\\!"
+            "此为预览通道版本 \\(包名后缀`preview`\\), 不保证可靠性\\!"
 
         private const val VERSION_DESCRIPTION =
             """
             -> [Version Guide](docs/Version_Guide.md) / [版本指南](docs/Version_Guide_ZH.md)
             
-            **TL;DR**: If you are a user of Android 7-10, use `Legacy`; If not, use `Modern`. Besides, `Fdroid` is exactly identical with apk on Fdroid; ignore it.
-            **太长不看**: 若为 Android 7-10 用户，请使用 `Legacy` 版本；否则，请使用 `Modern` 版本。另外，带 `Fdroid` 为 F-droid 上完全相同的版本，请忽略。
+            **TL;DR**: If you are a user of Android 7~10, please consider to use `Legacy`; If not, use `Modern`. The `Fdroid` is identical to the version on F‑droid; and the signature is same with others.
+            **太长不看**: 若为 Android 7~10 用户，请考虑使用 `Legacy` 版本；否则，请使用 `Modern` 版本。另外带 `Fdroid` 为 F-droid 上完全相同的版本，签名与其他版本相同。
             
             """
     }
