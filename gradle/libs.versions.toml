@@ -231,4 +231,4 @@ kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 
 versionChecker = { id = "com.github.ben-manes.versions", version.ref = "versionChecker" }
 
-artifactsRelease = { id = "io.github.chr56.tools.release", version = "0.1.3" }
+artifactsRelease = { id = "io.github.chr56.tools.release", version = "0.1.4" }
