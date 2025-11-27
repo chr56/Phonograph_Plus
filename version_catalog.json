@@ -1,6 +1,30 @@
 {
     "versions": [
         {
+            "channel": "stable",
+            "versionName": "1.11.2",
+            "versionCode": 1112,
+            "date": 1764155000,
+            "link": [
+                {
+                    "name": "Github Release (Website)",
+                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.11.2"
+                },
+                {
+                    "name": "Github Release Modern Variant APK (File Download Link)",
+                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v1.11.2/PhonographPlus_1.11.2_ModernStableRelease.apk"
+                },
+                {
+                    "name": "Github Release Legacy Variant APK (File Download Link)",
+                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v1.11.2/PhonographPlus_1.11.2_LegacyStableRelease.apk"
+                }
+            ],
+            "releaseNote": {
+                "zh-cn": "<ol><li>修复 从多选菜单进行随机播放时偶尔崩溃</li><li>修复 在 Android 15 及其以上，设置向导的按钮被导航栏遮挡</li><li>修复 除非暂停播放，速度设置不生效 (自v1.11.0)</li><li>修复 页脚着色设置不立即生效</li><li>修复 服务退出后自动媒体库刷新失败</li><li>改进 统一所有设置对话框的样式</li><li>改进 提升文件页中加载速度</li><li>改进 同步进度通知发送节流</li><li>新增 支持自动跳过队列中的不可播放项 (可选)</li><li>修改 静音部分通知，更新通知渠道</li><li>修改 更新不适合的网格大小警告条件</li><li>修改 限制小部件图像分辨率，以防止在刷新时崩溃</li><li>开发 更新 Kotlin 至 2.2.20, 更新依赖</li><li>开发 清理代码</li></ol>",
+                "en": "<ol><li>Fix: occasional crash when using 'shuffle all' from the multi-selection menu</li><li>Fix: buttons in Startup Guide blocked by navigation bar on Android 15 and above</li><li>Fix: speed settings could be applied unless it's paused (since v1.11.0)</li><li>Fix: color footer settings not taking effect immediately</li><li>Fix: automatic library refresh failing once Service quits</li><li>Improve: standardize styles across all settings dialogs</li><li>Improve: accelerate loading speed in Files Tab</li><li>Improve: throttle Sync Progress notifications</li><li>New: support of automatically skipping unplayable items in queue (optional)</li><li>Modify: mute some notifications, and update notification channels</li><li>Modify: update conditions for warning inappropriate grid size</li><li>Modify: limit image resolution to prevent crashes by App Widgets refreshing</li><li>Development: upgrade Kotlin to 2.2.20, update dependencies</li><li>Development: cleanup codes</li></ol>"
+            }
+        },
+        {
             "channel": "preview",
             "versionName": "1.11.2-dev2",
             "versionCode": 1111,
@@ -22,54 +46,6 @@
             "releaseNote": {
                 "zh-cn": "<ol><li>修复 路径选择器 (自v1.11.2-dev1)</li><li>修复 除非暂停播放速度设置无法生效 (自v1.11.0)</li><li>修复 页脚着色设置不立即生效</li><li>新增 支持自动跳过队列中的不可播放项 (可选)</li><li>改进 统一所有设置对话框的样式</li><li>修改 更新不适合的网格大小警告条件</li><li>修改 限制小部件图像分辨率，以防止在更新时崩溃</li></ol>",
                 "en": "<ol><li>Fix: path selector (since v1.11.2-dev1)</li><li>Fix: speed settings could be applied unless it's paused (since v1.11.0)</li><li>Fix: color footer settings not taking effect immediately</li><li>New: support of automatically skipping unplayable items in queue (optional)</li><li>Improve: standardize styles across all settings dialogs</li><li>Modify: update conditions for warning inappropriate grid size</li><li>Modify: limit image resolution to prevent crashes during App Widgets updating</li></ol>"
-            }
-        },
-        {
-            "channel": "preview",
-            "versionName": "1.11.2-dev1",
-            "versionCode": 1111,
-            "date": 1762585000,
-            "link": [
-                {
-                    "name": "Github Release (Website)",
-                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.11.2-dev1"
-                },
-                {
-                    "name": "Github Release Modern Variant APK (File Download Link)",
-                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.11.2-dev1/PhonographPlus_1.11.2-dev1_ModernPreviewRelease.apk"
-                },
-                {
-                    "name": "Github Release Legacy Variant APK (File Download Link)",
-                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.11.2-dev1/PhonographPlus_1.11.2-dev1_LegacyPreviewRelease.apk"
-                }
-            ],
-            "releaseNote": {
-                "zh-cn": "<ol><li>修复 从多选菜单进行随机播放时偶尔崩溃</li><li>修复 在 Android 15 及其以上，设置向导的按钮被导航栏遮挡</li><li>修复 服务退出后自动媒体库刷新失败</li><li>优化 提升文件页中加载速度</li><li>优化 同步进度通知发送节流</li><li>修改 静音部分通知，更新通知渠道</li><li>更新 Kotlin 至 2.2.20, 更新依赖</li><li>开发 清理代码</li></ol>",
-                "en": "<ol><li>Fix: occasional crash when using 'shuffle all' from the multi-selection menu</li><li>Fix: automatic library refresh failing once Service quits</li><li>Fix: buttons in Startup Guide blocked by navigation bar on Android 15 and above</li><li>Improve: accelerate loading speed in Files Tab</li><li>Improve: throttle sync progress notifications</li><li>Modify: mute some notifications, and update notification channels</li><li>Development: upgrade Kotlin to 2.2.20, update dependencies</li><li>Development: cleanup codes</li></ol>"
-            }
-        },
-        {
-            "channel": "stable",
-            "versionName": "1.11.1",
-            "versionCode": 1111,
-            "date": 1759500000,
-            "link": [
-                {
-                    "name": "Github Release (Website)",
-                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.11.1"
-                },
-                {
-                    "name": "Github Release Modern Variant APK (File Download Link)",
-                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v1.11.1/PhonographPlus_1.11.1_ModernStableRelease.apk"
-                },
-                {
-                    "name": "Github Release Legacy Variant APK (File Download Link)",
-                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v1.11.1/PhonographPlus_1.11.1_LegacyStableRelease.apk"
-                }
-            ],
-            "releaseNote": {
-                "zh-cn": "<ol><li>修复 流派页歌曲数量不正确</li><li>修复 路径过滤设置导入失败 (v1.11.0 起存在)</li><li>修复 从抽屉菜单处切换主题不完全</li><li>修复 在详情中读取超大嵌入图像的 VorbisComment 标签时崩溃或冻结</li><li>修复 在详情中提取嵌入图片失败</li><li>改进 在详情中显示文件日期</li><li>改进 增强“转到艺术家”菜单选项</li><li>翻译 更新 韩语 (7829hw) 和法语 (Clément Lyonnet)</li><li>开发 清理代码</li></ol>",
-                "en": "<ol><li>Fix: incorrect genre song count</li><li>Fix: path filter settings importing failure (since v1.11.0)</li><li>Fix: incompleted theme switching from drawer menu action</li><li>Fix: crash or frozen when reading VorbisComment tag with large embed images in Detail</li><li>Fix: extract embed artwork option not working in Detail</li><li>Improve: display file dates in Detail</li><li>Improve: enhance 'Go to artist' menu action</li><li>Translation: update Korean (by 7829hw) and French (by Clément Lyonnet)</li><li>Development: cleanup codes</li></ol>"
             }
         }
     ]
