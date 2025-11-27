@@ -42,7 +42,7 @@ android {
 
         applicationId = "player.phonograph.plus"
         versionCode = 1112
-        versionName = "1.11.2"
+        versionName = "1.11.3-dev0"
 
 
         proguardFiles(File("proguard-rules-base.pro"), File("proguard-rules-app.pro"))
