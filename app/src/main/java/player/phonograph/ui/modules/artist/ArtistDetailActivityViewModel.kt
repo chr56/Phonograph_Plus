@@ -16,7 +16,7 @@ import player.phonograph.repo.loader.Artists
 import player.phonograph.repo.loader.Songs
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
-import player.phonograph.settings.ThemeSetting
+import player.phonograph.util.theme.primaryColor
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context
@@ -50,7 +50,7 @@ class ArtistDetailActivityViewModel(var artistId: Long) : ViewModel() {
     }
 
     fun loadArtistImage(context: Context, artist: Artist, imageView: ImageView) {
-        val defaultColor = ThemeSetting.primaryColor(context)
+        val defaultColor = context.primaryColor()
         loadImage(context)
             .from(artist)
             .withPalette()

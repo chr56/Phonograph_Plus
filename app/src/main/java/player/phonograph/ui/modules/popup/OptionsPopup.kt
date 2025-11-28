@@ -4,7 +4,7 @@
 
 package player.phonograph.ui.modules.popup
 
-import player.phonograph.settings.ThemeSetting
+import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.nightMode
 import player.phonograph.util.theme.themeFloatingBackgroundColor
 import player.phonograph.util.ui.convertDpToPixel
@@ -50,7 +50,7 @@ abstract class OptionsPopup protected constructor(
         private set
 
     protected fun prepareColors(context: Context) {
-        accentColor = ThemeSetting.accentColor(context)
+        accentColor = context.accentColor()
         textColor = context.secondaryTextColor(context.nightMode)
         widgetColor = ColorStateList(
             arrayOf(

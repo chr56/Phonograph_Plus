@@ -11,17 +11,38 @@ import android.util.Log
 
 private const val TAG = "NightMode"
 
-inline fun checkNightMode(config: Configuration, block: (present: Boolean, night: Boolean) -> Unit) {
-    val mode: Int = config.uiMode and Configuration.UI_MODE_NIGHT_MASK
-    debug { displayCurrentUiMode(mode) }
-    when (mode) {
-        Configuration.UI_MODE_NIGHT_NO        -> block(true, false)
-        Configuration.UI_MODE_NIGHT_YES       -> block(true, true)
-        Configuration.UI_MODE_NIGHT_UNDEFINED -> block(false, false)
+fun systemNightMode(configuration: Configuration): Boolean? {
+    val mode = configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+    // debug { dumpCurrentUiMode(mode) }
+    return when (mode) {
+        Configuration.UI_MODE_NIGHT_YES -> true
+        Configuration.UI_MODE_NIGHT_NO  -> false
+        else                            -> null
     }
 }
 
-fun displayCurrentNightMode(mode: Int) {
+fun changeGlobalNightMode(nightMode: Boolean?) {
+    // debug { Log.v(TAG, "Switch global night mode: nightMode-$nightMode") }
+    AppCompatDelegate.setDefaultNightMode(
+        when (nightMode) {
+            true  -> AppCompatDelegate.MODE_NIGHT_YES
+            false -> AppCompatDelegate.MODE_NIGHT_NO
+            null  -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+        }
+    )
+}
+
+fun changeLocalNightMode(delegate: AppCompatDelegate, nightMode: Boolean?) {
+    // debug { Log.v(TAG, "Switch global night mode: nightMode-$nightMode") }
+    delegate.localNightMode = when (nightMode) {
+        true  -> AppCompatDelegate.MODE_NIGHT_YES
+        false -> AppCompatDelegate.MODE_NIGHT_NO
+        null  -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+    }
+}
+
+
+private fun dumpCurrentNightMode(mode: Int) {
     @Suppress("DEPRECATION")
     val text = when (mode) {
         AppCompatDelegate.MODE_NIGHT_YES           -> "YES"
@@ -32,38 +53,15 @@ fun displayCurrentNightMode(mode: Int) {
         AppCompatDelegate.MODE_NIGHT_AUTO_TIME     -> "AUTO_TIME"
         else                                       -> "NA"
     }
-    Log.v(TAG, "Night Mode is $text")
+    Log.v(TAG, "AppCompatDelegate Night Mode: $text")
 }
 
-fun displayCurrentUiMode(mode: Int) {
+private fun dumpCurrentUiMode(mode: Int) {
     val text = when (mode) {
         Configuration.UI_MODE_NIGHT_YES       -> "YES"
         Configuration.UI_MODE_NIGHT_NO        -> "NO"
         Configuration.UI_MODE_NIGHT_UNDEFINED -> "UNDEFINED"
-        else                                  -> "NA"
+        else                                  -> "N/A"
     }
-    Log.v(TAG, "Night Mode is $text")
+    Log.v(TAG, "Resources Night Mode: $text")
 }
-
-
-fun changeGlobalNightMode(present: Boolean, nightMode: Boolean) {
-    debug { Log.v(TAG, "switch global night mode : present-$present, nightMode-$nightMode") }
-    AppCompatDelegate.setDefaultNightMode(
-        if (present) {
-            if (nightMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
-        } else {
-            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-        }
-    )
-}
-
-fun changeLocalNightMode(delegate: AppCompatDelegate, present: Boolean, nightMode: Boolean) {
-    debug { Log.v(TAG, "switch local night mode : present-$present, nightMode-$nightMode") }
-    delegate.localNightMode =
-        if (present) {
-            if (nightMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
-        } else {
-            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-        }
-}
-

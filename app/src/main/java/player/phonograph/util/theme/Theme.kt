@@ -22,7 +22,6 @@ import androidx.annotation.ColorInt
 import androidx.annotation.StyleRes
 import androidx.fragment.app.Fragment
 import android.content.Context
-import android.content.res.Configuration
 import android.content.res.Resources
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES
@@ -56,48 +55,38 @@ fun Context.accentColor(): Int = ThemeSetting.accentColor(this)
 @ColorInt
 fun Fragment.accentColor(): Int = ThemeSetting.accentColor(context ?: App.instance)
 
-val Context.nightMode: Boolean get() = isNightMode(this)
-
-private fun isNightMode(context: Context): Boolean =
-    when (Setting(context)[Keys.theme].data) {
+val Context.nightMode: Boolean
+    get() = when (ThemeSetting.theme(this)) {
         THEME_DARK                                  -> true
         THEME_BLACK                                 -> true
         THEME_LIGHT                                 -> false
-        THEME_AUTO_LIGHTBLACK, THEME_AUTO_LIGHTDARK -> systemDarkmode(context.resources)
+        THEME_AUTO_LIGHTBLACK, THEME_AUTO_LIGHTDARK -> systemDarkmode(resources)
         else                                        -> false
     }
 
-fun systemDarkmode(resources: Resources): Boolean = systemDarkmode(resources.configuration)
 
-fun systemDarkmode(configuration: Configuration): Boolean =
-    when (configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
-        Configuration.UI_MODE_NIGHT_YES -> true
-        Configuration.UI_MODE_NIGHT_NO  -> false
-        else                            -> false
+fun currentActualTheme(context: Context, default: String): Flow<String> = Setting(context)[Keys.theme].flow.map {
+    when (it) {
+        THEME_AUTO_LIGHTBLACK -> if (systemDarkmode(context.resources)) THEME_BLACK else THEME_LIGHT
+        THEME_AUTO_LIGHTDARK  -> if (systemDarkmode(context.resources)) THEME_DARK else THEME_LIGHT
+        THEME_LIGHT           -> THEME_LIGHT
+        THEME_BLACK           -> THEME_BLACK
+        THEME_DARK            -> THEME_DARK
+        else                  -> default
     }
+}
 
-fun currentActualTheme(context: Context, default: String): Flow<String> =
-    Setting(context)[Keys.theme].flow.map {
-        when (it) {
-            THEME_AUTO_LIGHTBLACK -> if (systemDarkmode(context.resources)) THEME_BLACK else THEME_LIGHT
-            THEME_AUTO_LIGHTDARK  -> if (systemDarkmode(context.resources)) THEME_DARK else THEME_LIGHT
-            THEME_LIGHT           -> THEME_LIGHT
-            THEME_BLACK           -> THEME_BLACK
-            THEME_DARK            -> THEME_DARK
-            else                  -> default
-        }
-    }
+private fun systemDarkmode(resources: Resources): Boolean = systemNightMode(resources.configuration) ?: false
 
 @StyleRes
-fun parseToStyleRes(@GeneralTheme theme: String): Int =
-    when (theme) {
-        THEME_AUTO_LIGHTBLACK -> R.style.Theme_Phonograph_Auto_LightBlack
-        THEME_AUTO_LIGHTDARK  -> R.style.Theme_Phonograph_Auto_LightDark
-        THEME_LIGHT           -> R.style.Theme_Phonograph_Light
-        THEME_BLACK           -> R.style.Theme_Phonograph_Black
-        THEME_DARK            -> R.style.Theme_Phonograph_Dark
-        else                  -> R.style.Theme_Phonograph_Auto_LightBlack
-    }
+fun parseToStyleRes(@GeneralTheme theme: String): Int = when (theme) {
+    THEME_AUTO_LIGHTBLACK -> R.style.Theme_Phonograph_Auto_LightBlack
+    THEME_AUTO_LIGHTDARK  -> R.style.Theme_Phonograph_Auto_LightDark
+    THEME_LIGHT           -> R.style.Theme_Phonograph_Light
+    THEME_BLACK           -> R.style.Theme_Phonograph_Black
+    THEME_DARK            -> R.style.Theme_Phonograph_Dark
+    else                  -> R.style.Theme_Phonograph_Auto_LightBlack
+}
 
 suspend fun toggleTheme(context: Context): Boolean {
     val preference = Setting(context)[Keys.theme]

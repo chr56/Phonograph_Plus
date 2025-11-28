@@ -11,7 +11,7 @@ import player.phonograph.model.Album
 import player.phonograph.model.Song
 import player.phonograph.repo.loader.Albums
 import player.phonograph.repo.loader.Songs
-import player.phonograph.settings.ThemeSetting
+import player.phonograph.util.theme.primaryColor
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context
@@ -41,7 +41,7 @@ class AlbumDetailActivityViewModel(val albumId: Long) : ViewModel() {
     val paletteColor get() = _paletteColor.asStateFlow()
 
     fun loadAlbumImage(context: Context, album: Album, imageView: ImageView) {
-        val defaultColor = ThemeSetting.primaryColor(context)
+        val defaultColor = context.primaryColor()
         loadImage(context)
             .from(album)
             .withPalette()

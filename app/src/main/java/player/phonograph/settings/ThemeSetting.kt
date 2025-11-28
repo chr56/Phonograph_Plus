@@ -4,6 +4,13 @@
 
 package player.phonograph.settings
 
+import player.phonograph.R
+import player.phonograph.model.ui.GeneralTheme
+import player.phonograph.model.ui.GeneralTheme.Companion.THEME_AUTO_LIGHTBLACK
+import player.phonograph.model.ui.GeneralTheme.Companion.THEME_AUTO_LIGHTDARK
+import player.phonograph.model.ui.GeneralTheme.Companion.THEME_BLACK
+import player.phonograph.model.ui.GeneralTheme.Companion.THEME_DARK
+import player.phonograph.model.ui.GeneralTheme.Companion.THEME_LIGHT
 import player.phonograph.util.theme.parseToStyleRes
 import player.phonograph.util.ui.MonetColor
 import androidx.annotation.CheckResult
@@ -15,12 +22,25 @@ import android.os.Build.VERSION_CODES
 
 object ThemeSetting {
 
+    private var cachedTheme: String? = null
+
+    @CheckResult
+    @GeneralTheme
+    fun theme(context: Context): String = cachedTheme ?: updateThemeStyleCache(context)
+
     @CheckResult
     @StyleRes
-    fun themeStyle(context: Context): Int =
-        parseToStyleRes(cachedTheme ?: updateThemeStyleCache(context))
+    fun themeStyle(context: Context): Int = parseToStyleRes(theme(context))
 
-    private var cachedTheme: String? = null
+    @StyleRes
+    fun parseToStyleRes(@GeneralTheme theme: String): Int = when (theme) {
+        THEME_AUTO_LIGHTBLACK -> R.style.Theme_Phonograph_Auto_LightBlack
+        THEME_AUTO_LIGHTDARK  -> R.style.Theme_Phonograph_Auto_LightDark
+        THEME_LIGHT           -> R.style.Theme_Phonograph_Light
+        THEME_BLACK           -> R.style.Theme_Phonograph_Black
+        THEME_DARK            -> R.style.Theme_Phonograph_Dark
+        else                  -> R.style.Theme_Phonograph_Auto_LightBlack
+    }
 
     fun updateThemeStyleCache(context: Context): String {
         val theme = Setting(context)[Keys.theme].data
@@ -90,6 +110,4 @@ object ThemeSetting {
         return primaryColor
     }
 
-    fun peekCachedPrimaryColor() = cachedPrimaryColor
-    fun peekCachedAccentColor() = cachedAccentColor
 }

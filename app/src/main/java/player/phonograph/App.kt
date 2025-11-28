@@ -26,7 +26,7 @@ import player.phonograph.util.debug
 import player.phonograph.util.logMetrics
 import player.phonograph.util.theme.ThemeCacheUpdateDelegate
 import player.phonograph.util.theme.changeGlobalNightMode
-import player.phonograph.util.theme.checkNightMode
+import player.phonograph.util.theme.systemNightMode
 import androidx.appcompat.app.AppCompatDelegate
 import android.app.Application
 import android.content.Context
@@ -60,10 +60,9 @@ class App : Application(), ImageLoaderFactory {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         // Night Mode
-        checkNightMode(newConfig) { present, nightMode ->
-            postDelayedOnceHandlerCallback(Handler(Looper.getMainLooper()), 550, 536870912) {
-                changeGlobalNightMode(present, nightMode)
-            }
+        val nightMode = systemNightMode(newConfig)
+        postDelayedOnceHandlerCallback(Handler(Looper.getMainLooper()), 550, 536870912) {
+            changeGlobalNightMode(nightMode)
         }
         // Localization
         super.onConfigurationChanged(
