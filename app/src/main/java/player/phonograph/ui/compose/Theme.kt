@@ -8,7 +8,7 @@ import player.phonograph.model.ui.GeneralTheme.Companion.THEME_AUTO_LIGHTBLACK
 import player.phonograph.model.ui.GeneralTheme.Companion.THEME_BLACK
 import player.phonograph.model.ui.GeneralTheme.Companion.THEME_DARK
 import player.phonograph.model.ui.GeneralTheme.Companion.THEME_LIGHT
-import player.phonograph.util.theme.currentActualTheme
+import player.phonograph.util.theme.ThemeSettingsDelegate
 import player.phonograph.util.theme.setupSystemBars
 import player.phonograph.util.theme.updateSystemBarsColor
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -110,7 +110,7 @@ fun ExperientialContentThemeOverride(content: @Composable (() -> Unit)) {
 @Composable
 private fun phonographColors(): Colors {
     val context = LocalContext.current
-    val theme by currentActualTheme(context, THEME_DARK).collectAsState(THEME_AUTO_LIGHTBLACK)
+    val theme by ThemeSettingsDelegate.realTheme(context).collectAsState(THEME_AUTO_LIGHTBLACK)
     val colorPalette: ColorPalette = defaultColorPalette()
     return when (theme) {
         THEME_DARK  -> colorSchemaDark(colorPalette)
@@ -123,7 +123,7 @@ private fun phonographColors(): Colors {
 @Composable
 private fun experientialContentColors(): Colors {
     val context = LocalContext.current
-    val theme by currentActualTheme(context, THEME_DARK).collectAsState(THEME_AUTO_LIGHTBLACK)
+    val theme by ThemeSettingsDelegate.realTheme(context).collectAsState(THEME_AUTO_LIGHTBLACK)
     val colorPalette: ColorPalette = defaultColorPalette()
     return when (theme) {
         THEME_DARK  -> colorSchemaDark(colorPalette).copy(

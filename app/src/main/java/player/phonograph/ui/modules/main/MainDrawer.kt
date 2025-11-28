@@ -21,7 +21,6 @@ import player.phonograph.repo.loader.Songs
 import player.phonograph.service.MusicService
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
-import player.phonograph.settings.ThemeSetting
 import player.phonograph.ui.actions.actionPlay
 import player.phonograph.ui.dialogs.DatabaseMaintenanceDialog
 import player.phonograph.ui.modules.auxiliary.AboutActivity
@@ -50,7 +49,6 @@ import android.os.Looper
 import android.view.Menu
 import kotlin.random.Random
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 

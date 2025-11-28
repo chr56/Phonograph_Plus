@@ -4,11 +4,7 @@
 
 package player.phonograph.ui.basis
 
-import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
-import player.phonograph.settings.ThemeSetting
-import player.phonograph.util.theme.accentColorFlow
-import player.phonograph.util.theme.primaryColorFlow
+import player.phonograph.util.theme.ThemeSettingsDelegate
 import player.phonograph.util.theme.setupSystemBars
 import player.phonograph.util.theme.updateTaskDescriptionColor
 import androidx.lifecycle.Lifecycle
@@ -39,7 +35,7 @@ abstract class ThemeActivity : MultiLanguageActivity() {
         createTime = System.currentTimeMillis()
 
         // theme
-        setTheme(ThemeSetting.themeStyle(this))
+        setTheme(ThemeSettingsDelegate.currentStyleRes())
 
         setupSystemBars()
 
@@ -49,25 +45,25 @@ abstract class ThemeActivity : MultiLanguageActivity() {
     }
 
     private fun observeTheme() {
-        lifecycleScope.launch(Dispatchers.IO) {
+        lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                Setting(this@ThemeActivity)[Keys.theme].flow.distinctUntilChanged().drop(1).collect {
-                    setTheme(ThemeSetting.themeStyle(this@ThemeActivity))
+                ThemeSettingsDelegate.styleRes().distinctUntilChanged().drop(1).collect { id ->
+                    setTheme(id)
                     requireRecreate()
                 }
             }
         }
-        lifecycleScope.launch(Dispatchers.IO) {
+        lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                primaryColorFlow(this@ThemeActivity).distinctUntilChanged().drop(1).collect {
+                ThemeSettingsDelegate.primaryColor().distinctUntilChanged().drop(1).collect { id ->
                     delay(500)
                     requireRecreate()
                 }
             }
         }
-        lifecycleScope.launch(Dispatchers.IO) {
+        lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                accentColorFlow(this@ThemeActivity).distinctUntilChanged().drop(1).collect {
+                ThemeSettingsDelegate.accentColor().distinctUntilChanged().drop(1).collect { id ->
                     delay(500)
                     requireRecreate()
                 }

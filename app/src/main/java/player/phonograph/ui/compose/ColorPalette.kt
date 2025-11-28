@@ -4,9 +4,7 @@
 
 package player.phonograph.ui.compose
 
-import player.phonograph.settings.ThemeSetting
-import player.phonograph.util.theme.accentColorFlow
-import player.phonograph.util.theme.primaryColorFlow
+import player.phonograph.util.theme.ThemeSettingsDelegate
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
@@ -40,16 +38,16 @@ sealed interface ColorPalette {
 
 class ThemeColorPalette(context: Context) : ColorPalette {
 
-    private val primaryColorFlow: Flow<Color> = primaryColorFlow(context).map { Color(it) }
-    private val accentColorFlow: Flow<Color> = accentColorFlow(context).map { Color(it) }
+    private val primaryColorFlow: Flow<Color> = ThemeSettingsDelegate.primaryColor().map { Color(it) }
+    private val accentColorFlow: Flow<Color> = ThemeSettingsDelegate.accentColor().map { Color(it) }
 
     @Composable
     override fun primaryColor(context: Context): State<Color> =
-        primaryColorFlow.collectAsState(initial = Color(ThemeSetting.primaryColor(context)))
+        primaryColorFlow.collectAsState(initial = Color(ThemeSettingsDelegate.currentPrimaryColor()))
 
     @Composable
     override fun accentColor(context: Context): State<Color> =
-        accentColorFlow.collectAsState(initial = Color(ThemeSetting.accentColor(context)))
+        accentColorFlow.collectAsState(initial = Color(ThemeSettingsDelegate.currentAccentColor()))
 }
 
 @Suppress("ConvertObjectToDataObject")

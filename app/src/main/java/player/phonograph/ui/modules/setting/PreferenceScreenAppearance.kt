@@ -11,7 +11,6 @@ import player.phonograph.mechanism.PhonographShortcutManager
 import player.phonograph.model.ui.GeneralTheme
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
-import player.phonograph.settings.ThemeSetting
 import player.phonograph.ui.modules.setting.components.BooleanPreference
 import player.phonograph.ui.modules.setting.components.ColorPreference
 import player.phonograph.ui.modules.setting.components.DialogPreference
@@ -73,9 +72,6 @@ fun PreferenceScreenAppearance() {
                     R.string.theme_name_dark,
                 ),
                 titleRes = R.string.pref_title_general_theme,
-                onChange = { _, _ ->
-                    ThemeSetting.updateThemeStyleCache(context)
-                }
             )
         }
 
