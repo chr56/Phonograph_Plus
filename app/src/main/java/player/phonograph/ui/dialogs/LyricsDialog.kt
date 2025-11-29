@@ -23,13 +23,10 @@ import player.phonograph.util.component.MusicProgressUpdateDelegate
 import player.phonograph.util.observe
 import player.phonograph.util.text.lyricsTimestamp
 import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.theme.nightMode
 import player.phonograph.util.theme.primaryColor
 import player.phonograph.util.theme.themeFooterColor
 import player.phonograph.util.ui.applyLargeDialog
-import util.theme.color.lightenColor
 import util.theme.color.primaryTextColor
-import util.theme.color.secondaryTextColor
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -41,10 +38,8 @@ import androidx.recyclerview.widget.RecyclerView
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
-import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -86,13 +81,6 @@ class LyricsDialog : DialogFragment() {
         binding.viewStub.setOnClickListener { requireDialog().dismiss() }
 
         scroller = LyricsSmoothScroller(view.context)
-        requireDialog().window!!.setBackgroundDrawable(GradientDrawable().apply {
-            this.cornerRadius = 0f
-            setColor(
-                requireContext().theme.obtainStyledAttributes(intArrayOf(androidx.appcompat.R.attr.colorBackgroundFloating))
-                    .getColor(0, 0)
-            )
-        })
 
         val lyricsInfo: LyricsInfo? = viewModel.lyricsInfo.value
         if (lyricsInfo == null) {
@@ -148,12 +136,13 @@ class LyricsDialog : DialogFragment() {
             binding.types.addView(chip)
             if (requireCheck) chipSelected = chip
         }
-        binding.types.addView(createChip(
-            getString(R.string.action_load),
-            -1,
-            false,
-            getTintedDrawable(R.drawable.ic_add_white_24dp, Color.BLACK)
-        ) { _, _ -> manualLoadLyrics() })
+        binding.types.addView(
+            createChip(
+                getString(R.string.action_load),
+                -1,
+                false,
+                getTintedDrawable(R.drawable.ic_add_white_24dp, requireContext().primaryTextColor())
+            ) { _, _ -> manualLoadLyrics() })
         // binding.types.isSelectionRequired = true
     }
 
@@ -164,11 +153,11 @@ class LyricsDialog : DialogFragment() {
         checked: Boolean = false,
         icon: Drawable? = null,
         callback: (Chip, Int) -> Unit,
-    ) = Chip(requireContext(), null, com.google.android.material.R.style.Widget_MaterialComponents_Chip_Choice).apply {
+    ) = Chip(requireContext()).apply {
         text = label
         isChecked = checked
-        setTextColor(correctChipTextColor(checked))
-        chipBackgroundColor = correctChipBackgroundColor(checked)
+        setTextColor(chipTextColor(checked))
+        chipBackgroundColor = chipBackgroundColor(checked)
         setOnClickListener {
             callback(it as Chip, index)
         }
@@ -176,23 +165,22 @@ class LyricsDialog : DialogFragment() {
     }
 
     private fun onChipClicked(chip: Chip, index: Int) {
+
+        chipSelected?.chipBackgroundColor = chipBackgroundColor(false)
+        chipSelected?.setTextColor(chipTextColor(false))
+        chipSelected = chip
+        chip.chipBackgroundColor = chipBackgroundColor(true)
+        chip.setTextColor(chipTextColor(true))
+
         val lyricsInfo = viewModel.lyricsInfo.value ?: return
-        if (lyricsInfo.isActive(index)) return // do not change
         lifecycleScope.launch {
             viewModel.activateLyrics(lyricsInfo[index])
-            chip.isChecked = true
-            chip.chipBackgroundColor = correctChipBackgroundColor(true)
-            chip.setTextColor(correctChipTextColor(true))
-            chipSelected?.isChecked = false
-            chipSelected?.chipBackgroundColor = correctChipBackgroundColor(false)
-            chipSelected?.setTextColor(correctChipTextColor(false))
-            chipSelected = chip
         }
     }
 
     private fun updateTitle(info: LyricsInfo?) {
         val activated = info?.activatedLyrics
-        binding.title.text = if (activated != null) activated.title else AbsLyrics.DEFAULT_TITLE
+        binding.title.text = activated?.title ?: AbsLyrics.DEFAULT_TITLE
     }
 
     //endregion
@@ -246,7 +234,19 @@ class LyricsDialog : DialogFragment() {
 
     private fun setupFollowing(info: LyricsInfo?) {
         binding.lyricsFollowing.apply {
-            buttonTintList = backgroundCsl
+            buttonTintList = ColorStateList(
+                arrayOf(
+                    intArrayOf(android.R.attr.state_enabled, android.R.attr.state_checked),
+                    intArrayOf(android.R.attr.state_enabled, android.R.attr.state_selected),
+                    intArrayOf(android.R.attr.state_enabled),
+                    intArrayOf(),
+                ), intArrayOf(
+                    primaryColor(),
+                    primaryColor(),
+                    themeFooterColor(requireContext()),
+                    themeFooterColor(requireContext()),
+                )
+            )
             setOnCheckedChangeListener { button: CompoundButton, newValue: Boolean ->
                 viewModel.updateRequireLyricsFollowing(
                     if (info?.activatedLyrics is LrcLyrics) {
@@ -327,43 +327,18 @@ class LyricsDialog : DialogFragment() {
     //endregion
 
 
-    //region Theme& Color
+    //region Theme & Color
 
-    private fun correctChipBackgroundColor(checked: Boolean) = ColorStateList.valueOf(
-        if (checked) lightenColor(primaryColor())
+    private fun chipBackgroundColor(checked: Boolean) = ColorStateList.valueOf(
+        if (checked) primaryColor()
         else themeFooterColor(requireContext())
     )
 
-    private fun correctChipTextColor(checked: Boolean) = ColorStateList.valueOf(
-        if (checked) requireContext().secondaryTextColor(primaryColor())
-        else requireContext().primaryTextColor(primaryColor())
+    private fun chipTextColor(checked: Boolean) = ColorStateList.valueOf(
+        if (checked) requireContext().primaryTextColor(primaryColor())
+        else requireContext().primaryTextColor(themeFooterColor(requireContext()))
     )
 
-    private val backgroundCsl: ColorStateList by lazy {
-        ColorStateList(
-            arrayOf(
-                intArrayOf(android.R.attr.state_selected),
-                intArrayOf(android.R.attr.state_checked),
-                intArrayOf(),
-            ), intArrayOf(
-                lightenColor(primaryColor()),
-                lightenColor(primaryColor()),
-                themeFooterColor(requireContext())
-            )
-        )
-    }
-    private val textColorCsl: ColorStateList by lazy {
-        ColorStateList(
-            arrayOf(
-                intArrayOf(android.R.attr.state_checked),
-                intArrayOf(),
-            ),
-            intArrayOf(
-                requireContext().primaryTextColor(primaryColor()),
-                requireContext().primaryTextColor(requireContext().nightMode)
-            )
-        )
-    }
     //endregion
 
 }
