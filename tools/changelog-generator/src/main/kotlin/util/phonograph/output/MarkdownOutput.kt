@@ -64,8 +64,8 @@ abstract class Markdown : OutputFormat {
             """
             -> [Version Guide](docs/Version_Guide.md) / [版本指南](docs/Version_Guide_ZH.md)
             
-            **TL;DR**: If you are a user of Android 7~10, please consider to use `Legacy`; If not, use `Modern`. The `Fdroid` is identical to the version on F‑droid; and the signature is same with others.
-            **太长不看**: 若为 Android 7~10 用户，请考虑使用 `Legacy` 版本；否则，请使用 `Modern` 版本。另外带 `Fdroid` 为 F-droid 上完全相同的版本，签名与其他版本相同。
+            **TL;DR**: If you are a user of Android 7 ~ 10, please consider to use `Legacy`; If not, use `Modern`. The `Fdroid` is identical to the version on F‑droid; and the signature is same with others.
+            **太长不看**: 若为 Android 7 ~ 10 用户，请考虑使用 `Legacy` 版本；否则，请使用 `Modern` 版本。另外带 `Fdroid` 为 F-droid 上完全相同的版本，签名与其他版本相同。
             
             """
     }
