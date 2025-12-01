@@ -13,28 +13,31 @@ import androidx.annotation.CheckResult
 import androidx.annotation.ColorInt
 import androidx.fragment.app.Fragment
 import android.content.Context
+import android.content.res.Resources
 
 @JvmName("Context_PrimaryColor")
 @CheckResult
 @ColorInt
-fun Context.primaryColor(): Int = ThemeSettingsDelegate.currentPrimaryColor()
+fun Context.primaryColor(): Int = ThemeSettingsDelegate.primaryColor()
 
 @JvmName("Fragment_PrimaryColor")
 @CheckResult
 @ColorInt
-fun Fragment.primaryColor(): Int = ThemeSettingsDelegate.currentPrimaryColor()
+fun Fragment.primaryColor(): Int = ThemeSettingsDelegate.primaryColor()
 
 @JvmName("Context_AccentColor")
 @CheckResult
 @ColorInt
-fun Context.accentColor(): Int = ThemeSettingsDelegate.currentAccentColor()
+fun Context.accentColor(): Int = ThemeSettingsDelegate.accentColor()
 
 @JvmName("Fragment_AccentColor")
 @CheckResult
 @ColorInt
-fun Fragment.accentColor(): Int = ThemeSettingsDelegate.currentAccentColor()
+fun Fragment.accentColor(): Int = ThemeSettingsDelegate.accentColor()
 
-val Context.nightMode: Boolean get() = ThemeSettingsDelegate.isNightTheme(this)
+val Context.nightMode: Boolean get() = ThemeSettingsDelegate.isNightTheme(resources)
+
+val Resources.nightMode: Boolean get() = ThemeSettingsDelegate.isNightTheme(this)
 
 
 suspend fun toggleTheme(context: Context): Boolean {

@@ -37,30 +37,13 @@ object ThemeSettingsDelegate {
 
     //region Theme Style
     private val _theme: MutableStateFlow<String?> = MutableStateFlow(null)
-    val currentTheme: StateFlow<String?> get() = _theme.asStateFlow()
+    val theme: StateFlow<String?> get() = _theme.asStateFlow()
 
-    fun currentStyleRes(): Int = themeStyleRes(_theme.value)
-
-    fun styleRes(): Flow<Int> = _theme.map { themeStyleRes(it) }
-
-    fun isAutoTheme(): Boolean =
-        when (_theme.value) {
-            THEME_AUTO_LIGHTBLACK, THEME_AUTO_LIGHTDARK -> true
-            else                                        -> false
-        }
-
-    fun isNightTheme(context: Context): Boolean =
-        when (_theme.value) {
-            THEME_AUTO_LIGHTBLACK, THEME_AUTO_LIGHTDARK -> systemNightMode(context.resources)
-            THEME_DARK, THEME_BLACK                     -> true
-            else                                        -> false
-        }
-
-    fun realTheme(context: Context): Flow<String> =
-        currentTheme.map {
+    fun underlyingTheme(resources: Resources): Flow<String> =
+        theme.map {
             when (it) {
-                THEME_AUTO_LIGHTBLACK -> if (systemNightMode(context.resources)) THEME_BLACK else THEME_LIGHT
-                THEME_AUTO_LIGHTDARK  -> if (systemNightMode(context.resources)) THEME_DARK else THEME_LIGHT
+                THEME_AUTO_LIGHTBLACK -> if (systemNightMode(resources)) THEME_BLACK else THEME_LIGHT
+                THEME_AUTO_LIGHTDARK  -> if (systemNightMode(resources)) THEME_DARK else THEME_LIGHT
                 THEME_LIGHT           -> THEME_LIGHT
                 THEME_BLACK           -> THEME_BLACK
                 THEME_DARK            -> THEME_DARK
@@ -68,9 +51,25 @@ object ThemeSettingsDelegate {
             }
         }
 
+    fun isAutoTheme(): Boolean =
+        when (_theme.value) {
+            THEME_AUTO_LIGHTBLACK, THEME_AUTO_LIGHTDARK -> true
+            else                                        -> false
+        }
+
+    fun isNightTheme(resources: Resources): Boolean =
+        when (_theme.value) {
+            THEME_AUTO_LIGHTBLACK, THEME_AUTO_LIGHTDARK -> systemNightMode(resources)
+            THEME_DARK, THEME_BLACK                     -> true
+            else                                        -> false
+        }
+
     private fun systemNightMode(resources: Resources): Boolean =
         systemNightMode(resources.configuration) ?: false
 
+    val styleRes: Flow<Int> = _theme.map { themeStyleRes(it) }
+
+    fun styleRes(): Int = themeStyleRes(_theme.value)
 
     @StyleRes
     private fun themeStyleRes(@GeneralTheme theme: String?): Int = when (theme) {
@@ -91,8 +90,19 @@ object ThemeSettingsDelegate {
     private val _monetPaletteAccentColor: MutableStateFlow<Int> = MutableStateFlow(-1)
     private val _enableMonet: MutableStateFlow<Int> = MutableStateFlow(0)
 
+    val primaryColor: Flow<Int> =
+        combine(_enableMonet, _monetPalettePrimaryColor, _selectedPrimaryColor) { (enabled, monet, selected) ->
+            if (enabled > 0) monet else selected
+        }
+
+    val accentColor: Flow<Int> =
+        combine(_enableMonet, _monetPaletteAccentColor, _selectedAccentColor) { (enabled, monet, selected) ->
+            if (enabled > 0) monet else selected
+        }
+
+
     @ColorInt
-    fun currentPrimaryColor(): Int =
+    fun primaryColor(): Int =
         if (_enableMonet.value > 0) {
             _monetPalettePrimaryColor.value
         } else {
@@ -100,23 +110,12 @@ object ThemeSettingsDelegate {
         }
 
     @ColorInt
-    fun currentAccentColor(): Int =
+    fun accentColor(): Int =
         if (_enableMonet.value > 0) {
             _monetPaletteAccentColor.value
         } else {
             _selectedAccentColor.value
         }
-
-    fun primaryColor(): Flow<Int> =
-        combine(_enableMonet, _monetPalettePrimaryColor, _selectedPrimaryColor) { (enabled, monet, selected) ->
-            if (enabled > 0) monet else selected
-        }
-
-    fun accentColor(): Flow<Int> =
-        combine(_enableMonet, _monetPaletteAccentColor, _selectedAccentColor) { (enabled, monet, selected) ->
-            if (enabled > 0) monet else selected
-        }
-
     //endregion
 
     //region Observe

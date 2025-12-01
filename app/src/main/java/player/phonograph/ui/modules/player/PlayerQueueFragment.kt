@@ -358,9 +358,10 @@ class PlayerQueueFragment : AbsMusicServiceFragment() {
     }
 
     private fun textColor(@ColorInt color: Int): Int {
-        val defaultFooterColor = themeFooterColor(requireContext())
-        val nightMode = requireContext().nightMode
-        return if (color == defaultFooterColor) requireContext().primaryTextColor(nightMode)
+        val context = requireContext()
+        val nightMode = context.nightMode
+        val defaultFooterColor = themeFooterColor(context)
+        return if (color == defaultFooterColor) context.primaryTextColor(nightMode)
         else if (nightMode) lightenColor(color) else darkenColor(color)
     }
     //endregion

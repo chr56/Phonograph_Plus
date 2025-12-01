@@ -11,22 +11,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import android.content.Context
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 @Composable
-fun defaultColorPalette(): ColorPalette {
-    val previewMode = LocalInspectionMode.current
-    val colorPalette: ColorPalette = if (previewMode) {
-        PreviewColorPalette
-    } else {
-        ThemeColorPalette(LocalContext.current)
-    }
-    return colorPalette
-}
+fun defaultColorPalette(): ColorPalette =
+    if (LocalInspectionMode.current) PreviewColorPalette else ThemeColorPalette
 
 sealed interface ColorPalette {
     @Composable
@@ -36,21 +28,20 @@ sealed interface ColorPalette {
     fun accentColor(context: Context): State<Color>
 }
 
-class ThemeColorPalette(context: Context) : ColorPalette {
+object ThemeColorPalette : ColorPalette {
 
-    private val primaryColorFlow: Flow<Color> = ThemeSettingsDelegate.primaryColor().map { Color(it) }
-    private val accentColorFlow: Flow<Color> = ThemeSettingsDelegate.accentColor().map { Color(it) }
+    private val primaryColorFlow: Flow<Color> = ThemeSettingsDelegate.primaryColor.map { Color(it) }
+    private val accentColorFlow: Flow<Color> = ThemeSettingsDelegate.accentColor.map { Color(it) }
 
     @Composable
     override fun primaryColor(context: Context): State<Color> =
-        primaryColorFlow.collectAsState(initial = Color(ThemeSettingsDelegate.currentPrimaryColor()))
+        primaryColorFlow.collectAsState(initial = Color(ThemeSettingsDelegate.primaryColor()))
 
     @Composable
     override fun accentColor(context: Context): State<Color> =
-        accentColorFlow.collectAsState(initial = Color(ThemeSettingsDelegate.currentAccentColor()))
+        accentColorFlow.collectAsState(initial = Color(ThemeSettingsDelegate.accentColor()))
 }
 
-@Suppress("ConvertObjectToDataObject")
 object PreviewColorPalette : ColorPalette {
 
     @Composable

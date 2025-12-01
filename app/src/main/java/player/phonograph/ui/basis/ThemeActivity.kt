@@ -35,7 +35,7 @@ abstract class ThemeActivity : MultiLanguageActivity() {
         createTime = System.currentTimeMillis()
 
         // theme
-        setTheme(ThemeSettingsDelegate.currentStyleRes())
+        setTheme(ThemeSettingsDelegate.styleRes())
 
         setupSystemBars()
 
@@ -47,7 +47,7 @@ abstract class ThemeActivity : MultiLanguageActivity() {
     private fun observeTheme() {
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                ThemeSettingsDelegate.styleRes().distinctUntilChanged().drop(1).collect { id ->
+                ThemeSettingsDelegate.styleRes.distinctUntilChanged().drop(1).collect { id ->
                     setTheme(id)
                     requireRecreate()
                 }
@@ -55,7 +55,7 @@ abstract class ThemeActivity : MultiLanguageActivity() {
         }
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                ThemeSettingsDelegate.primaryColor().distinctUntilChanged().drop(1).collect { id ->
+                ThemeSettingsDelegate.primaryColor.distinctUntilChanged().drop(1).collect { id ->
                     delay(500)
                     requireRecreate()
                 }
@@ -63,7 +63,7 @@ abstract class ThemeActivity : MultiLanguageActivity() {
         }
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                ThemeSettingsDelegate.accentColor().distinctUntilChanged().drop(1).collect { id ->
+                ThemeSettingsDelegate.accentColor.distinctUntilChanged().drop(1).collect { id ->
                     delay(500)
                     requireRecreate()
                 }

@@ -126,8 +126,8 @@ class FilesPage : AbsPage() {
             configAppBarActionButton(this)
         }
 
-        binding.panelText.setTextColor(requireContext().primaryTextColor(requireContext().nightMode))
-        binding.panelToolbar.setTitleTextColor(requireContext().primaryTextColor(requireContext().nightMode))
+        binding.panelText.setTextColor(context.primaryTextColor(context.nightMode))
+        binding.panelToolbar.setTitleTextColor(context.primaryTextColor(context.nightMode))
 
         observe(viewLifecycleOwner.lifecycle, model.currentFiles, state = Lifecycle.State.STARTED) { files ->
             binding.panelText.text = headerText(resources, files.size)

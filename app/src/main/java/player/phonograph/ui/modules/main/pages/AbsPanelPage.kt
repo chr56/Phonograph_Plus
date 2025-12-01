@@ -142,7 +142,7 @@ sealed class AbsPanelPage : AbsPage() {
         }
 
         binding.panelText.setTextColor(context.primaryTextColor(context.nightMode))
-        binding.panelToolbar.setTitleTextColor(requireContext().primaryTextColor(requireContext().nightMode))
+        binding.panelToolbar.setTitleTextColor(context.primaryTextColor(context.nightMode))
 
         mainFragment.addOnAppBarOffsetChangedListener(outerAppbarOffsetListener)
     }

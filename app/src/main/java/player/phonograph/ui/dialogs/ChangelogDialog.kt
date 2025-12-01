@@ -25,6 +25,7 @@ import android.webkit.WebView
 import java.io.IOException
 import java.io.InputStream
 import java.util.Locale
+import androidx.core.graphics.toColorInt
 
 /**
  * @author Aidan Follestad (afollestad)
@@ -91,8 +92,7 @@ class ChangelogDialog : DialogFragment() {
         val backgroundColor =
             themeCardBackgroundColor(requireContext())
 
-        val textColor =
-            Color.parseColor(if (requireContext().nightMode) "#ffffff" else "#000000")
+        val textColor = (if (resources.nightMode) "#ffffff" else "#000000").toColorInt()
 
         return changelogHTML(
             CSS = changelogCSS(

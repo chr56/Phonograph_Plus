@@ -24,6 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -109,8 +110,8 @@ fun ExperientialContentThemeOverride(content: @Composable (() -> Unit)) {
 
 @Composable
 private fun phonographColors(): Colors {
-    val context = LocalContext.current
-    val theme by ThemeSettingsDelegate.realTheme(context).collectAsState(THEME_AUTO_LIGHTBLACK)
+    val resources = LocalResources.current
+    val theme by ThemeSettingsDelegate.underlyingTheme(resources).collectAsState(THEME_AUTO_LIGHTBLACK)
     val colorPalette: ColorPalette = defaultColorPalette()
     return when (theme) {
         THEME_DARK  -> colorSchemaDark(colorPalette)
@@ -122,8 +123,8 @@ private fun phonographColors(): Colors {
 
 @Composable
 private fun experientialContentColors(): Colors {
-    val context = LocalContext.current
-    val theme by ThemeSettingsDelegate.realTheme(context).collectAsState(THEME_AUTO_LIGHTBLACK)
+    val resources = LocalResources.current
+    val theme by ThemeSettingsDelegate.underlyingTheme(resources).collectAsState(THEME_AUTO_LIGHTBLACK)
     val colorPalette: ColorPalette = defaultColorPalette()
     return when (theme) {
         THEME_DARK  -> colorSchemaDark(colorPalette).copy(
