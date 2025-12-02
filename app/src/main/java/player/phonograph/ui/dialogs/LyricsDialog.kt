@@ -22,8 +22,8 @@ import player.phonograph.ui.modules.player.LyricsViewModel
 import player.phonograph.util.component.MusicProgressUpdateDelegate
 import player.phonograph.util.observe
 import player.phonograph.util.text.lyricsTimestamp
+import player.phonograph.util.theme.ThemeSettingsDelegate.primaryColor
 import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.theme.primaryColor
 import player.phonograph.util.theme.themeFooterColor
 import player.phonograph.util.ui.applyLargeDialog
 import util.theme.color.primaryTextColor

@@ -13,7 +13,7 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.views.AccentColorCheckBox
 import player.phonograph.util.text.readableDuration
-import player.phonograph.util.theme.accentColor
+import player.phonograph.util.theme.ThemeSettingsDelegate.accentColor
 import player.phonograph.util.theme.tintAlertDialogButtons
 import player.phonograph.util.theme.tintButtons
 import androidx.appcompat.app.AlertDialog

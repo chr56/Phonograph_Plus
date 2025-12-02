@@ -4,7 +4,7 @@
 
 package player.phonograph.ui.basis
 
-import player.phonograph.util.theme.accentColor
+import player.phonograph.util.theme.ThemeSettingsDelegate.accentColor
 import util.theme.view.menu.tintOverflowMenuItems
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.WindowDecorActionBar

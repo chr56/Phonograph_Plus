@@ -20,7 +20,7 @@ import player.phonograph.util.currentVersionName
 import player.phonograph.util.gitRevisionHash
 import player.phonograph.util.text.NoticesProcessor
 import player.phonograph.util.theme.ThemeSettingsDelegate.isNightTheme
-import player.phonograph.util.theme.primaryColor
+import player.phonograph.util.theme.ThemeSettingsDelegate.primaryColor
 import player.phonograph.util.theme.updateSystemBarsColor
 import player.phonograph.util.ui.applyWindowInsetsAsBottomView
 import util.theme.color.darkenColor

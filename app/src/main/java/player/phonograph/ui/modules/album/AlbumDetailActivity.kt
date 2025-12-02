@@ -31,8 +31,8 @@ import player.phonograph.util.text.readableDuration
 import player.phonograph.util.text.readableYear
 import player.phonograph.util.text.songCountString
 import player.phonograph.util.text.totalDuration
+import player.phonograph.util.theme.ThemeSettingsDelegate.primaryColor
 import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.theme.primaryColor
 import player.phonograph.util.theme.updateSystemBarsColor
 import player.phonograph.util.ui.BottomViewWindowInsetsController
 import player.phonograph.util.ui.applyControllableWindowInsetsAsBottomView

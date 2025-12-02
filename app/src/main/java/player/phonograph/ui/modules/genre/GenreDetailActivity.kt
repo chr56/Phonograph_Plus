@@ -22,8 +22,8 @@ import player.phonograph.ui.adapter.DisplayPresenter
 import player.phonograph.ui.adapter.SongBasicDisplayPresenter
 import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
 import player.phonograph.util.observe
-import player.phonograph.util.theme.accentColor
-import player.phonograph.util.theme.primaryColor
+import player.phonograph.util.theme.ThemeSettingsDelegate.accentColor
+import player.phonograph.util.theme.ThemeSettingsDelegate.primaryColor
 import player.phonograph.util.ui.BottomViewWindowInsetsController
 import player.phonograph.util.ui.applyControllableWindowInsetsAsBottomView
 import player.phonograph.util.ui.menuProvider

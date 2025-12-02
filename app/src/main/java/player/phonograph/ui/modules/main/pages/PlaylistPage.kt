@@ -20,8 +20,8 @@ import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayPresenter
 import player.phonograph.ui.adapter.PlaylistBasicDisplayPresenter
 import player.phonograph.ui.modules.playlist.dialogs.CreatePlaylistDialogActivity
-import player.phonograph.util.theme.accentColor
-import player.phonograph.util.theme.primaryColor
+import player.phonograph.util.theme.ThemeSettingsDelegate.accentColor
+import player.phonograph.util.theme.ThemeSettingsDelegate.primaryColor
 import player.phonograph.util.theme.themeCardBackgroundColor
 import util.theme.color.lightenColor
 import androidx.core.view.ViewCompat
@@ -171,8 +171,6 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
 
     private fun setUpFloatingActionButton() {
         val addNewItemButton = binding.addNewItem
-        val primaryColor = addNewItemButton.context.primaryColor()
-        val accentColor = addNewItemButton.context.accentColor()
         addNewItemButton.backgroundTintList = ColorStateList(
             arrayOf(
                 intArrayOf(android.R.attr.state_activated),
@@ -180,7 +178,9 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
                 intArrayOf(),
             ),
             intArrayOf(
-                lightenColor(primaryColor), accentColor, primaryColor
+                lightenColor(primaryColor()),
+                accentColor(),
+                primaryColor(),
             )
         )
         addNewItemButton.visibility = View.VISIBLE

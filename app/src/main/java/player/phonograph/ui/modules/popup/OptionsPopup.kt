@@ -4,8 +4,8 @@
 
 package player.phonograph.ui.modules.popup
 
+import player.phonograph.util.theme.ThemeSettingsDelegate.accentColor
 import player.phonograph.util.theme.ThemeSettingsDelegate.textColorSecondary
-import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.themeFloatingBackgroundColor
 import player.phonograph.util.ui.convertDpToPixel
 import androidx.viewbinding.ViewBinding
@@ -50,7 +50,7 @@ abstract class OptionsPopup protected constructor(
 
     protected fun prepareColors(context: Context) {
 
-        accentColor = context.accentColor()
+        accentColor = accentColor()
         textColor = textColorSecondary(context)
         widgetColor = ColorStateList(
             arrayOf(

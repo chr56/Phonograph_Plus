@@ -22,9 +22,9 @@ import player.phonograph.settings.Setting
 import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.modules.popup.OptionsPopup
 import player.phonograph.util.observe
-import player.phonograph.util.theme.accentColor
+import player.phonograph.util.theme.ThemeSettingsDelegate.accentColor
+import player.phonograph.util.theme.ThemeSettingsDelegate.primaryColor
 import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.theme.primaryColor
 import player.phonograph.util.theme.updateSystemBarsColor
 import player.phonograph.util.ui.hideKeyboard
 import player.phonograph.util.ui.menuProvider
@@ -121,7 +121,7 @@ class SearchActivity : AbsSlidingMusicPanelActivity(), SearchView.OnQueryTextLis
             }
         }
         mediator = TabLayoutMediator(binding.tabs, binding.pager) { tab: TabLayout.Tab, i: Int ->
-            tab.text = getText(SearchResultPageAdapter.TabType.values()[i].nameRes)
+            tab.text = getText(SearchResultPageAdapter.TabType.entries[i].nameRes)
         }
         mediator.attach()
         with(binding.config) {

@@ -13,7 +13,7 @@ import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.ui.actions.actionPlay
 import player.phonograph.ui.modules.panel.PanelViewModel
 import player.phonograph.util.observe
-import player.phonograph.util.theme.accentColor
+import player.phonograph.util.theme.ThemeSettingsDelegate.accentColor
 import player.phonograph.util.ui.BottomViewWindowInsetsController
 import player.phonograph.util.ui.applyControllableWindowInsetsAsBottomView
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor

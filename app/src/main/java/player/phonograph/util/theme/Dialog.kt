@@ -4,6 +4,7 @@
 
 package player.phonograph.util.theme
 
+import player.phonograph.util.theme.ThemeSettingsDelegate.accentColor
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.material.MaterialTheme
@@ -22,7 +23,7 @@ fun AlertDialog.tintButtons(): AlertDialog =
 
 fun tintAlertDialogButtons(
     dialog: AlertDialog,
-    @ColorInt color: Int = dialog.context.accentColor(),
+    @ColorInt color: Int = accentColor(),
 ) {
     dialog.getButton(DialogInterface.BUTTON_POSITIVE)?.setTextColor(color)
     dialog.getButton(DialogInterface.BUTTON_NEGATIVE)?.setTextColor(color)

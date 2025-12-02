@@ -8,6 +8,7 @@ package player.phonograph.util.theme
 
 import player.phonograph.R
 import player.phonograph.util.theme.ThemeSettingsDelegate.isNightTheme
+import player.phonograph.util.theme.ThemeSettingsDelegate.primaryColor
 import util.theme.activity.setTaskDescriptionColor
 import util.theme.color.darkenColor
 import util.theme.color.isColorLight

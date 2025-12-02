@@ -29,9 +29,9 @@ import player.phonograph.repo.loader.Playlists
 import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
 import player.phonograph.util.observe
 import player.phonograph.util.text.readableDuration
-import player.phonograph.util.theme.accentColor
+import player.phonograph.util.theme.ThemeSettingsDelegate.accentColor
+import player.phonograph.util.theme.ThemeSettingsDelegate.primaryColor
 import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.theme.primaryColor
 import player.phonograph.util.ui.BottomViewWindowInsetsController
 import player.phonograph.util.ui.applyControllableWindowInsetsAsBottomView
 import player.phonograph.util.ui.hideKeyboard

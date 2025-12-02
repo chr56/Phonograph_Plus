@@ -30,15 +30,16 @@ import player.phonograph.ui.modules.search.SearchActivity
 import player.phonograph.util.debug
 import player.phonograph.util.logMetrics
 import player.phonograph.util.observe
-import player.phonograph.util.theme.accentColor
+import player.phonograph.util.theme.ThemeSettingsDelegate.accentColor
+import player.phonograph.util.theme.ThemeSettingsDelegate.primaryColor
 import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.theme.primaryColor
 import player.phonograph.util.ui.menuProvider
 import util.theme.color.primaryTextColor
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -238,7 +239,7 @@ class MainFragment : Fragment() {
     val totalAppBarScrollingRange: Int get() = binding.appbar.totalScrollRange
 
     val totalHeaderHeight: Int
-        get() = totalAppBarScrollingRange + if (binding.tabs.visibility == View.VISIBLE) binding.tabs.height else 0
+        get() = totalAppBarScrollingRange + if (binding.tabs.isVisible) binding.tabs.height else 0
     //endregion
 
     //region Utils
@@ -249,8 +250,8 @@ class MainFragment : Fragment() {
         }
     }
 
-    private val primaryColor by lazy(LazyThreadSafetyMode.NONE) { mainActivity.primaryColor() }
-    private val accentColor by lazy(LazyThreadSafetyMode.NONE) { mainActivity.accentColor() }
+    private val primaryColor by lazy(LazyThreadSafetyMode.NONE) { primaryColor() }
+    private val accentColor by lazy(LazyThreadSafetyMode.NONE) { accentColor() }
     private val primaryTextColor by lazy(LazyThreadSafetyMode.NONE) { mainActivity.primaryTextColor(primaryColor) }
     private val secondaryTextColor by lazy(LazyThreadSafetyMode.NONE) { mainActivity.primaryTextColor(primaryColor) }
     //endregion

@@ -14,7 +14,7 @@ import player.phonograph.ui.modules.player.AbsPlayerFragment
 import player.phonograph.ui.modules.player.MiniPlayerFragment
 import player.phonograph.ui.modules.player.style.buildPlayerFragment
 import player.phonograph.util.observe
-import player.phonograph.util.theme.primaryColor
+import player.phonograph.util.theme.ThemeSettingsDelegate.primaryColor
 import player.phonograph.util.theme.themeFooterColor
 import player.phonograph.util.theme.updateSystemBarsColor
 import player.phonograph.util.ui.isLandscape

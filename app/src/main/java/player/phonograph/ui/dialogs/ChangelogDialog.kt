@@ -8,8 +8,8 @@ import player.phonograph.settings.PrerequisiteSetting
 import player.phonograph.util.currentVersionCode
 import player.phonograph.util.text.changelogCSS
 import player.phonograph.util.text.changelogHTML
+import player.phonograph.util.theme.ThemeSettingsDelegate.accentColor
 import player.phonograph.util.theme.ThemeSettingsDelegate.isNightTheme
-import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.themeCardBackgroundColor
 import player.phonograph.util.theme.tintButtons
 import androidx.appcompat.app.AlertDialog

@@ -26,10 +26,10 @@ fun hitTest(v: View, x: Int, y: Int): Boolean {
     return x in left..right && y >= top && y <= bottom
 }
 
-fun FastScrollRecyclerView.setUpFastScrollRecyclerViewColor(context: Context, accentColor: Int) {
-    setPopupBgColor(accentColor)
-    setPopupTextColor(context.primaryTextColor(accentColor))
-    setThumbColor(accentColor)
+fun FastScrollRecyclerView.setUpFastScrollRecyclerViewColor(context: Context, color: Int) {
+    setPopupBgColor(color)
+    setPopupTextColor(context.primaryTextColor(color))
+    setThumbColor(color)
     setTrackColor(
         withAlpha(
             context.resolveColor(

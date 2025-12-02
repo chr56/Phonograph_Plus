@@ -17,6 +17,9 @@ import player.phonograph.model.pages.PagesConfig
 import player.phonograph.model.service.ACTION_EXIT_OR_STOP
 import player.phonograph.model.service.ShuffleMode
 import player.phonograph.model.ui.GeneralTheme
+import player.phonograph.model.ui.GeneralTheme.Companion.THEME_BLACK
+import player.phonograph.model.ui.GeneralTheme.Companion.THEME_DARK
+import player.phonograph.model.ui.GeneralTheme.Companion.THEME_LIGHT
 import player.phonograph.repo.loader.Songs
 import player.phonograph.service.MusicService
 import player.phonograph.settings.Keys
@@ -35,14 +38,13 @@ import player.phonograph.util.permissions.navigateToAppDetailSetting
 import player.phonograph.util.permissions.navigateToStorageSetting
 import player.phonograph.util.theme.ThemeSettingsDelegate.textColorPrimary
 import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.theme.toggleTheme
+import androidx.core.net.toUri
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import android.app.PendingIntent
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import android.view.Menu
@@ -97,8 +99,9 @@ fun setupDrawerMenu(
                 titleRes(R.string.action_theme_switch)
                 onClick {
                     activity.lifecycleScope.launch {
-                        val result = withContext(Dispatchers.IO) { toggleTheme(activity) }
-                        if (result) withContext(Dispatchers.Main) { recreate() }
+                        if (toggleTheme(activity)) {
+                            withContext(Dispatchers.Main) { recreate() }
+                        }
                     }
                     true
                 }
@@ -222,9 +225,26 @@ fun setupDrawerMenu(
 
 }
 
+private suspend fun toggleTheme(context: Context): Boolean = withContext(Dispatchers.IO) {
+    val preference = Setting(context)[Keys.theme]
+    val oldTheme = preference.read()
+    val newTheme = when (oldTheme) {
+        THEME_DARK, THEME_BLACK -> THEME_LIGHT
+        THEME_LIGHT             -> THEME_DARK
+        else                    -> null
+    }
+    if (newTheme != null) {
+        preference.edit { newTheme }
+        true
+    } else {
+        false
+    }
+}
+
+
 private fun viewFiles(activity: FragmentActivity) {
     val uri =
-        Uri.parse("content://com.android.externalstorage.documents/document/primary%3AAndroid%2Fdata%2F$ACTUAL_PACKAGE_NAME")
+        "content://com.android.externalstorage.documents/document/primary%3AAndroid%2Fdata%2F$ACTUAL_PACKAGE_NAME".toUri()
     val activityName = "com.android.documentsui.files.FilesActivity"
     try {
         activity.startActivity(

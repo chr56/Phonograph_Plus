@@ -13,7 +13,7 @@ import player.phonograph.util.permissions.hasPermissions
 import player.phonograph.util.permissions.navigateToAppDetailSetting
 import player.phonograph.util.permissions.permissionDescription
 import player.phonograph.util.permissions.permissionName
-import player.phonograph.util.theme.accentColor
+import player.phonograph.util.theme.ThemeSettingsDelegate.accentColor
 import android.os.Bundle
 
 /**

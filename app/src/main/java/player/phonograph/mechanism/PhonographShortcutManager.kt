@@ -9,8 +9,8 @@ import player.phonograph.model.ui.AppShortcutType
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.modules.auxiliary.StarterActivity
+import player.phonograph.util.theme.ThemeSettingsDelegate.primaryColor
 import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.theme.primaryColor
 import player.phonograph.util.ui.BitmapUtil
 import util.theme.color.isColorLight
 import androidx.annotation.RequiresApi
@@ -124,7 +124,7 @@ object PhonographShortcutManager {
 
     private fun themedIcon(context: Context, iconId: Int, colored: Boolean): Icon =
         if (colored) {
-            val primaryColor = context.primaryColor()
+            val primaryColor = primaryColor()
             val background = if (isColorLight(primaryColor)) {
                 context.getColor(R.color.divider_lightdark)
             } else {

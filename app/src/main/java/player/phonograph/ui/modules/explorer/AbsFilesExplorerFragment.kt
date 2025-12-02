@@ -15,7 +15,7 @@ import player.phonograph.ui.actions.ClickActionProviders
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayPresenter
 import player.phonograph.util.observe
-import player.phonograph.util.theme.accentColor
+import player.phonograph.util.theme.ThemeSettingsDelegate.accentColor
 import player.phonograph.util.theme.getTintedDrawableOnBackground
 import player.phonograph.util.theme.tintButtons
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
