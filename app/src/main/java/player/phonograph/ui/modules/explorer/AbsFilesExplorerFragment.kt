@@ -16,13 +16,10 @@ import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayPresenter
 import player.phonograph.util.observe
 import player.phonograph.util.theme.accentColor
-import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.theme.nightMode
+import player.phonograph.util.theme.getTintedDrawableOnBackground
 import player.phonograph.util.theme.tintButtons
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
-import util.theme.color.primaryTextColor
 import androidx.activity.OnBackPressedCallback
-import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -32,8 +29,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.withStateAtLeast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import android.content.Context
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -83,7 +78,7 @@ sealed class AbsFilesExplorerFragment : Fragment() {
 
         // Back Button
         binding.buttonBack.apply {
-            setImageDrawable(requireContext().getThemedDrawable(R.drawable.ic_nav_back_white_24dp))
+            setImageDrawable(requireContext().getTintedDrawableOnBackground(R.drawable.ic_nav_back_white_24dp))
             setOnClickListener { navigateUp(true) }
             setOnLongClickListener {
                 onSwitch(MediaPaths.startDirectory(it.context))
@@ -149,7 +144,7 @@ sealed class AbsFilesExplorerFragment : Fragment() {
                     )
                 }
                 binding.buttonBack.setImageDrawable(
-                    requireContext().getThemedDrawable(
+                    requireContext().getTintedDrawableOnBackground(
                         if (newPath.isRoot) {
                             R.drawable.ic_sdcard_white_24dp
                         } else {
@@ -248,7 +243,5 @@ sealed class AbsFilesExplorerFragment : Fragment() {
 
     companion object {
         private const val TAG = "FilesExplorer"
-        internal fun Context.getThemedDrawable(@DrawableRes resId: Int): Drawable? =
-            getTintedDrawable(resId, primaryTextColor(nightMode))
     }
 }

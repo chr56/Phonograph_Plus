@@ -27,9 +27,8 @@ import player.phonograph.ui.modules.popup.ListOptionsPopup
 import player.phonograph.util.asList
 import player.phonograph.util.concurrent.coroutineToast
 import player.phonograph.util.observe
-import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.theme.nightMode
-import util.theme.color.primaryTextColor
+import player.phonograph.util.theme.ThemeSettingsDelegate.textColorPrimary
+import player.phonograph.util.theme.getTintedDrawableOnBackground
 import androidx.fragment.app.commitNow
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -111,7 +110,7 @@ class FilesPage : AbsPage() {
         val context = mainActivity
         context.attach(binding.panelToolbar.menu) {
             menuItem(NONE, NONE, 999, getString(R.string.action_settings)) {
-                icon = getTintedDrawable(R.drawable.ic_tune_white_24dp, context.primaryTextColor(context.nightMode))
+                icon = context.getTintedDrawableOnBackground(R.drawable.ic_tune_white_24dp)
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
                 onClick {
                     mainFragment.popup.onShow = ::configPopup
@@ -126,8 +125,8 @@ class FilesPage : AbsPage() {
             configAppBarActionButton(this)
         }
 
-        binding.panelText.setTextColor(context.primaryTextColor(context.nightMode))
-        binding.panelToolbar.setTitleTextColor(context.primaryTextColor(context.nightMode))
+        binding.panelText.setTextColor(textColorPrimary(context))
+        binding.panelToolbar.setTitleTextColor(textColorPrimary(context))
 
         observe(viewLifecycleOwner.lifecycle, model.currentFiles, state = Lifecycle.State.STARTED) { files ->
             binding.panelText.text = headerText(resources, files.size)
@@ -145,10 +144,7 @@ class FilesPage : AbsPage() {
 
     private fun configAppBarActionButton(menuContext: MenuContext) = with(menuContext) {
         menuItem(getString(R.string.action_play)) {
-            icon = getTintedDrawable(
-                R.drawable.ic_play_arrow_white_24dp,
-                context.primaryTextColor(context.nightMode)
-            )
+            icon = context.getTintedDrawableOnBackground(R.drawable.ic_play_arrow_white_24dp)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
             onClick {
                 lifecycleScope.launch(Dispatchers.IO) {
@@ -158,7 +154,7 @@ class FilesPage : AbsPage() {
             }
         }
         menuItem(getString(R.string.action_shuffle_all)) {
-            icon = getTintedDrawable(R.drawable.ic_shuffle_white_24dp, context.primaryTextColor(context.nightMode))
+            icon = context.getTintedDrawableOnBackground(R.drawable.ic_shuffle_white_24dp)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
             onClick {
                 lifecycleScope.launch(Dispatchers.IO) {

@@ -13,7 +13,6 @@ import androidx.annotation.CheckResult
 import androidx.annotation.ColorInt
 import androidx.fragment.app.Fragment
 import android.content.Context
-import android.content.res.Resources
 
 @JvmName("Context_PrimaryColor")
 @CheckResult
@@ -34,10 +33,6 @@ fun Context.accentColor(): Int = ThemeSettingsDelegate.accentColor()
 @CheckResult
 @ColorInt
 fun Fragment.accentColor(): Int = ThemeSettingsDelegate.accentColor()
-
-val Context.nightMode: Boolean get() = ThemeSettingsDelegate.isNightTheme(resources)
-
-val Resources.nightMode: Boolean get() = ThemeSettingsDelegate.isNightTheme(this)
 
 
 suspend fun toggleTheme(context: Context): Boolean {

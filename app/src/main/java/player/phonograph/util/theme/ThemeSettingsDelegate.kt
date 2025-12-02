@@ -14,6 +14,8 @@ import player.phonograph.model.ui.GeneralTheme.Companion.THEME_LIGHT
 import player.phonograph.settings.Keys
 import player.phonograph.settings.PrimitiveKey
 import player.phonograph.settings.Setting
+import util.theme.color.primaryTextColor
+import util.theme.color.secondaryTextColor
 import androidx.annotation.ColorInt
 import androidx.annotation.StyleRes
 import android.content.Context
@@ -116,6 +118,31 @@ object ThemeSettingsDelegate {
         } else {
             _selectedAccentColor.value
         }
+
+    @ColorInt
+    fun textColorPrimary(context: Context): Int =
+        context.primaryTextColor(darkmode = isNightTheme(context.resources))
+
+    @ColorInt
+    fun textColorSecondary(context: Context): Int =
+        context.secondaryTextColor(darkmode = isNightTheme(context.resources))
+
+    @ColorInt
+    fun textColorOnPrimaryColor(context: Context): Int =
+        context.primaryTextColor(backgroundColor = primaryColor())
+
+    @ColorInt
+    fun textColorOnAccentColor(context: Context): Int =
+        context.primaryTextColor(backgroundColor = accentColor())
+
+    @ColorInt
+    fun textColorOnPrimaryColorDisabled(context: Context): Int =
+        context.secondaryTextColor(backgroundColor = primaryColor())
+
+    @ColorInt
+    fun textColorOnAccentColorDisabled(context: Context): Int =
+        context.secondaryTextColor(backgroundColor = accentColor())
+
     //endregion
 
     //region Observe

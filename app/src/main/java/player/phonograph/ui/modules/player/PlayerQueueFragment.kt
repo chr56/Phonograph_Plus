@@ -31,8 +31,9 @@ import player.phonograph.util.observe
 import player.phonograph.util.text.buildInfoString
 import player.phonograph.util.text.infoString
 import player.phonograph.util.text.readableDuration
+import player.phonograph.util.theme.ThemeSettingsDelegate.isNightTheme
+import player.phonograph.util.theme.ThemeSettingsDelegate.textColorPrimary
 import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.theme.nightMode
 import player.phonograph.util.theme.themeFooterColor
 import player.phonograph.util.theme.themeIconColor
 import player.phonograph.util.theme.tintButtons
@@ -42,7 +43,6 @@ import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import player.phonograph.util.ui.textColorTransitionAnimator
 import util.theme.color.darkenColor
 import util.theme.color.lightenColor
-import util.theme.color.primaryTextColor
 import util.theme.materials.MaterialColor
 import androidx.annotation.ColorInt
 import androidx.lifecycle.Lifecycle
@@ -359,9 +359,9 @@ class PlayerQueueFragment : AbsMusicServiceFragment() {
 
     private fun textColor(@ColorInt color: Int): Int {
         val context = requireContext()
-        val nightMode = context.nightMode
+        val nightMode = isNightTheme(resources)
         val defaultFooterColor = themeFooterColor(context)
-        return if (color == defaultFooterColor) context.primaryTextColor(nightMode)
+        return if (color == defaultFooterColor) textColorPrimary(context)
         else if (nightMode) lightenColor(color) else darkenColor(color)
     }
     //endregion
@@ -390,13 +390,13 @@ class PlayerQueueFragment : AbsMusicServiceFragment() {
                 playingQueueAdapter.current = MusicPlayerRemote.position
                 updateQueueTime(MusicPlayerRemote.position)
                 resetToCurrentPosition(false)
-                updateShuffleModeIcon(context, it, context.primaryTextColor(context.nightMode))
+                updateShuffleModeIcon(context, it, textColorPrimary(context))
             }
         }
         observe(queueViewModel.repeatMode) {
             lifecycle.withCreated {
                 val context = requireContext()
-                updateRepeatModeIcon(context, it, context.primaryTextColor(context.nightMode))
+                updateRepeatModeIcon(context, it, textColorPrimary(context))
             }
         }
 

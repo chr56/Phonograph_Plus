@@ -8,11 +8,12 @@ import player.phonograph.settings.PrerequisiteSetting
 import player.phonograph.util.currentVersionCode
 import player.phonograph.util.text.changelogCSS
 import player.phonograph.util.text.changelogHTML
+import player.phonograph.util.theme.ThemeSettingsDelegate.isNightTheme
 import player.phonograph.util.theme.accentColor
-import player.phonograph.util.theme.nightMode
 import player.phonograph.util.theme.themeCardBackgroundColor
 import player.phonograph.util.theme.tintButtons
 import androidx.appcompat.app.AlertDialog
+import androidx.core.graphics.toColorInt
 import androidx.fragment.app.DialogFragment
 import android.annotation.SuppressLint
 import android.app.Dialog
@@ -25,7 +26,6 @@ import android.webkit.WebView
 import java.io.IOException
 import java.io.InputStream
 import java.util.Locale
-import androidx.core.graphics.toColorInt
 
 /**
  * @author Aidan Follestad (afollestad)
@@ -92,7 +92,7 @@ class ChangelogDialog : DialogFragment() {
         val backgroundColor =
             themeCardBackgroundColor(requireContext())
 
-        val textColor = (if (resources.nightMode) "#ffffff" else "#000000").toColorInt()
+        val textColor = (if (isNightTheme(resources)) "#ffffff" else "#000000").toColorInt()
 
         return changelogHTML(
             CSS = changelogCSS(

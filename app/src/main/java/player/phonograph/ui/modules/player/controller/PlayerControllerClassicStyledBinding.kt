@@ -9,8 +9,8 @@ import player.phonograph.R
 import player.phonograph.databinding.FragmentPlaybackControlsClassicBinding
 import player.phonograph.ui.modules.player.PlayPauseButtonOnClickHandler
 import player.phonograph.ui.views.PlayPauseDrawable
+import player.phonograph.util.theme.ThemeSettingsDelegate.isNightTheme
 import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.theme.nightMode
 import player.phonograph.util.theme.themeIconColor
 import util.theme.color.secondaryTextColor
 import util.theme.view.tint
@@ -82,7 +82,7 @@ class PlayerControllerClassicStyledBinding : PlayerControllerBinding() {
     private var playPauseDrawable: PlayPauseDrawable? = null
     private var disconnectedDrawable: Drawable? = null
     override fun setupPlayPauseButton(context: Context) {
-        val fabBackgroundColor = if (context.nightMode) Color.LTGRAY else Color.WHITE
+        val fabBackgroundColor = if (isNightTheme(context.resources)) Color.LTGRAY else Color.WHITE
         val fabIconColor = context.secondaryTextColor(fabBackgroundColor)
         playPauseDrawable = PlayPauseDrawable(context).apply {
             colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
@@ -92,7 +92,7 @@ class PlayerControllerClassicStyledBinding : PlayerControllerBinding() {
         disconnectedDrawable = context.getTintedDrawable(R.drawable.ic_refresh_white_24dp, themeIconColor(context))
 
         with(playerPlayPauseButton) {
-            tint(fabBackgroundColor, true, context.nightMode)
+            tint(fabBackgroundColor, true, isNightTheme(resources))
             setOnClickListener(PlayPauseButtonOnClickHandler())
             // pivotX = width.toFloat() / 2
             // pivotY = height.toFloat() / 2

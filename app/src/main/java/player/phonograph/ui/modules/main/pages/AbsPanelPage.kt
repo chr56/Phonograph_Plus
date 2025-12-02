@@ -16,12 +16,11 @@ import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.ui.modules.popup.ListOptionsPopup
 import player.phonograph.util.debug
 import player.phonograph.util.logMetrics
-import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.theme.nightMode
+import player.phonograph.util.theme.ThemeSettingsDelegate.textColorPrimary
+import player.phonograph.util.theme.getTintedDrawableOnBackground
 import player.phonograph.util.ui.isLandscape
 import player.phonograph.util.ui.isTablet
 import player.phonograph.util.ui.isWideScreen
-import util.theme.color.primaryTextColor
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.withResumed
@@ -125,7 +124,7 @@ sealed class AbsPanelPage : AbsPage() {
 
         context.attach(binding.panelToolbar.menu) {
             menuItem(NONE, NONE, 999, getString(R.string.action_settings)) {
-                icon = getTintedDrawable(R.drawable.ic_tune_white_24dp, context.primaryTextColor(context.nightMode))
+                icon = context.getTintedDrawableOnBackground(R.drawable.ic_tune_white_24dp)
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
                 onClick {
                     val optionsPopup = mainFragment.popup
@@ -141,8 +140,8 @@ sealed class AbsPanelPage : AbsPage() {
             prepareAppBarActionButton(this)
         }
 
-        binding.panelText.setTextColor(context.primaryTextColor(context.nightMode))
-        binding.panelToolbar.setTitleTextColor(context.primaryTextColor(context.nightMode))
+        binding.panelText.setTextColor(textColorPrimary(context))
+        binding.panelToolbar.setTitleTextColor(textColorPrimary(context))
 
         mainFragment.addOnAppBarOffsetChangedListener(outerAppbarOffsetListener)
     }
@@ -158,13 +157,12 @@ sealed class AbsPanelPage : AbsPage() {
         with(menuContext) {
             if (clearMenu) rootMenu.clear()
             menuItem(getString(R.string.action_play)) {
-                icon =
-                    getTintedDrawable(R.drawable.ic_play_arrow_white_24dp, context.primaryTextColor(context.nightMode))
+                icon = context.getTintedDrawableOnBackground(R.drawable.ic_play_arrow_white_24dp)
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
                 onClick { onPlay(it) }
             }
             menuItem(getString(R.string.action_shuffle_all)) {
-                icon = getTintedDrawable(R.drawable.ic_shuffle_white_24dp, context.primaryTextColor(context.nightMode))
+                icon = context.getTintedDrawableOnBackground(R.drawable.ic_shuffle_white_24dp)
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
                 onClick { onShuffle(it) }
             }

@@ -33,10 +33,9 @@ import player.phonograph.util.concurrent.runOnMainHandler
 import player.phonograph.util.file.listPaths
 import player.phonograph.util.permissions.navigateToAppDetailSetting
 import player.phonograph.util.permissions.navigateToStorageSetting
+import player.phonograph.util.theme.ThemeSettingsDelegate.textColorPrimary
 import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.theme.nightMode
 import player.phonograph.util.theme.toggleTheme
-import util.theme.color.primaryTextColor
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import android.app.PendingIntent
@@ -66,7 +65,7 @@ fun setupDrawerMenu(
     menu.clear()
     attach(activity, menu) {
 
-        val textColorPrimary: Int = primaryTextColor(nightMode)
+        val textColorPrimary: Int = textColorPrimary(context)
 
         // page chooser
         if (pagesConfig != null) {

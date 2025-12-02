@@ -6,9 +6,8 @@ package player.phonograph.ui.views
 
 import player.phonograph.R
 import player.phonograph.databinding.ItemTextBinding
-import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.theme.nightMode
-import util.theme.color.primaryTextColor
+import player.phonograph.util.theme.ThemeSettingsDelegate.textColorPrimary
+import player.phonograph.util.theme.getTintedDrawableOnBackground
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.annotation.SuppressLint
@@ -46,10 +45,9 @@ class BreadCrumbView : FrameLayout {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = layoutManager
 
-        val drawable = getTintedDrawable(
-            R.drawable.ic_keyboard_arrow_right_white_24dp, context.primaryTextColor(context.nightMode)
-        )!!
-        recyclerView.addItemDecoration(ItemDecorator(drawable))
+        recyclerView.addItemDecoration(ItemDecorator(
+            context.getTintedDrawableOnBackground(R.drawable.ic_keyboard_arrow_right_white_24dp)!!
+        ))
 
         addView(
             recyclerView, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT).apply {
@@ -100,7 +98,7 @@ class BreadCrumbView : FrameLayout {
             fun bind(crumb: String, onClick: (View) -> Unit) {
                 val context = viewBinding.root.context
                 viewBinding.text.text = crumb
-                viewBinding.text.setTextColor(context.primaryTextColor(context.nightMode))
+                viewBinding.text.setTextColor(textColorPrimary(context))
                 itemView.setOnClickListener(onClick)
             }
         }
