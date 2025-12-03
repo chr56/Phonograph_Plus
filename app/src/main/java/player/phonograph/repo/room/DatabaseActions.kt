@@ -29,7 +29,13 @@ object DatabaseActions {
     }
 
     private suspend fun deleteTablesOfNonUserData(musicDatabase: MusicDatabase) {
+        musicDatabase.RelationshipGenreSongDao().deleteAll()
+        musicDatabase.RelationshipArtistAlbumDao().deleteAll()
+        musicDatabase.RelationshipArtistSongDao().deleteAll()
+        musicDatabase.AlbumDao().deleteAll()
+        musicDatabase.ArtistDao().deleteAll()
         musicDatabase.MediaStoreSongDao().deleteAll()
+        musicDatabase.GenreDao().deleteAll()
     }
 
     /**
