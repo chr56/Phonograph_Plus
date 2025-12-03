@@ -83,6 +83,7 @@
     <string name="action_grant_permission">Grant Permission</string>
     <string name="action_grant_storage_permission">Grant External Storage Permission</string>
     <string name="action_refresh_database">Refresh Database</string>
+    <string name="action_rebuild_database">Rebuild Database</string>
     <string name="action_delete_database">Delete Database</string>
     <string name="action_move_to_top">Move to top</string>
     <string name="action_move_to_bottom">Move to bottom</string>
@@ -250,6 +251,9 @@
     <string name="tips_hint_lucene_query_syntax">Lucene query syntax is supported!</string>
     <string name="tips_go_to_the_issue_tracker_website">You will be forwarded to the issue tracker website.</string>
     <string name="tips_welcome_to_phonograph">Welcome to Phonograph, a beautiful and lightweight music player for Android. </string>
+    <string name="help_scan_media">You can request to scan media in a directory for Android MediaStore, then trigger the music library update.</string>
+    <string name="help_refresh_database">Or you can refresh the internal music library database manually, if something goes wrong.</string>
+    <string name="help_rebuild_database">If necessary, you can rebuild database from the beginning; however, it takes longer and application may not be usable during rebuilding.</string>
     <string name="msg_no_changes">No changes</string>
     <string name="msg_no_playlists">No playlists</string>
     <string name="msg_no_results">No results</string>

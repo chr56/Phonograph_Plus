@@ -535,6 +535,7 @@
     <string name="label_database_playlists">資料庫播放列表</string>
     <string name="label_database_maintenance">內部資料庫維護</string>
     <string name="action_refresh_database">重新整理資料庫</string>
+    <string name="action_rebuild_database">重新建立資料庫</string>
     <string name="tips_refresh_database">掃描歌曲並編制索引</string>
     <string name="action_delete_database">刪除資料庫</string>
     <string name="tips_delete_database">刪除資料庫，包括所有資料庫播放列表和已索引歌曲！</string>
@@ -562,4 +563,7 @@
     <string name="notification_database_description">後臺資料庫同步任務</string>
     <string name="pref_title_auto_skip_unplayable_files">自動跳過無法播放的檔案</string>
     <string name="pref_summary_auto_skip_unplayable_files">在播放時自動跳過無法播放的檔案，而不是暫停</string>
+    <string name="help_scan_media">您可以為 Android MediaStore 請求掃描特定目錄中的媒體檔案，隨後引發音樂資料庫更新</string>
+    <string name="help_refresh_database">若出現異常，您也可以選擇手動重新整理內部音樂資料庫</string>
+    <string name="help_rebuild_database">如果必要您可以選擇完全重建資料庫；但是耗時較長，且在重建期間可能無法正常使用應用程式</string>
 </resources>

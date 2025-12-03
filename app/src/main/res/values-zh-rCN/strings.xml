@@ -535,6 +535,7 @@
     <string name="label_database_playlists">数据库播放列表</string>
     <string name="label_database_maintenance">内部数据库维护</string>
     <string name="action_refresh_database">刷新数据库</string>
+    <string name="action_rebuild_database">重建数据库</string>
     <string name="tips_refresh_database">扫描歌曲并编制索引</string>
     <string name="action_delete_database">删除数据库</string>
     <string name="tips_delete_database">删除数据库，包括所有数据库播放列表和已索引歌曲！</string>
@@ -562,4 +563,7 @@
     <string name="notification_database_description">后台数据库同步任务</string>
     <string name="pref_title_auto_skip_unplayable_files">自动跳过无法播放的文件</string>
     <string name="pref_summary_auto_skip_unplayable_files">在播放时自动跳过无法播放的文件，而不是暂停</string>
+    <string name="help_scan_media">您可以为 Android MediaStore 请求扫描特定目录中的媒体文件，随后引发音乐数据库更新</string>
+    <string name="help_refresh_database">若出现异常，您也可以选择手动刷新内部音乐数据库</string>
+    <string name="help_rebuild_database">如果必要您可以选择完全重建数据库；但是耗时较长，且在重建期间可能无法正常使用应用</string>
 </resources>

@@ -11,7 +11,6 @@ import player.phonograph.ACTUAL_PACKAGE_NAME
 import player.phonograph.R
 import player.phonograph.foundation.Reboot
 import player.phonograph.foundation.error.warning
-import player.phonograph.mechanism.scanner.MediaStoreScanner
 import player.phonograph.model.pages.Pages
 import player.phonograph.model.pages.PagesConfig
 import player.phonograph.model.service.ACTION_EXIT_OR_STOP
@@ -26,14 +25,11 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.actions.actionPlay
 import player.phonograph.ui.dialogs.DatabaseMaintenanceDialog
+import player.phonograph.ui.dialogs.ScanMediaDialog
 import player.phonograph.ui.modules.auxiliary.AboutActivity
-import player.phonograph.ui.modules.explorer.PathSelectorContractTool
-import player.phonograph.ui.modules.explorer.PathSelectorRequester
 import player.phonograph.ui.modules.setting.SettingsActivity
 import player.phonograph.ui.modules.web.WebSearchLauncher
-import player.phonograph.util.concurrent.coroutineToast
 import player.phonograph.util.concurrent.runOnMainHandler
-import player.phonograph.util.file.listPaths
 import player.phonograph.util.permissions.navigateToAppDetailSetting
 import player.phonograph.util.permissions.navigateToStorageSetting
 import player.phonograph.util.theme.ThemeSettingsDelegate.textColorPrimary
@@ -129,11 +125,8 @@ fun setupDrawerMenu(
             titleRes(R.string.action_scan_media)
             onClick {
                 closeDrawer()
-                Handler(Looper.getMainLooper()).postDelayed(
-                    {
-                        onScanMedia(activity)
-                    }, 200
-                )
+                ScanMediaDialog().show(activity.supportFragmentManager, null)
+                true
             }
         }
 
@@ -276,32 +269,3 @@ private fun viewFiles(activity: FragmentActivity) {
     }
 }
 
-private fun onScanMedia(fragmentActivity: FragmentActivity) {
-    val contractTool: PathSelectorContractTool? =
-        (fragmentActivity as? PathSelectorRequester)?.pathSelectorContractTool
-    contractTool?.launch(null) { path ->
-        if (path != null) {
-            fragmentActivity.lifecycleScope.launch {
-                scanMedia(path, fragmentActivity)
-            }
-        }
-    }
-}
-
-private suspend fun scanMedia(
-    path: String,
-    context: Context,
-) {
-    val mediaStoreScanner = MediaStoreScanner(context)
-    try {
-        val paths = listPaths(path)
-        if (paths.isNotEmpty()) {
-            coroutineToast(context.applicationContext, R.string.action_scan_media)
-            mediaStoreScanner.scan(paths)
-        } else {
-            coroutineToast(context.applicationContext, R.string.msg_nothing_to_scan)
-        }
-    } catch (e: Exception) {
-        warning(context, "ScanMedia", "Failed to scan media", e)
-    }
-}
