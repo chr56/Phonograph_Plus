@@ -10,6 +10,8 @@ import com.vanpra.composematerialdialogs.title
 import player.phonograph.R
 import player.phonograph.foundation.Reboot
 import player.phonograph.foundation.error.warning
+import player.phonograph.foundation.notification.ProgressNotificationConnection
+import player.phonograph.model.notification.NOTIFICATION_CHANNEL_ID_DATABASE_SYNC
 import player.phonograph.repo.room.DatabaseActions
 import player.phonograph.repo.room.MusicDatabase
 import player.phonograph.ui.compose.ComposeViewDialogFragment
@@ -90,7 +92,13 @@ private fun OptionItemRefresh(context: Context) {
         stringResource(R.string.tips_refresh_database)
     ) {
         context.lifecycleScopeOrNewOne().launch(Dispatchers.IO) {
-            DatabaseActions.sync(context.applicationContext, MusicDatabase.koinInstance)
+            val progress = ProgressNotificationConnection(
+                context, R.string.action_refresh_database,
+                channel = NOTIFICATION_CHANNEL_ID_DATABASE_SYNC,
+            )
+            progress.onStart()
+            DatabaseActions.sync(context.applicationContext, MusicDatabase.koinInstance, progress)
+            progress.onCompleted()
         }
     }
 }

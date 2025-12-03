@@ -10,6 +10,6 @@ interface SyncExecutor {
 
     suspend fun check(context: Context): Boolean
 
-    suspend fun sync(context: Context, channel: ProgressConnection?): SyncResult
+    suspend fun sync(context: Context, channel: ProgressConnection?): SyncReport
 
 }

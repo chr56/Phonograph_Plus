@@ -5,7 +5,10 @@
 package player.phonograph.repo.room
 
 import player.phonograph.App
+import player.phonograph.R
+import player.phonograph.foundation.notification.ProgressNotificationConnection
 import player.phonograph.mechanism.event.EventHub
+import player.phonograph.model.notification.NOTIFICATION_CHANNEL_ID_DATABASE_SYNC
 import player.phonograph.model.repo.sync.SyncProcessor
 import android.content.Context
 import android.content.Intent
@@ -49,7 +52,15 @@ class RoomSyncProcessor(
     }
 
     private suspend fun impl(context: Context) {
-        if (database.isOpen) DatabaseActions.sync(context, database)
+        if (database.isOpen) {
+            val progress = ProgressNotificationConnection(
+                context, R.string.action_refresh_database,
+                channel = NOTIFICATION_CHANNEL_ID_DATABASE_SYNC,
+            )
+            progress.onStart()
+            DatabaseActions.sync(context, database, progress)
+            progress.onCompleted()
+        }
     }
 
     companion object {

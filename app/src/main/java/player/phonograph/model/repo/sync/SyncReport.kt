@@ -4,7 +4,7 @@
 
 package player.phonograph.model.repo.sync
 
-class SyncResult(
+class SyncReport(
     val success: Boolean,
     val added: Int = 0,
     val modified: Int = 0,

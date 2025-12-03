@@ -5,14 +5,14 @@
 package player.phonograph.foundation.notification
 
 import player.phonograph.R
-import player.phonograph.model.notification.NOTIFICATION_CHANNEL_ID_DATABASE_SYNC
+import player.phonograph.model.notification.ChannelID
 import player.phonograph.model.repo.sync.ProgressConnection
 import android.content.Context
 
 class ProgressNotificationConnection(
     val context: Context,
     titlePrefixRes: Int,
-    channel: String = NOTIFICATION_CHANNEL_ID_DATABASE_SYNC,
+    @ChannelID channel: String,
 ) : ProgressConnection {
 
     private val notifications = Notifications.BackgroundTasks(channel)
@@ -25,7 +25,11 @@ class ProgressNotificationConnection(
         else
             "$titlePrefix - $defaultMessage"
 
-    private var id = 101
+    private var id: Int = 101
+    override fun onStart(notificationId: Int) {
+        id = notificationId
+    }
+
     override fun onStart() {
         id = System.currentTimeMillis().mod(172_800_000)
     }

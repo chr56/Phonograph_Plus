@@ -8,6 +8,8 @@ interface ProgressConnection {
 
     fun onStart()
 
+    fun onStart(notificationId: Int)
+
     fun onProcessUpdate(message: String?)
 
     fun onProcessUpdate(current: Int, total: Int)

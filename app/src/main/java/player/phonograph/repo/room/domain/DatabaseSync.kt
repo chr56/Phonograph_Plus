@@ -5,9 +5,9 @@
 package player.phonograph.repo.room.domain
 
 import player.phonograph.model.Song
-import player.phonograph.model.repo.sync.SyncExecutor
 import player.phonograph.model.repo.sync.ProgressConnection
-import player.phonograph.model.repo.sync.SyncResult
+import player.phonograph.model.repo.sync.SyncExecutor
+import player.phonograph.model.repo.sync.SyncReport
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.mediastore.MediaStoreSongs
@@ -40,7 +40,7 @@ class BasicSyncExecutor(private val musicDatabase: MusicDatabase) : SyncExecutor
     override suspend fun sync(
         context: Context,
         channel: ProgressConnection?,
-    ): SyncResult {
+    ): SyncReport {
         val songsMediastore = songsFromMediastore(context)
         val total = songsMediastore.size
         channel?.onProcessUpdate(0, total)
@@ -49,7 +49,7 @@ class BasicSyncExecutor(private val musicDatabase: MusicDatabase) : SyncExecutor
             mediaStoreSongDao.insert(songsMediastore.map(EntityConverter::fromSongModel))
         }
         channel?.onProcessUpdate(total, total)
-        return SyncResult(success = true, modified = total)
+        return SyncReport(success = true, modified = total)
     }
 
     private suspend fun songsFromDatabase(): List<MediastoreSongEntity> =
