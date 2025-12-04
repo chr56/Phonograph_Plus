@@ -1,12 +1,13 @@
-# **Development Plan (or Road Map?)** & **TO-DO list**
+# **Development Road Map** & **TO-DO list**
 
-_Last Update: 2025.10.02_
+_Last Update: 2025.12.04_
 
-## Independent Database by Jetpack Room
+------
 
-Use AndroidX Room to build an audio media library database:
+## Standalone Music Library Database
 
-This part is currently work-in-progress.
+This part is currently work-in-progress, as next major feature.
+
 See branch `room-database`
 
 #### Stage 1 MediaStore Cache/Mirror
@@ -23,73 +24,43 @@ _(Completed!)_
 
 #### Stage 4 Solving Complex Relationship for Artists/Albums
 
-- [x] Tables for Songs/Artists/Albums
-
-- [x] Operations
-
-- [x] Solving Relationship (one-many & many-many)
-
-- [x] Spited `artistName` (parse ';', '&', '/', '\', ',').
-
-- [ ] Automatically sync with MediaStore
-
-- [x] Update loader
+_(Completed! But it may have issues.)_
 
 #### Stage 5 Enhanced Genres
 
-- [ ] Table for Genres
+- [x] Table for Genres
 
-- [ ] United Genre and Style from tag fields with spited (parse ';', '&', '/', '\', ',')
+- [ ] Sync logic implementation, with spited field (parse ';', '&', '/', '\', ',')
 
-- [ ] Update loader
+- [ ] Update loader to enable new implementation 
 
-#### Stage 6 Artwork Cache
+#### Stage 6 Artwork Cache (Tentative)
+
+Cache artwork information in database, for quicker lookup.
 
 - [ ] Table for artwork locations for Artists/Albums
 
-- [ ] Operations
+- [ ] Sync logic implementation
 
-- [ ] Update relative coil components
+- [ ] Update relative coil components to enable new implementation
 
-#### Stage 7 More Enhancement
+#### Stage 7 Independent from MediaStore & Relative Enhancement
+
+Scan media files manually without any existed metadata from Mediastore; use JAudioTagger to read tags and parse more data.
+
+- [ ] Multiple tag source (Android MediaStore & JAudioTagger Parse) and manual scan implementation.
+
+- [ ] Metadata enhancement: united Genre and Style from tag fields
+
+- [ ] Metadata enhancement: read and store Replay-Gain tag
+
+- [ ] Player: use parsed Replay-Gain tag
+
+#### Stage 8 More Enhancement
 
 - [ ] Enhanced Search
 
-- [ ] Multiple tag source (Android MediaStore & File System JAudioTagger Parse).
-
-- [ ] Replay-gain tag parse
-
-## Modularize
-
-Disassemble project into small Gradle modules. This part is currently preparing.
-
-- [x] Reorganize current package hierarchy
-
-- [ ] extract base module `api`
-
-- [ ] split ui and mechanism logic as modules
-
-- [ ] further split mechanism logic by aspect
-
-- [ ] further split ui
-
-- [ ] create light weight variant by removing non-essential modules (Tentative)
-
-## Migrate Settings to Protobuf Datastore
-
-Migrate current settings backend from Preference Datastore to Protobuf Datastore:
-
-- [ ] prepare infrastructure
-
-- [ ] partial migrate all Json based settings with custom datatype
-
-- [ ] earlier stage backup and backward compatibility support
-
-- [ ] migrate path filter, and remove its legacy database implementation
-
-- [ ] full migrate
-
-- [ ] full backup and backward compatibility support
+------
 
 ## Player Refactor
 
@@ -117,21 +88,13 @@ Migrate player backend to `Exoplayer`/ `Jetpack Media3`
 
 - [ ] update UI etc
 
-#### Cloud Player (Tentative)
-
-- [ ] (Tentative and Planing) Extend player, support Samba/NFS/SFTP
-
-- [ ] (Tentative and Planing) Refactor File relative UI
-
-- [ ] ...
-
 #### Native Player Decoder (Tentative, possibly canceled)
 
 Integrate with native decoder like `ffmpeg` or `Symphonia`.
 
 - [x] Test for NDK Cross Compile
 
-##### Exoplayer with `ffmpeg` route 
+##### Exoplayer with `ffmpeg` backend
 
 - [ ] Migrate to Exoplayer first
 
@@ -151,36 +114,85 @@ Integrate with native decoder like `ffmpeg` or `Symphonia`.
 
 - [ ] Reproducible Builds
 
+#### Cloud Player (Tentative, possibly canceled)
+
+- [ ] (Tentative and Planing) Extend player, support Samba/NFS/SFTP
+
+- [ ] (Tentative and Planing) Refactor File relative UI
+
+- [ ] ...
+
+------
+
 ## Enhance Main Player UI
 
-This is for simplifying player fragments and related fragments.
+- [ ] better tablet support and landscape layout enhancement
 
-- [x] flexible Now Playing Screen styles
-
-- [x] support for fast-forward/fast-rewind by seconds
-
-- [ ] more Now Playing Screen styles
+- [ ] more Now Playing Screen styles (Tentative)
 
 - [ ] enhance SlidingMusicBar (Tentative, possibly canceled)
+
+------
+
+## Modularize
+
+Disassemble project into multiple small Gradle modules. It's in staging.
+
+- [ ] extract base module `api`
+
+- [ ] split ui and mechanism logic as modules
+
+- [ ] further split mechanism logic by aspect/facet
+
+- [ ] further split ui
+
+- [ ] create light weight variant by removing non-essential modules (Tentative)
+
+------
+
+## Migrate Settings to Protobuf Datastore
+
+Migrate current settings backend from Preference Datastore to Protobuf Datastore:
+
+- [ ] prepare infrastructure
+
+- [ ] partial migrate all Json based settings with custom datatype
+
+- [ ] earlier stage backup and backward compatibility support
+
+- [ ] migrate path filter, and remove its legacy database implementation
+
+- [ ] full migrate
+
+- [ ] full backup and backward compatibility support
+
+------
 
 ## Unit Tests
 
 Write unit tests for core mechanism / logic.
 
-## Redesign `AlbumDetail`  and `ArtistDetail` activities (Tentative, possibly canceled)
+(Waiting for detailed road map)
 
-Redesign these to have a better appearance and to make maintenance easier.
+------
 
-(Waiting for plans)
+## Redesign _Album Detail_  and _Artist Detail_ (Tentative, possibly canceled)
 
+Redesign them for a more appealing appearance, and enhance their efficiency and maintainability.
+
+(Waiting for detailed road map)
+
+------
 
 ## Playlist Detail Enhancement (Tentative, possibly canceled)
 
-- [ ] Better search support
-
 - [ ] Handling intent of open (playlist) file
 
+- [ ] Enhance search support
+
 - [ ] Better way to modify playlist
+
+------
 
 ## Misc Development Plan
 
