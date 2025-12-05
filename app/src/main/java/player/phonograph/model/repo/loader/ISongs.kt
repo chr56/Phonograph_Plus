@@ -19,8 +19,6 @@ interface ISongs {
 
     suspend fun album(context: Context, albumId: Long): List<Song>
 
-    suspend fun genres(context: Context, genreId: Long): List<Song>
-
     /**
      * @param withoutPathFilter true if disable path filter
      */

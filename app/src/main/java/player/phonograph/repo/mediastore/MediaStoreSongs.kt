@@ -34,8 +34,6 @@ object MediaStoreSongs : ISongs {
         querySongs(context, "${AudioColumns.ALBUM_ID}=?", arrayOf(albumId.toString()), AudioColumns.TRACK).intoSongs()
             .sortedBy { it.trackNumber }
 
-    override suspend fun genres(context: Context, genreId: Long): List<Song> = MediaStoreGenres.songs(context, genreId)
-
 
     /**
      * @param withoutPathFilter true if disable path filter
