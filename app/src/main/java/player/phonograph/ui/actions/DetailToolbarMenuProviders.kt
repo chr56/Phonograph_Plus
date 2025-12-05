@@ -14,6 +14,7 @@ import player.phonograph.model.Artist
 import player.phonograph.model.Genre
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.service.ShuffleMode
+import player.phonograph.repo.loader.Genres
 import player.phonograph.repo.loader.Songs
 import player.phonograph.ui.NavigationUtil
 import player.phonograph.ui.modules.tag.MultiTagBrowserActivity
@@ -360,7 +361,7 @@ object DetailToolbarMenuProviders {
             }
 
         private suspend fun Genre.allSongs(context: Context) =
-            withContext(Dispatchers.IO) { Songs.genres(context, id) }
+            withContext(Dispatchers.IO) { Genres.songs(context, id) }
     }
 
     object PlaylistEntityToolbarMenuProvider : ToolbarMenuProvider<Playlist> {

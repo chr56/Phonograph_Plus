@@ -441,7 +441,7 @@ object MediaItemProviders {
     }
 
     private class GenreProvider(val genreId: Long) : AbsMediaItemProvider() {
-        private suspend fun fetch(context: Context) = Songs.genres(context, genreId)
+        private suspend fun fetch(context: Context) = Genres.songs(context, genreId)
 
         override suspend fun browser(context: Context): List<MediaItem> =
             withPlayAllItems(

@@ -18,6 +18,7 @@ import player.phonograph.model.SongCollection
 import player.phonograph.model.file.FileItem
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.service.ShuffleMode
+import player.phonograph.repo.loader.Genres
 import player.phonograph.repo.loader.PinedPlaylists
 import player.phonograph.repo.loader.Songs
 import player.phonograph.service.MusicPlayerRemote
@@ -203,7 +204,7 @@ object ActionMenuProviders {
 
     object GenreActionMenuProvider : CompositeActionMenuProvider<Genre>() {
         override suspend fun readSongs(context: Context, genre: Genre): List<Song> = withContext(Dispatchers.IO) {
-            Songs.genres(context, genre.id)
+            Genres.songs(context, genre.id)
         }
     }
 

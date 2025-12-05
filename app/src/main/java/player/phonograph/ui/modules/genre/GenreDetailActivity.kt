@@ -15,7 +15,7 @@ import player.phonograph.model.Song
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.model.ui.ItemLayoutStyle
-import player.phonograph.repo.loader.Songs
+import player.phonograph.repo.loader.Genres
 import player.phonograph.ui.actions.DetailToolbarMenuProviders
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayPresenter
@@ -87,7 +87,7 @@ class GenreDetailActivity : AbsSlidingMusicPanelActivity(),
 
     private fun loadDataSet(context: Context) {
         lifecycleScope.launch(Dispatchers.IO) {
-            val list: List<Song> = Songs.genres(context, genre.id)
+            val list: List<Song> = Genres.songs(context, genre.id)
 
             while (!isRecyclerViewPrepared) yield() // wait until ready
 

@@ -17,6 +17,7 @@ import player.phonograph.model.SongCollection
 import player.phonograph.model.file.FileItem
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.service.ShuffleMode
+import player.phonograph.repo.loader.Genres
 import player.phonograph.repo.loader.Songs
 import player.phonograph.ui.adapter.MultiSelectionController
 import player.phonograph.ui.modules.tag.MultiTagBrowserActivity
@@ -181,7 +182,7 @@ object MultiSelectionToolbarMenuProviders {
                     is QueueSong      -> listOf(it.song)
                     is Album          -> Songs.album(context, it.id)
                     is Artist         -> Songs.artist(context, it.id)
-                    is Genre          -> Songs.genres(context, it.id)
+                    is Genre          -> Genres.songs(context, it.id)
                     is Playlist       -> PlaylistSongsActions.reader(it).allSongs(context)
                     is SongCollection -> it.songs
                     is FileItem       -> it.songs(context)
