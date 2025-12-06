@@ -20,9 +20,11 @@ import player.phonograph.util.sort
 import android.content.Context
 
 /**
+ * Endpoint for accessing playlists
+ *
  * Forward action or mix results for both [MediaStorePlaylists] and [RoomPlaylists]
  */
-object RouterPlaylists : IPlaylists {
+object Playlists : IPlaylists {
 
     override suspend fun all(context: Context): List<Playlist> =
         sorted(context, RoomPlaylists.all(context) + MediaStorePlaylists.all(context))

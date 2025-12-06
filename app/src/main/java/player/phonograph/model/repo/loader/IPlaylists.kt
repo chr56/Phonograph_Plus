@@ -9,7 +9,7 @@ import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.PlaylistLocation
 import android.content.Context
 
-interface IPlaylists {
+interface IPlaylists : Endpoint {
 
     suspend fun all(context: Context): List<Playlist>
 

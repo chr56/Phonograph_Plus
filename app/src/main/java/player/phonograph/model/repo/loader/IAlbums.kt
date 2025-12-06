@@ -7,7 +7,7 @@ package player.phonograph.model.repo.loader
 import player.phonograph.model.Album
 import android.content.Context
 
-interface IAlbums {
+interface IAlbums : Endpoint {
 
     suspend fun all(context: Context): List<Album>
 

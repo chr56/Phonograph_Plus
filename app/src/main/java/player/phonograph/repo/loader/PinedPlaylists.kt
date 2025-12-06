@@ -7,4 +7,7 @@ package player.phonograph.repo.loader
 import player.phonograph.model.repo.loader.IPinedPlaylists
 import player.phonograph.repo.room.domain.RoomPinedPlaylists
 
-object RouterPinedPlaylists : IPinedPlaylists by RoomPinedPlaylists
+/**
+ * Endpoint for accessing pinned playlist
+ */
+object PinedPlaylists: IPinedPlaylists by RoomPinedPlaylists

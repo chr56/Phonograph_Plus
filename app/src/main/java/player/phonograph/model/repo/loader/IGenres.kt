@@ -8,7 +8,7 @@ import player.phonograph.model.Genre
 import player.phonograph.model.Song
 import android.content.Context
 
-interface IGenres {
+interface IGenres : Endpoint {
 
     suspend fun all(context: Context): List<Genre>
 

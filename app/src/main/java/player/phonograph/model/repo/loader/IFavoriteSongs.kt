@@ -7,7 +7,7 @@ package player.phonograph.model.repo.loader
 import player.phonograph.model.Song
 import android.content.Context
 
-interface IFavoriteSongs {
+interface IFavoriteSongs : Endpoint {
 
     suspend fun all(context: Context): List<Song>
 
