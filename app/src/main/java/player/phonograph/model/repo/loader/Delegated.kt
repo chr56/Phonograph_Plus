@@ -21,13 +21,16 @@ abstract class Delegated<I> {
     protected abstract fun onCreateDelegate(context: Context): I
 
 
-    fun recreate(context: Context) {
+    fun recreate(context: Context): Boolean {
         val oldDelegate: I?
+        val newDelegate: I
         synchronized(this) {
             oldDelegate = _delegate
-            _delegate = onCreateDelegate(context)
+            newDelegate = onCreateDelegate(context)
+            _delegate = newDelegate
         }
         (oldDelegate as? AutoCloseable)?.close()
+        return oldDelegate != newDelegate
     }
 
 }

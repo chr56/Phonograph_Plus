@@ -6,7 +6,14 @@ package player.phonograph.repo.loader
 
 import android.content.Context
 
+private const val MAX_TRY = 3
 
 fun replaceFavoriteSongDelegate(context: Context) {
-    FavoriteSongs.recreate(context)
+    var maxTry = MAX_TRY
+    while (maxTry > 0) {
+        maxTry--
+        if (FavoriteSongs.recreate(context)) {
+            break
+        }
+    }
 }
