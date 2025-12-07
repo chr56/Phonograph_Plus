@@ -54,12 +54,6 @@
       "license": "Apache Software License 2.0"
     },
     {
-      "name": "Material Dialogs",
-      "url": "https://github.com/afollestad/material-dialogs",
-      "copyright": "Copyright (c) 2018 Aidan Michael Follestad",
-      "license": "Apache Software License 2.0"
-    },
-    {
       "name": "OkHttp",
       "url": "https://github.com/square/okhttp",
       "license": "Apache Software License 2.0"
@@ -121,6 +115,12 @@
       "name": "Compose-Settings",
       "url": "https://github.com/alorma/Compose-Settings",
       "copyright": "Copyright (c) 2021 Bernat Borrás Paronella",
+      "license": "MIT License"
+    },
+    {
+      "name": "Compose-Pipette",
+      "url": "https://github.com/zt64/compose-pipette",
+      "copyright": "Copyright (c) 2025 zt64",
       "license": "MIT License"
     },
     {
