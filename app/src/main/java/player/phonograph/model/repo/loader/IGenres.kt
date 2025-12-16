@@ -14,6 +14,8 @@ interface IGenres : Endpoint {
 
     suspend fun id(context: Context, id: Long): Genre?
 
+    suspend fun of(context: Context, songId: Long): List<Genre>
+
     suspend fun songs(context: Context, genreId: Long): List<Song>
 
 }

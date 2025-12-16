@@ -7,6 +7,7 @@ package player.phonograph.repo.mediastore
 import player.phonograph.foundation.mediastore.BASE_AUDIO_SELECTION
 import player.phonograph.foundation.mediastore.BASE_SONG_PROJECTION
 import player.phonograph.foundation.mediastore.intoSongs
+import player.phonograph.foundation.mediastore.mediastoreUriGenreForSongExternal
 import player.phonograph.foundation.mediastore.mediastoreUriGenreMembersExternal
 import player.phonograph.foundation.mediastore.mediastoreUriGenresExternal
 import player.phonograph.model.Genre
@@ -29,6 +30,9 @@ object MediaStoreGenres : IGenres {
 
     override suspend fun id(context: Context, id: Long): Genre? =
         queryGenre(context, id)?.intoGenres(context)?.first()
+
+    override suspend fun of(context: Context, songId: Long): List<Genre> =
+        querySongGenre(context, songId)?.intoGenres(context) ?: emptyList()
 
     override suspend fun songs(context: Context, genreId: Long): List<Song> =
         querySongs(context, genreId).intoSongs()
@@ -65,6 +69,15 @@ object MediaStoreGenres : IGenres {
             null,
             null
         )?.use { it.count } ?: 0
+
+    private fun querySongGenre(context: Context, songId: Long): Cursor? =
+        context.contentResolver.query(
+            mediastoreUriGenreForSongExternal(songId),
+            arrayOf(Genres._ID, Genres.NAME),
+            null,
+            null,
+            null
+        )
 
     private fun Cursor.intoGenres(context: Context): List<Genre> = this.use {
         val genres = mutableListOf<Genre>()

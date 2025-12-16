@@ -118,6 +118,14 @@ fun mediastoreUriGenreMembers(volume: String, genreId: Long): Uri =
 fun mediastoreUriGenre(volume: String, genreId: Long): Uri =
     ContentUris.withAppendedId(mediastoreUriGenres(volume), genreId)
 
+/**
+ * @param volume MediaStore volume name
+ * @param songId song id
+ * @return genre (table) uri for a specific song in MediaStore
+ */
+fun mediastoreUriGenreForSong(volume: String, songId: Long): Uri =
+    MediaStore.Audio.Genres.getContentUriForAudioId(volume, songId.toInt())
+
 
 /**
  * @return genres (table) uri in MediaStore at `external` volume
@@ -138,6 +146,13 @@ fun mediastoreUriGenreMembersExternal(genreId: Long): Uri =
  */
 fun mediastoreUriGenreExternal(genreId: Long): Uri =
     mediastoreUriGenre(MEDIASTORE_VOLUME_EXTERNAL, genreId)
+
+/**
+ * @param songId genre id
+ * @return genre (table) uri for a specific song in MediaStore at `external` volume
+ */
+fun mediastoreUriGenreForSongExternal(songId: Long): Uri =
+    mediastoreUriGenreForSong(MEDIASTORE_VOLUME_EXTERNAL, songId)
 
 
 //endregion
