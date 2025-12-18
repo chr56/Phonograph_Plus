@@ -8,14 +8,13 @@ import player.phonograph.foundation.mediastore.intoSongs
 import player.phonograph.model.Artist
 import player.phonograph.model.repo.loader.IArtists
 import player.phonograph.repo.mediastore.internal.generateArtists
-import player.phonograph.repo.mediastore.internal.querySongs
 import android.content.Context
 import android.provider.MediaStore.Audio.AudioColumns
 
 object MediaStoreArtists : IArtists {
 
     override suspend fun all(context: Context): List<Artist> {
-        val songs = querySongs(context, sortOrder = null).intoSongs()
+        val songs = MediaStoreSongs.querySongs(context, sortOrder = null).intoSongs()
         return if (songs.isEmpty()) return emptyList() else generateArtists(context, songs)
     }
 
@@ -26,7 +25,7 @@ object MediaStoreArtists : IArtists {
     }
 
     override suspend fun searchByName(context: Context, query: String): List<Artist> {
-        val songs = querySongs(context, "${AudioColumns.ARTIST} LIKE ?", arrayOf("%$query%"), null).intoSongs()
+        val songs = MediaStoreSongs.querySongs(context, "${AudioColumns.ARTIST} LIKE ?", arrayOf("%$query%"), null).intoSongs()
         return if (songs.isEmpty()) return emptyList() else generateArtists(context, songs)
     }
 

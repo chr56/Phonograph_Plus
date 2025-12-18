@@ -4,8 +4,8 @@
 
 package player.phonograph.foundation.mediastore
 
-import player.phonograph.foundation.compat.MediaStoreCompat
 import player.phonograph.model.Song
+import android.content.Context
 import android.database.Cursor
 import android.provider.BaseColumns
 import android.provider.MediaStore.Audio.AudioColumns
@@ -34,11 +34,23 @@ val EXTENDED_SONG_PROJECTION =
         AudioColumns.DISPLAY_NAME, // 15
     )
 
-const val BASE_AUDIO_SELECTION =
-    "${AudioColumns.IS_MUSIC} =1 "
 
-const val BASE_PLAYLIST_SELECTION =
-    "${MediaStoreCompat.Audio.PlaylistsColumns.NAME} != '' "
+/**
+ * query song via MediaStore
+ */
+fun queryMediastoreAudio(
+    context: Context,
+    selection: String? = null,
+    selectionArgs: Array<String>? = null,
+    sortOrder: String? = null,
+    extended: Boolean = false,
+): Cursor? = context.contentResolver.query(
+    mediastoreUriSongsExternal(),
+    if (extended) EXTENDED_SONG_PROJECTION else BASE_SONG_PROJECTION,
+    selection,
+    selectionArgs,
+    sortOrder,
+)
 
 
 /**
@@ -103,4 +115,17 @@ fun Cursor?.intoSongs(): List<Song> {
         }
         songs
     } ?: emptyList()
+}
+
+
+
+const val BASE_AUDIO_SELECTION = "${AudioColumns.IS_MUSIC} =1 "
+
+inline fun withBaseAudioFilter(block: () -> String): String {
+    val selection = block()
+    return if (selection.isBlank()) {
+        BASE_AUDIO_SELECTION
+    } else {
+        "$BASE_AUDIO_SELECTION AND $selection "
+    }
 }

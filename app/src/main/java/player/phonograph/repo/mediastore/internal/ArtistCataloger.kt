@@ -5,10 +5,10 @@
 package player.phonograph.repo.mediastore.internal
 
 import player.phonograph.foundation.error.warning
+import player.phonograph.foundation.mediastore.mediastoreArtistSortRefKey
 import player.phonograph.model.Artist
 import player.phonograph.model.Song
 import player.phonograph.model.sort.SortMode
-import player.phonograph.repo.mediastore.mediastoreArtistSortRefKey
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.util.sort

@@ -2,12 +2,12 @@
  *  Copyright (c) 2022~2025 chr_56
  */
 
-package player.phonograph.repo.mediastore
+package player.phonograph.repo.database.loaders
 
+import player.phonograph.foundation.mediastore.SortedLongCursor
 import player.phonograph.foundation.mediastore.intoSongs
+import player.phonograph.foundation.mediastore.queryMediastoreAudio
 import player.phonograph.model.Song
-import player.phonograph.repo.mediastore.internal.SortedLongCursor
-import player.phonograph.repo.mediastore.internal.querySongs
 import android.content.Context
 import android.database.Cursor
 import android.provider.BaseColumns
@@ -67,10 +67,10 @@ abstract class DatabaseAgentLoader {
      * Convert Database cursor to Song cursor
      * @param idColumnName foreign key to MediaStore song id, in Database cursor
      */
-    protected suspend fun Cursor.intoSongCursor(context: Context, idColumnName: String): SortedLongCursor? =
+    protected fun Cursor.intoSongCursor(context: Context, idColumnName: String): SortedLongCursor? =
         use { cursor -> generateSongCursor(context, cursor, idColumnName) }
 
-    private suspend fun generateSongCursor(context: Context, cursor: Cursor, idColumnName: String): SortedLongCursor? {
+    private fun generateSongCursor(context: Context, cursor: Cursor, idColumnName: String): SortedLongCursor? {
         val count = cursor.count
         val idColumnIndex = cursor.getColumnIndex(idColumnName)
 
@@ -87,10 +87,10 @@ abstract class DatabaseAgentLoader {
             cursor.getLong(idColumnIndex).also { cursor.moveToNext() }
         }
 
-        val songCursor = querySongs(
+        val songCursor = queryMediastoreAudio(
             context,
-            selection = "${BaseColumns._ID}  IN ( $selectionPlaceHolder )",
-            selectionValues = ids.map { it.toString() }.toTypedArray()
+            selection = "${BaseColumns._ID} IN ($selectionPlaceHolder)",
+            selectionArgs = ids.map { it.toString() }.toTypedArray()
         ) ?: return null
 
         return SortedLongCursor(songCursor, ids, BaseColumns._ID)

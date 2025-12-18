@@ -4,13 +4,17 @@
 
 package player.phonograph.repo.mediastore
 
+import player.phonograph.foundation.error.record
 import player.phonograph.foundation.mediastore.intoFirstSong
 import player.phonograph.foundation.mediastore.intoSongs
+import player.phonograph.foundation.mediastore.queryMediastoreAudio
+import player.phonograph.foundation.mediastore.withBaseAudioFilter
 import player.phonograph.model.Song
 import player.phonograph.model.repo.loader.ISongs
-import player.phonograph.repo.mediastore.internal.locateSongs
-import player.phonograph.repo.mediastore.internal.querySongs
+import player.phonograph.repo.mediastore.internal.defaultSongQuerySortOrder
+import player.phonograph.repo.mediastore.internal.withPathFilter
 import android.content.Context
+import android.database.Cursor
 import android.provider.MediaStore.Audio.AudioColumns
 import android.provider.MediaStore.MediaColumns.DATE_ADDED
 import android.provider.MediaStore.MediaColumns.DATE_MODIFIED
@@ -64,6 +68,49 @@ object MediaStoreSongs : ISongs {
         return cursor.intoSongs()
     }
 
+
+    /**
+     * Raw query songs with path filter
+     * @param selection SQL where clause
+     * @param selectionValues SQL where clause binding values
+     * @param sortOrder SQL where clause sorting by
+     * @param withoutPathFilter true if bypass path filter
+     * @param extended true if using extended projection
+     * @return cursor of queried songs for more fields
+     */
+    suspend fun querySongs(
+        context: Context,
+        selection: String = "",
+        selectionValues: Array<String> = emptyArray(),
+        sortOrder: String? = defaultSongQuerySortOrder(context),
+        withoutPathFilter: Boolean = false,
+        extended: Boolean = false,
+    ): Cursor? = try {
+        withPathFilter(
+            context,
+            selection = withBaseAudioFilter { selection },
+            selectionValues = selectionValues,
+            escape = withoutPathFilter
+        ) { actualSelection, actualSelectionValues ->
+            queryMediastoreAudio(
+                context,
+                selection = actualSelection,
+                selectionArgs = actualSelectionValues,
+                sortOrder = sortOrder,
+                extended = extended,
+            )
+        }
+    } catch (_: SecurityException) {
+        null
+    } catch (e: IllegalArgumentException) {
+        record(context, e, "QueryMediastore")
+        null
+    }
+
+
+    /**
+     * Search Songs
+     */
     suspend fun search(context: Context, query: String?, title: String?, album: String?, artist: String?): List<Song> {
 
         val termsCombinations = listOf(
@@ -92,5 +139,55 @@ object MediaStoreSongs : ISongs {
 
         return emptyList()
     }
+
+    /**
+     * search songs by keywords for tittle, artist, album fields
+     */
+    private suspend fun locateSongs(context: Context, title: String?, album: String?, artist: String?) = run {
+        val selections = mutableListOf<String>()
+        val selectionValues = mutableListOf<String>()
+
+        if (artist != null) {
+            selections.add(ARTIST_SELECTION)
+            selectionValues.add(artist.lowercase().trim())
+        }
+
+        if (album != null) {
+            selections.add(ALBUM_SELECTION)
+            selectionValues.add(album.lowercase().trim())
+        }
+
+        if (title != null) {
+            selections.add(TITLE_SELECTION)
+            selectionValues.add(title.lowercase().trim())
+        }
+
+        if (selections.isNotEmpty()) {
+            querySongs(context, selections.joinToString(separator = AND), selectionValues.toTypedArray())
+        } else {
+            null
+        }
+    }
+
+    /**
+     * search songs by keyword for tittle, artist, album fields
+     * @param keyword keyword
+     */
+    private suspend fun locateSongs(
+        context: Context,
+        keyword: String,
+    ) = run {
+        for (selection in listOf(TITLE_SELECTION, ALBUM_SELECTION, ARTIST_SELECTION)) {
+            val cursor = querySongs(context, selection, arrayOf(keyword.trim()))
+            if (cursor != null) return@run cursor
+        }
+        null
+    }
+
+    private const val TITLE_SELECTION = "lower(${AudioColumns.TITLE}) LIKE ?"
+    private const val ALBUM_SELECTION = "lower(${AudioColumns.ALBUM}) LIKE ?"
+    private const val ARTIST_SELECTION = "lower(${AudioColumns.ARTIST}) LIKE ?"
+    private const val AND = " AND "
+
 
 }

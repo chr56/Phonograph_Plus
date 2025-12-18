@@ -2,28 +2,18 @@
  *  Copyright (c) 2022~2025 chr_56
  */
 
-package player.phonograph.repo.mediastore
+package player.phonograph.foundation.mediastore
 
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Genre
 import player.phonograph.model.playlist.Playlist
-import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
-import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
-import android.content.Context
 import android.provider.MediaStore.Audio
 import android.provider.MediaStore.Audio.AudioColumns
 
 //region Songs
-fun defaultSongQuerySortOrder(context: Context) =
-    mediastoreSongQuerySortOrder(Setting(context)[Keys.songSortMode].data)
-
-fun mediastoreSongQuerySortOrder(sortMode: SortMode): String =
-    "${mediastoreSongQuerySortRef(sortMode.sortRef)} ${if (sortMode.revert) "DESC" else "ASC"}"
-
-private fun mediastoreSongQuerySortRef(sortRef: SortRef): String = when (sortRef) {
+fun mediastoreSongQuerySortRef(sortRef: SortRef): String = when (sortRef) {
     SortRef.ID                -> AudioColumns._ID
     SortRef.SONG_NAME         -> Audio.Media.DEFAULT_SORT_ORDER
     SortRef.ARTIST_NAME       -> Audio.Artists.DEFAULT_SORT_ORDER

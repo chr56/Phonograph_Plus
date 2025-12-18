@@ -4,28 +4,33 @@
 
 package player.phonograph.repo.mediastore.internal
 
-import player.phonograph.foundation.mediastore.BASE_AUDIO_SELECTION
-import player.phonograph.foundation.mediastore.BASE_PLAYLIST_SELECTION
 import player.phonograph.settings.Keys
 import player.phonograph.settings.PathFilterSetting
 import player.phonograph.settings.Setting
 import android.content.Context
+import android.database.Cursor
 import android.provider.MediaStore
 
-class SQLWhereClause(val selection: String, val selectionValues: Array<String>)
-
 /**
- *  amend path with path filter SQL to SQLWhereClause
+ *  Wrap query selection with paths from path filter by Settings
  *  @param escape true if disable path filter
+ *  @param block produce the cursor with provided selection with path filter
+ *  @return produced cursor
  */
-suspend fun withPathFilter(context: Context, escape: Boolean = false, block: () -> SQLWhereClause): SQLWhereClause {
-    if (escape) return block()
+internal suspend inline fun withPathFilter(
+    context: Context,
+    selection: String = "",
+    selectionValues: Array<String> = emptyArray(),
+    escape: Boolean = false,
+    block: (selection: String, selectionValues: Array<String>) -> Cursor?,
+): Cursor? {
+
+    if (escape) return block(selection, selectionValues)
 
     val includeMode = !Setting(context)[Keys.pathFilterExcludeMode].read()
 
     val paths = PathFilterSetting.read(context, !includeMode).map { "$it%" }
 
-    val target = block()
 
     val pattern =
         if (includeMode)
@@ -34,15 +39,19 @@ suspend fun withPathFilter(context: Context, escape: Boolean = false, block: () 
             "${MediaStore.Audio.AudioColumns.DATA} NOT LIKE ?"
 
 
-    return if (paths.isNotEmpty()) {
-        SQLWhereClause(
-            plusSelectionCondition(target.selection, includeMode, pattern, paths.size),
-            target.selectionValues.plus(paths)
+    return if (paths.isEmpty()) {
+        block(
+            selection,
+            selectionValues
         )
     } else {
-        target
+        block(
+            withSelectionCondition(selection, includeMode, pattern, paths.size),
+            selectionValues.plus(paths),
+        )
     }
 }
+
 
 /**
  * create duplicated string for selection
@@ -50,7 +59,7 @@ suspend fun withPathFilter(context: Context, escape: Boolean = false, block: () 
  * @param what the string to duplicate
  * @param count count of the duplicated [what]
  */
-private fun plusSelectionCondition(selection: String, includeMode: Boolean, what: String, count: Int): String {
+internal fun withSelectionCondition(selection: String, includeMode: Boolean, what: String, count: Int): String {
     if (count <= 0) return selection // do nothing
     val separator = if (includeMode) "OR" else " AND"
     var accumulator = selection
@@ -68,23 +77,4 @@ private fun plusSelectionCondition(selection: String, includeMode: Boolean, what
     accumulator += ")"
     return accumulator
 }
-
-inline fun withBaseAudioFilter(block: () -> String): String {
-    val selection = block()
-    return if (selection.isBlank()) {
-        BASE_AUDIO_SELECTION
-    } else {
-        "$BASE_AUDIO_SELECTION AND $selection "
-    }
-}
-
-inline fun withBasePlaylistFilter(block: () -> String?): String {
-    val selection = block()
-    return if (selection.isNullOrBlank()) {
-        BASE_PLAYLIST_SELECTION
-    } else {
-        "$BASE_PLAYLIST_SELECTION AND $selection "
-    }
-}
-
 

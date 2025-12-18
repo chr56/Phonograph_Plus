@@ -4,12 +4,13 @@
 
 package player.phonograph.repo.mediastore
 
-import player.phonograph.foundation.mediastore.BASE_AUDIO_SELECTION
-import player.phonograph.foundation.mediastore.BASE_SONG_PROJECTION
+import player.phonograph.foundation.mediastore.intoFirstGenre
+import player.phonograph.foundation.mediastore.intoGenres
 import player.phonograph.foundation.mediastore.intoSongs
-import player.phonograph.foundation.mediastore.mediastoreUriGenreForSongExternal
-import player.phonograph.foundation.mediastore.mediastoreUriGenreMembersExternal
-import player.phonograph.foundation.mediastore.mediastoreUriGenresExternal
+import player.phonograph.foundation.mediastore.mediastoreGenreSortRefKey
+import player.phonograph.foundation.mediastore.queryGenre
+import player.phonograph.foundation.mediastore.queryGenreSongs
+import player.phonograph.foundation.mediastore.querySongGenre
 import player.phonograph.model.Genre
 import player.phonograph.model.Song
 import player.phonograph.model.repo.loader.IGenres
@@ -18,99 +19,27 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.util.sort
 import android.content.Context
-import android.database.Cursor
-import android.os.Build
-import android.provider.BaseColumns
 import android.provider.MediaStore.Audio.Genres
 
 object MediaStoreGenres : IGenres {
 
     override suspend fun all(context: Context): List<Genre> =
-        queryGenre(context)?.intoGenres(context)?.sortAll(context) ?: emptyList()
+        queryGenre(
+            context
+        )?.intoGenres(context)?.sortAll(context) ?: emptyList()
 
     override suspend fun id(context: Context, id: Long): Genre? =
-        queryGenre(context, id)?.intoGenres(context)?.first()
+        queryGenre(
+            context,
+            selection = "${Genres._ID} == ?",
+            selectionArgs = arrayOf(id.toString())
+        )?.intoFirstGenre(context)
 
     override suspend fun of(context: Context, songId: Long): List<Genre> =
         querySongGenre(context, songId)?.intoGenres(context) ?: emptyList()
 
     override suspend fun songs(context: Context, genreId: Long): List<Song> =
-        querySongs(context, genreId).intoSongs()
-
-    private fun queryGenre(context: Context): Cursor? =
-        queryGenreImpl(context, null, null)
-
-    private fun queryGenre(context: Context, genreId: Long): Cursor? =
-        queryGenreImpl(context, "${Genres._ID} == ?", arrayOf(genreId.toString()))
-
-    private fun queryGenreImpl(context: Context, selection: String?, selectionArgs: Array<String>?): Cursor? =
-        context.contentResolver.query(
-            mediastoreUriGenresExternal(),
-            arrayOf(Genres._ID, Genres.NAME),
-            selection,
-            selectionArgs,
-            null
-        )
-
-    private fun querySongs(context: Context, genreId: Long): Cursor? =
-        context.contentResolver.query(
-            mediastoreUriGenreMembersExternal(genreId),
-            BASE_SONG_PROJECTION,
-            BASE_AUDIO_SELECTION,
-            null,
-            null
-        )
-
-    private fun querySongCount(context: Context, genreId: Long): Int =
-        context.contentResolver.query(
-            mediastoreUriGenreMembersExternal(genreId),
-            arrayOf(BaseColumns._ID),
-            null,
-            null,
-            null
-        )?.use { it.count } ?: 0
-
-    private fun querySongGenre(context: Context, songId: Long): Cursor? =
-        context.contentResolver.query(
-            mediastoreUriGenreForSongExternal(songId),
-            arrayOf(Genres._ID, Genres.NAME),
-            null,
-            null,
-            null
-        )
-
-    private fun Cursor.intoGenres(context: Context): List<Genre> = this.use {
-        val genres = mutableListOf<Genre>()
-        if (moveToFirst()) {
-            do {
-                val id = getLong(0)
-                val name = getString(1)
-                val count = querySongCount(context, id)
-
-                if (count > 0) {
-                    genres.add(Genre(id = id, name = name, songCount = count))
-                } else {
-                    removeEmptyGenre(context, id)
-                }
-            } while (moveToNext())
-        }
-        genres
-    }
-
-    private fun removeEmptyGenre(context: Context, genreId: Long) {
-        // try to remove the empty genre from the media store
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-            try {
-                context.contentResolver.delete(
-                    mediastoreUriGenresExternal(),
-                    "${Genres._ID} == $genreId",
-                    null
-                )
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-    }
+        queryGenreSongs(context, genreId).intoSongs()
 
     private fun List<Genre>.sortAll(context: Context): List<Genre> =
         sortAll(Setting(context)[Keys.genreSortMode].data)

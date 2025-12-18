@@ -7,13 +7,12 @@ package player.phonograph.repo.mediastore
 import player.phonograph.foundation.mediastore.intoSongs
 import player.phonograph.model.Song
 import player.phonograph.model.SongCollection
-import player.phonograph.repo.mediastore.internal.querySongs
 import android.content.Context
 
 object MediaStoreSongCollections {
 
     suspend fun all(context: Context): List<SongCollection> {
-        val allSongs = querySongs(context).intoSongs()
+        val allSongs = MediaStoreSongs.querySongs(context).intoSongs()
         return convertSongsToSongCollections(context, allSongs)
     }
 

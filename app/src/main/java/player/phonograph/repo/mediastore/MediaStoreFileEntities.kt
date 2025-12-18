@@ -9,14 +9,12 @@ import player.phonograph.foundation.mediastore.readSong
 import player.phonograph.mechanism.explorer.MediaPaths
 import player.phonograph.model.file.FileItem
 import player.phonograph.model.file.MediaPath
-import player.phonograph.repo.mediastore.internal.queryMediaFiles
+import player.phonograph.repo.mediastore.internal.defaultSongQuerySortOrder
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.util.file.audioFileFilter
-import androidx.core.content.getSystemService
 import android.content.Context
 import android.database.Cursor
-import android.os.storage.StorageManager
 import android.os.storage.StorageVolume
 import android.provider.MediaStore
 import kotlinx.coroutines.yield
@@ -31,9 +29,12 @@ object MediaStoreFileEntities {
         context: Context,
         path: MediaPath,
     ): List<FileItem> {
-        val fileCursor = queryMediaFiles(
+        val fileCursor = MediaStoreSongs.querySongs(
             context,
-            "${MediaStore.MediaColumns.DATA} LIKE ?", arrayOf("${path.path}%")
+            selection = "${MediaStore.MediaColumns.DATA} LIKE ?",
+            selectionValues = arrayOf("${path.path}%"),
+            sortOrder = defaultSongQuerySortOrder(context),
+            extended = true,
         ) ?: return emptyList()
         val rootVolume = MediaPaths.volumeOf(context, path)
         return fileCursor.use { cursor ->
