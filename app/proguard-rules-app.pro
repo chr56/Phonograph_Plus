@@ -3,7 +3,17 @@
 #
 
 -keep class player.phonograph.ui.views.** {*;}
--keep class player.phonograph.model.** {public <fields>;}
+
+-keepnames,allowoptimization,allowshrinking class player.phonograph.model.* {*;}
+-keepnames,allowoptimization,allowshrinking class player.phonograph.model.backup.** {public <methods>;}
+-keepnames,allowoptimization,allowshrinking class player.phonograph.model.file.** {public <methods>;}
+-keepnames,allowoptimization,allowshrinking class player.phonograph.model.lyrics.** {public <methods>;}
+-keepnames,allowoptimization,allowshrinking class player.phonograph.model.metadata.** {public <methods>;}
+-keepnames,allowoptimization,allowshrinking class player.phonograph.model.playlist.** {public <methods>;}
+-keepnames,allowoptimization,allowshrinking class player.phonograph.model.repo.loader.* {public <methods>;}
+-keepnames,allowoptimization,allowshrinking interface player.phonograph.model.service.** { <methods>; }
+
+-keepnames,allowoptimization,allowshrinking class player.phonograph.foundation.mediastore.*
 
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.adapter.DisplayPresenter { public <methods>; }
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.adapter.DisplayAdapter { protected <methods>; }
@@ -21,27 +31,17 @@
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.modules.** extends androidx.lifecycle.ViewModel {public <methods>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.NavigationUtil { public <methods>; }
 
--keepclassmembernames,allowoptimization,allowshrinking interface player.phonograph.model.repo.loader.IFavoriteSongs { public <methods>; }
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.repo.mediastore.internal.QueryKt { public query*(...); }
-
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.service.MusicService { public <methods>;public <fields>; }
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.service.notification.** { public <methods>;public <fields>; }
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.service.player.VanillaAudioPlayer { public <methods>; }
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.service.player.PlayerController { public <methods>; }
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.service.player.PlayerController$VanillaAudioPlayerControllerImpl { public <methods>; }
--keepclassmembernames,allowoptimization,allowshrinking interface player.phonograph.service.** { <methods>; }
+-keepclassmembernames,allowoptimization,allowshrinking interface player.phonograph.service.player.* { <methods>; }
 
-
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.util.file.UriKt { public void select*(...); }
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.util.file.WriteKt { public <methods>; }
 
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.lyrics.LyricsLoader { public <methods>; }
--keepclassmembernames,allowoptimization,allowshrinking interface player.phonograph.model.migration.MigrationRule { public <methods>; }
-
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.metadata.* extends player.phonograph.mechanism.metadata.MetadataExtractor { public <methods>; }
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.metadata.* extends player.phonograph.mechanism.metadata.TagReader { public *** read(...); }
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.metadata.edit.* extends player.phonograph.model.metadata.EditAction$Executor { public <methods>; }
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.* extends player.phonograph.mechanism.IUriParser { public <methods>; }
 
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.coil.retriever.FetcherDelegate { abstract <methods>; }
--keepclassmembernames,allowoptimization,allowshrinking interface player.phonograph.coil.cache.CacheStore$Cache { public <methods>; }
