@@ -60,7 +60,6 @@ object MigrationManager {
 
         try {
             MigrateExecutor(context, from, to).apply {
-                migrate(LegacyDetailDialogMigrationRule())
                 migrate(PlaylistFilesOperationBehaviourMigrationRule())
                 migrate(ColoredSystemBarsMigrationRule())
                 migrate(PreloadImagesMigrationRule())

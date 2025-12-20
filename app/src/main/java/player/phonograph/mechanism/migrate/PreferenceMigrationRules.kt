@@ -22,11 +22,6 @@ import kotlinx.coroutines.launch
 import java.io.File
 
 //region Migration Rules
-class LegacyDetailDialogMigrationRule : PreferenceMigrationRule(introduced = 1081) {
-    override fun execute(context: Context) {
-        removeSettingItem(context, DeprecatedPreference.USE_LEGACY_DETAIL_DIALOG)
-    }
-}
 
 class PlaylistFilesOperationBehaviourMigrationRule : PreferenceMigrationRule(introduced = 1085) {
     override fun execute(context: Context) {
