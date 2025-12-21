@@ -7,7 +7,7 @@ ksp = "2.2.20-2.0.4"
 
 agp = "8.11.1"
 
-versionChecker = "0.51.0"
+versionChecker = "0.53.0"
 
 ## Libraries
 #### Jetpack Start
@@ -24,7 +24,7 @@ constraintlayout = "2.2.1"
 percentlayout = "1.0.0"
 swiperefreshlayout = "1.2.0"
 media = "1.7.1"
-browser = "1.8.0"
+browser = "1.9.0"
 cardview = "1.0.0"
 palette = "1.0.0"
 room = "2.8.4"
@@ -53,10 +53,10 @@ themeUtil = "0.3.2"
 
 ## Test
 junit = "4.13.2"
-mockito = "5.6.0"
-testCore = "1.6.1"
-testExtJunit = "1.2.1"
-testEspresso = "3.6.1"
+mockito = "5.17.0"
+testCore = "1.7.0"
+testExtJunit = "1.3.0"
+testEspresso = "3.7.0"
 
 [libraries]
 
