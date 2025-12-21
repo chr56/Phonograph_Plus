@@ -1,21 +1,22 @@
 /*
- * Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2025 chr_56
  */
 
 package util.phonograph
 
+import util.phonograph.model.Language
+import util.phonograph.model.ReleaseMetadata
 import util.phonograph.output.FdroidChangelogTextOutput
 import util.phonograph.output.FdroidMetadataVersionInfoOutput
-import util.phonograph.releasenote.Language
-import util.phonograph.releasenote.ReleaseNote
+import util.phonograph.utils.writeToFile
 import java.io.File
 
 
 private const val FDROID_METADATA_VERSION_INFO = "fdroid.properties"
 
-fun generateFdroidMetadata(model: ReleaseNote, rootPath: String) {
+fun generateFdroidMetadata(model: ReleaseMetadata, rootPath: String) {
     println("Processing...")
-    for (lang in Language.ALL) {
+    for (lang in Language.entries) {
         val output = FdroidChangelogTextOutput(model, lang)
         val targetFile = targetFile(rootPath, lang, model.versionCode)
         println("> Processing For ${lang.displayName}...")

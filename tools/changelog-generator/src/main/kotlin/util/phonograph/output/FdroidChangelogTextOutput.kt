@@ -4,23 +4,22 @@
 
 package util.phonograph.output
 
-import util.phonograph.dateString
-import util.phonograph.releasenote.Language
-import util.phonograph.releasenote.ReleaseNote
+import util.phonograph.model.Language
+import util.phonograph.model.OutputFormat
+import util.phonograph.model.ReleaseMetadata
+import util.phonograph.model.constants.OVERFLOWED_MESSAGE
+import util.phonograph.utils.dateString
 import java.io.Writer
 
 
-
-private const val OVERFLOWED_MESSAGE = "...(Visit project homepage to see full changelogs)"
-
-class FdroidChangelogTextOutput(val releaseNote: ReleaseNote, val language: Language) : OutputFormat {
+class FdroidChangelogTextOutput(val metadata: ReleaseMetadata, val language: Language) : OutputFormat {
 
     override fun write(target: Writer) {
-        val changelogText = generateFdroidMetadataChangelogText(releaseNote, language)
+        val changelogText = generateFdroidMetadataChangelogText(metadata, language)
         target.write(changelogText)
     }
 
-    private fun generateFdroidMetadataChangelogText(model: ReleaseNote, language: Language): String =
+    private fun generateFdroidMetadataChangelogText(model: ReleaseMetadata, language: Language): String =
         buildString {
             appendLine("<b>${model.version}(${model.versionCode}) ${dateString(model.timestamp)}</b>")
             val lines = model.language(language).items

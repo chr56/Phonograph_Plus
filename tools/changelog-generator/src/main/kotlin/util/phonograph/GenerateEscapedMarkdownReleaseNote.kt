@@ -1,14 +1,14 @@
 /*
- * Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2025 chr_56
  */
 
 package util.phonograph
 
+import util.phonograph.model.ReleaseMetadata
 import util.phonograph.output.EscapedMarkdown
-import util.phonograph.releasenote.ReleaseNote
 import java.io.File
 
-fun generateEscapedMarkdownReleaseNote(model: ReleaseNote, path: String) {
+fun generateEscapedMarkdownReleaseNote(model: ReleaseMetadata, path: String) {
     val markdown = EscapedMarkdown(model).write()
 
     val target = File(path)

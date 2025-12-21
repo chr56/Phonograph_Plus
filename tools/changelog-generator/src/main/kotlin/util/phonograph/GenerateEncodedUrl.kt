@@ -1,15 +1,15 @@
 /*
- * Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2025 chr_56
  */
 
 package util.phonograph
 
+import util.phonograph.model.ReleaseMetadata
 import util.phonograph.output.IMReleaseMarkdown
-import util.phonograph.releasenote.ReleaseNote
 import java.io.File
 import java.net.URLEncoder
 
-fun generateEncodedUrl(model: ReleaseNote, path: String) {
+fun generateEncodedUrl(model: ReleaseMetadata, path: String) {
     val markdown = IMReleaseMarkdown(model).write()
 
     val url = URLEncoder.encode(markdown, "UTF-8")

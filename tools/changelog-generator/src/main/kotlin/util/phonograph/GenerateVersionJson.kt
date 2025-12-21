@@ -1,15 +1,16 @@
 /*
- * Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2025 chr_56
  */
 
 package util.phonograph
 
+import util.phonograph.model.ReleaseMetadata
 import util.phonograph.output.VersionJsonOutput
-import util.phonograph.releasenote.ReleaseNote
+import util.phonograph.utils.writeToFile
 import java.io.File
 
 
-fun generateVersionJson(model: ReleaseNote, versionJsonFilePath: String) {
+fun generateVersionJson(model: ReleaseMetadata, versionJsonFilePath: String) {
     val versionJsonFile = File(versionJsonFilePath)
     val output: String = VersionJsonOutput(versionJsonFile, model).write()
     writeToFile(output, versionJsonFile)

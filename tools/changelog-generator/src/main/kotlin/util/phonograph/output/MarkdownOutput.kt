@@ -4,153 +4,89 @@
 
 package util.phonograph.output
 
-import util.phonograph.dateString
-import util.phonograph.escapeMarkdown
-import util.phonograph.releasenote.Language
-import util.phonograph.releasenote.Notes
-import util.phonograph.releasenote.ReleaseChannel
-import util.phonograph.releasenote.ReleaseNote
+import util.phonograph.formater.MarkdownFormater
+import util.phonograph.model.OutputFormat
+import util.phonograph.model.ReleaseChannel
+import util.phonograph.model.ReleaseMetadata
+import util.phonograph.model.TargetVariant
+import util.phonograph.model.constants.COMMIT_LOG_PREFIX
+import util.phonograph.model.constants.DOWNLOAD_LINK_TEMPLATE
+import util.phonograph.model.constants.PREVIEW_WARNING_EN
+import util.phonograph.model.constants.PREVIEW_WARNING_ZH
+import util.phonograph.model.constants.VARIANTS_DESCRIPTION_BODY
+import util.phonograph.model.constants.VARIANTS_DESCRIPTION_TITLE
+import util.phonograph.model.constants.compareLink
+import util.phonograph.model.constants.downloadLink
+import util.phonograph.utils.dateString
 import java.io.Writer
 
-abstract class Markdown : OutputFormat {
-
-    protected open fun border(text: String) = "**$text**"
-
-    protected fun title(text: String, level: Int) = "${"#".repeat(level)} $text\n"
-
-    protected fun makeUnorderedList(items: List<String>) = buildString {
-        for (item in items) {
-            appendLine("- $item")
-        }
-    }
-
-    protected fun makeOrderedList(items: List<String>) = buildString {
-        for ((index, item) in items.withIndex()) {
-            appendLine("${index + 1}. $item")
-        }
-    }
-
-    protected fun subtitle(language: Language, previewWarning: Boolean, escaped: Boolean = false): String =
-        buildString {
-            when (language) {
-                Language.EN -> {
-                    if (previewWarning) appendLine(if (escaped) PREVIEW_WARNING_EN_ESCAPED else PREVIEW_WARNING_EN)
-                }
-
-                Language.ZH -> {
-                    if (previewWarning) appendLine(if (escaped) PREVIEW_WARNING_ZH_ESCAPED else PREVIEW_WARNING_ZH)
-                }
-            }
-        }
-
-    protected fun guideOnDownload(): String = buildString {
-        appendLine(title("Version Variants Description / 版本说明", 2))
-        appendLine(VERSION_DESCRIPTION.trimIndent())
-    }
-
-    companion object {
-
-        private const val PREVIEW_WARNING_EN =
-            "This is a _Preview Channel_ Release (identified by `preview` suffix in the package name), stability and quality are not guaranteed."
-        private const val PREVIEW_WARNING_ZH =
-            "此为预览通道版本 (包名后缀`preview`), 不保证可靠性!"
-
-        private const val PREVIEW_WARNING_EN_ESCAPED =
-            "This is a _Preview Channel_ Release \\(identified by `preview` suffix in the package name\\)\\, stability and quality are not guaranteed\\."
-        private const val PREVIEW_WARNING_ZH_ESCAPED =
-            "此为预览通道版本 \\(包名后缀`preview`\\), 不保证可靠性\\!"
-
-        private const val VERSION_DESCRIPTION =
-            """
-            -> [Version Guide](docs/Version_Guide.md) / [版本指南](docs/Version_Guide_ZH.md)
-            
-            **TL;DR**: If you are a user of Android 7 ~ 10, please consider to use `Legacy`; If not, use `Modern`. The `Fdroid` is identical to the version on F‑droid; and the signature is same with others.
-            **太长不看**: 若为 Android 7 ~ 10 用户，请考虑使用 `Legacy` 版本；否则，请使用 `Modern` 版本。另外带 `Fdroid` 为 F-droid 上完全相同的版本，签名与其他版本相同。
-            
-            """
-    }
-}
 
 
-class GitHubReleaseMarkdown(private val releaseNote: ReleaseNote) : Markdown() {
+sealed class ReleaseMarkdown : OutputFormat, MarkdownFormater()
+
+class GitHubReleaseMarkdown(private val metadata: ReleaseMetadata) : ReleaseMarkdown() {
 
     @Suppress("SameParameterValue")
-    private fun section(note: Notes.Note, title: String, level: Int): String = buildString {
+    private fun section(note: ReleaseMetadata.Notes.Note, title: String, level: Int): String = buildString {
         appendLine(title(title, level))
         if (note.notice != null) appendLine(githubAlertBox(note.notice)).append('\n')
         if (note.highlights.isNotEmpty()) appendLine(makeUnorderedList(note.highlights)).append('\n')
         if (note.items.isNotEmpty()) appendLine(makeOrderedList(note.items)).append('\n')
     }
 
-
     override fun write(target: Writer) {
 
-        val title = title(border("v${releaseNote.version} ${dateString(releaseNote.timestamp)}"), 2)
-
-        val subtitleEN = subtitle(Language.EN, releaseNote.channel == ReleaseChannel.PREVIEW)
-        val subtitleZH = subtitle(Language.ZH, releaseNote.channel == ReleaseChannel.PREVIEW)
-        val contentEN = section(releaseNote.notes.en, "EN", 3)
-        val contentZH = section(releaseNote.notes.zh, "ZH", 3)
-
-        target.append(title)
-        target.append('\n')
-        target.append(subtitleEN)
-        target.append(subtitleZH)
-        target.append('\n')
-        target.append(contentEN)
-        target.append(contentZH)
+        // Title
+        target.append(
+            title(border("v${metadata.version} ${dateString(metadata.timestamp)}"), 2)
+        )
         target.append('\n')
 
-
-        val diff = "**Commit log**: ${generateDiffLink(releaseNote)}"
-        target.append(diff)
-
-        target.append('\n').append('\n')
-        target.append(guideOnDownload())
-
-        target.append(fileDownloadLinks(releaseNote.tag, releaseNote.version, releaseNote.channel))
-    }
-
-    companion object {
-
-        fun fileDownloadLinks(tag: String, version: String, channel: ReleaseChannel): String =
-            buildString {
-                val channelText = when (channel) {
-                    ReleaseChannel.PREVIEW -> "Preview"
-                    else                   -> "Stable"
-                }
-                append("Download Links ")
-                append('|')
-                append(" [Modern](https://github.com/chr56/Phonograph_Plus/releases/download/${tag}/PhonographPlus_${version}_Modern${channelText}Release.apk) |")
-                append(" [Legacy](https://github.com/chr56/Phonograph_Plus/releases/download/${tag}/PhonographPlus_${version}_Legacy${channelText}Release.apk) |")
-            }
-
-        private fun githubAlertBox(text: String, type: String = "NOTE"): String {
-            val lines = text.lines()
-            return buildString {
-                append("> [!$type]")
-                append('\n')
-                for (line in lines) {
-                    append("> ")
-                    append(line)
-                    append('\n')
-                }
-            }
+        // Warnings
+        if (metadata.channel == ReleaseChannel.PREVIEW) {
+            target.append(PREVIEW_WARNING_EN).append('\n')
+            target.append(PREVIEW_WARNING_ZH).append('\n')
+            target.append('\n')
         }
 
-        @JvmStatic
-        private fun generateDiffLink(releaseNote: ReleaseNote): String =
-            GITHUB_DIFF.format(releaseNote.previousTag, releaseNote.tag)
+        // Main Content
+        target.append(section(metadata.notes.en, "EN", 3))
+        target.append(section(metadata.notes.zh, "ZH", 3))
+        target.append('\n')
 
-        private const val GITHUB_DIFF = "https://github.com/chr56/Phonograph_Plus/compare/%s...%s"
+
+        // Diff Link
+        target.append("$COMMIT_LOG_PREFIX ${compareLink(metadata.previousTag, metadata.tag)}").append('\n')
+        target.append('\n')
+
+        // Variants Description
+        target.append(title(VARIANTS_DESCRIPTION_TITLE, 2)).append('\n')
+        target.append(
+            VARIANTS_DESCRIPTION_BODY.trimIndent()
+        ).append('\n')
+        target.append('\n')
+
+        // Download Links
+        val downloadLinkModern =
+            downloadLink(metadata.tag, metadata.version, metadata.variant(TargetVariant.MODERN))
+        val downloadLinkLegacy =
+            downloadLink(metadata.tag, metadata.version, metadata.variant(TargetVariant.LEGACY))
+        target.append(
+            String.format(
+                DOWNLOAD_LINK_TEMPLATE,
+                downloadLinkModern,
+                downloadLinkLegacy
+            ).trimIndent()
+        )
+        target.append('\n')
     }
 }
 
-class EscapedMarkdown(private val releaseNote: ReleaseNote) : Markdown() {
+class EscapedMarkdown(private val releaseMetadata: ReleaseMetadata) : ReleaseMarkdown() {
 
     override fun border(text: String): String = "*$text*"
 
-    private fun section(note: Notes.Note, title: String): String = buildString {
+    private fun section(note: ReleaseMetadata.Notes.Note, title: String): String = buildString {
         appendLine(border(title))
         if (note.notice != null) appendLine(escapeMarkdown(note.notice)).append('\n')
         if (note.highlights.isNotEmpty()) appendLine(escapeMarkdown(makeOrderedList(note.highlights))).append('\n')
@@ -158,29 +94,26 @@ class EscapedMarkdown(private val releaseNote: ReleaseNote) : Markdown() {
     }
 
     override fun write(target: Writer) {
-
-
-        val title = border(escapeMarkdown("${(releaseNote.tag)} ${dateString(releaseNote.timestamp)}"))
-
-        val subtitleEN = subtitle(Language.EN, releaseNote.channel == ReleaseChannel.PREVIEW, true)
-        val subtitleZH = subtitle(Language.ZH, releaseNote.channel == ReleaseChannel.PREVIEW, true)
-
-        val contentEN = section(releaseNote.notes.en, "EN")
-        val contentZH = section(releaseNote.notes.zh, "ZH")
-
-        target.append(title)
+        // Title
+        target.append(
+            border(escapeMarkdown("${(releaseMetadata.tag)} ${dateString(releaseMetadata.timestamp)}"))
+        )
         target.append('\n').append('\n')
-        target.append(subtitleEN)
-        target.append(subtitleZH)
-        target.append('\n')
-        target.append(contentEN)
-        target.append(contentZH)
+        // Warning
+        if (releaseMetadata.channel == ReleaseChannel.PREVIEW) {
+            target.append(escapeMarkdownV2(PREVIEW_WARNING_EN)).append('\n')
+            target.append(escapeMarkdownV2(PREVIEW_WARNING_ZH)).append('\n')
+            target.append('\n')
+        }
+        // Content
+        target.append(section(releaseMetadata.notes.en, "EN"))
+        target.append(section(releaseMetadata.notes.zh, "ZH"))
     }
 }
 
-class IMReleaseMarkdown(private val releaseNote: ReleaseNote) : Markdown() {
+class IMReleaseMarkdown(private val releaseMetadata: ReleaseMetadata) : ReleaseMarkdown() {
 
-    private fun section(note: Notes.Note, title: String): String = buildString {
+    private fun section(note: ReleaseMetadata.Notes.Note, title: String): String = buildString {
         appendLine(border(title)).append('\n')
         if (note.highlights.isNotEmpty()) appendLine(makeOrderedList(note.highlights)).append('\n')
         if (note.items.isNotEmpty()) appendLine(makeOrderedList(note.items)).append('\n')
@@ -188,13 +121,11 @@ class IMReleaseMarkdown(private val releaseNote: ReleaseNote) : Markdown() {
 
     override fun write(target: Writer) {
 
-        val title = border("v${releaseNote.version} ${dateString(releaseNote.timestamp)}")
-        val en = section(releaseNote.notes.en, "EN")
-        val zh = section(releaseNote.notes.zh, "ZH")
+        target.append(border("v${releaseMetadata.version} ${dateString(releaseMetadata.timestamp)}"))
+        target.append('\n').append('\n')
 
-        target.append(title).append('\n').append('\n')
-        target.append(en).append('\n')
-        target.append(zh).append('\n')
+        target.append(section(releaseMetadata.notes.en, "EN")).append('\n')
+        target.append(section(releaseMetadata.notes.zh, "ZH")).append('\n')
 
     }
 }

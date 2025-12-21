@@ -4,56 +4,62 @@
 
 package util.phonograph.output
 
-import util.phonograph.jsonParser
-import util.phonograph.output.html.generateHTMLNoteMinify
-import util.phonograph.releasenote.Language
-import util.phonograph.releasenote.ReleaseNote
-import util.phonograph.releasenote.TargetVariant
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
+import util.phonograph.html.generateHTMLNoteMinify
+import util.phonograph.model.Language
+import util.phonograph.model.OutputFormat
+import util.phonograph.model.ReleaseMetadata
+import util.phonograph.model.TargetVariant
+import util.phonograph.model.VersionJson
+import util.phonograph.model.constants.DOWNLOAD_LINK_GITHUB_HOME_LABEL
+import util.phonograph.model.constants.DOWNLOAD_LINK_GITHUB_LEGACY_LABEL
+import util.phonograph.model.constants.DOWNLOAD_LINK_GITHUB_MODERN_LABEL
+import util.phonograph.model.constants.downloadLink
+import util.phonograph.model.constants.releaseLink
+import util.phonograph.utils.jsonParser
 import java.io.File
 import java.io.Writer
 
+class VersionJsonOutput(versionJsonFile: File, private val metadata: ReleaseMetadata) : OutputFormat {
 
-
-private const val MAX_CHANNEL_ITEM = 3
-private const val GITHUB_RELEASE_LINK = "https://github.com/chr56/Phonograph_Plus/releases/tag/%s"
-private const val GITHUB_DOWNLOAD_LINK = "https://github.com/chr56/Phonograph_Plus/releases/download/%s/PhonographPlus_%s_%s.apk"
-
-class VersionJsonOutput(versionJsonFile: File, private val releaseNote: ReleaseNote) : OutputFormat {
+    companion object{
+        const val MAX_JSON_ITEM_COUNT = 3
+    }
 
     private val versionJson: VersionJson = jsonParser.decodeFromString(versionJsonFile.readText())
 
-    private fun ReleaseNote.toVersionJsonItem(): VersionJsonItem =
-        VersionJsonItem(
-            channel = channel.name.lowercase(),
+    private fun ReleaseMetadata.toVersionJsonItem(): VersionJson.Item =
+        VersionJson.Item(
+            channel = channel.favorName.lowercase(),
             versionName = version,
             versionCode = versionCode,
             date = timestamp,
-            link = listOf(
-                VersionJsonItem.Link(
-                    name = "Github Release (Website)",
-                    url = String.format(GITHUB_RELEASE_LINK, tag)
-                ),
-                VersionJsonItem.Link(
-                    name = "Github Release Modern Variant APK (File Download Link)",
-                    url = String.format(GITHUB_DOWNLOAD_LINK, tag, version, variant(TargetVariant.MODERN))
-                ),
-                VersionJsonItem.Link(
-                    name = "Github Release Legacy Variant APK (File Download Link)",
-                    url = String.format(GITHUB_DOWNLOAD_LINK, tag, version, variant(TargetVariant.LEGACY))
-                ),
-            ),
-            releaseNote = VersionJsonItem.ReleaseNote(
+            link = links(),
+            releaseNote = VersionJson.Item.ReleaseNote(
                 zh = generateHTMLNoteMinify(this, Language.ZH),
                 en = generateHTMLNoteMinify(this, Language.EN),
             )
         )
 
+    private fun ReleaseMetadata.links(): List<VersionJson.Item.Link> {
+        return listOf(
+            VersionJson.Item.Link(
+                name = DOWNLOAD_LINK_GITHUB_HOME_LABEL,
+                url = releaseLink(tag)
+            ),
+            VersionJson.Item.Link(
+                name = DOWNLOAD_LINK_GITHUB_MODERN_LABEL,
+                url = downloadLink(tag, version, variant(TargetVariant.MODERN))
+            ),
+            VersionJson.Item.Link(
+                name = DOWNLOAD_LINK_GITHUB_LEGACY_LABEL,
+                url = downloadLink(tag, version, variant(TargetVariant.LEGACY))
+            )
+        )
+    }
+
     private fun updateVersionJson(oldVersionJson: VersionJson): VersionJson {
         // new item
-        val newVersionJsonItem = releaseNote.toVersionJsonItem()
+        val newVersionJsonItem = metadata.toVersionJsonItem()
 
         // with old items
         val allItems = mutableListOf(newVersionJsonItem).also { it.addAll(oldVersionJson.versions) }
@@ -65,7 +71,7 @@ class VersionJsonOutput(versionJsonFile: File, private val releaseNote: ReleaseN
                 .groupBy { it.channel } // group by channel
                 .flatMap { (_, g) ->
                     g.sortedByDescending { it.date }
-                        .take(MAX_CHANNEL_ITEM) // keep every channel up to [MAX_CHANNEL_ITEM]
+                        .take(MAX_JSON_ITEM_COUNT) // keep every channel up to [MAX_CHANNEL_ITEM]
                 }.sortedByDescending { it.date } // sort by time
 
         // create new
@@ -81,42 +87,3 @@ class VersionJsonOutput(versionJsonFile: File, private val releaseNote: ReleaseN
 
 
 }
-
-
-private const val CHANNEL = "channel"
-private const val VERSION_NAME = "versionName"
-private const val VERSION_CODE = "versionCode"
-private const val DATE = "date"
-private const val LINK = "link"
-private const val LINK_NAME = "name"
-private const val LINK_URI = "uri"
-private const val RELEASE_NOTE = "releaseNote"
-private const val ZH_CN = "zh-cn"
-private const val EN = "en"
-
-@Serializable
-private class VersionJsonItem(
-    @SerialName(CHANNEL) val channel: String,
-    @SerialName(VERSION_NAME) val versionName: String,
-    @SerialName(VERSION_CODE) val versionCode: Int,
-    @SerialName(DATE) val date: Long,
-    @SerialName(LINK) val link: List<Link>,
-    @SerialName(RELEASE_NOTE) val releaseNote: ReleaseNote,
-) {
-    @Serializable
-    class Link(
-        @SerialName(LINK_NAME) val name: String,
-        @SerialName(LINK_URI) val url: String,
-    )
-    @Serializable
-    class ReleaseNote(
-        @SerialName(ZH_CN) val zh: String,
-        @SerialName(EN) val en: String,
-    )
-}
-
-@Serializable
-private class VersionJson(
-    @SerialName("versions")
-    val versions: List<VersionJsonItem>,
-)

@@ -1,8 +1,8 @@
 /*
- *  Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2025 chr_56
  */
 
-package util.phonograph.output
+package util.phonograph.model
 
 import java.io.StringWriter
 import java.io.Writer

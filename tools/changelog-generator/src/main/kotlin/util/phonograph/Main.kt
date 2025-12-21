@@ -4,8 +4,10 @@
 
 package util.phonograph
 
-import util.phonograph.output.html.updateChangelogs
-import util.phonograph.releasenote.parseReleaseNoteYaml
+import util.phonograph.html.updateChangelogs
+import util.phonograph.model.ReleaseMetadata
+import util.phonograph.utils.yamlParser
+import kotlinx.serialization.decodeFromString
 import java.io.File
 
 fun main(args: Array<String>) {
@@ -22,8 +24,8 @@ fun process(command: String, parameters: List<String>) {
     if (parameters.size >= 2) {
         val rootPath = parameters[0]
         val sourcePath = parameters[1]
-        println("Parse ReleaseNote ...")
-        val model = parseReleaseNoteYaml(File("$rootPath/$sourcePath"))
+        println("Parse Release Metadata ...")
+        val model = parseReleaseMetadataYaml(File("$rootPath/$sourcePath"))
         println("Process ...")
         when (command) {
             CMD_GENERATE_GITHUB_RELEASE_NOTE -> generateGithubReleaseNote(model, "$rootPath/${parameters[2]}")
@@ -38,6 +40,13 @@ fun process(command: String, parameters: List<String>) {
     } else {
         throw IllegalArgumentException("No Release Note file parameters!")
     }
+}
+
+fun parseReleaseMetadataYaml(file: File): ReleaseMetadata {
+    val text = file.readText()
+    val metadata = yamlParser.decodeFromString<ReleaseMetadata>(text)
+    println(metadata)
+    return metadata
 }
 
 const val CMD_GENERATE_GITHUB_RELEASE_NOTE = "GenerateGithubReleaseNote"

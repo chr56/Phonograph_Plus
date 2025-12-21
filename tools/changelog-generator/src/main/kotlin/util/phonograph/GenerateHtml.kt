@@ -1,13 +1,13 @@
 /*
- * Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2025 chr_56
  */
 
 package util.phonograph
 
-import util.phonograph.output.html.generateHTML
-import util.phonograph.releasenote.ReleaseNote
+import util.phonograph.html.generateHTML
+import util.phonograph.model.ReleaseMetadata
 
-fun generateHtml(model: ReleaseNote) {
+fun generateHtml(model: ReleaseMetadata) {
     val html = generateHTML(model)
     for ((lang, text) in html) {
         println("lang $lang:")

@@ -1,13 +1,8 @@
 /*
- *  Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2025 chr_56
  */
 
-package util.phonograph.output.html
-
-import util.phonograph.releasenote.Language
-import util.phonograph.releasenote.ReleaseChannel
-import util.phonograph.releasenote.ReleaseNote
-import java.io.File
+package util.phonograph.html
 
 private const val TAG_LATEST = "<<<LATEST/>>>"
 private const val TAG_PREVIEW_START = "<<<PREVIEW>>>"
@@ -19,10 +14,8 @@ private const val ANCHOR_PREVIEW_START = "<!-- $TAG_PREVIEW_START -->"
 private const val ANCHOR_PREVIEW_END = "<!-- $TAG_PREVIEW_END -->"
 private const val ANCHOR_CURRENT_PREVIEW_START = "<!-- $TAG_CURRENT_PREVIEW_START -->"
 private const val ANCHOR_CURRENT_PREVIEW_END = "<!-- $TAG_CURRENT_PREVIEW_END -->"
-private const val FILE_CHANGELOG_DEFAULT = "changelog.html"
-private const val FILE_CHANGELOG_ZH = "changelog-ZH-CN.html"
 
-class ChangelogHTML(
+class ChangelogsHTML(
     val lines: MutableList<String>,
 ) {
     var indexPreviewStart: Int = -1
@@ -136,56 +129,10 @@ class ChangelogHTML(
     fun output(): String = lines.joinToString(separator = "\n")
 
     companion object {
-        fun parse(fullChangelog: String): ChangelogHTML {
+        fun parse(fullChangelog: String): ChangelogsHTML {
             val lines: Sequence<String> = fullChangelog.lineSequence()
-            return ChangelogHTML(lines.toMutableList()).also { it.updateIndexes() }
+            return ChangelogsHTML(lines.toMutableList()).also { it.updateIndexes() }
         }
     }
 }
 
-fun updateStableChangelog(changelogsDir: File, lang: Language, releaseNote: String) {
-    updateChangelog(changelogFile(changelogsDir, lang)) { changelogHTML ->
-        changelogHTML.clearPreviewChangelog()
-        changelogHTML.insertLatestChangelog(releaseNote.lines())
-    }
-}
-
-fun updatePreviewChangelog(changelogsDir: File, lang: Language, releaseNote: String) {
-    updateChangelog(changelogFile(changelogsDir, lang)) { changelogHTML ->
-        changelogHTML.insertPreviewChangelog(releaseNote.lines())
-    }
-}
-
-private inline fun updateChangelog(file: File, block: (ChangelogHTML) -> Unit) {
-    require(file.exists() && file.isFile)
-    val fullChangelog = file.readText()
-    val html = ChangelogHTML.parse(fullChangelog)
-    block(html)
-    file.outputStream().use { fileOutputStream ->
-        fileOutputStream.writer().use {
-            it.write(html.output())
-            it.flush()
-        }
-    }
-}
-
-private fun changelogFile(changelogsDir: File, lang: Language): File =
-    when (lang) {
-        Language.EN -> File(changelogsDir, FILE_CHANGELOG_DEFAULT)
-        Language.ZH -> File(changelogsDir, FILE_CHANGELOG_ZH)
-    }
-
-fun updateChangelogs(model: ReleaseNote, changelogsDir: File) {
-    require(changelogsDir.exists() && changelogsDir.isDirectory)
-
-    val notes = generateHTML(model)
-
-    for ((lang, note) in notes) {
-        when (model.channel) {
-            ReleaseChannel.PREVIEW -> updatePreviewChangelog(changelogsDir, lang, note)
-            ReleaseChannel.STABLE  -> updateStableChangelog(changelogsDir, lang, note)
-            ReleaseChannel.LTS     -> updateStableChangelog(changelogsDir, lang, note)
-        }
-    }
-
-}
