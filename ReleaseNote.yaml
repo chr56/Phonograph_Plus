@@ -1,14 +1,22 @@
-version: "1.11.3-dev0"
+version: "1.11.3-dev1"
 channel: "PREVIEW"
 versionCode: 1113
-timestamp: 0
+timestamp: 1766300000
 notes:
   en:
     items:
+      - "Fix: incompleted switching when manually switching theme"
+      - "Improve: slightly accelerate loading speed"
+      - "Improve: add hint and options for Scan Media action"
+      - "Modify: forbid upgrading from prior to v1.8.2 & warn upgrading from prior to v1.9.3"
       - "Development: build with SDK 36, update dependencies"
 
   zh:
     items:
+      - "修复 手动切换主题时切换不完整"
+      - "改进 稍微加快加载速度"
+      - "改进 为“扫描媒体”操作添加提示与选项"
+      - "修改 禁止从 v1.8.2 之前的版本升级, 警告从 v1.9.3 之前的版本升级"
       - "开发 使用 SDK 36 构建, 更新依赖"
 
 previousVersion: "1.11.2"
