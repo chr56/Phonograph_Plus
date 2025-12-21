@@ -56,7 +56,7 @@ abstract class Markdown : OutputFormat {
             "此为预览通道版本 (包名后缀`preview`), 不保证可靠性!"
 
         private const val PREVIEW_WARNING_EN_ESCAPED =
-            "This is a _Preview Channel_ Release \\(identified by `preview` suffix in the package name\\)\\, stability and quality are not guaranteed.\\."
+            "This is a _Preview Channel_ Release \\(identified by `preview` suffix in the package name\\)\\, stability and quality are not guaranteed\\."
         private const val PREVIEW_WARNING_ZH_ESCAPED =
             "此为预览通道版本 \\(包名后缀`preview`\\), 不保证可靠性\\!"
 
