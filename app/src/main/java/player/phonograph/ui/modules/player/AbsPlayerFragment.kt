@@ -71,10 +71,15 @@ import android.view.ViewGroup
 import kotlin.math.max
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 abstract class AbsPlayerFragment :
-        AbsMusicServiceFragment(), UnarySlidingUpPanelProvider, SlidingUpPanelLayout.PanelSlideListener {
+        AbsMusicServiceFragment(),
+        UnarySlidingUpPanelProvider,
+        View.OnLayoutChangeListener,
+        SlidingUpPanelLayout.PanelSlideListener {
 
     companion object {
         const val ARGUMENT_STYLE = "player_style"
@@ -134,9 +139,12 @@ abstract class AbsPlayerFragment :
         slidingUpPanel?.addPanelSlideListener(this)
         initToolbar()
         observeState()
+        view.addOnLayoutChangeListener(this)
     }
 
     override fun onDestroyView() {
+        requireView().removeOnLayoutChangeListener(this)
+        onLayoutChangedEffect.value = -1
         favoriteMenuItem = null
         lyricsMenuItem = null
         currentAnimatorSet?.cancel()
@@ -147,6 +155,16 @@ abstract class AbsPlayerFragment :
         super.onDestroy()
         favoritesEventReceiver.unregisterSelf(requireContext())
     }
+
+    protected val onLayoutChangedEffect: MutableStateFlow<Int> = MutableStateFlow(-1)
+    override fun onLayoutChange(
+        v: View?,
+        left: Int, top: Int, right: Int, bottom: Int,
+        oldLeft: Int, oldTop: Int, oldRight: Int, oldBottom: Int,
+    ) {
+        onLayoutChangedEffect.update { it + 1 }
+    }
+
     //region Toolbar
     private var lyricsMenuItem: MenuItem? = null
     private var favoriteMenuItem: MenuItem? = null

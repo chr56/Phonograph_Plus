@@ -23,13 +23,11 @@ import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import android.graphics.Point
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
-import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import kotlin.math.max
 import kotlinx.coroutines.launch
 
@@ -67,24 +65,18 @@ class CardPlayerFragment : AbsPlayerFragment() {
         super.onViewCreated(view, savedInstanceState)
         impl.init()
 
-        view.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                if (_viewBinding == null) return // for somehow, especially settings changed, view is still not ready
-                view.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                impl.applyWindowInsect()
-                fixPanelNestedScrolling()
-            }
-        })
-
-        view.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                lifecycleScope.launch {
-                    lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+        lifecycleScope.launch {
+            onLayoutChangedEffect.collect { count ->
+                if (count >= 0 && _viewBinding != null) {
+                    if (count == 0) {
+                        impl.applyWindowInsect()
+                        fixPanelNestedScrolling()
+                    } else {
                         impl.adjustHeight()
                     }
                 }
             }
-        })
+        }
 
         // for some reason the xml attribute doesn't get applied here.
         viewBinding.playingQueueCard.setCardBackgroundColor(themeCardBackgroundColor(requireContext()))
