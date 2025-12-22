@@ -5,6 +5,7 @@
 package player.phonograph.ui.dialogs
 
 import player.phonograph.R
+import player.phonograph.foundation.Reboot
 import player.phonograph.foundation.error.warning
 import player.phonograph.mechanism.backup.Backup
 import player.phonograph.settings.PrerequisiteSetting
@@ -60,7 +61,7 @@ class BackupImportDialog : ComposeViewDialogFragment() {
                         R.string.action_import,
                         stringResource(R.string.label_backup)
                     ),
-                    navigationButtonIcon= rememberVectorPainter(Icons.Default.Close),
+                    navigationButtonIcon = rememberVectorPainter(Icons.Default.Close),
                     onDismissRequest = ::dismiss,
                     actions = listOf(
                         ActionItem(
@@ -133,7 +134,9 @@ class BackupImportDialog : ComposeViewDialogFragment() {
                 AlertDialog.Builder(host)
                     .setTitle(R.string.label_backup)
                     .setMessage(host.getString(if (result) R.string.state_completed else R.string.failed))
-                    .setPositiveButton(android.R.string.ok) { _, _ -> }
+                    .setPositiveButton(android.R.string.ok) { _, _ ->
+                        if (result) Reboot.reboot(host)
+                    }
                     .create().tintButtons().show()
 
                 this@BackupImportDialog.dismiss()
