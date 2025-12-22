@@ -172,9 +172,12 @@ class CardPlayerFragment : AbsPlayerFragment() {
     }
 
     private class PortraitImpl(val fragment: CardPlayerFragment) : CardImpl {
-        override fun init() {}
+        private lateinit var panelHeightAdjuster: QueuePanelHeightAdjuster
+        override fun init() {
+            panelHeightAdjuster = QueuePanelHeightAdjuster(fragment.resources)
+        }
 
-        override fun adjustHeight() {
+        override fun applyWindowInsect() {
             with(fragment) {
                 val statusBar = viewBinding.statusBarPadding
                 if (statusBar != null) {
@@ -189,21 +192,13 @@ class CardPlayerFragment : AbsPlayerFragment() {
             }
         }
 
-        override fun applyWindowInsect() {
+        override fun adjustHeight() {
             with(fragment) {
-                val queueSlidingLayout: SlidingUpPanelLayout = viewBinding.playerSlidingLayout
-                val basicPlayer: View = viewBinding.coverContainer
-
-                val availablePanelHeight = queueSlidingLayout.height - basicPlayer.height
-                val minPanelHeight = resources.getDimensionPixelSize(R.dimen.player_queue_panel_height_min)
-
-                if (availablePanelHeight < minPanelHeight) {
-                    // shrink AlbumCover
-                    val albumCoverContainer = viewBinding.playerAlbumCoverFragment
-                    val albumCoverHeight = albumCoverContainer.height - (minPanelHeight - availablePanelHeight)
-                    albumCoverContainer.layoutParams.height = albumCoverHeight
-                }
-                queueSlidingLayout.panelHeight = max(minPanelHeight, availablePanelHeight)
+                panelHeightAdjuster.adjust(
+                    basicPlayer = viewBinding.coverContainer,
+                    queuePanel = viewBinding.playerSlidingLayout,
+                    albumCoverContainer = viewBinding.playerAlbumCoverFragment,
+                )
             }
         }
     }
