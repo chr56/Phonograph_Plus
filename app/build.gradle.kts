@@ -101,6 +101,14 @@ android {
 
             isDefault = true
         }
+        // Early Access Preview / Next Generation Preview release
+        create("next") {
+            dimension = "channel"
+            matchingFallbacks.add("stable")
+
+            resValue("string", "app_name", "$appName EAP")
+            applicationIdSuffix = ".eap"
+        }
         // F-droid special variant, base on Stable, for reproducibility
         create("fdroid") {
             dimension = "channel"
