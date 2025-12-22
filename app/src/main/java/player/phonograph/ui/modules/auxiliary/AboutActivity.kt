@@ -14,7 +14,7 @@ import player.phonograph.ui.dialogs.ChangelogDialog
 import player.phonograph.ui.dialogs.DebugDialog
 import player.phonograph.ui.dialogs.ReportIssueDialog
 import player.phonograph.ui.dialogs.UpgradeInfoDialog
-import player.phonograph.util.currentChannel
+import player.phonograph.util.currentReleaseChannel
 import player.phonograph.util.currentVariant
 import player.phonograph.util.currentVersionName
 import player.phonograph.util.gitRevisionHash
@@ -186,7 +186,7 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
                         if (upgradable) {
                             UpgradeInfoDialog.create(versionCatalog).show(supportFragmentManager, "UPGRADE_DIALOG")
                             val ignored = Setting(App.instance)[Keys.ignoreUpgradeDate].data
-                            val current = versionCatalog.latest(currentChannel)?.date ?: 0
+                            val current = versionCatalog.latest(currentReleaseChannel)?.date ?: 0
                             if (ignored >= current) {
                                 toast(getString(R.string.msg_ignored_update))
                             }

@@ -14,7 +14,6 @@ import player.phonograph.UpdateConfig.DOMAIN_TG_LINK
 import player.phonograph.UpdateConfig.GITHUB_REPO
 import player.phonograph.foundation.compat.parcelable
 import player.phonograph.mechanism.canAccessGitHub
-import player.phonograph.model.version.ReleaseChannel
 import player.phonograph.model.version.Version
 import player.phonograph.model.version.VersionCatalog
 import player.phonograph.settings.Keys
@@ -22,7 +21,7 @@ import player.phonograph.settings.Setting
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.TempPopupContent
-import player.phonograph.util.currentChannel
+import player.phonograph.util.currentReleaseChannel
 import player.phonograph.util.currentVariant
 import player.phonograph.util.text.dateText
 import player.phonograph.util.theme.accentColoredButtonStyle
@@ -129,10 +128,10 @@ private fun MainContent(versionCatalog: VersionCatalog, dismiss: () -> Unit) {
                     .padding(16.dp)
                     .verticalScroll(rememberScrollState())
             ) {
-                val currentChannel = remember { currentChannel }
+                val currentChannel = remember { currentReleaseChannel }
                 for (version in versionCatalog.versions) {
                     Card(modifier = Modifier.padding(vertical = 8.dp), elevation = 2.dp) {
-                        Version(version, currentChannel.determiner == version.channel)
+                        Version(version, highlight = currentChannel == version.channel)
                     }
                 }
             }
@@ -191,13 +190,13 @@ private fun VersionTitle(version: Version, highlight: Boolean = false, modifier:
 }
 
 private fun channelColor(channel: String) =
-    Color(
-        when (channel.lowercase()) {
-            ReleaseChannel.Stable.determiner -> MaterialColor.Blue._A200.asColor
-            ReleaseChannel.Preview.determiner -> MaterialColor.DeepOrange._A200.asColor
-            ReleaseChannel.LTS.determiner -> MaterialColor.Lime._A700.asColor
-            else -> MaterialColor.BlueGrey._700.asColor
-        }
+    Color(channelColors.getOrDefault(channel, MaterialColor.BlueGrey._700.asColor))
+
+private val channelColors: Map<String, Int>
+    get() = mapOf(
+        "stable" to MaterialColor.Blue._A200.asColor,
+        "preview" to MaterialColor.DeepOrange._A200.asColor,
+        "lts" to MaterialColor.Lime._A700.asColor,
     )
 
 @Composable
@@ -275,7 +274,7 @@ private fun VersionPopupContent(version: Version, dismissPopup: () -> Unit) {
 }
 
 private fun actionIgnore(context: Context, versionCatalog: VersionCatalog) {
-    val current = versionCatalog.latest(currentChannel)
+    val current = versionCatalog.latest(currentReleaseChannel)
     if (current != null) {
         Setting(context)[Keys.ignoreUpgradeDate].data = current.date
         Toast.makeText(context, R.string.msg_ignored_update, Toast.LENGTH_SHORT).show()

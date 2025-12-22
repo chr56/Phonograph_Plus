@@ -19,9 +19,9 @@ class VersionCatalog(
 
     fun filter(selector: (Version) -> Boolean): List<Version> = versions.filter(selector)
 
-    fun filter(channel: ReleaseChannel): List<Version> = filter { version -> version.channel == channel.determiner }
+    fun filter(channel: String): List<Version> = filter { version -> version.channel == channel }
 
     val latest: Version? get() = versions.maxByOrNull { version -> version.versionCode }
 
-    fun latest(channel: ReleaseChannel): Version? = filter(channel).maxByOrNull { it.date }
+    fun latest(channel: String): Version? = filter(channel).maxByOrNull { it.date }
 }

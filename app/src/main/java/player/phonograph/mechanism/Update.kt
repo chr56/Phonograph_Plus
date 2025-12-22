@@ -18,7 +18,7 @@ import player.phonograph.model.version.VersionCatalog
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.util.NetworkUtil.invokeRequest
-import player.phonograph.util.currentChannel
+import player.phonograph.util.currentReleaseChannel
 import player.phonograph.util.debug
 import player.phonograph.util.text.dateText
 import android.content.Context
@@ -60,7 +60,7 @@ object Update {
         handlerIntent: Intent,
     ) {
         val version =
-            catalog.versions.filter { it.channel == currentChannel.determiner }.maxByOrNull { it.versionCode } ?: return
+            catalog.versions.filter { it.channel == currentReleaseChannel }.maxByOrNull { it.versionCode } ?: return
 
         val title = version.versionName
         val note = version.releaseNote.parsed(context.resources)
@@ -176,7 +176,7 @@ private fun checkUpgradable(versionCatalog: VersionCatalog, force: Boolean): Boo
     }
 
     // filter current channel & latest
-    val latestVersion = versionCatalog.latest(currentChannel) ?: versionCatalog.latest
+    val latestVersion = versionCatalog.latest(currentReleaseChannel) ?: versionCatalog.latest
     if (latestVersion == null) {
         Log.e(TAG, "Empty VersionCatalog: $versionCatalog")
         return false
