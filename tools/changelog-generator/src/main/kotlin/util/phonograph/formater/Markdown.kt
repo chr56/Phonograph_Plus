@@ -32,7 +32,7 @@ abstract class MarkdownFormater {
      * Escapes MarkdownV2 characters
      */
     protected fun escapeMarkdownV2(origin: String): String =
-        Regex("""([\[\]()\#\+\-=|\.!])""").replace(origin) { "\\\\${it.value}" }
+        Regex("""([\[\]()\#\+\-=|\.!])""").replace(origin) { "\\${it.value}" }
 
     /**
      * Only for Github
