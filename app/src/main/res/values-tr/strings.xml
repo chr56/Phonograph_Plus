@@ -245,12 +245,6 @@
     <string name="err_failed_to_delete">Silinemedi</string>
     <string name="err_no_storage_write_permission">Phonograph\'ın bu dosyaları değiştirme veya silme yetkisi yok!</string>
     <string name="err_permission_manage_external_storage_denied">Phonograph\'ın harici depolamaya erişimi yok gibi gözüküyor.</string>
-    <string name="notification_playing_name">Çalma bildirimi</string>
-    <string name="notification_playing_description">Çalma bildirimi, başlat/duraklat vb. işlemleri sağlar</string>
-    <string name="notification_update_name">Yükselt</string>
-    <string name="notification_update_description">Uygulama bildirimleri değiştirilebilir.</string>
-    <string name="notification_error_name">Hata Raporları</string>
-    <string name="notification_background_name">Arkaplan İşlemi</string>
     <string name="app_widget_big_name">Phonograph - Büyük</string>
     <string name="app_widget_classic_name">Phonograph - Klasik</string>
     <string name="app_widget_small_name">Phonograph - Küçük</string>
@@ -313,7 +307,6 @@
     <string name="pref_title_synchronized_lyrics_show">Senkronize şarkı sözlerini göster</string>
     <string name="pref_title_use_legacy_favorite_playlist_impl">Eski favori oynatma listesi sistemini kullan</string>
     <string name="pref_title_use_legacy_status_bar_lyrics_api">Eski StatusBar Lyrics API\'ını kullan</string>
-    <string name="perf_title_fixed_tab_layout">Bütün sekmeleri sabitle</string>
     <string name="pref_summary_audio_ducking">Bildirimler, gezinme vb.</string>
     <string name="pref_summary_broadcast_current_player_state">Oynatıcının anlık durumunu Musixmatch gibi uygulamalara yayınla.</string>
     <string name="pref_summary_classic_notification">Klasik bildirim tasarımını kullan.</string>
@@ -323,7 +316,6 @@
     <string name="pref_summary_colored_notification">Bildirimi albüm kapağındaki canlı renklerle renklendirir.</string>
     <string name="pref_summary_display_lyrics_time_axis">Senkronize lirik süre başlangıcını lirik menüsünde göster.</string>
     <string name="pref_summary_enable_monet">\"Material You\" temelli duvarkağıdı tema sistemi kullan. (deneysel, tam Material You desteği yok)</string>
-    <string name="pref_summary_fixed_tab_layout">Yukarıdaki sekmeler kaydırılabilir olmayacak, ancak boşluk olmadan bölünebilecekler.</string>
     <string name="pref_summary_gapless_playback">Bazı cihazlarda oynatma sorunlarına neden olabilir.</string>
     <string name="pref_summary_library_categories">Kitaplık kategorilerinin görünürlüğünü ve sırasını yapılandırma.</string>
     <string name="pref_summary_preload_images">Görselleri uygulamayı hızlandırmak ve gecikmelerden kaçınmak için önyükle. Bu seçenek daha fazla geçici bellek kullanımı ile sonuçlanabilir.</string>
