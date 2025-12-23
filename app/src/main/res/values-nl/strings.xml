@@ -142,10 +142,6 @@
     <string name="err_permissions_denied">Machtiging geweigerd.</string>
     <string name="err_permission_external_storage_denied">Toegang tot externe opslag geweigerd.</string>
     <string name="err_could_not_scan_files">Kan %d bestanden niet scannen.</string>
-    <string name="notification_playing_name">Afspeelmelding</string>
-    <string name="notification_playing_description">De afspeelmelding biedt acties voor afspelen/pauzeren etc.</string>
-    <string name="notification_error_name">Foutmeldingen</string>
-    <string name="notification_background_name">Achtergrond Werk</string>
     <string name="app_widget_big_name">Phonograph - Groot</string>
     <string name="app_widget_classic_name">Phonograph - Klassiek</string>
     <string name="app_widget_small_name">Phonograph - Klein</string>
@@ -189,13 +185,11 @@
     <string name="pref_title_remember_last_tab">Laatste tabblad onthouden</string>
     <string name="pref_title_remember_shuffle">Onthoud shuffle</string>
     <string name="pref_title_synchronized_lyrics_show">Gesynchr. songtekst weergeven</string>
-    <string name="perf_title_fixed_tab_layout">Alle tabbladen vastzetten</string>
     <string name="pref_summary_audio_ducking">Notificaties, navigatie, etc.</string>
     <string name="pref_summary_classic_notification">Gebruik de klassieke meldingsweergave.</string>
     <string name="pref_summary_colored_app_shortcuts">Kleurt de app-snelkoppelingen in de primaire kleur.</string>
     <string name="pref_summary_colored_navigation_bar">Kleurt de navigatiebalk in de primaire kleur.</string>
     <string name="pref_summary_colored_notification">Kleurt de melding met het palet van de albumhoes.</string>
-    <string name="pref_summary_fixed_tab_layout">De tabbladen bovenin zullen niet bladerbaar zijn, ze krijgen een titel zonder enige marge.</string>
     <string name="pref_summary_gapless_playback">Verwijdert de pauzes tussen nummers. Dit kan afspeelfouten veroorzaken.</string>
     <string name="pref_summary_library_categories">Configureer de zichtbaarheid en volgorde van categorieën</string>
     <string name="pref_summary_playlist_files_operation_behaviour">Gedrag over hoe afspeellijst bestanden te bedienen tijdens het maken, wijzigen etc. voor bestandsafspeellijsten.</string>
