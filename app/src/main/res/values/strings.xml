@@ -307,7 +307,7 @@
     <string name="notification_update_name">App Updates</string>
     <string name="notification_update_description">Notifications about available app updates.</string>
     <string name="notification_error_name">Internal Error Reports</string>
-    <string name="notification_error_description">Notifications to view error reports after non-fetal internal errors occur.</string>
+    <string name="notification_error_description">Notifications to view error reports after non-fatal internal errors occur.</string>
     <string name="notification_background_name">Background Tasks</string>
     <string name="notification_background_description">Notifications about ongoing tasks running in the background.</string>
     <string name="notification_database_name">Database Sync</string>
