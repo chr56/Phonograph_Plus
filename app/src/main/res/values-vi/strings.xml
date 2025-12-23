@@ -133,8 +133,6 @@
     <string name="err_permissions_denied">Quyền hạn bị từ chối.</string>
     <string name="err_permission_external_storage_denied">Quyền truy cập lưu trữ bên ngoài bị từ chối.</string>
     <string name="err_could_not_scan_files">Không thể quét %d tập tin.</string>
-    <string name="notification_playing_name">Thông báo đang phát</string>
-    <string name="notification_playing_description">Thông báo đang phát cung cấp các hành động để phát / tạm dừng vv.</string>
     <string name="app_widget_big_name">Phonograph - Lớn</string>
     <string name="app_widget_classic_name">Phonograph - Cổ điển</string>
     <string name="app_widget_small_name">Phonograph - Nhỏ</string>
