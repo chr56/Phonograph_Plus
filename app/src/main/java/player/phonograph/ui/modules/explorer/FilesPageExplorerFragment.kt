@@ -20,6 +20,7 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
+import kotlinx.coroutines.Job
 
 class FilesPageExplorerFragment : AbsFilesExplorerFragment() {
 
@@ -56,6 +57,8 @@ class FilesPageExplorerFragment : AbsFilesExplorerFragment() {
     private lateinit var bottomViewWindowInsetsController: BottomViewWindowInsetsController
     //endregion
 
+    private var jobs = mutableListOf<Job>()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -63,15 +66,21 @@ class FilesPageExplorerFragment : AbsFilesExplorerFragment() {
         observe(panelViewModel.isPanelHidden) { hidden -> bottomViewWindowInsetsController.enabled = hidden }
 
         SettingObserver(view.context, lifecycleScope).apply {
-            collect(Keys.showFileImages) { value ->
+            jobs += collect(Keys.showFileImages) { value ->
                 (adapter.presenter as? FileItemPresenter)?.loadCover = value
                 @SuppressLint("NotifyDataSetChanged")
                 adapter.notifyDataSetChanged()
             }
-            collect(Keys.useLegacyListFilesImpl) { value ->
+            jobs += collect(Keys.useLegacyListFilesImpl) { value ->
                 model.optionUseLegacyListFile = value
             }
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        for (it in jobs) {
+            it.cancel()
+        }
+    }
 }

@@ -8,6 +8,7 @@ import android.content.Context
 import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -22,10 +23,8 @@ class SettingObserver(
         key: PreferenceKey<T>,
         coroutineContext: CoroutineContext = SupervisorJob(),
         collector: FlowCollector<T>,
-    ) {
-        coroutineScope.launch(coroutineContext) {
-            setting[key].flow.distinctUntilChanged().collect(collector)
-        }
+    ): Job = coroutineScope.launch(coroutineContext) {
+        setting[key].flow.distinctUntilChanged().collect(collector)
     }
 
     fun <T> blocking(key: PreferenceKey<T>): T = setting[key].data

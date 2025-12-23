@@ -14,8 +14,6 @@ import player.phonograph.databinding.FragmentHomeBinding
 import player.phonograph.foundation.error.warning
 import player.phonograph.model.pages.Pages
 import player.phonograph.model.pages.PagesConfig
-import player.phonograph.settings.Keys
-import player.phonograph.settings.SettingObserver
 import player.phonograph.ui.modules.main.pages.AbsPage
 import player.phonograph.ui.modules.main.pages.AlbumPage
 import player.phonograph.ui.modules.main.pages.ArtistPage
@@ -44,7 +42,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.withStarted
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
@@ -84,6 +81,18 @@ class MainFragment : Fragment() {
 
         setupToolbar()
 
+        observe(drawerViewModel.fixedTabLayout) { fixedTabLayout ->
+            binding.tabs.tabMode = if (fixedTabLayout) TabLayout.MODE_FIXED else TabLayout.MODE_SCROLLABLE
+        }
+        observe(drawerViewModel.pages) { pagesConfig ->
+            if (pagesConfig != null) {
+                loadPages(
+                    pagesConfig,
+                    if (drawerViewModel.rememberLastTab.value) drawerViewModel.lastPage.value else -1
+                )
+            }
+        }
+
         binding.pager.registerOnPageChangeCallback(pageChangeListener)
 
         debug { logMetrics("MainFragment.onViewCreated()") }
@@ -94,33 +103,6 @@ class MainFragment : Fragment() {
         binding.pager.unregisterOnPageChangeCallback(pageChangeListener)
         _viewBinding = null
     }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        readSettings()
-    }
-
-    //region Settings
-    private fun readSettings() {
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                val settingObserver = SettingObserver(requireContext(), lifecycleScope)
-                settingObserver.collect(Keys.homeTabConfig) { pagesConfig ->
-                    val rememberLastTab = settingObserver.blocking(Keys.rememberLastTab)
-                    val lastPage = settingObserver.blocking(Keys.lastPage)
-                    withStarted {
-                        loadPages(pagesConfig, if (rememberLastTab) lastPage else -1)
-                    }
-                }
-                settingObserver.collect(Keys.fixedTabLayout) { fixedTabLayout ->
-                    withStarted {
-                        binding.tabs.tabMode = if (fixedTabLayout) TabLayout.MODE_FIXED else TabLayout.MODE_SCROLLABLE
-                    }
-                }
-            }
-        }
-    }
-    //endregion
 
     //region Toolbar
 
@@ -185,7 +167,7 @@ class MainFragment : Fragment() {
 
         setupViewPager(pagesConfig)
         binding.pager.setCurrentItem(targetPosition, false)
-        drawerViewModel.switchPageTo(targetPosition)
+        drawerViewModel.switchPageTo(requireContext(), targetPosition)
     }
 
     private fun setupViewPager(homeTabConfig: PagesConfig) {
@@ -216,7 +198,7 @@ class MainFragment : Fragment() {
 
     private val pageChangeListener = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
-            drawerViewModel.switchPageTo(position)
+            drawerViewModel.switchPageTo(requireContext(), position)
         }
     }
     //endregion

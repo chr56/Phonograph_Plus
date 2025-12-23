@@ -18,11 +18,11 @@ import player.phonograph.foundation.error.warning
 import player.phonograph.mechanism.PhonographShortcutManager
 import player.phonograph.mechanism.Update
 import player.phonograph.model.Song
+import player.phonograph.model.pages.PagesConfig
 import player.phonograph.model.version.VersionCatalog
 import player.phonograph.settings.Keys
 import player.phonograph.settings.PrerequisiteSetting
 import player.phonograph.settings.Setting
-import player.phonograph.settings.SettingObserver
 import player.phonograph.ui.dialogs.ChangelogDialog
 import player.phonograph.ui.dialogs.UpgradeInfoDialog
 import player.phonograph.ui.modules.explorer.PathSelectorContractTool
@@ -43,7 +43,6 @@ import androidx.activity.viewModels
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.drawerlayout.widget.DrawerLayout.SimpleDrawerListener
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.withStarted
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -84,12 +83,20 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
         )
 
         if (savedInstanceState == null) {
+            drawerViewModel.observeSettings(this)
+
             supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, MainFragment.newInstance(), "home")
                 .commit()
         }
 
-        setUpDrawer()
+
+        lifecycleScope.launch {
+            drawerViewModel.pages.collect { pagesConfig ->
+                setUpDrawer(pagesConfig)
+            }
+        }
+
 
         Handler(Looper.getMainLooper()).postDelayed(
             {
@@ -97,22 +104,8 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                 if (showUpgradeDialog) {
                     showUpgradeDialog(intent.parcelableExtra(VERSION_INFO) as? VersionCatalog)
                 }
-                SettingObserver(this, lifecycleScope).collect(Keys.homeTabConfig, Dispatchers.Main) { pagesConfig ->
-                    withStarted {
-                        setupDrawerMenu(
-                            activity = this@MainActivity,
-                            menu = drawerBinding.navigationView.menu,
-                            switchPageTo = { drawerViewModel.switchPageTo(it) },
-                            closeDrawer = { drawerBinding.drawerLayout.closeDrawers() },
-                            pagesConfig = pagesConfig
-                        )
-                    }
-                }
             }, 900
         )
-
-        observe(queueViewModel.currentSong) { song -> updateNavigationDrawerHeader(song) }
-        observe(drawerViewModel.selectedPage) { page -> drawerBinding.navigationView.setCheckedItem(1000 + page) }
 
         lifecycleScope.launch(Dispatchers.Default) { latelySetup() }
         debug { logMetrics("MainActivity.onCreate()") }
@@ -131,15 +124,15 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
         return drawerBinding.root
     }
 
-    private fun setUpDrawer() {
+    private fun setUpDrawer(pagesConfig: PagesConfig?) {
 
         // Preparation
         setupDrawerMenu(
             activity = this@MainActivity,
             menu = drawerBinding.navigationView.menu,
-            switchPageTo = { drawerViewModel.switchPageTo(it) },
+            switchPageTo = { drawerViewModel.switchPageTo(this@MainActivity, it) },
             closeDrawer = { drawerBinding.drawerLayout.closeDrawers() },
-            pagesConfig = null
+            pagesConfig = pagesConfig
         )
 
         // color
@@ -159,6 +152,10 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                 drawerBackPressedCallback.remove()
             }
         })
+
+        // States
+        observe(queueViewModel.currentSong) { song -> updateNavigationDrawerHeader(song) }
+        observe(drawerViewModel.selectedPage) { page -> drawerBinding.navigationView.setCheckedItem(1000 + page) }
     }
 
     private val drawerBackPressedCallback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
@@ -225,7 +222,11 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
 
     private fun checkUpdate() {
         if (!PrerequisiteSetting.instance(this).introShown) {
-            warning(this, TAG, "Upgrade check was blocked, because AppIntro not shown (auto check requires user opt-in)!")
+            warning(
+                this,
+                TAG,
+                "Upgrade check was blocked, because AppIntro not shown (auto check requires user opt-in)!"
+            )
             return
         }
         lifecycleScope.launch(SupervisorJob()) {
