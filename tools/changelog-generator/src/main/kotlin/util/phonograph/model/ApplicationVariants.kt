@@ -16,6 +16,7 @@ enum class TargetVariant(val favorName: String) {
 
 @Serializable
 enum class ReleaseChannel(val favorName: String, val tagPrefix: String, val isPreview: Boolean = false) {
+    EAP("Next", "eap_", isPreview = true),
     PREVIEW("Preview", "preview_", isPreview = true),
     STABLE("Stable", "v"),
     LTS("Stable", "v"),

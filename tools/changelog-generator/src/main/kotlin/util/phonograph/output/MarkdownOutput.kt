@@ -11,6 +11,8 @@ import util.phonograph.model.ReleaseMetadata
 import util.phonograph.model.TargetVariant
 import util.phonograph.model.constants.COMMIT_LOG_PREFIX
 import util.phonograph.model.constants.DOWNLOAD_LINK_TEMPLATE
+import util.phonograph.model.constants.EAP_WARNING_EN
+import util.phonograph.model.constants.EAP_WARNING_ZH
 import util.phonograph.model.constants.PREVIEW_WARNING_EN
 import util.phonograph.model.constants.PREVIEW_WARNING_ZH
 import util.phonograph.model.constants.VARIANTS_DESCRIPTION_BODY
@@ -38,6 +40,10 @@ class GitHubReleaseMarkdown(private val metadata: ReleaseMetadata) : ReleaseMark
         when (channel) {
             ReleaseChannel.PREVIEW -> githubAlertBox(
                 "$PREVIEW_WARNING_EN\n$PREVIEW_WARNING_ZH", AlertType.Important
+            )
+
+            ReleaseChannel.EAP     -> githubAlertBox(
+                "$EAP_WARNING_EN\n$EAP_WARNING_ZH", AlertType.Warning
             )
 
             else                   -> null
@@ -108,6 +114,12 @@ class EscapedMarkdown(private val metadata: ReleaseMetadata) : ReleaseMarkdown()
                 append(escapeMarkdownV2(PREVIEW_WARNING_EN)).append('\n')
                 append(escapeMarkdownV2(PREVIEW_WARNING_ZH)).append('\n')
             }
+
+            ReleaseChannel.EAP     -> buildString {
+                append(escapeMarkdownV2(EAP_WARNING_EN)).append('\n')
+                append(escapeMarkdownV2(EAP_WARNING_ZH)).append('\n')
+            }
+
             else                   -> null
         }
 
