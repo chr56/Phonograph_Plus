@@ -1,0 +1,183 @@
+name: eap_release
+on:
+  push:
+    tags:
+      - "eap_*"
+    paths-ignore:
+      - '.github/**'
+
+jobs:
+
+  build:
+    name: Build
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        PRODUCT_VARIANT: [ ModernNextRelease, LegacyNextRelease ]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'adopt'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Generate Sign Config
+        env:
+          SECRETS_KEY: ${{ secrets.KEY }}
+          SECRETS_STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+          SECRETS_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          SECRETS_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEYSTORE_FILE: ${{ github.workspace }}/key.jdk
+          CONFIG_FILE: ${{ github.workspace }}/signing.properties
+        run: |
+          bash ${{ github.workspace }}/scripts/generate_signing_key.sh
+
+      - name: Prepare Gradlew
+        # just download gradle wrapper, start gradle daemon, make actual build logs clean
+        run: |
+          ./gradlew clean
+
+      - name: Build with Gradle
+        run: |
+          ./gradlew assemble${{ matrix.PRODUCT_VARIANT }} --stacktrace
+
+      - name: Collect Files
+        run: |
+          # collect files
+          mkdir products
+          ./gradlew Publish${{ matrix.PRODUCT_VARIANT }} --stacktrace
+          echo "Artifacts:"
+          tree -aF ./products
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Artifacts_${{ matrix.PRODUCT_VARIANT }}
+          path: |
+            products/${{ matrix.PRODUCT_VARIANT }}/*.apk
+            products/${{ matrix.PRODUCT_VARIANT }}/*.sha*
+            products/${{ matrix.PRODUCT_VARIANT }}/PhonographPlus*.txt.gz
+          retention-days: 30
+
+      - name: Clean up
+        run: |
+          rm -r -v ./products/${{ matrix.PRODUCT_VARIANT }}
+
+  changelog:
+    name: Generate Changelogs
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'adopt'
+          cache: gradle
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Grant Execute Permission for Gradlew
+        run:
+          chmod +x gradlew
+
+      - name: Generate Changelog Markdown
+        run: |
+          # Prepare
+          ./gradlew tools:changelog-generator:classes
+          # generate changelog
+          ./gradlew tools:changelog-generator:GenerateGithubReleaseNote
+          ./gradlew tools:changelog-generator:GenerateEscapedMarkdownReleaseNote
+
+      - name: Upload Changelogs
+        uses: actions/upload-artifact@v4
+        with:
+          name: Changelogs
+          path: |
+            GitHubReleaseNote.md
+            EscapedReleaseNote.md
+          retention-days: 1
+
+
+  upload:
+    name: Release & Upload
+    runs-on: ubuntu-22.04
+    needs:
+      - build
+      - changelog
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: products
+          pattern: Artifacts_*
+          merge-multiple: true
+
+      - name: Download Changelogs
+        uses: actions/download-artifact@v4
+        with:
+          pattern: Changelogs
+          merge-multiple: true
+
+      - name: Check Files
+        run: |
+          tree -aF ./products
+          ls | grep ReleaseNote
+
+      - name: Release New Version
+        uses: softprops/action-gh-release@v2
+        id: release_github
+        if: startsWith(github.ref, 'refs/tags/eap_')
+        with:
+          name: ${{ github.ref_name }}
+          files: |
+            products/PhonographPlus_*.apk
+            products/PhonographPlus_*.apk.sha1
+            products/PhonographPlus_*.apk.sha256
+            products/PhonographPlus*.txt.gz
+          prerelease: true
+          draft: false
+          tag_name: ${{ github.ref }}
+          body: EAP Release - ${{ github.ref }}
+          body_path: ${{ github.workspace }}/GitHubReleaseNote.md
+          token: ${{ secrets.TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Python Pip Dependencies
+        if: startsWith(github.ref, 'refs/tags/eap_')
+        run: |
+          python -m pip install pyTelegramBotAPI
+
+      - name: Upload Files with Changelogs
+        if: startsWith(github.ref, 'refs/tags/eap_')
+        env:
+          TOKEN: ${{ secrets.TB_TOKEN }}
+          CHAT_ID: ${{ secrets.TG_CHANNEL_CHAT_ID }}
+          VERSION: ${{ github.ref_name }}
+          GIT_COMMIT: ${{ github.sha }}
+          ARTIFACTS: "products"
+        run: |
+          python ${{ github.workspace }}/scripts/upload_apk_with_changelog.py
