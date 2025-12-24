@@ -8,11 +8,9 @@ import lib.storage.launcher.IOpenFileStorageAccessible
 import lib.storage.launcher.OpenDirStorageAccessDelegate
 import lib.storage.launcher.OpenFileStorageAccessDelegate
 import player.phonograph.R
-import player.phonograph.UPGRADABLE
-import player.phonograph.VERSION_INFO
 import player.phonograph.coil.loadImage
-import player.phonograph.databinding.ActivityMainBinding
-import player.phonograph.databinding.LayoutDrawerBinding
+import player.phonograph.databinding.ActivityMainContentBinding
+import player.phonograph.databinding.ActivityMainDrawerBinding
 import player.phonograph.foundation.compat.parcelableExtra
 import player.phonograph.foundation.error.warning
 import player.phonograph.mechanism.PhonographShortcutManager
@@ -61,8 +59,8 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                      IOpenFileStorageAccessible, ICreateFileStorageAccessible, IOpenDirStorageAccessible,
                      PathSelectorRequester {
 
-    private lateinit var mainBinding: ActivityMainBinding
-    private lateinit var drawerBinding: LayoutDrawerBinding
+    private lateinit var viewBinding: ActivityMainDrawerBinding
+    private lateinit var contentViewBinding: ActivityMainContentBinding
 
     private val drawerViewModel: MainDrawerViewModel by viewModels()
 
@@ -71,6 +69,14 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
     override val openFileStorageAccessDelegate: OpenFileStorageAccessDelegate = OpenFileStorageAccessDelegate()
 
     override val pathSelectorContractTool: PathSelectorContractTool = PathSelectorContractTool()
+
+    override fun createContentView(): View {
+        contentViewBinding = ActivityMainContentBinding.inflate(layoutInflater)
+        viewBinding = ActivityMainDrawerBinding.inflate(layoutInflater)
+        viewBinding.mainContentContainer.addView(wrapSlidingMusicPanel(contentViewBinding.root))
+
+        return viewBinding.root
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -116,34 +122,26 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
         debug { logMetrics("MainActivity.onResume()") }
     }
 
-    override fun createContentView(): View {
-        mainBinding = ActivityMainBinding.inflate(layoutInflater)
-        drawerBinding = LayoutDrawerBinding.inflate(layoutInflater)
-        drawerBinding.drawerContentContainer.addView(wrapSlidingMusicPanel(mainBinding.root))
-
-        return drawerBinding.root
-    }
-
     private fun setUpDrawer(pagesConfig: PagesConfig?) {
 
         // Preparation
         setupDrawerMenu(
             activity = this@MainActivity,
-            menu = drawerBinding.navigationView.menu,
+            menu = viewBinding.navigationView.menu,
             switchPageTo = { drawerViewModel.switchPageTo(this@MainActivity, it) },
-            closeDrawer = { drawerBinding.drawerLayout.closeDrawers() },
+            closeDrawer = { viewBinding.drawerLayout.closeDrawers() },
             pagesConfig = pagesConfig
         )
 
         // color
         val iconColor = themeIconColor(this)
-        with(drawerBinding.navigationView) {
+        with(viewBinding.navigationView) {
             setItemIconColors(iconColor, accentColor())
             setItemTextColors(textColorPrimary(context), accentColor())
         }
 
         // listener
-        drawerBinding.drawerLayout.addDrawerListener(object : SimpleDrawerListener() {
+        viewBinding.drawerLayout.addDrawerListener(object : SimpleDrawerListener() {
             override fun onDrawerOpened(drawerView: View) {
                 onBackPressedDispatcher.addCallback(this@MainActivity, drawerBackPressedCallback)
             }
@@ -155,12 +153,12 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
 
         // States
         observe(queueViewModel.currentSong) { song -> updateNavigationDrawerHeader(song) }
-        observe(drawerViewModel.selectedPage) { page -> drawerBinding.navigationView.setCheckedItem(1000 + page) }
+        observe(drawerViewModel.selectedPage) { page -> viewBinding.navigationView.setCheckedItem(1000 + page) }
     }
 
     private val drawerBackPressedCallback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            drawerBinding.drawerLayout.closeDrawers()
+            viewBinding.drawerLayout.closeDrawers()
         }
     }
 
@@ -171,9 +169,9 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
 
             if (navigationDrawerHeader == null) {
                 navigationDrawerHeader =
-                    drawerBinding.navigationView.inflateHeaderView(R.layout.navigation_drawer_header).also { view ->
+                    viewBinding.navigationView.inflateHeaderView(R.layout.navigation_drawer_header).also { view ->
                         view.setOnClickListener {
-                            drawerBinding.drawerLayout.closeDrawers()
+                            viewBinding.drawerLayout.closeDrawers()
                             requestToExpand()
                         }
                     }
@@ -196,28 +194,28 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
             }
         } else {
             if (navigationDrawerHeader != null) {
-                drawerBinding.navigationView.removeHeaderView(navigationDrawerHeader!!)
+                viewBinding.navigationView.removeHeaderView(navigationDrawerHeader!!)
                 navigationDrawerHeader = null
             }
         }
     }
 
     override fun navigateUp() {
-        if (drawerBinding.drawerLayout.isDrawerOpen(drawerBinding.navigationView)) {
-            drawerBinding.drawerLayout.closeDrawer(drawerBinding.navigationView)
+        if (viewBinding.drawerLayout.isDrawerOpen(viewBinding.navigationView)) {
+            viewBinding.drawerLayout.closeDrawer(viewBinding.navigationView)
         } else {
-            drawerBinding.drawerLayout.openDrawer(drawerBinding.navigationView)
+            viewBinding.drawerLayout.openDrawer(viewBinding.navigationView)
         }
     }
 
     override fun onPanelExpanded(panel: View?) {
         super.onPanelExpanded(panel)
-        drawerBinding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+        viewBinding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
     }
 
     override fun onPanelCollapsed(panel: View?) {
         super.onPanelCollapsed(panel)
-        drawerBinding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+        viewBinding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
     }
 
     private fun checkUpdate() {
@@ -295,6 +293,8 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
 
     companion object {
         private const val TAG = "MainActivity"
+        private const val VERSION_INFO = "versionInfo"
+        private const val UPGRADABLE = "upgradable"
 
         fun launchingIntent(context: Context, flags: Int = 0): Intent =
             Intent(context, MainActivity::class.java).apply {

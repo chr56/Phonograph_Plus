@@ -12,7 +12,4 @@ const val ISSUE_TRACKER_LINK = "https://github.com/chr56/Phonograph_Plus/issues"
 
 const val USER_AGENT = "PhonographPlus/${BuildConfig.VERSION_NAME} (Android) ${okhttp3.internal.userAgent}"
 
-const val VERSION_INFO = "versionInfo"
-const val UPGRADABLE = "upgradable"
-
 
