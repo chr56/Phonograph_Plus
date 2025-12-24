@@ -87,5 +87,6 @@ abstract class ThemeActivity : MultiLanguageActivity() {
     // SnackBar holder
     //
     protected open val snackBarContainer: View get() = window.decorView
+    protected open val snackBarAnchor: View? get() = null
 
 }

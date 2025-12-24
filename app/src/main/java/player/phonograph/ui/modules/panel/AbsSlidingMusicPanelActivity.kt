@@ -302,6 +302,7 @@ abstract class AbsSlidingMusicPanelActivity :
     //endregion
 
     override val snackBarContainer: View get() = panelBinding.contentContainer
+    override val snackBarAnchor: View get() = panelBinding.miniPlayerDocker
 
     companion object {
         const val NOW_PLAYING_FRAGMENT = "NowPlayingPlayerFragment"
