@@ -128,22 +128,3 @@ class EscapedMarkdown(private val metadata: ReleaseMetadata) : ReleaseMarkdown()
         target.append(section(metadata.notes.zh, "ZH"))
     }
 }
-
-class IMReleaseMarkdown(private val releaseMetadata: ReleaseMetadata) : ReleaseMarkdown() {
-
-    private fun section(note: ReleaseMetadata.Notes.Note, title: String): String = buildString {
-        appendLine(border(title)).append('\n')
-        if (note.highlights.isNotEmpty()) appendLine(makeOrderedList(note.highlights)).append('\n')
-        if (note.items.isNotEmpty()) appendLine(makeOrderedList(note.items)).append('\n')
-    }
-
-    override fun write(target: Writer) {
-
-        target.append(border("v${releaseMetadata.version} ${dateString(releaseMetadata.timestamp)}"))
-        target.append('\n').append('\n')
-
-        target.append(section(releaseMetadata.notes.en, "EN")).append('\n')
-        target.append(section(releaseMetadata.notes.zh, "ZH")).append('\n')
-
-    }
-}

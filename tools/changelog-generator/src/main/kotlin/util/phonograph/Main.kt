@@ -33,7 +33,6 @@ fun process(command: String, parameters: List<String>) {
             CMD_GENERATE_VERSION_JSON        -> generateVersionJson(model, "$rootPath/${parameters[2]}")
             CMD_GENERATE_HTML                -> generateHtml(model)
             CMD_GENERATE_FDROID_METADATA     -> generateFdroidMetadata(model, rootPath)
-            CMD_GENERATE_ENCODED_URL         -> generateEncodedUrl(model, "$rootPath/${parameters[2]}")
             CMD_REFRESH_CHANGELOGS           -> updateChangelogs(model, File("$rootPath/${parameters[2]}"))
             else                             -> println("Unknown command")
         }
@@ -54,5 +53,4 @@ const val CMD_GENERATE_ESCAPED_MARKDOWN = "GenerateEscapedMarkdownReleaseNote"
 const val CMD_GENERATE_VERSION_JSON = "GenerateVersionJson"
 const val CMD_GENERATE_HTML = "GenerateHTML"
 const val CMD_GENERATE_FDROID_METADATA = "GenerateFdroidMetadata"
-const val CMD_GENERATE_ENCODED_URL = "GenerateEncodedUrl"
 const val CMD_REFRESH_CHANGELOGS = "RefreshChangelogs"

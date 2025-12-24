@@ -20,7 +20,6 @@ sourceSets {
 val originalReleaseNotePath = "ReleaseNote.yaml"
 
 val outputGitHubReleaseNotePath = "GitHubReleaseNote.md"
-val outputEncodedUrlPath = "GitHubReleaseNote.url.txt"
 val outputEscapedReleaseNotePath = "EscapedReleaseNote.md"
 
 val changelogsPath = "app/src/main/assets"
@@ -51,16 +50,6 @@ tasks.register("GenerateEscapedMarkdownReleaseNote", JavaExec::class.java) {
         rootProject.projectDir.absolutePath,
         originalReleaseNotePath,
         outputEscapedReleaseNotePath
-    )
-}
-
-tasks.register("GenerateEncodedUrl", JavaExec::class.java) {
-    prepareTask(this)
-    args = listOf(
-        "GenerateEncodedUrl",
-        rootProject.projectDir.absolutePath,
-        originalReleaseNotePath,
-        outputEncodedUrlPath
     )
 }
 
@@ -110,7 +99,6 @@ java {
 kotlin {
     compilerOptions {
         jvmTarget.set(JvmTarget.JVM_17)
-        apiVersion.set(KotlinVersion.KOTLIN_2_0)
     }
 }
 
