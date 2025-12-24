@@ -37,9 +37,9 @@ abstract class MarkdownFormater {
     /**
      * Only for Github
      */
-    protected fun githubAlertBox(text: String, type: String = "NOTE"): String =
+    protected fun githubAlertBox(text: String, type: AlertType = AlertType.Note): String =
         buildString {
-            append("> [!$type]")
+            append("> [!${type.text}]")
             append('\n')
             for (line in text.lines()) {
                 append("> ")
@@ -47,4 +47,13 @@ abstract class MarkdownFormater {
                 append('\n')
             }
         }
+
+    enum class AlertType(val text: String) {
+        Note("NOTE"),
+        Tip("TIP"),
+        Important("IMPORTANT"),
+        Warning("WARNING"),
+        Caution("CAUTION"),
+        ;
+    }
 }

@@ -34,6 +34,15 @@ class GitHubReleaseMarkdown(private val metadata: ReleaseMetadata) : ReleaseMark
         if (note.items.isNotEmpty()) appendLine(makeOrderedList(note.items)).append('\n')
     }
 
+    private fun previewWarning(channel: ReleaseChannel): String? =
+        when (channel) {
+            ReleaseChannel.PREVIEW -> githubAlertBox(
+                "$PREVIEW_WARNING_EN\n$PREVIEW_WARNING_ZH", AlertType.Important
+            )
+
+            else                   -> null
+        }
+
     override fun write(target: Writer) {
 
         // Title
@@ -43,9 +52,9 @@ class GitHubReleaseMarkdown(private val metadata: ReleaseMetadata) : ReleaseMark
         target.append('\n')
 
         // Warnings
-        if (metadata.channel == ReleaseChannel.PREVIEW) {
-            target.append(PREVIEW_WARNING_EN).append('\n')
-            target.append(PREVIEW_WARNING_ZH).append('\n')
+        val warning = previewWarning(metadata.channel)
+        if (warning != null) {
+            target.append(warning)
             target.append('\n')
         }
 
@@ -82,7 +91,7 @@ class GitHubReleaseMarkdown(private val metadata: ReleaseMetadata) : ReleaseMark
     }
 }
 
-class EscapedMarkdown(private val releaseMetadata: ReleaseMetadata) : ReleaseMarkdown() {
+class EscapedMarkdown(private val metadata: ReleaseMetadata) : ReleaseMarkdown() {
 
     override fun border(text: String): String = "*$text*"
 
@@ -93,21 +102,30 @@ class EscapedMarkdown(private val releaseMetadata: ReleaseMetadata) : ReleaseMar
         if (note.items.isNotEmpty()) appendLine(escapeMarkdown(makeOrderedList(note.items)))
     }
 
+    private fun previewWarning(channel: ReleaseChannel): String? =
+        when (channel) {
+            ReleaseChannel.PREVIEW -> buildString {
+                append(escapeMarkdownV2(PREVIEW_WARNING_EN)).append('\n')
+                append(escapeMarkdownV2(PREVIEW_WARNING_ZH)).append('\n')
+            }
+            else                   -> null
+        }
+
     override fun write(target: Writer) {
         // Title
         target.append(
-            border(escapeMarkdown("${(releaseMetadata.tag)} ${dateString(releaseMetadata.timestamp)}"))
+            border(escapeMarkdown("${(metadata.tag)} ${dateString(metadata.timestamp)}"))
         )
         target.append('\n').append('\n')
         // Warning
-        if (releaseMetadata.channel == ReleaseChannel.PREVIEW) {
-            target.append(escapeMarkdownV2(PREVIEW_WARNING_EN)).append('\n')
-            target.append(escapeMarkdownV2(PREVIEW_WARNING_ZH)).append('\n')
+        val warning = previewWarning(metadata.channel)
+        if (warning != null) {
+            target.append(warning)
             target.append('\n')
         }
         // Content
-        target.append(section(releaseMetadata.notes.en, "EN"))
-        target.append(section(releaseMetadata.notes.zh, "ZH"))
+        target.append(section(metadata.notes.en, "EN"))
+        target.append(section(metadata.notes.zh, "ZH"))
     }
 }
 
