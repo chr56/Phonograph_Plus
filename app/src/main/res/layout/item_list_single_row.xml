@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,90 +10,89 @@
     <player.phonograph.ui.views.IconImageView
         android:id="@+id/drag_view"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="center_vertical|start"
-        android:layout_marginLeft="-8dp"
+        android:layout_height="0dp"
         android:layout_marginStart="-8dp"
+        android:tint="?attr/iconColor"
         android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_drag_vertical_white_24dp"
         tools:ignore="ContentDescription" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:descendantFocusability="blocksDescendants"
-        android:orientation="horizontal">
+    <FrameLayout
+        android:id="@+id/image_container"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:paddingStart="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <FrameLayout
-            android:id="@+id/image_container"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:paddingEnd="0dp"
-            android:paddingLeft="16dp"
-            android:paddingRight="0dp"
-            android:paddingStart="16dp">
-
-            <ImageView
-                android:id="@+id/image"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_gravity="center"
-                android:scaleType="centerCrop"
-                app:emojiCompatEnabled="false"
-                tools:ignore="ContentDescription" />
-
-            <TextView
-                android:id="@+id/image_text"
-                android:layout_width="40dp"
-                android:layout_height="match_parent"
-                android:fontFamily="sans-serif"
-                android:gravity="center"
-                android:minHeight="40dp"
-                android:singleLine="true"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                android:visibility="gone"
-                app:emojiCompatEnabled="false" />
-
-        </FrameLayout>
-
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginEnd="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_weight="1"
-            android:fontFamily="sans-serif"
-            android:singleLine="true"
-            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-            app:emojiCompatEnabled="false" />
-
-        <player.phonograph.ui.views.IconImageView
-            android:id="@+id/menu"
-            style="@style/Widget.Phonograph.OverFlowButton"
-            android:layout_gravity="center_vertical"
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:scaleType="centerCrop"
+            app:emojiCompatEnabled="false"
             tools:ignore="ContentDescription" />
 
-    </LinearLayout>
+        <TextView
+            android:id="@+id/image_text"
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:fontFamily="sans-serif"
+            android:gravity="center"
+            android:minHeight="40dp"
+            android:singleLine="true"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            android:visibility="gone"
+            app:emojiCompatEnabled="false" />
+
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:fontFamily="sans-serif"
+        android:singleLine="true"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        app:emojiCompatEnabled="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/menu"
+        app:layout_constraintStart_toEndOf="@+id/image_container"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="TITLE" />
+
+
+    <player.phonograph.ui.views.IconImageView
+        android:id="@+id/menu"
+        style="@style/Widget.Phonograph.OverFlowButton"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
 
     <View
         android:id="@+id/separator"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_gravity="bottom"
         android:background="?attr/dividerColor"
-        android:visibility="gone" />
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <View
         android:id="@+id/short_separator"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="1dp"
-        android:layout_gravity="bottom"
-        android:layout_marginLeft="72dp"
         android:layout_marginStart="72dp"
-        android:background="?attr/dividerColor" />
+        android:background="?attr/dividerColor"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
-</FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
