@@ -38,7 +38,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.GridLayoutManager
 import android.content.Context
 import android.util.SparseIntArray
-import android.view.View
 import android.widget.ImageView
 import kotlin.random.Random
 import kotlinx.coroutines.Dispatchers
@@ -92,7 +91,7 @@ class FoldersPage : AbsPanelPage() {
         binding.recyclerView.layoutManager = layoutManager
         binding.recyclerView.setUpFastScrollRecyclerViewColor(requireContext(), accentColor())
 
-        binding.refreshContainer.apply {
+        binding.mainContentContainer.apply {
             setColorSchemeColors(accentColor())
             setDistanceToTriggerSync(480)
             setProgressViewOffset(false, 10, 120)
@@ -117,7 +116,13 @@ class FoldersPage : AbsPanelPage() {
         binding.recyclerView.adapter = songCollectionDisplayAdapter
 
         observe(viewLifecycleOwner.lifecycle, viewModel.folders) { data ->
-            binding.empty.visibility = if (data.isEmpty()) View.VISIBLE else View.GONE
+
+            if (data.isEmpty()) {
+                statusFragment.show(R.string.msg_empty)
+            } else {
+                statusFragment.hide()
+            }
+
             songCollectionDisplayAdapter.dataset = data
 
         }

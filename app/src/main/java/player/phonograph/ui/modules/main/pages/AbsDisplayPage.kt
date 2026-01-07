@@ -11,6 +11,7 @@ import player.phonograph.model.service.ShuffleMode
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.ui.actions.actionPlay
+import player.phonograph.ui.dialogs.ScanMediaDialog
 import player.phonograph.ui.modules.panel.PanelViewModel
 import player.phonograph.util.observe
 import player.phonograph.util.theme.ThemeSettingsDelegate.accentColor
@@ -62,13 +63,13 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>> : AbsPanelPage() {
         binding.recyclerView.layoutManager = layoutManager
         binding.recyclerView.setUpFastScrollRecyclerViewColor(context, accentColor())
 
-        binding.refreshContainer.apply {
+        binding.mainContentContainer.apply {
             setColorSchemeColors(accentColor())
             setDistanceToTriggerSync(480)
             setProgressViewOffset(false, 10, 120)
             setOnRefreshListener { viewModel.loadDataset(context) }
         }
-        observe(viewModel.loading) { binding.refreshContainer.isRefreshing = it }
+        observe(viewModel.loading) { binding.mainContentContainer.isRefreshing = it }
 
         bottomViewWindowInsetsController = binding.recyclerView.applyControllableWindowInsetsAsBottomView()
         observe(panelViewModel.isPanelHidden) { hidden -> bottomViewWindowInsetsController.enabled = hidden }
@@ -82,8 +83,19 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>> : AbsPanelPage() {
         observe(viewLifecycleOwner.lifecycle, viewModel.dataset) { items ->
             updateDisplayedItems(items.toList())
 
-            binding.empty.text = resources.getText(R.string.msg_empty)
-            binding.empty.visibility = if (items.isEmpty()) View.VISIBLE else View.GONE
+            if (items.isEmpty()) {
+                binding.mainContentContainer.visibility = View.GONE
+                statusFragment.show(
+                    titleRes = R.string.msg_empty,
+                    buttonTextRes= R.string.action_scan_media,
+                    buttonClickListener = {
+                        ScanMediaDialog().show(parentFragmentManager, null)
+                    }
+                )
+            } else {
+                binding.mainContentContainer.visibility = View.VISIBLE
+                statusFragment.hide()
+            }
 
             val headerTextRes = viewModel.headerTextRes
             if (headerTextRes != 0) {

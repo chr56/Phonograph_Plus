@@ -42,6 +42,8 @@ sealed class AbsPanelPage : AbsPage() {
     private var _viewBinding: FragmentDisplayPageBinding? = null
     protected val binding get() = _viewBinding!!
 
+    protected lateinit var statusFragment: StatusFragment
+
     //region Lifecycles
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,12 +57,12 @@ sealed class AbsPanelPage : AbsPage() {
     ): View {
         onPrefetchContentDataset()
         _viewBinding = FragmentDisplayPageBinding.inflate(inflater, container, false)
+        statusFragment = childFragmentManager.findFragmentById(R.id.status_fragment) as StatusFragment
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.empty.text = resources.getText(R.string.state_loading)
 
         prepareContentView()
 

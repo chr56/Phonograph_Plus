@@ -33,18 +33,17 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@android:id/empty"
-            style="@style/TextAppearance.AppCompat.Title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/status_fragment"
+            android:name="player.phonograph.ui.modules.main.pages.StatusFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:fontFamily="sans-serif-light"
-            android:text="@string/msg_empty"
-            android:textColor="?android:textColorSecondary" />
+            tools:layout="@layout/fragment_display_page_status" />
+
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/refresh_container"
+            android:id="@+id/main_content_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
