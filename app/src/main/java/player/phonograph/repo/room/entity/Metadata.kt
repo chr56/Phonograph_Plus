@@ -14,4 +14,8 @@ import androidx.room.Entity
 data class Metadata(
     @ColumnInfo(name = Columns.METADATA_KEY) val key: String,
     @ColumnInfo(name = Columns.METADATA_VALUE) val value: String,
-)
+) {
+    companion object {
+        const val METADATA_ACCESS_TIME = "access_time"
+    }
+}

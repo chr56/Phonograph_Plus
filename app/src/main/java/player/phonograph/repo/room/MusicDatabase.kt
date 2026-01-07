@@ -7,6 +7,7 @@ package player.phonograph.repo.room
 import org.koin.core.context.GlobalContext
 import player.phonograph.repo.room.dao.FavoritesSongsDao
 import player.phonograph.repo.room.dao.MediaStoreSongDao
+import player.phonograph.repo.room.dao.MetadataDao
 import player.phonograph.repo.room.dao.PinedPlaylistsDao
 import player.phonograph.repo.room.dao.PlaylistDao
 import player.phonograph.repo.room.dao.PlaylistSongDao
@@ -36,6 +37,7 @@ import java.io.Closeable
     exportSchema = true,
 )
 abstract class MusicDatabase : RoomDatabase(), Closeable {
+    abstract fun MetadataDao(): MetadataDao
     abstract fun MediaStoreSongDao(): MediaStoreSongDao
     abstract fun PlaylistDao(): PlaylistDao
     abstract fun PlaylistSongDao(): PlaylistSongDao

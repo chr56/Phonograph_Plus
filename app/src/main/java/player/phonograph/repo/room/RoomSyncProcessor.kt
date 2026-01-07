@@ -6,10 +6,12 @@ package player.phonograph.repo.room
 
 import player.phonograph.App
 import player.phonograph.R
+import player.phonograph.foundation.error.InternalDataCorruptedException
 import player.phonograph.foundation.notification.ProgressNotificationConnection
 import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.notification.NOTIFICATION_CHANNEL_ID_DATABASE_SYNC
 import player.phonograph.model.repo.sync.SyncProcessor
+import player.phonograph.repo.room.entity.Metadata
 import android.content.Context
 import android.content.Intent
 import kotlinx.coroutines.CoroutineScope
@@ -78,10 +80,28 @@ class RoomSyncProcessor(
 
             val coroutineScope = (context.applicationContext as? App)?.appScope
                 ?: CoroutineScope(Dispatchers.IO + SupervisorJob())
+
+            coroutineScope.launch {
+                writeAccessTime(musicDatabase)
+            }
+
             val processor = RoomSyncProcessor(musicDatabase, coroutineScope).also {
                 it.onSyncFirstTime(context)
             }
             return PersistentEventListener(processor).also { it.registerSelf(context) }
+        }
+
+        private fun writeAccessTime(musicDatabase: MusicDatabase) = try {
+            musicDatabase.MetadataDao().insertOrReplace(
+                Metadata(Metadata.METADATA_ACCESS_TIME, System.currentTimeMillis().toString())
+            )
+        } catch (e: IllegalStateException) {
+            val hint = if (e.message?.contains("data integrity") ?: false) {
+                "Database is corrupted! schema version mismatched!"
+            } else {
+                "Database is corrupted!"
+            }
+            throw InternalDataCorruptedException(hint, e)
         }
     }
 }
