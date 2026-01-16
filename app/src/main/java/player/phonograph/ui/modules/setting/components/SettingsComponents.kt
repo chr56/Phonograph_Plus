@@ -124,8 +124,7 @@ fun DialogPreference(
     title: String? = null,
     summary: String? = null,
     enabled: Boolean = true,
-    reset: (suspend (Context) -> Unit)? = null,
-    writerCoroutineScope: CoroutineScope = rememberCoroutineScope(),
+    reset: ((Context) -> Unit)? = null,
     currentValueForHint: suspend (Context) -> String? = { null },
 ) {
     val context = LocalContext.current
@@ -140,7 +139,7 @@ fun DialogPreference(
 
     val onLongClick: (() -> Unit)? =
         if (reset != null) {
-            { writerCoroutineScope.launch(Dispatchers.IO) { reset(context) } }
+            { reset(context) }
         } else {
             null
         }
