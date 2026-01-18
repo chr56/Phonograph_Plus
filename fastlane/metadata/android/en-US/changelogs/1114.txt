@@ -1,0 +1,5 @@
+<b>1.11.4(1114) 2026.01.21</b>
+- Fix: no response in Android Auto (since v1.11.3)
+- Fix: text color of crash report in dark mode (since v1.11.3)
+- Fix: crash when resetting certain setting items by long pressing (since v1.10.0)
+- Development: upgrade AGP to 8.13.2

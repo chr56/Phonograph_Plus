@@ -1,29 +1,21 @@
-version: "1.11.3"
+version: "1.11.4"
 channel: "STABLE"
-versionCode: 1113
-timestamp: 1766590000
+versionCode: 1114
+timestamp: 1768985000
 notes:
   en:
     items:
-      - "Fix: three memory leaks"
-      - "Fix: incomplete color updates after a manual theme switch"
-      - "Fix: missing reboot after a successful backup import (since v1.11.2)"
-      - "Improve: slightly accelerate loading speed"
-      - "Improve: add hint and options for Scan Media action"
-      - "Modify: forbid upgrading from prior to v1.8.2 & warn upgrading from prior to v1.9.3"
-      - "Translation: update German (by jande75)"
-      - "Development: build with SDK 36, update dependencies"
+      - "Fix: no response in Android Auto (since v1.11.3)"
+      - "Fix: text color of crash report in dark mode (since v1.11.3)"
+      - "Fix: crash when resetting certain setting items by long pressing (since v1.10.0)"
+      - "Development: upgrade AGP to 8.13.2"
 
   zh:
     items:
-      - "修复 三处内存泄漏"
-      - "修复 手动切换主题时不完整切换"
-      - "修复 在成功导入备份后不触发重启"
-      - "改进 稍微加快加载速度"
-      - "改进 为“扫描媒体”操作添加提示与选项"
-      - "修改 禁止从 v1.8.2 之前的版本升级, 警告从 v1.9.3 之前的版本升级"
-      - "翻译 更新德语 (jande75)"
-      - "开发 使用 SDK 36 构建, 更新依赖"
+      - "修复 Android Auto 中无响应 (v1.11.3 起存在)"
+      - "修复 暗色模式下崩溃报告文本颜色 (v1.11.3 起存在)"
+      - "修复 长按部分设置项以重置时崩溃 (v1.10.0 起存在)"
+      - "开发 更新 AGP 至 8.13.2"
 
-previousVersion: "1.11.2"
+previousVersion: "1.11.3"
 previousChannel: "STABLE"
