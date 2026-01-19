@@ -14,8 +14,8 @@ import player.phonograph.ui.modules.setting.SettingsActivity
 import player.phonograph.util.text.currentDate
 import player.phonograph.util.text.dateTimeSuffixCompat
 import player.phonograph.util.text.getDeviceInfo
-import player.phonograph.util.theme.ThemeSettingsDelegate.textColorPrimary
 import player.phonograph.util.theme.getTintedDrawable
+import player.phonograph.util.theme.systemNightMode
 import player.phonograph.util.theme.updateSystemBarsColor
 import player.phonograph.util.ui.alertDialog
 import util.theme.color.primaryTextColor
@@ -100,7 +100,7 @@ class CrashActivity : ToolbarActivity() {
 
         // display textview
         binding.crashText.text = fullReportText
-        binding.crashText.setTextColor(textColorPrimary(this))
+        binding.crashText.setTextColor(primaryTextColor(systemNightMode(resources.configuration) ?: false))
 
         // button "copy to clipboard"
         binding.copyToClipboard.setOnClickListener {
