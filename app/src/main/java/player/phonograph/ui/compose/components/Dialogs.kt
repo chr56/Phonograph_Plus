@@ -7,19 +7,26 @@ package player.phonograph.ui.compose.components
 import player.phonograph.R
 import player.phonograph.ui.compose.dialogHorizontalPadding
 import player.phonograph.ui.compose.dialogMaxHeight
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.material.DropdownMenu
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
@@ -76,6 +83,8 @@ fun AdvancedDialogFrame(
     onDismissRequest: () -> Unit,
     navigationButtonIcon: Painter? = rememberVectorPainter(Icons.AutoMirrored.Default.ArrowBack),
     actions: List<ActionItem> = emptyList(),
+    collapsedActions: List<ActionItem> = emptyList(),
+    iconsInCollapsedMenu: Boolean = false,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     Column(modifier) {
@@ -83,7 +92,10 @@ fun AdvancedDialogFrame(
             title = { Text(title) },
             modifier = Modifier.fillMaxWidth(),
             navigationIcon = navigationIcon(navigationButtonIcon, onDismissRequest),
-            actions = { for (item in actions) ActionIconButton(item) }
+            actions = {
+                for (item in actions) ActionIconButton(item)
+                if (collapsedActions.isNotEmpty()) CollapsedActionMenu(collapsedActions, iconsInCollapsedMenu)
+            }
         )
         content()
     }
@@ -203,3 +215,17 @@ private fun navigationIcon(painter: Painter?, onClick: () -> Unit) =
         text = stringResource(R.string.action_exit),
         onClick = onClick
     )
+
+
+@Composable
+fun CollapsedActionMenu(actions: List<ActionItem>, withIcon: Boolean, modifier: Modifier = Modifier) {
+    var showMenu by remember { mutableStateOf(false) }
+    Box(modifier) {
+        ActionIconButton(
+            ActionItem(imageVector = Icons.Default.MoreVert, textRes = R.string.action_more) { showMenu = true }
+        )
+        DropdownMenu(expanded = showMenu, onDismissRequest = { showMenu = false }) {
+            DropDownMenuContent(actions, withIcon = withIcon)
+        }
+    }
+}
