@@ -17,6 +17,7 @@ import player.phonograph.repo.room.converter.EntityConverter
 import player.phonograph.repo.room.entity.AlbumEntity
 import player.phonograph.repo.room.entity.ArtistEntity
 import player.phonograph.repo.room.entity.LinkageAlbumAndArtist
+import player.phonograph.repo.room.entity.LinkageGenreAndSong
 import player.phonograph.repo.room.entity.LinkageSongAndArtist
 import player.phonograph.repo.room.entity.LinkageSongAndArtist.Companion.ROLE_ALBUM_ARTIST
 import player.phonograph.repo.room.entity.LinkageSongAndArtist.Companion.ROLE_ARTIST
@@ -92,6 +93,7 @@ class RelationshipSyncExecutorSession(
     val queryDao = musicDatabase.QueryDao()
     val relationshipArtistSongDao = musicDatabase.RelationshipArtistSongDao()
     val relationshipArtistAlbumDao = musicDatabase.RelationshipArtistAlbumDao()
+    val relationshipGenreSongDao = musicDatabase.RelationshipGenreSongDao()
 
     private fun onProcessUpdate(current: Int, total: Int, message: String? = null) {
         if (message != null) {
@@ -551,14 +553,31 @@ class RelationshipSyncExecutorSession(
 
     private suspend fun stageRefreshGenres() {
         onProcessUpdate(0, 1, "Refresh Genres...")
+        // remove all first
+        genreDao.deleteAll()
+        relationshipGenreSongDao.deleteAll()
         // Genres
         val genres = MediaStoreGenres.all(context).map(EntityConverter::fromGenreModel)
-        musicDatabase.withTransaction {
-            genreDao.deleteAll()
+        val genreIds: LongArray = musicDatabase.withTransaction {
             genreDao.update(genres)
         }
+        if (genres.size != genreIds.size) throw IllegalStateException("Failed to update Genres")
         // GenreSong
-        // val genreSongs = genres.map { MediaStoreGenres.songs(context, it.id) }
+        val inserted = genreIds.zip(genres)
+        val total = inserted.size
+        onProcessUpdate(0, total, "Refresh Genre Songs...")
+        musicDatabase.withTransaction {
+            for ((index, item) in inserted.withIndex()) {
+                val (id, entity) = item
+                val genreSongs = MediaStoreGenres.songs(context, entity.mediastoreId)
+                val linkageGenreAndSongs = genreSongs.map { song ->
+                    LinkageGenreAndSong(id, song.id)
+                }
+                relationshipGenreSongDao.override(linkageGenreAndSongs)
+                if (index % PBI == 0) onProcessUpdate(index, total, "Refresh Genre Songs...")
+            }
+        }
+        onProcessUpdate(total, total, "All done")
     }
 
 }
