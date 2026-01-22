@@ -2,6 +2,30 @@
     "versions": [
         {
             "channel": "stable",
+            "versionName": "1.11.4",
+            "versionCode": 1114,
+            "date": 1768985000,
+            "link": [
+                {
+                    "name": "Github Release (Website)",
+                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.11.4"
+                },
+                {
+                    "name": "Github Release Modern Variant APK (File Download Link)",
+                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v1.11.4/PhonographPlus_1.11.4_ModernStableRelease.apk"
+                },
+                {
+                    "name": "Github Release Legacy Variant APK (File Download Link)",
+                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v1.11.4/PhonographPlus_1.11.4_LegacyStableRelease.apk"
+                }
+            ],
+            "releaseNote": {
+                "zh-cn": "<ol><li>修复 Android Auto 中无响应 (v1.11.3 起存在)</li><li>修复 暗色模式下崩溃报告文本颜色 (v1.11.3 起存在)</li><li>修复 长按部分设置项以重置时崩溃 (v1.10.0 起存在)</li><li>开发 更新 AGP 至 8.13.2</li></ol>",
+                "en": "<ol><li>Fix: no response in Android Auto (since v1.11.3)</li><li>Fix: text color of crash report in dark mode (since v1.11.3)</li><li>Fix: crash when resetting certain setting items by long pressing (since v1.10.0)</li><li>Development: upgrade AGP to 8.13.2</li></ol>"
+            }
+        },
+        {
+            "channel": "stable",
             "versionName": "1.11.3",
             "versionCode": 1113,
             "date": 1766590000,
