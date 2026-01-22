@@ -6,9 +6,11 @@ package player.phonograph.repo.loader
 
 import player.phonograph.model.Genre
 import player.phonograph.model.Song
+import player.phonograph.model.repo.PROVIDER_MEDIASTORE_PARSED
 import player.phonograph.model.repo.loader.Delegated
 import player.phonograph.model.repo.loader.IGenres
 import player.phonograph.repo.mediastore.MediaStoreGenres
+import player.phonograph.repo.room.domain.RoomGenres
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import android.content.Context
@@ -20,8 +22,8 @@ object Genres : IGenres, Delegated<IGenres>() {
     override fun onCreateDelegate(context: Context): IGenres {
         val preference = Setting(context)[Keys.musicLibraryBackend]
         val impl: IGenres = when (preference.data) {
-            // PROVIDER_MEDIASTORE_PARSED -> RoomGenres
-            else -> MediaStoreGenres
+            PROVIDER_MEDIASTORE_PARSED -> RoomGenres
+            else                       -> MediaStoreGenres
         }
         return impl
     }
@@ -33,8 +35,8 @@ object Genres : IGenres, Delegated<IGenres>() {
         delegate(context).id(context, id)
 
     override suspend fun songs(context: Context, genreId: Long): List<Song> =
-        MediaStoreGenres.songs(context, genreId) // todo
+        delegate(context).songs(context, genreId)
 
     override suspend fun of(context: Context, songId: Long): List<Genre> =
-        MediaStoreGenres.of(context, songId) // todo
+        delegate(context).of(context, songId)
 }
