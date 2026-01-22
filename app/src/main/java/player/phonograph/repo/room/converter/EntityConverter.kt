@@ -104,7 +104,7 @@ object EntityConverter {
     )
     @TypeConverter
     fun toGenreModel(genreEntity: GenreEntity) = Genre(
-        id = genreEntity.mediastoreId,
+        id = genreEntity.id,
         name = genreEntity.name,
         songCount = genreEntity.songCount,
     )
