@@ -19,6 +19,7 @@ import player.phonograph.repo.room.MusicDatabase
 import player.phonograph.repo.room.converter.EntityConverter
 import player.phonograph.repo.room.entity.AlbumEntity
 import player.phonograph.repo.room.entity.ArtistEntity
+import player.phonograph.repo.room.entity.GenreEntity
 import player.phonograph.repo.room.entity.LinkageAlbumAndArtist
 import player.phonograph.repo.room.entity.LinkageGenreAndSong
 import player.phonograph.repo.room.entity.LinkageSongAndArtist
@@ -107,8 +108,6 @@ class RelationshipSyncExecutorSession(
         val modified = stageRefresh()
         // Stage II: Delete
         val removed = stageClean()
-        // Stage III: Refresh Genre
-        stageRefreshGenres()
 
         return SyncReport(success = true, modified = modified, removed = removed)
     }
@@ -134,7 +133,8 @@ class RelationshipSyncExecutorSession(
         val affected: AccumulatedSongRelationship = relationshipResolver.reduce(relationships)
 
         var process = 1
-        val total = 1 + 5 + affected.albums.size * 2 + affected.artists.size * 2 + relationships.size
+        val total =
+            1 + 5 + affected.albums.size * 2 + affected.artists.size * 2 + relationships.size + newOrUpdated.size
 
         onProcessUpdate(process, total, "Calculate relationships")
 
@@ -172,6 +172,17 @@ class RelationshipSyncExecutorSession(
         val (linkageSongAndArtists, linkageAlbumAndArtists) =
             createLinkages(relationships, process, total, lookupArtistId = ::lookupRelatedArtistId)
         process += relationships.size
+
+        // Genres
+        onProcessUpdate(process, total, "Analyzing Genres")
+        val genreMediastoreMap =
+            genreDao.all(SortMode(SortRef.MODIFIED_DATE, true))
+                .associateBy { it.mediastoreId }
+                .toMutableMap() // Map: MediaStoreGenreID -> GenreEntity.
+        val newGenresToInsert = mutableListOf<GenreEntity>()
+        val songToGenreMap = mutableMapOf<Long, List<Long>>()
+        analyzeGenres(newOrUpdated, songToGenreMap, genreMediastoreMap, newGenresToInsert, process, total)
+        process += newOrUpdated.size
 
         musicDatabase.withTransaction {
             // Step I: Songs registry
@@ -212,6 +223,41 @@ class RelationshipSyncExecutorSession(
                 )
                 if (process % PBI == 0)
                     onProcessUpdate(process, total, "Update artist songs/album counters")
+            }
+
+            // Step VI: Genres update
+            onProcessUpdate(process, total, "Update all affected genres")
+            for (newGenre in newGenresToInsert) {
+                // insert new Genres and update genre map with concrete id
+                val newId = genreDao.update(newGenre)
+                genreMediastoreMap[newGenre.mediastoreId] = newGenre.copy(id = newId)
+            }
+
+            // Step VII: Genres song relationships
+            onProcessUpdate(process, total, "Analyzing genre-songs relationship")
+            val affectedGenreIds = mutableSetOf<Long>()
+            val newGenreLinkages = mutableListOf<LinkageGenreAndSong>()
+            for (song in newOrUpdated) {
+                // Remove old linkages for this song
+                relationshipGenreSongDao.removeSong(song.id)
+                // Build new linkages
+                val genreMediastoreIds = songToGenreMap[song.id] ?: emptyList()
+                for (mediastoreId in genreMediastoreIds) {
+                    val genreEntity = genreMediastoreMap[mediastoreId]
+                    if (genreEntity != null) {
+                        newGenreLinkages.add(LinkageGenreAndSong(genreEntity.id, song.id))
+                        affectedGenreIds.add(genreEntity.id) // for updating counter
+                    }
+                }
+            }
+            onProcessUpdate(process, total, "Write genre-songs relationships")
+            relationshipGenreSongDao.override(newGenreLinkages)
+
+            // Step VII: Genres song counter
+            onProcessUpdate(process, total, "Update genre-songs counter")
+            for (genreId in affectedGenreIds) {
+                val count = relationshipGenreSongDao.songIds(genreId).size
+                genreDao.updateCounter(genreId, count)
             }
         }
         onProcessUpdate(total, total, "All done")
@@ -281,7 +327,29 @@ class RelationshipSyncExecutorSession(
         }
     }
 
-
+    private suspend fun analyzeGenres(
+        newOrUpdated: List<Song>,
+        songToGenreMap: MutableMap<Long, List<Long>>,
+        genreMediastoreMap: MutableMap<Long, GenreEntity>,
+        newGenresToInsert: MutableList<GenreEntity>,
+        process: Int,
+        total: Int,
+    ) {
+        val seenNewGenreIds = mutableSetOf<Long>()
+        for ((index, song) in newOrUpdated.withIndex()) {
+            val genres = MediaStoreGenres.of(context, song.id)
+            val genreIds = genres.map { it.id }
+            songToGenreMap[song.id] = genreIds
+            for (genre in genres) {
+                if (!genreMediastoreMap.containsKey(genre.id) && !seenNewGenreIds.contains(genre.id)) {
+                    val entity = EntityConverter.fromGenreModel(genre)
+                    newGenresToInsert.add(entity)
+                    seenNewGenreIds.add(genre.id)
+                }
+            }
+            if (index % PBI == 0) onProcessUpdate(process + index, total, "Analyzing Genres")
+        }
+    }
 
     private fun createNewAlbums(
         newAlbumNames: Map<Long, String>,
@@ -480,6 +548,10 @@ class RelationshipSyncExecutorSession(
         val allArtistRelationships: MutableList<LinkageSongAndArtist> = mutableListOf()
         val allAffectedArtists: MutableSet<Long> = mutableSetOf()
         val allAffectedAlbums: MutableSet<Long> = mutableSetOf()
+
+        val allGenreRelationships: MutableList<LinkageGenreAndSong> = mutableListOf()
+        val allAffectedGenres: MutableSet<Long> = mutableSetOf()
+
         for (song in missing) {
             process += 1
 
@@ -493,9 +565,16 @@ class RelationshipSyncExecutorSession(
             if (album != null) {
                 allAffectedAlbums.add(album.albumId)
             }
+
+            // genres
+            val genreRelationships = relationshipGenreSongDao.song(song.mediastorId)
+            allGenreRelationships.addAll(genreRelationships)
+            allAffectedGenres.addAll(genreRelationships.map { it.genreId })
+
             if (process % PBI == 0) onProcessUpdate(process, total, "Check relationships")
         }
-        total += 1 + allAffectedArtists.size * 2 + allAffectedAlbums.size// update total
+
+        total += 1 + allAffectedArtists.size * 2 + allAffectedAlbums.size + allAffectedGenres.size // update total
 
         // Then actual deletion
         musicDatabase.withTransaction {
@@ -538,6 +617,21 @@ class RelationshipSyncExecutorSession(
                 val albumCount = queryDao.queryArtistAlbumCount(artistId)
                 artistDao.updateCounter(artistId = artistId, albumCount = albumCount)
             }
+
+            // Step V: Genres & their relationships
+            relationshipGenreSongDao.remove(allGenreRelationships)
+            for (genreId in allAffectedGenres) {
+                if (process % PBI == 0) onProcessUpdate(process, total, "Remove or update genres")
+                process += 1
+
+                // Recount or delete if empty
+                val count = relationshipGenreSongDao.songIds(genreId).size
+                if (count <= 0) {
+                    genreDao.delete(genreId)
+                } else {
+                    genreDao.updateCounter(genreId, count)
+                }
+            }
         }
         onProcessUpdate(total, total, "All done")
 
@@ -560,35 +654,6 @@ class RelationshipSyncExecutorSession(
             onProcessUpdate(process + subprocess, total, "Find deleted songs")
         }
         return missing.toList()
-    }
-
-    private suspend fun stageRefreshGenres() {
-        onProcessUpdate(0, 1, "Refresh Genres...")
-        // remove all first
-        genreDao.deleteAll()
-        relationshipGenreSongDao.deleteAll()
-        // Genres
-        val genres = MediaStoreGenres.all(context).map(EntityConverter::fromGenreModel)
-        val genreIds: LongArray = musicDatabase.withTransaction {
-            genreDao.update(genres)
-        }
-        if (genres.size != genreIds.size) throw IllegalStateException("Failed to update Genres")
-        // GenreSong
-        val inserted = genreIds.zip(genres)
-        val total = inserted.size
-        onProcessUpdate(0, total, "Refresh Genre Songs...")
-        musicDatabase.withTransaction {
-            for ((index, item) in inserted.withIndex()) {
-                val (id, entity) = item
-                val genreSongs = MediaStoreGenres.songs(context, entity.mediastoreId)
-                val linkageGenreAndSongs = genreSongs.map { song ->
-                    LinkageGenreAndSong(id, song.id)
-                }
-                relationshipGenreSongDao.override(linkageGenreAndSongs)
-                if (index % PBI == 0) onProcessUpdate(index, total, "Refresh Genre Songs...")
-            }
-        }
-        onProcessUpdate(total, total, "All done")
     }
 
 }
