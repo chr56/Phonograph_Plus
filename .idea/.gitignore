@@ -10,6 +10,7 @@ deploymentTargetSelector.xml
 deviceManager.xml
 gradle.xml
 kotlinc.xml
+markdown.xml
 misc.xml
 runConfigurations.xml
 vcs.xml
