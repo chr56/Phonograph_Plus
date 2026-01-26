@@ -17,7 +17,7 @@ import player.phonograph.ui.modules.artist.ArtistDetailActivity
 import player.phonograph.ui.modules.genre.GenreDetailActivity
 import player.phonograph.ui.modules.playlist.PlaylistDetailActivity
 import player.phonograph.util.text.SongRelationship
-import player.phonograph.util.text.parseArtist
+import player.phonograph.util.text.splitJointTag
 import player.phonograph.util.theme.tintButtons
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityOptionsCompat
@@ -57,7 +57,7 @@ object NavigationUtil {
     }
 
     suspend fun goToArtist(context: Context, artistName: String, sharedElements: Array<Pair<View, String>>? = null) {
-        val artists = findArtists(context, parseArtist(artistName)).toList()
+        val artists = findArtists(context, splitJointTag(artistName)).toList()
         goToArtist(context, artists, sharedElements)
     }
 

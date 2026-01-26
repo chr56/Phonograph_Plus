@@ -6,17 +6,13 @@ package player.phonograph.util.text
 
 import player.phonograph.model.Song
 
-fun splitMultiTag(source: String): Collection<String> {
-    if (source.isEmpty()) return emptySet()
-    return source.trim(Char::isWhitespace).split(";", " / ", " & ", "ft. ").map { it.trimStart() }
+fun splitJointTag(
+    source: String?,
+    separators: Array<String> = arrayOf(";", " / ", " & ", "ft. "),
+): Collection<String> {
+    if (source.isNullOrEmpty()) return emptySet()
+    return source.trim(Char::isWhitespace).split(*separators).map { it.trimStart() }
 }
-
-fun parseArtist(raw: String?): Set<String> =
-    if (!raw.isNullOrEmpty()) {
-        splitMultiTag(raw).toSet()
-    } else {
-        emptySet()
-    }
 
 fun extractFeatureArtists(raw: String?): Set<String> {
     if (raw.isNullOrEmpty()) return emptySet()
@@ -25,7 +21,7 @@ fun extractFeatureArtists(raw: String?): Set<String> {
     val artist = result.getOrNull(1) ?: return emptySet()
 
     val names = artist.trimEnd().substringBefore(')')
-    return parseArtist(names)
+    return splitJointTag(names).toSet()
 }
 
 
@@ -42,9 +38,9 @@ class SongRelationship private constructor(
     companion object {
         fun solve(song: Song): SongRelationship {
 
-            val standardArtists = parseArtist(song.artistName)
-            val albumArtists = parseArtist(song.albumArtistName)
-            val composerArtists = parseArtist(song.composer)
+            val standardArtists = splitJointTag(song.artistName).toSet()
+            val albumArtists = splitJointTag(song.albumArtistName).toSet()
+            val composerArtists = splitJointTag(song.composer).toSet()
 
             val defaultArtists =
                 standardArtists + extractFeatureArtists(song.title) + extractFeatureArtists(song.albumName)
