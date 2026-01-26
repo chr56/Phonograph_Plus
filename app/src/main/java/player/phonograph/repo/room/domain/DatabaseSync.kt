@@ -134,7 +134,7 @@ class RelationshipSyncExecutorSession(
 
         var process = 1
         val total =
-            1 + 5 + affected.albums.size * 2 + affected.artists.size * 2 + relationships.size + newOrUpdated.size
+            1 + 5 + affected.albums.size * 2 + affected.artists.size * 2 + relationships.size * 3
 
         onProcessUpdate(process, total, "Calculate relationships")
 
@@ -175,13 +175,13 @@ class RelationshipSyncExecutorSession(
 
         // Genres
         onProcessUpdate(process, total, "Analyzing Genres")
-        val genreMediastoreMap =
+        val genreMap =
             genreDao.all(SortMode(SortRef.MODIFIED_DATE, true))
-                .associateBy { it.mediastoreId }
-                .toMutableMap() // Map: MediaStoreGenreID -> GenreEntity.
-        val newGenresToInsert = mutableListOf<GenreEntity>()
-        val songToGenreMap = mutableMapOf<Long, List<Long>>()
-        analyzeGenres(newOrUpdated, songToGenreMap, genreMediastoreMap, newGenresToInsert, process, total)
+                .associateBy { it.name }
+                .toMutableMap()
+        val newGenres = mutableListOf<GenreEntity>()
+        val songToGenreMap = mutableMapOf<Long, List<String>>()
+        analyzeGenres(newOrUpdated, songToGenreMap, genreMap, newGenres, process, total)
         process += newOrUpdated.size
 
         musicDatabase.withTransaction {
@@ -227,28 +227,30 @@ class RelationshipSyncExecutorSession(
 
             // Step VI: Genres update
             onProcessUpdate(process, total, "Update all affected genres")
-            for (newGenre in newGenresToInsert) {
+            for (newGenre in newGenres) {
                 // insert new Genres and update genre map with concrete id
                 val newId = genreDao.update(newGenre)
-                genreMediastoreMap[newGenre.mediastoreId] = newGenre.copy(id = newId)
+                // Update map with the concrete DB ID for linkage
+                genreMap[newGenre.name] = newGenre.copy(id = newId)
             }
 
             // Step VII: Genres song relationships
-            onProcessUpdate(process, total, "Analyzing genre-songs relationship")
             val affectedGenreIds = mutableSetOf<Long>()
             val newGenreLinkages = mutableListOf<LinkageGenreAndSong>()
             for (song in newOrUpdated) {
+                onProcessUpdate(process, total, "Analyzing genre-songs relationship")
                 // Remove old linkages for this song
                 relationshipGenreSongDao.removeSong(song.id)
                 // Build new linkages
-                val genreMediastoreIds = songToGenreMap[song.id] ?: emptyList()
-                for (mediastoreId in genreMediastoreIds) {
-                    val genreEntity = genreMediastoreMap[mediastoreId]
+                val genreNames = songToGenreMap[song.id] ?: emptyList()
+                for (name in genreNames) {
+                    val genreEntity = genreMap[name]
                     if (genreEntity != null) {
                         newGenreLinkages.add(LinkageGenreAndSong(genreEntity.id, song.id))
                         affectedGenreIds.add(genreEntity.id) // for updating counter
                     }
                 }
+                process += 1
             }
             onProcessUpdate(process, total, "Write genre-songs relationships")
             relationshipGenreSongDao.override(newGenreLinkages)
@@ -329,24 +331,35 @@ class RelationshipSyncExecutorSession(
 
     private suspend fun analyzeGenres(
         newOrUpdated: List<Song>,
-        songToGenreMap: MutableMap<Long, List<Long>>,
-        genreMediastoreMap: MutableMap<Long, GenreEntity>,
+        songToGenreMap: MutableMap<Long, List<String>>,
+        genreNameMap: MutableMap<String, GenreEntity>,
         newGenresToInsert: MutableList<GenreEntity>,
         process: Int,
         total: Int,
     ) {
-        val seenNewGenreIds = mutableSetOf<Long>()
+        val relationshipResolver = RelationshipResolver.fromSettings(context)
         for ((index, song) in newOrUpdated.withIndex()) {
             val genres = MediaStoreGenres.of(context, song.id)
-            val genreIds = genres.map { it.id }
-            songToGenreMap[song.id] = genreIds
+            val splitNamesForSong = mutableListOf<String>()
+
             for (genre in genres) {
-                if (!genreMediastoreMap.containsKey(genre.id) && !seenNewGenreIds.contains(genre.id)) {
-                    val entity = EntityConverter.fromGenreModel(genre)
-                    newGenresToInsert.add(entity)
-                    seenNewGenreIds.add(genre.id)
+                // Split the raw genre string (e.g. "Pop, Rock")
+                val splitNames = relationshipResolver.split(genre)
+
+                for (realName in splitNames) {
+                    if (realName.isBlank()) continue
+
+                    if (!genreNameMap.containsKey(realName)) {
+                        val entity = GenreEntity(
+                            id = 0, name = realName, mediastoreId = genre.id
+                        )
+                        newGenresToInsert.add(entity)
+                        genreNameMap[realName] = entity // Prevent duplicate "new" entities
+                    }
+                    splitNamesForSong.add(realName)
                 }
             }
+            songToGenreMap[song.id] = splitNamesForSong
             if (index % PBI == 0) onProcessUpdate(process + index, total, "Analyzing Genres")
         }
     }
