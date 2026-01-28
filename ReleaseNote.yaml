@@ -1,21 +1,21 @@
-version: "1.11.4"
-channel: "STABLE"
+version: "edb-0"
+channel: "EAP"
 versionCode: 1114
-timestamp: 1768985000
+timestamp: 1769589711
 notes:
   en:
     items:
-      - "Fix: no response in Android Auto (since v1.11.3)"
-      - "Fix: text color of crash report in dark mode (since v1.11.3)"
-      - "Fix: crash when resetting certain setting items by long pressing (since v1.10.0)"
-      - "Development: upgrade AGP to 8.13.2"
+      - "Note: this is the first public Early Preview version with enhanced database for complex tag relationship"
+      - "New: Experimental setting option 'Music Library Provider' in 'Advanced', to enable new database as the source for parsed complex tag relationship"
+      - "New: support parsing and reorganizing multiple artists spitted by ';', '/', '&', 'ft.' in relative tags"
+      - "New: support parsing and reorganizing multiple genres spitted by ';', ',', '&' in genre tag"
 
   zh:
     items:
-      - "修复 Android Auto 中无响应 (v1.11.3 起存在)"
-      - "修复 暗色模式下崩溃报告文本颜色 (v1.11.3 起存在)"
-      - "修复 长按部分设置项以重置时崩溃 (v1.10.0 起存在)"
-      - "开发 更新 AGP 至 8.13.2"
+      - "注意 此为首个处理复杂标签关系的的公开早期预览版"
+      - "新增 添加实验性选项“Music Library Provider”，用于启用解析复杂标签关系的数据库作为数据源"
+      - "新增 支持解析并组织由 “;”、 “/”、 “&”、 “ft.” 分隔的多艺术家标签"
+      - "新增 支持解析并组织由 “;”、 “,”、 “&” 分隔的多流派标签"
 
-previousVersion: "1.11.3"
+previousVersion: "1.11.4"
 previousChannel: "STABLE"
