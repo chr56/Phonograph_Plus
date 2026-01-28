@@ -358,7 +358,6 @@
     <string name="pref_header_files">Dateien</string>
     <string name="pref_header_notification">Benachrichtigung</string>
     <string name="pref_header_compatibility">Kompatibilität</string>
-    <string name="pref_header_experiential">Erfahrungsbasiert</string>
     <string name="pref_title_always_play">Spiele immer</string>
     <string name="pref_title_always_use_media_session_to_display_cover">Medien-Session immer verwenden, um Cover anzuzeigen</string>
     <string name="pref_title_app_shortcuts">Farbige App-Shortcuts</string>

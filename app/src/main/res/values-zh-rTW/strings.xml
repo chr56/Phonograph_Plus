@@ -110,7 +110,7 @@
     <string name="pref_header_files">檔案</string>
     <string name="pref_header_notification">通知</string>
     <string name="pref_header_compatibility">相容性</string>
-    <string name="pref_header_experiential">實驗性</string>
+    <string name="pref_header_experimental">實驗性</string>
     <string name="pref_title_now_playing_screen_style">播放面板風格</string>
     <string name="pref_title_player_controller_style">播放控件風格</string>
     <string name="pref_title_start_directory">起始目錄</string>

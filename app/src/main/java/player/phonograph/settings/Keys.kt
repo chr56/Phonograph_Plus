@@ -193,7 +193,7 @@ object Keys {
         get() = PrimitiveKey<Boolean>(booleanPK("disable_real_time_search")) { false }
     //</editor-fold>
 
-    //<editor-fold desc="Experiential">
+    //<editor-fold desc="Experimental">
     val musicLibraryBackend
         get() = PrimitiveKey<String>(stringPK("music_library_backend")) { PROVIDER_MEDIASTORE_DIRECT }
     //</editor-fold>

@@ -100,9 +100,9 @@ private fun AwareSystemUIColor(color: Color) {
 }
 
 @Composable
-fun ExperientialContentThemeOverride(content: @Composable (() -> Unit)) {
+fun ExperimentalContentThemeOverride(content: @Composable (() -> Unit)) {
     MaterialTheme(
-        colors = experientialContentColors(),
+        colors = experimentalContentColors(),
         content = content
     )
 }
@@ -122,7 +122,7 @@ private fun phonographColors(): Colors {
 }
 
 @Composable
-private fun experientialContentColors(): Colors {
+private fun experimentalContentColors(): Colors {
     val resources = LocalResources.current
     val theme by ThemeSettingsDelegate.underlyingTheme(resources).collectAsState(THEME_AUTO_LIGHTBLACK)
     val colorPalette: ColorPalette = defaultColorPalette()
