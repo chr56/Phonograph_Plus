@@ -1,21 +1,17 @@
-version: "1.11.5-dev1"
-channel: "PREVIEW"
+version: "next-edb-1"
+channel: "EAP"
 versionCode: 1114
-timestamp: 1769780000
+timestamp: 1770260000
 notes:
   en:
     items:
-      - "Fix: glitchy Monet color (since v1.11.3)"
-      - "Improve: support resetting Path Filter settings"
-      - "New: add the shortcut of 'Scan Media' if no items to display"
-      - "Development: build with JDK 21"
+      - "New: support editing separators for tags of multiple artists and genres"
+      - "Improve: there is no need to reboot after switching 'Music Library Provider' mode"
 
   zh:
     items:
-      - "修复 异常 Monet 颜色 (v1.11.3 起存在)"
-      - "改进 支持重置文件过滤器设置"
-      - "新增 添加“扫描媒体”快捷方式，若无内容可显示"
-      - "开发 使用 JDK 21 构建"
+      - "新增 支持编辑多艺术家与多流派的分隔符"
+      - "改进 切换 'Music Library Provider' 模式后无需重启"
 
-previousVersion: "1.11.4"
-previousChannel: "STABLE"
+previousVersion: "next-edb-0"
+previousChannel: "EAP"
