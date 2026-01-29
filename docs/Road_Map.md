@@ -1,6 +1,6 @@
 # **Development Road Map** & **TO-DO list**
 
-_Last Update: 2025.12.04_
+_Last Update: 2026.01.29_
 
 ------
 
@@ -24,27 +24,13 @@ _(Completed!)_
 
 #### Stage 4 Solving Complex Relationship for Artists/Albums
 
-_(Completed! But it may have issues.)_
+_(Completed!)_
 
 #### Stage 5 Enhanced Genres
 
-- [x] Table for Genres
+_(Completed!)_
 
-- [ ] Sync logic implementation, with spited field (parse ';', '&', '/', '\', ',')
-
-- [ ] Update loader to enable new implementation 
-
-#### Stage 6 Artwork Cache (Tentative)
-
-Cache artwork information in database, for quicker lookup.
-
-- [ ] Table for artwork locations for Artists/Albums
-
-- [ ] Sync logic implementation
-
-- [ ] Update relative coil components to enable new implementation
-
-#### Stage 7 Independent from MediaStore & Relative Enhancement
+#### Stage 6 Independent from MediaStore & Relative Enhancement
 
 Scan media files manually without any existed metadata from Mediastore; use JAudioTagger to read tags and parse more data.
 
@@ -56,6 +42,16 @@ Scan media files manually without any existed metadata from Mediastore; use JAud
 
 - [ ] Player: use parsed Replay-Gain tag
 
+#### Stage 7 Artwork Cache (Tentative)
+
+Cache artwork information in database, for quicker lookup.
+
+- [ ] Table for artwork locations for Artists/Albums
+
+- [ ] Sync logic implementation
+
+- [ ] Update relative coil components to enable new implementation
+
 #### Stage 8 More Enhancement
 
 - [ ] Enhanced Search
@@ -65,6 +61,14 @@ Scan media files manually without any existed metadata from Mediastore; use JAud
 ## Player Refactor
 
 This part is currently work-in-progress.
+
+#### Refactor Playings Queue
+
+- [ ] integrate PlayingQueue, History, Song Play Count into one Database
+
+- [ ] enhance PlayingQueue with player, support playing other source beside MediaStore, like content uri
+
+- [ ] update UI etc
 
 #### Migrate to Exoplayer (Media3)
 
@@ -79,14 +83,6 @@ Migrate player backend to `Exoplayer`/ `Jetpack Media3`
 - [ ] Refactor architecture for `Exoplayer`
 
 - [ ] support state of "buffing"
-
-#### Refactor Playings Queue
-
-- [ ] integrate PlayingQueue, History, Song Play Count into one Database
-
-- [ ] enhance PlayingQueue with player, support playing other source beside MediaStore, like content uri
-
-- [ ] update UI etc
 
 #### Native Player Decoder (Tentative, possibly canceled)
 
@@ -114,7 +110,7 @@ Integrate with native decoder like `ffmpeg` or `Symphonia`.
 
 - [ ] Reproducible Builds
 
-#### Cloud Player (Tentative, possibly canceled)
+#### Online Player (Tentative, possibly canceled)
 
 - [ ] (Tentative and Planing) Extend player, support Samba/NFS/SFTP
 
