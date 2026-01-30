@@ -7,8 +7,12 @@ package player.phonograph.ui.modules.setting
 import player.phonograph.R
 import player.phonograph.repo.loader.FavoriteSongs
 import player.phonograph.settings.Keys
+import player.phonograph.settings.Setting
+import player.phonograph.ui.compose.ExperimentalContentThemeOverride
 import player.phonograph.ui.modules.setting.components.BooleanPreference
+import player.phonograph.ui.modules.setting.components.DialogPreference
 import player.phonograph.ui.modules.setting.components.SettingsGroup
+import player.phonograph.ui.modules.setting.dialog.TagSeparatorsEditorDialog
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -52,6 +56,33 @@ fun PreferenceScreenAdvanced() {
                 titleRes = R.string.pref_title_disable_real_time_search,
                 summaryRes = R.string.pref_summary_disable_real_time_search,
             )
+        }
+        SettingsGroup(titleRes = R.string.pref_header_experimental) {
+            ExperimentalContentThemeOverride {
+                DialogPreference(
+                    dialog = TagSeparatorsEditorDialog.ArtistsSeparatorsEditor::class.java,
+                    title = "Music Tag Artists Separators",
+                    currentValueForHint = { context ->
+                        Setting(context)[Keys.tagSeparatorsArtists].read().joinToString(" ")
+                    }
+                )
+                DialogPreference(
+                    dialog = TagSeparatorsEditorDialog.FeaturesArtistsAbbrEditor::class.java,
+                    title = "Music Tag Features Artists Abbreviations",
+                    currentValueForHint = { context ->
+                        Setting(context)[Keys.tagAbbrFeatureArtists].read().joinToString(" ")
+                    }
+                )
+                /*
+                DialogPreference(
+                    dialog = TagSeparatorsEditorDialog.GenreSeparatorsEditor::class.java,
+                    title = "Music Tag Genres Separators",
+                    currentValueForHint = { context ->
+                        Setting(context)[Keys.tagSeparatorsGenres].read().joinToString(" ")
+                    }
+                )
+                 */
+            }
         }
         Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.systemBars))
     }
