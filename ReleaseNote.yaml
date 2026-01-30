@@ -1,11 +1,11 @@
 version: "1.11.5-dev1"
 channel: "PREVIEW"
 versionCode: 1114
-timestamp: 1769868000
+timestamp: 1769780000
 notes:
   en:
     items:
-      - "Fix: glitchy Monet colors (since v1.11.3)"
+      - "Fix: glitchy Monet color (since v1.11.3)"
       - "Improve: support resetting Path Filter settings"
       - "New: add the shortcut of 'Scan Media' if no items to display"
       - "Development: build with JDK 21"
