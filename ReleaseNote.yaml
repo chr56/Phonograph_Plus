@@ -1,21 +1,21 @@
-version: "1.11.4"
-channel: "STABLE"
+version: "1.11.5-dev1"
+channel: "PREVIEW"
 versionCode: 1114
-timestamp: 1768985000
+timestamp: 1769868000
 notes:
   en:
     items:
-      - "Fix: no response in Android Auto (since v1.11.3)"
-      - "Fix: text color of crash report in dark mode (since v1.11.3)"
-      - "Fix: crash when resetting certain setting items by long pressing (since v1.10.0)"
-      - "Development: upgrade AGP to 8.13.2"
+      - "Fix: glitchy Monet colors (since v1.11.3)"
+      - "Improve: support resetting Path Filter settings"
+      - "New: add the shortcut of 'Scan Media' if no items to display"
+      - "Development: build with JDK 21"
 
   zh:
     items:
-      - "修复 Android Auto 中无响应 (v1.11.3 起存在)"
-      - "修复 暗色模式下崩溃报告文本颜色 (v1.11.3 起存在)"
-      - "修复 长按部分设置项以重置时崩溃 (v1.10.0 起存在)"
-      - "开发 更新 AGP 至 8.13.2"
+      - "修复 异常 Monet 颜色 (v1.11.3 起存在)"
+      - "改进 支持重置文件过滤器设置"
+      - "新增 添加“扫描媒体”快捷方式，若无内容可显示"
+      - "开发 使用 JDK 21 构建"
 
-previousVersion: "1.11.3"
+previousVersion: "1.11.4"
 previousChannel: "STABLE"
