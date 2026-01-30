@@ -14,6 +14,7 @@ import player.phonograph.model.ui.GeneralTheme.Companion.THEME_LIGHT
 import player.phonograph.settings.Keys
 import player.phonograph.settings.PrimitiveKey
 import player.phonograph.settings.Setting
+import player.phonograph.util.ui.MonetColor
 import util.theme.color.primaryTextColor
 import util.theme.color.secondaryTextColor
 import androidx.annotation.ColorInt
@@ -165,13 +166,13 @@ object ThemeSettingsDelegate {
             _selectedPrimaryColor.value = it
         }
         jobs += observeSetting(context, Keys.monetPalettePrimaryColor, scope) {
-            _monetPalettePrimaryColor.value = it
+            _monetPalettePrimaryColor.value = MonetColor.MonetColorPalette(it).color(context)
         }
         jobs += observeSetting(context, Keys.selectedAccentColor, scope) {
             _selectedAccentColor.value = it
         }
         jobs += observeSetting(context, Keys.monetPaletteAccentColor, scope) {
-            _monetPaletteAccentColor.value = it
+            _monetPaletteAccentColor.value = MonetColor.MonetColorPalette(it).color(context)
         }
         jobs += observeSetting(context, Keys.enableMonet, scope) {
             _enableMonet.value = if (it) 1 else -1
