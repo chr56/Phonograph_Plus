@@ -33,6 +33,8 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.outlined.Build
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -54,19 +56,21 @@ import android.content.ClipData
 import kotlin.math.min
 
 @Composable
-fun PathEditor(
+fun StringValuesEditor(
     modifier: Modifier,
     title: String,
     textDescription: String,
-    paths: List<String>,
+    values: List<String>,
     onDismissRequest: () -> Unit,
     actionAdd: () -> Unit,
     actionRefresh: () -> Unit,
     actionClear: () -> Unit,
     actionRemove: (target: String) -> Unit,
-    actionEdit: (oldPath: String, newPath: String) -> Unit,
+    actionReset: () -> Unit,
+    actionEdit: (oldValue: String, newValue: String) -> Unit,
 ) {
     var showClearConfirmationDialog by remember { mutableStateOf(false) }
+    var showResetConfirmationDialog by remember { mutableStateOf(false) }
     AdvancedDialogFrame(
         modifier = modifier,
         title = title,
@@ -77,12 +81,19 @@ fun PathEditor(
                 textRes = R.string.action_refresh,
                 onClick = actionRefresh,
             ),
+        ),
+        collapsedActions = listOf(
             ActionItem(
-                imageVector = Icons.Default.Delete,
+                imageVector = Icons.Outlined.Delete,
                 textRes = R.string.action_clear,
                 onClick = { showClearConfirmationDialog = true },
             ),
-        )
+            ActionItem(
+                imageVector = Icons.Outlined.Build,
+                textRes = R.string.action_reset,
+                onClick = { showResetConfirmationDialog = true },
+            ),
+        ),
     ) {
         Text(
             textDescription,
@@ -101,17 +112,17 @@ fun PathEditor(
                 .weight(8f)
                 .padding(horizontal = 8.dp)
         ) {
-            val estimatedHeight = remember { (96 + min(384, 48 * paths.size)).dp }
+            val estimatedHeight = remember { (96 + min(384, 48 * values.size)).dp }
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
                     .heightIn(min = estimatedHeight),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                if (paths.isNotEmpty()) {
-                    items(paths) { path ->
-                        PathItem(
-                            path = path,
+                if (values.isNotEmpty()) {
+                    items(values) { value ->
+                        EditableItem(
+                            value = value,
                             actionRemove = actionRemove,
                             actionEdit = actionEdit
                         )
@@ -154,15 +165,23 @@ fun PathEditor(
                 { showClearConfirmationDialog = false }
             )
         }
+        if (showResetConfirmationDialog) {
+            ConfirmationDialog(
+                stringResource(R.string.action_reset),
+                stringResource(R.string.tips_are_you_sure),
+                { actionReset() },
+                { showResetConfirmationDialog = false }
+            )
+        }
     }
 }
 
 
 @Composable
-private fun PathItem(
-    path: String,
+private fun EditableItem(
+    value: String,
     actionRemove: (String) -> Unit,
-    actionEdit: (oldPath: String, newPath: String) -> Unit,
+    actionEdit: (oldValue: String, newValue: String) -> Unit,
 ) {
     val context = LocalContext.current
 
@@ -178,11 +197,10 @@ private fun PathItem(
         var isEditing by remember { mutableStateOf(false) }
 
         if (isEditing) {
-
-            var editedPath by remember { mutableStateOf(path) }
+            var editedValue by remember { mutableStateOf(value) }
             OutlinedTextField(
-                value = editedPath,
-                onValueChange = { editedPath = it },
+                value = editedValue,
+                onValueChange = { editedValue = it },
                 modifier = Modifier
                     .weight(1f)
                     .padding(horizontal = 4.dp),
@@ -195,7 +213,7 @@ private fun PathItem(
             )
 
             IconButton(onClick = {
-                actionEdit(path, editedPath)
+                actionEdit(value, editedValue)
                 isEditing = false
             }) {
                 Icon(
@@ -206,7 +224,7 @@ private fun PathItem(
             }
 
             IconButton(onClick = {
-                editedPath = path
+                editedValue = value
                 isEditing = false
             }) {
                 Icon(
@@ -221,17 +239,17 @@ private fun PathItem(
             var textToCopy by remember { mutableStateOf<String?>(null) }
             LaunchedEffect(textToCopy) {
                 if (textToCopy != null) {
-                    clipboard.setClipEntry(ClipData.newPlainText("PATH", textToCopy).toClipEntry())
+                    clipboard.setClipEntry(ClipData.newPlainText("VALUE", textToCopy).toClipEntry())
                     coroutineToast(context, R.string.action_copy_to_clipboard)
                 }
             }
 
             Text(
-                path,
+                value,
                 modifier = Modifier
                     .weight(1f)
                     .padding(horizontal = 4.dp)
-                    .clickable { textToCopy = path },
+                    .clickable { textToCopy = value },
                 color = MaterialTheme.colors.onSurface,
                 fontSize = 14.sp,
                 maxLines = 3,
@@ -257,8 +275,8 @@ private fun PathItem(
             if (showDeleteConfirmationDialog) {
                 ConfirmationDialog(
                     stringResource(R.string.action_delete),
-                    "$path\n${stringResource(R.string.tips_are_you_sure)}",
-                    { actionRemove(path) },
+                    "$value\n${stringResource(R.string.tips_are_you_sure)}",
+                    { actionRemove(value) },
                     { showDeleteConfirmationDialog = false }
                 )
             }

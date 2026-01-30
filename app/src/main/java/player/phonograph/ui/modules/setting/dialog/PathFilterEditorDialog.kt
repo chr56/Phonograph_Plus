@@ -9,7 +9,7 @@ import player.phonograph.settings.PathFilterSetting
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.LimitedDialog
-import player.phonograph.ui.compose.components.PathEditor
+import player.phonograph.ui.compose.components.StringValuesEditor
 import player.phonograph.ui.modules.explorer.PathSelectorRequester
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.heightIn
@@ -66,18 +66,19 @@ abstract class PathFilterEditorDialog : ComposeViewDialogFragment() {
         PhonographTheme {
             LimitedDialog(onDismiss = ::dismiss) {
                 BoxWithConstraints {
-                    PathEditor(
+                    StringValuesEditor(
                         modifier = Modifier
                             .heightIn(min = this.maxHeight * 0.6666f)
                             .verticalScroll(rememberScrollState()),
                         title = title,
                         textDescription = description,
-                        paths = paths,
+                        values = paths,
                         onDismissRequest = ::dismiss,
                         actionAdd = { viewModel.add(requireActivity()) },
                         actionRefresh = { viewModel.refresh(requireActivity()) },
                         actionClear = { viewModel.clear(requireActivity()) },
                         actionRemove = { target -> viewModel.remove(requireActivity(), target) },
+                        actionReset = { viewModel.reset(requireActivity()) },
                         actionEdit = { from, to -> viewModel.edit(requireActivity(), from, to) },
                     )
                 }
@@ -133,6 +134,13 @@ abstract class PathFilterEditorDialog : ComposeViewDialogFragment() {
         fun clear(context: Context) {
             viewModelScope.launch(Dispatchers.IO) {
                 pathFilterSetting.mode(excludeMode).clear(context)
+                refresh(context)
+            }
+        }
+
+        fun reset(context: Context) {
+            viewModelScope.launch(Dispatchers.IO) {
+                pathFilterSetting.mode(excludeMode).reset(context)
                 refresh(context)
             }
         }
