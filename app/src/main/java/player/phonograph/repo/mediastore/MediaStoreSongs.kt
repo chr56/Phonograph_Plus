@@ -68,6 +68,12 @@ object MediaStoreSongs : ISongs {
         return cursor.intoSongs()
     }
 
+    override suspend fun lastest(context: Context): Song? {
+        val cursor = querySongs(context = context, sortOrder = "$DATE_MODIFIED DESC")
+        return cursor.intoFirstSong()
+    }
+
+    override suspend fun total(context: Context): Int = querySongs(context = context)?.count ?: 0
 
     /**
      * Raw query songs with path filter

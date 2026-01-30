@@ -28,4 +28,7 @@ interface ISongs : Endpoint {
 
     suspend fun since(context: Context, timestamp: Long, useModifiedDate: Boolean = false): List<Song>
 
+    suspend fun lastest(context: Context): Song?
+
+    suspend fun total(context: Context): Int
 }

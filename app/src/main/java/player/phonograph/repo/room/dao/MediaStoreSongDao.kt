@@ -15,7 +15,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.RawQuery
-import androidx.room.Transaction
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 
@@ -49,12 +48,18 @@ abstract class MediaStoreSongDao {
     private fun refOfDate(useModifiedDate: Boolean): String =
         if (useModifiedDate) Columns.DATE_MODIFIED else Columns.DATE_ADDED
 
+    @Query("SELECT * from ${Tables.MEDIASTORE_SONGS} order by ${Columns.DATE_MODIFIED} DESC limit 1")
+    abstract suspend fun latest(): MediastoreSongEntity?
+
+    @Query("SELECT COUNT(*) from ${Tables.MEDIASTORE_SONGS}")
+    abstract suspend fun total(): Int
+
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun insert(song: MediastoreSongEntity)
+    abstract suspend fun update(song: MediastoreSongEntity): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun insert(songs: Collection<MediastoreSongEntity>)
+    abstract suspend fun update(songs: Collection<MediastoreSongEntity>)
 
     @Delete
     abstract suspend fun delete(song: MediastoreSongEntity)
