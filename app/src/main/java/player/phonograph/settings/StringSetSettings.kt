@@ -157,3 +157,29 @@ class PathFilterSetting(private var excludeMode: Boolean) : AbsStringSetSetting(
         EventHub.sendEvent(context.applicationContext, EventHub.EVENT_MUSIC_LIBRARY_CHANGED)
     }
 }
+
+class TagSeparatorsSetting(private var target: Char) : AbsStringSetSetting() {
+
+    companion object {
+        const val TARGET_ABBR_FEATURES_ARTISTS = 'F'
+        const val TARGET_SEPARATORS_ARTISTS = 'A'
+        const val TARGET_SEPARATORS_GENRES = 'G'
+    }
+
+    fun target(newTarget: Char): TagSeparatorsSetting {
+        target = newTarget
+        return this
+    }
+
+    override fun preference(context: Context): Preference<Set<String>> =
+        Setting(context)[
+            when (target) {
+                TARGET_ABBR_FEATURES_ARTISTS -> Keys.tagAbbrFeatureArtists
+                TARGET_SEPARATORS_ARTISTS    -> Keys.tagSeparatorsArtists
+                TARGET_SEPARATORS_GENRES     -> Keys.tagSeparatorsGenres
+                else                         -> throw IllegalArgumentException("Unknown $target")
+            }
+        ]
+
+    override fun onChanged(context: Context, content: Set<String>) {}
+}

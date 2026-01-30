@@ -13,6 +13,9 @@ import player.phonograph.model.file.DefaultIncludedPaths
 import player.phonograph.model.file.DefaultStartDirectory
 import player.phonograph.model.notification.NotificationActionsConfig
 import player.phonograph.model.pages.PagesConfig
+import player.phonograph.model.repo.DEFAULT_TAG_SEPARATORS_ARTISTS
+import player.phonograph.model.repo.DEFAULT_TAG_ABBR_FEATURES_ARTISTS
+import player.phonograph.model.repo.DEFAULT_TAG_SEPARATORS_GENRES
 import player.phonograph.model.repo.PROVIDER_MEDIASTORE_DIRECT
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
@@ -196,6 +199,12 @@ object Keys {
     //<editor-fold desc="Experimental">
     val musicLibraryBackend
         get() = PrimitiveKey<String>(stringPK("music_library_backend")) { PROVIDER_MEDIASTORE_DIRECT }
+    val tagSeparatorsGenres
+        get() = PrimitiveKey<Set<String>>(stringSetPK("tag_separators_genres")) { DEFAULT_TAG_SEPARATORS_GENRES }
+    val tagSeparatorsArtists
+        get() = PrimitiveKey<Set<String>>(stringSetPK("tag_separators_artists")) { DEFAULT_TAG_SEPARATORS_ARTISTS }
+    val tagAbbrFeatureArtists
+        get() = PrimitiveKey<Set<String>>(stringSetPK("tag_abbr_features_artists")) { DEFAULT_TAG_ABBR_FEATURES_ARTISTS }
     //</editor-fold>
 
     //</editor-fold>
