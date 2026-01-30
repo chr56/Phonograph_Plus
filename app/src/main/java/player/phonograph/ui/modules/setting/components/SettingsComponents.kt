@@ -62,7 +62,7 @@ fun BooleanPreference(
     summary: String? = null,
     enabled: Boolean = true,
     writerCoroutineScope: CoroutineScope = rememberCoroutineScope(),
-    onCheckedChange: (Boolean) -> Unit = {},
+    onValueChanged: suspend (Boolean) -> Unit = {},
 ) {
     val preference = rememberSettingPreference(key)
     val value by preference.flow.collectAsState(preference.default)
@@ -72,8 +72,10 @@ fun BooleanPreference(
         title = title(res = titleRes, string = title),
         subtitle = subtitle(res = summaryRes, string = summary),
         onCheckedChange = {
-            writerCoroutineScope.launch(Dispatchers.IO) { preference.edit { it } }
-            onCheckedChange(it)
+            writerCoroutineScope.launch(Dispatchers.IO) {
+                preference.edit { it }
+                onValueChanged(it)
+            }
         },
     )
 }
@@ -166,7 +168,7 @@ fun ListPreference(
     summary: String? = null,
     enabled: Boolean = true,
     writerCoroutineScope: CoroutineScope = rememberCoroutineScope(),
-    onChange: (Int, String) -> Unit = { _, _ -> },
+    onValueChange: suspend (Int, String) -> Unit = { _, _ -> },
 ) {
     val preference = rememberSettingPreference(key)
 
@@ -176,8 +178,8 @@ fun ListPreference(
     val onOptionItemSelected: (Int, String) -> Unit = { index, text ->
         writerCoroutineScope.launch(Dispatchers.IO) {
             preference.edit { optionsValues[index] }
+            onValueChange(index, text)
         }
-        onChange(index, text)
     }
 
     Box(Modifier.heightIn(64.dp, 96.dp)) {
@@ -203,6 +205,7 @@ fun FloatPreference(
     summary: String? = null,
     enabled: Boolean = true,
     writerCoroutineScope: CoroutineScope = rememberCoroutineScope(),
+    onValueChanged: suspend (Float) -> Unit = {},
 ) {
     val preference = rememberSettingPreference(key)
     val value by preference.flow.collectAsState(preference.default)
@@ -227,6 +230,7 @@ fun FloatPreference(
         onValueChangeFinished = {
             writerCoroutineScope.launch {
                 preference.edit { staging }
+                onValueChanged(staging)
             }
         }
     )

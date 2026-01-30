@@ -5,7 +5,7 @@
 package player.phonograph.ui.modules.setting
 
 import player.phonograph.R
-import player.phonograph.repo.loader.replaceFavoriteSongDelegate
+import player.phonograph.repo.loader.FavoriteSongs
 import player.phonograph.settings.Keys
 import player.phonograph.ui.modules.setting.components.BooleanPreference
 import player.phonograph.ui.modules.setting.components.SettingsGroup
@@ -36,9 +36,8 @@ fun PreferenceScreenAdvanced() {
                 key = Keys.useLegacyFavoritePlaylistImpl,
                 titleRes = R.string.pref_title_use_legacy_favorite_playlist_impl,
                 summaryRes = R.string.pref_summary_use_legacy_favorite_playlist_impl,
-            ) {
-                replaceFavoriteSongDelegate(context)
-            }
+                onValueChanged = { FavoriteSongs.recreate(context) }
+            )
             BooleanPreference(
                 key = Keys.useLegacyListFilesImpl,
                 titleRes = R.string.option_use_legacy_list_Files,

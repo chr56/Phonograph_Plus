@@ -80,7 +80,7 @@ fun PreferenceScreenAppearance() {
                 key = Keys.enableMonet,
                 titleRes = R.string.pref_title_enable_monet,
                 summaryRes = R.string.pref_summary_enable_monet,
-                onCheckedChange = {
+                onValueChanged = {
                     @SuppressLint("ObsoleteSdkInt")
                     if (SDK_INT >= N_MR1) PhonographShortcutManager.updateDynamicShortcuts(App.instance)
                 }
@@ -99,7 +99,7 @@ fun PreferenceScreenAppearance() {
                 key = Keys.coloredAppShortcuts,
                 titleRes = R.string.pref_title_app_shortcuts,
                 summaryRes = R.string.pref_summary_colored_app_shortcuts,
-                onCheckedChange = {
+                onValueChanged = {
                     @SuppressLint("ObsoleteSdkInt")
                     if (SDK_INT >= N_MR1) PhonographShortcutManager.updateDynamicShortcuts(App.instance)
                 }

@@ -165,7 +165,7 @@ fun PreferenceScreenContent() {
                 key = Keys.synchronizedLyricsShow,
                 titleRes = R.string.pref_title_synchronized_lyrics_show,
                 summaryRes = R.string.pref_summary_synchronized_lyrics_show,
-                onCheckedChange = { newValue ->
+                onValueChanged = { newValue ->
                     if (!newValue) {
                         // clear lyrics displaying on the status bar now
                         StatusBarLyric.stopLyric()
