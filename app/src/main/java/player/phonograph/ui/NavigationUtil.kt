@@ -5,6 +5,7 @@
 package player.phonograph.ui
 
 import player.phonograph.R
+ import player.phonograph.mechanism.metadata.RelationshipResolver
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Genre
@@ -16,8 +17,6 @@ import player.phonograph.ui.modules.album.AlbumDetailActivity
 import player.phonograph.ui.modules.artist.ArtistDetailActivity
 import player.phonograph.ui.modules.genre.GenreDetailActivity
 import player.phonograph.ui.modules.playlist.PlaylistDetailActivity
-import player.phonograph.util.text.SongRelationship
-import player.phonograph.util.text.splitJointTag
 import player.phonograph.util.theme.tintButtons
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityOptionsCompat
@@ -48,17 +47,13 @@ object NavigationUtil {
     }
 
     suspend fun goToArtist(context: Context, song: Song, sharedElements: Array<Pair<View, String>>? = null) {
-        val artists = findArtists(context, SongRelationship.solve(song).artists).toList()
+        val relationship = RelationshipResolver.fromSettings(context).solve(song)
+        val artists: List<Artist> = findArtists(context, relationship.artists).toList()
         if (artists.isNotEmpty()) {
             goToArtist(context, artists, sharedElements)
         } else {
             goToArtist(context, song.artistId, sharedElements)
         }
-    }
-
-    suspend fun goToArtist(context: Context, artistName: String, sharedElements: Array<Pair<View, String>>? = null) {
-        val artists = findArtists(context, splitJointTag(artistName)).toList()
-        goToArtist(context, artists, sharedElements)
     }
 
     private suspend fun findArtists(context: Context, names: Collection<String>): Set<Artist> =
