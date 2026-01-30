@@ -45,7 +45,7 @@ class PathFilterMigrationRule : UserDataMigrationRule(introduced = 1104) {
         }
         if (existed.isEmpty()) return
         try {
-            CoroutineScope(Dispatchers.IO).launch { PathFilterSetting.add(context, excludeMode, existed) }
+            CoroutineScope(Dispatchers.IO).launch { PathFilterSetting(excludeMode).add(context, existed) }
         } catch (e: IOException) {
             warning(
                 context, TAG,

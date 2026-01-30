@@ -4,6 +4,7 @@
 
 package player.phonograph.settings
 
+import player.phonograph.mechanism.event.EventHub
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -140,4 +141,19 @@ abstract class AbsStringSetSetting {
         onChanged(context, content)
     }
 
+}
+
+class PathFilterSetting(private var excludeMode: Boolean) : AbsStringSetSetting() {
+
+    fun mode(newMode: Boolean): PathFilterSetting {
+        excludeMode = newMode
+        return this
+    }
+
+    override fun preference(context: Context): Preference<Set<String>> =
+        Setting(context)[if (excludeMode) Keys.pathFilterExcludePaths else Keys.pathFilterIncludePaths]
+
+    override fun onChanged(context: Context, content: Set<String>) {
+        EventHub.sendEvent(context.applicationContext, EventHub.EVENT_MUSIC_LIBRARY_CHANGED)
+    }
 }

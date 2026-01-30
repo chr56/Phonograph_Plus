@@ -181,7 +181,7 @@ fun addToBlacklist(context: Context, path: String) {
                             .setMessage(selectedPathText)
                             .setPositiveButton(android.R.string.ok) { dialog, _ ->
                                 CoroutineScope(Dispatchers.IO).launch {
-                                    PathFilterSetting.add(context, true, selectedPathText)
+                                    PathFilterSetting(true).add(context, selectedPathText)
                                 }
                                 dialog.dismiss()
                                 parentDialog.dismiss()

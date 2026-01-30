@@ -150,8 +150,8 @@ object PathFilterDataBackupItemExecutor : JsonDataBackupItemExecutor() {
     override suspend fun import(context: Context, source: Source): Boolean {
         val imported = read(context, ExportedPathFilter.serializer(), source, "PathFilter")
         return if (imported != null) {
-            PathFilterSetting.replace(context, true, imported.blacklist)
-            PathFilterSetting.replace(context, false, imported.whitelist)
+            PathFilterSetting(true).replace(context, imported.blacklist) // excluded
+            PathFilterSetting(false).replace(context, imported.whitelist) // included
             true
         } else {
             false

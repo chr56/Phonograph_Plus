@@ -29,7 +29,7 @@ internal suspend inline fun withPathFilter(
 
     val includeMode = !Setting(context)[Keys.pathFilterExcludeMode].read()
 
-    val paths = PathFilterSetting.read(context, !includeMode).map { "$it%" }
+    val paths = PathFilterSetting(!includeMode).read(context).map { "$it%" }
 
 
     val pattern =

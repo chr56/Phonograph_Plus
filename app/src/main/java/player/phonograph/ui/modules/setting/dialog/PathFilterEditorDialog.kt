@@ -74,11 +74,11 @@ abstract class PathFilterEditorDialog : ComposeViewDialogFragment() {
                         textDescription = description,
                         paths = paths,
                         onDismissRequest = ::dismiss,
-                        actionAdd = { viewModel.addPath(requireActivity()) },
-                        actionRefresh = { viewModel.refreshPaths(requireActivity()) },
-                        actionClear = { viewModel.clearAllPaths(requireActivity()) },
-                        actionRemove = { target -> viewModel.removePath(requireActivity(), target) },
-                        actionEdit = { from, to -> viewModel.editPath(requireActivity(), from, to) },
+                        actionAdd = { viewModel.add(requireActivity()) },
+                        actionRefresh = { viewModel.refresh(requireActivity()) },
+                        actionClear = { viewModel.clear(requireActivity()) },
+                        actionRemove = { target -> viewModel.remove(requireActivity(), target) },
+                        actionEdit = { from, to -> viewModel.edit(requireActivity(), from, to) },
                     )
                 }
             }
@@ -87,51 +87,53 @@ abstract class PathFilterEditorDialog : ComposeViewDialogFragment() {
 
     class PathFilterViewModel(context: Context, val excludeMode: Boolean) : ViewModel() {
 
+        private val pathFilterSetting = PathFilterSetting(excludeMode)
+
         private val _paths = MutableStateFlow<List<String>>(emptyList())
         val paths get() = _paths.asStateFlow()
 
         init {
-            refreshPaths(context)
+            refresh(context)
         }
 
-        fun refreshPaths(context: Context) {
+        fun refresh(context: Context) {
             viewModelScope.launch(Dispatchers.IO) {
-                _paths.value = PathFilterSetting.read(context, excludeMode)
+                _paths.value = pathFilterSetting.mode(excludeMode).read(context).toList()
             }
         }
 
-        fun addPath(context: Context) {
+        fun add(context: Context) {
             chooseFile(context) { selected ->
-                addPath(context, selected)
+                add(context, selected)
             }
         }
 
 
-        fun addPath(context: Context, path: String) {
+        fun add(context: Context, path: String) {
             viewModelScope.launch(Dispatchers.IO) {
-                PathFilterSetting.add(context, excludeMode, path)
-                refreshPaths(context)
+                pathFilterSetting.mode(excludeMode).add(context, path)
+                refresh(context)
             }
         }
 
-        fun removePath(context: Context, path: String) {
+        fun remove(context: Context, path: String) {
             viewModelScope.launch(Dispatchers.IO) {
-                PathFilterSetting.remove(context, excludeMode, path)
-                refreshPaths(context)
+                pathFilterSetting.mode(excludeMode).remove(context, path)
+                refresh(context)
             }
         }
 
-        fun editPath(context: Context, from: String, to: String) {
+        fun edit(context: Context, from: String, to: String) {
             viewModelScope.launch(Dispatchers.IO) {
-                PathFilterSetting.edit(context, excludeMode, from, to)
-                refreshPaths(context)
+                pathFilterSetting.mode(excludeMode).edit(context, from, to)
+                refresh(context)
             }
         }
 
-        fun clearAllPaths(context: Context) {
+        fun clear(context: Context) {
             viewModelScope.launch(Dispatchers.IO) {
-                PathFilterSetting.clear(context, excludeMode)
-                refreshPaths(context)
+                pathFilterSetting.mode(excludeMode).clear(context)
+                refresh(context)
             }
         }
 
