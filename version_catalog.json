@@ -1,6 +1,54 @@
 {
     "versions": [
         {
+            "channel": "preview",
+            "versionName": "1.11.5-dev1",
+            "versionCode": 1114,
+            "date": 1769868000,
+            "link": [
+                {
+                    "name": "Github Release (Website)",
+                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.11.5-dev1"
+                },
+                {
+                    "name": "Github Release Modern Variant APK (File Download Link)",
+                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.11.5-dev1/PhonographPlus_1.11.5-dev1_ModernPreviewRelease.apk"
+                },
+                {
+                    "name": "Github Release Legacy Variant APK (File Download Link)",
+                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.11.5-dev1/PhonographPlus_1.11.5-dev1_LegacyPreviewRelease.apk"
+                }
+            ],
+            "releaseNote": {
+                "zh-cn": "<ol><li>修复 异常 Monet 颜色 (v1.11.3 起存在)</li><li>改进 支持重置文件过滤器设置</li><li>新增 添加“扫描媒体”快捷方式，若无内容可显示</li><li>开发 使用 JDK 21 构建</li></ol>",
+                "en": "<ol><li>Fix: glitchy Monet colors (since v1.11.3)</li><li>Improve: support resetting Path Filter settings</li><li>New: add the shortcut of 'Scan Media' if no items to display</li><li>Development: build with JDK 21</li></ol>"
+            }
+        },
+        {
+            "channel": "next",
+            "versionName": "next-edb-0",
+            "versionCode": 1114,
+            "date": 1769589711,
+            "link": [
+                {
+                    "name": "Github Release (Website)",
+                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/eap_next-edb-0"
+                },
+                {
+                    "name": "Github Release Modern Variant APK (File Download Link)",
+                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/eap_next-edb-0/PhonographPlus_next-edb-0_ModernNextRelease.apk"
+                },
+                {
+                    "name": "Github Release Legacy Variant APK (File Download Link)",
+                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/eap_next-edb-0/PhonographPlus_next-edb-0_LegacyNextRelease.apk"
+                }
+            ],
+            "releaseNote": {
+                "zh-cn": "<ol><li>注意 此为首个处理复杂标签关系的的公开早期预览版</li><li>新增 添加实验性选项“Music Library Provider”，用于启用解析复杂标签关系的数据库作为数据源</li><li>新增 支持解析并组织由 “;”、 “/”、 “&”、 “ft.” 分隔的多艺术家标签</li><li>新增 支持解析并组织由 “;”、 “,”、 “&” 分隔的多流派标签</li></ol>",
+                "en": "<ol><li>Note: this is the first public Early Preview version with enhanced database for complex tag relationship</li><li>New: Experimental setting option 'Music Library Provider' in 'Advanced', to enable new database as the source for parsed complex tag relationship</li><li>New: support parsing and reorganizing multiple artists split by ';', '/', '&', 'ft.' in relative tags</li><li>New: support parsing and reorganizing multiple genres split by ';', ',', '&' in genre tag</li></ol>"
+            }
+        },
+        {
             "channel": "stable",
             "versionName": "1.11.4",
             "versionCode": 1114,
@@ -22,54 +70,6 @@
             "releaseNote": {
                 "zh-cn": "<ol><li>修复 Android Auto 中无响应 (v1.11.3 起存在)</li><li>修复 暗色模式下崩溃报告文本颜色 (v1.11.3 起存在)</li><li>修复 长按部分设置项以重置时崩溃 (v1.10.0 起存在)</li><li>开发 更新 AGP 至 8.13.2</li></ol>",
                 "en": "<ol><li>Fix: no response in Android Auto (since v1.11.3)</li><li>Fix: text color of crash report in dark mode (since v1.11.3)</li><li>Fix: crash when resetting certain setting items by long pressing (since v1.10.0)</li><li>Development: upgrade AGP to 8.13.2</li></ol>"
-            }
-        },
-        {
-            "channel": "stable",
-            "versionName": "1.11.3",
-            "versionCode": 1113,
-            "date": 1766590000,
-            "link": [
-                {
-                    "name": "Github Release (Website)",
-                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.11.3"
-                },
-                {
-                    "name": "Github Release Modern Variant APK (File Download Link)",
-                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v1.11.3/PhonographPlus_1.11.3_ModernStableRelease.apk"
-                },
-                {
-                    "name": "Github Release Legacy Variant APK (File Download Link)",
-                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v1.11.3/PhonographPlus_1.11.3_LegacyStableRelease.apk"
-                }
-            ],
-            "releaseNote": {
-                "zh-cn": "<ol><li>修复 三处内存泄漏</li><li>修复 手动切换主题时不完整切换</li><li>修复 在成功导入备份后不触发重启</li><li>改进 稍微加快加载速度</li><li>改进 为“扫描媒体”操作添加提示与选项</li><li>修改 禁止从 v1.8.2 之前的版本升级, 警告从 v1.9.3 之前的版本升级</li><li>翻译 更新德语 (jande75)</li><li>开发 使用 SDK 36 构建, 更新依赖</li></ol>",
-                "en": "<ol><li>Fix: three memory leaks</li><li>Fix: incomplete color updates after a manual theme switch</li><li>Fix: missing reboot after a successful backup import (since v1.11.2)</li><li>Improve: slightly accelerate loading speed</li><li>Improve: add hint and options for Scan Media action</li><li>Modify: forbid upgrading from prior to v1.8.2 & warn upgrading from prior to v1.9.3</li><li>Translation: update German (by jande75)</li><li>Development: build with SDK 36, update dependencies</li></ol>"
-            }
-        },
-        {
-            "channel": "preview",
-            "versionName": "1.11.3-dev1",
-            "versionCode": 1113,
-            "date": 1766300000,
-            "link": [
-                {
-                    "name": "Github Release (Website)",
-                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.11.3-dev1"
-                },
-                {
-                    "name": "Github Release Modern Variant APK (File Download Link)",
-                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.11.3-dev1/PhonographPlus_1.11.3-dev1_ModernPreviewRelease.apk"
-                },
-                {
-                    "name": "Github Release Legacy Variant APK (File Download Link)",
-                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.11.3-dev1/PhonographPlus_1.11.3-dev1_LegacyPreviewRelease.apk"
-                }
-            ],
-            "releaseNote": {
-                "zh-cn": "<ol><li>修复 手动切换主题时切换不完整</li><li>改进 稍微加快加载速度</li><li>改进 为“扫描媒体”操作添加提示与选项</li><li>修改 禁止从 v1.8.2 之前的版本升级, 警告从 v1.9.3 之前的版本升级</li><li>开发 使用 SDK 36 构建, 更新依赖</li></ol>",
-                "en": "<ol><li>Fix: incompleted switching when manually switching theme</li><li>Improve: slightly accelerate loading speed</li><li>Improve: add hint and options for Scan Media action</li><li>Modify: forbid upgrading from prior to v1.8.2 & warn upgrading from prior to v1.9.3</li><li>Development: build with SDK 36, update dependencies</li></ol>"
             }
         }
     ]
