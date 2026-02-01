@@ -6,7 +6,7 @@ _This document seeks to improve clarity and coherence._
 
 See also [Developer Guide](./Developer_Guide.md).
 
-_Last Updated at 2025.04.04_
+_Last Updated at 2026.01.31_
 
 ## Requirements
 
@@ -19,9 +19,9 @@ You may would like to build the application from source instead of developing an
     - enough available storage space, on user home disk (at least ~2G)  
 - Compatible desktop operating system [^PC]:
     - Windows 10/11 (tested)
-    - Ubuntu 22.04 (tested)
-- JDK 17 (AGP 8.8.2 with gradle 8.12.1 are used in this project)
-- Android SDK (automatically downloadable in entire process)
+    - Ubuntu 24.04 (tested)
+- JDK 21 (Android Gradle Plugin 8.13.2 along with gradle 8.14.3 are used in this project)
+- Android SDK (automatically downloaded via AGP)
 - Internet connection 
 
 [^PC]: Compatibility is uncertain on Termux; Android 16 with full Linux VM may be compatible.
@@ -30,7 +30,7 @@ You may would like to build the application from source instead of developing an
 
 If you would like to contribute:
 
-- Android Studio Ladybug Feature Drop | 2024.2.2 Patch 2
+- Android Studio Otter 2 Feature Drop | 2025.2.2
   (Note: JetBrain IDEA may not be compatible due to its limited support on latest Android Gradle Plugin) 
 
 ## Build Instructions
@@ -54,19 +54,19 @@ Temurin by Eclipse Adoptium Foundation for example:
 ##### Windows
 
 ```shell
-winget install --id EclipseAdoptium.Temurin.17.JDK
+winget install --id EclipseAdoptium.Temurin.21.JDK
 ```
 
 ##### Linux (Debian / Ubuntu / ...)
 
 ```shell
-apt-get install temurin-17-jdk
+apt-get install temurin-21-jdk
 ```
 
 ##### Linux (Fedora / RedHat / SUSE)
 
 ```shell
-yum install temurin-17-jdk
+yum install temurin-21-jdk
 ```
 
 ### 3. Change Directory to Repository Root

@@ -4,7 +4,7 @@ This document describes the overview of this project for developers.
 
 See also [Build Instruction](./Build_Instructions.md).
 
-_Last Update: 2025.05.07_
+_Last Update: 2026.01.31_
 
 ## Toolchain & Dependencies
 
@@ -16,10 +16,10 @@ Please refer [libs.versions.toml](../gradle/libs.versions.toml) for all the libr
 
 **Toolchain**
 
-- Gradlew `8.12.1`, requiring JDK `17`
-- `Android Gradle Plugin` `8.9.2`
-- Android SDK `35`
-- kotlin for JVM(Android) `2.1.20`
+- Gradlew `8.14.3`, along with JDK `21`
+- `Android Gradle Plugin` `8.13.2`
+- Android SDK `36`
+- kotlin for JVM(Android) `2.2.20`
 
 **Libraries**
 
@@ -43,12 +43,13 @@ And, there are two default `BuildType`s (`debug`/`release`), and all `release` s
 
 #### Dimension `channel`
 
-| Dimension `channel`[^2] | Extra Package Name Suffix |                   Usage                   | Note              |
-|:-----------------------:|:-------------------------:|:-----------------------------------------:|-------------------|
-|        `stable`         |         _(None)_          | **Stable** & **LTS**<br/> channel release |                   |
-|        `fdroid`         |         _(None)_          |  **Fdroid** _reproducible build_ release  | based on `stable` |
-|        `preview`        |        `.preview`         |     **Preview**<br/> channel release      |                   |
-|       `checkout`        |        `.checkout`        |         (`Github Action` Build )          | for locating bug  |
+| Dimension `channel`[^2] | Extra Package Name Suffix |                     Usage                     | Note              |
+|:-----------------------:|:-------------------------:|:---------------------------------------------:|-------------------|
+|        `stable`         |         _(None)_          |   **Stable** & **LTS**<br/> channel release   |                   |
+|        `fdroid`         |         _(None)_          |    **Fdroid** _reproducible build_ release    | based on `stable` |
+|        `preview`        |        `.preview`         |       **Preview**<br/> channel release        |                   |
+|         `next`          |          `.eap`           | **Early Access Preview**<br/> channel release |                   |
+|       `checkout`        |        `.checkout`        |           (`Github Action` Build )            | for locating bug  |
 
 [^2]: Before v0.4.0, there are more variants (like `common` as `stable`, `ci` for `Github Action`).
 
@@ -67,24 +68,23 @@ We make this distinction mostly for bypassing _Scope Storage_ for Android 10.
 
 Currently:
 
-- _app_(`app/`): all actual code of the Phonograph Plus
-- _changelog-generator_(`tools/changelog-generator`): for generating changelog from
+- _app_(`app/`): source code of the Phonograph Plus
+- _changelog-generator_(`tools/changelog-generator`): utility for generating formated changelogs and release notes
 
 #### Repository Structure
 
-Except gradle's file ():
+Except files relative to gradle or building:
 
 - `.github/`: `Github Action` and templates
 - `.idea/`: Android Studio's config including code style config and run config
 - `app/`, `tools/changelog-generator`: Gradle Module
 - `docs/`: documents
-- `scripts/`: bash scripts for ci
+- `scripts/`: utility scripts
 - `fastlane/metadata/android/`: F-droid metadata, like summary, screenshot, changelogs
-- `version_catalog.json`: containing the latest version information that Phonograph Plus would read at
-- startup
 - `crowdin.yml`: Crowdin configuration
-- `LICENSE.txt`: GPL licenses
-- `ReleaseNote.toml`: GitHub Action `preview_release` read this and post to Release Page
+- `ReleaseNote.yaml`, `ReleaseNoteStable.yaml`: Pending release notes as well as metadata, used for generating changelogs and release note everywhere on releasing 
+- `fdroid.properties`: metadata of current latest version, unused
+- `version_catalog.json`: containing the latest version metadata that Phonograph Plus used for checking updates
 
 #### Source Code Structure of Phonograph Plus
 
