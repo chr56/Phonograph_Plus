@@ -23,7 +23,10 @@
         <item name="colorBackgroundFloating">@color/background_medium_lightdark</item>
         <item name="defaultFooterColor">@color/background_footer_lightdark</item>
         <item name="dividerColor">@color/divider_lightdark</item>
-        <item name="iconColor">@color/secondary_text_default</item>
+        <item name="iconColor">@color/default_text_color_secondary</item>
+
+        <item name="android:textColorPrimary">@color/default_text_color_primary</item>
+        <item name="android:textColorSecondary">@color/default_text_color_secondary</item>
 
         <item name="colorAccent">@color/grey_highlight</item> <!-- just in case-->
         <item name="colorControlActivated">@color/grey_highlight</item>
@@ -52,7 +55,10 @@
         <item name="colorBackgroundFloating">@color/background_medium_dark</item>
         <item name="defaultFooterColor">@color/background_footer_dark</item>
         <item name="dividerColor">@color/divider_dark</item>
-        <item name="iconColor">@color/secondary_text_default_darkmode</item>
+        <item name="iconColor">@color/secondary_text_dark</item>
+
+        <item name="android:textColorPrimary">@color/primary_text_dark</item>
+        <item name="android:textColorSecondary">@color/secondary_text_dark</item>
 
         <item name="colorAccent">@android:color/white</item> <!-- just in case-->
         <item name="colorControlActivated">@color/md_grey_200</item>
@@ -81,7 +87,10 @@
         <item name="colorBackgroundFloating">@color/background_heavy_light</item>
         <item name="defaultFooterColor">@color/background_footer_light</item>
         <item name="dividerColor">@color/divider_light</item>
-        <item name="iconColor">@color/secondary_text_default_lightmode</item>
+        <item name="iconColor">@color/secondary_text_light</item>
+
+        <item name="android:textColorPrimary">@color/primary_text_light</item>
+        <item name="android:textColorSecondary">@color/secondary_text_light</item>
 
         <item name="colorAccent">@android:color/black</item> <!-- just in case-->
         <item name="colorControlActivated">@color/md_grey_700</item>
