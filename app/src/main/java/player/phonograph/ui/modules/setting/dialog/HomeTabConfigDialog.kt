@@ -11,6 +11,8 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.adapter.SortableListAdapter
 import player.phonograph.ui.compose.components.ActionItem
+import player.phonograph.util.theme.ThemeSettingsDelegate.textColorPrimary
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -109,10 +111,12 @@ class HomeTabConfigDialog : AbsSettingsDialog() {
         }
 
         override fun onCreateContentView(parent: ViewGroup, viewType: Int): View {
-            return TextView(parent.context).apply {
+            val context = parent.context
+            return AppCompatTextView(context, null).apply {
                 textSize = 16f
                 gravity = Gravity.CENTER_VERTICAL
                 textAlignment = View.TEXT_ALIGNMENT_TEXT_START
+                setTextColor(textColorPrimary(context))
             }
         }
 

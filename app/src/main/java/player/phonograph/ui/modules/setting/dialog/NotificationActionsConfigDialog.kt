@@ -12,6 +12,7 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.adapter.SortableListAdapter
 import player.phonograph.ui.compose.components.ActionItem
+import player.phonograph.util.theme.ThemeSettingsDelegate.textColorPrimary
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -136,6 +137,7 @@ class NotificationActionsConfigDialog : AbsSettingsDialog() {
             val binding = ItemRightCheckboxBinding.bind(contentView)
             val item = dataset[holder.bindingAdapterPosition].content
             binding.textview.text = contentView.resources.getText(item.notificationAction.stringRes)
+            binding.textview.setTextColor(textColorPrimary(contentView.context))
             binding.checkbox.isChecked = item.displayInCompat
             binding.checkbox.setOnClickListener { view ->
                 val position = holder.bindingAdapterPosition

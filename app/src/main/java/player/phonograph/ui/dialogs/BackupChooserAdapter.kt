@@ -7,6 +7,8 @@ package player.phonograph.ui.dialogs
 import player.phonograph.mechanism.backup.Backup
 import player.phonograph.model.backup.BackupItem
 import player.phonograph.ui.adapter.SortableListAdapter
+import player.phonograph.util.theme.ThemeSettingsDelegate.textColorPrimary
+import androidx.appcompat.widget.AppCompatTextView
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -25,10 +27,12 @@ class BackupChooserAdapter(
     }
 
     override fun onCreateContentView(parent: ViewGroup, viewType: Int): View {
-        return TextView(parent.context).apply {
+        val context = parent.context
+        return AppCompatTextView(context, null).apply {
             textSize = 16f
             gravity = Gravity.CENTER_VERTICAL
             textAlignment = View.TEXT_ALIGNMENT_TEXT_START
+            setTextColor(textColorPrimary(context))
         }
     }
 
