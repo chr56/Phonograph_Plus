@@ -1,4 +1,4 @@
-<b>An independent fork of Phonograph in development</b><br />
+<b>Незалежний форк Phonograph у розробці</b><br />
 
 Phonograph is a light-weighted material designed local music player for Android.
 Phonograph Plus is an <i>independent</i> fork of Phonograph since it is no longer maintained,
