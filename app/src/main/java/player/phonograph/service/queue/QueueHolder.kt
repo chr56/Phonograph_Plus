@@ -115,29 +115,6 @@ class QueueHolder private constructor(
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun valid(context: Context): Boolean {
-        val previousPlayingQueue = playingQueue.toList()
-        val previousOriginalPlayingQueue = originalPlayingQueue.toList()
-        return runBlocking {
-            val validatedQueue = QueueValidator.markInvalidSongs(context, previousPlayingQueue)
-            val validatedOriginalQueue = QueueValidator.markInvalidSongs(context, previousOriginalPlayingQueue)
-            val changed =
-                validatedQueue != previousPlayingQueue || validatedOriginalQueue != previousOriginalPlayingQueue
-            synchronized(queueLock) {
-                if (
-                    previousPlayingQueue == playingQueue && previousOriginalPlayingQueue == originalPlayingQueue // avoid data race
-                ) {
-                    if (changed) {
-                        playingQueue = validatedQueue
-                        originalPlayingQueue = validatedOriginalQueue
-                    }
-                } // cancel if user changes queue before validation
-            }
-            changed
-        }
-    }
-
-    @Suppress("UNCHECKED_CAST")
     fun clean(context: Context): Boolean {
         val previousPlayingQueue = playingQueue.toList()
         val previousOriginalPlayingQueue = originalPlayingQueue.toList()

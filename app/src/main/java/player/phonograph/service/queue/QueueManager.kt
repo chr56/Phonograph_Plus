@@ -4,20 +4,17 @@
 
 package player.phonograph.service.queue
 
-import player.phonograph.foundation.error.record
 import player.phonograph.model.Song
 import player.phonograph.model.service.QueueObserver
 import player.phonograph.model.service.RepeatMode
 import player.phonograph.model.service.ShuffleMode
 import player.phonograph.service.MusicPlayerRemote
 import android.app.Application
-import android.content.Context
 import android.os.Handler
 import android.os.HandlerThread
 import android.os.Looper
 import android.os.Message
 import android.os.Process.THREAD_PRIORITY_BACKGROUND
-import kotlin.concurrent.thread
 
 @Suppress("unused")
 class QueueManager(val context: Application) {
@@ -30,20 +27,6 @@ class QueueManager(val context: Application) {
         thread.start()
         handler = QueueManagerHandler(thread.looper)
         queueHolder = QueueHolder.fromPersistence(context)
-
-
-        thread(name = "queue_validation", priority = THREAD_PRIORITY_BACKGROUND) {
-            if (validQueueChanges(context, queueHolder)) {
-                notifyQueueChanged(queueHolder.playingQueue)
-            }
-        }
-    }
-
-    private fun validQueueChanges(context: Context, queueHolder: QueueHolder): Boolean = try {
-        queueHolder.valid(context)
-    } catch (e: Throwable) {
-        record(context, e, TAG)  // validation is optional
-        false
     }
 
     private var snapShotsItemCount: Long = 0
