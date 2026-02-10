@@ -1,0 +1,40 @@
+<b>Незалежний форк Phonograph у розробці</b><br />
+
+Phonograph is a light-weighted material designed local music player for Android.
+Phonograph Plus is an <i>independent</i> fork of Phonograph since it is no longer maintained,
+and has been in maintenance and development since 2021. <br />
+
+Phonograph Plus inherits all features from Phonograph:
+
+
+- Light weight
+- Offline, AD-free and privacy
+- Classic Material Design 2
+- Night mode (Light, Dark, Black) supporting automatically switching
+- Customizable theme color (primary, accent) with Monet support
+- Foundational audio playing function (including speed control, sleep timer and equalizer externally provided by system)
+- Flexible queue management (shuffle, repeat, freely rearrange by dragging, queue snapshots)
+- Lyrics support (both synchronized .lrc lyrics and text lyrics, embed or external)
+- Flexible playback notifications that are highly customizable
+- Flexible music organization, organised by songs, artist, albums, genres and folders (flatten or treed), ordered by various orders, with
+  multiple selection support, viewed in grid or list with various layout style
+- Flexible main player user interface that are highly customizable
+- Android Auto support
+- Highly customizable behaviours for clicking
+- Path filter (excluded mode or included mode)
+- Search support
+- Favorite songs support
+- File Playlist support (viewing and basic editing; also pin-able)
+- Internal Database Playlist support
+- Play history and frequency record, and last added songs by flexible time intervals
+- Enhanced audio metadata viewer and tag editor
+- App shortcut and widgets
+- Multiple source of artwork
+- Backup support of settings and data
+- In-app language switch
+- ...
+
+
+Visit project homepage ob GitHub to learn more.
+
+Phonograph Plus is available on GitHub Releases (Stable Channel and Preview Channel) and F-Droid (Stable Channel)
