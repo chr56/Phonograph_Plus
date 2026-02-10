@@ -130,6 +130,8 @@
     <string name="err_permissions_denied">Pristup odbijen.</string>
     <string name="err_permission_external_storage_denied">Dopuštenje za pristup vanjskoj pohrani je odbijeno.</string>
     <string name="err_could_not_scan_files">Nije moguće skenirati %d datoteka.</string>
+    <string name="notification_playing_name">Obavijest reprodukcije</string>
+    <string name="notification_playing_description">Obavijest reprodukcije pruža radnje za reprodukciju/pauzu itd.</string>
     <string name="app_widget_big_name">Phonograph - Veliki</string>
     <string name="app_widget_classic_name">Phonograph - Klasični</string>
     <string name="app_widget_small_name">Phonograph - Mali</string>

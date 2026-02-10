@@ -132,6 +132,8 @@
     <string name="err_permissions_denied">Oprávnění zamítnuta. </string>
     <string name="err_permission_external_storage_denied">Přístup k otevření externího úložiště zamítnut. </string>
     <string name="err_could_not_scan_files">Nelze skenovat %d souborů.</string>
+    <string name="notification_playing_name">Oznámení o přehrávání</string>
+    <string name="notification_playing_description">Oznámení o přehrávání obsahuje akce pro přehrávání/pauzu atd.</string>
     <string name="app_widget_big_name">Phonograph - Velký</string>
     <string name="app_widget_classic_name">Phonograph - Klasický</string>
     <string name="app_widget_small_name">Phonograph - Malý</string>
