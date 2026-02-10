@@ -126,6 +126,8 @@
     <string name="err_permissions_denied">Permisiune refuzată.</string>
     <string name="err_permission_external_storage_denied">Permisiunea de a accesa stocarea externă a fost respinsă.</string>
     <string name="err_could_not_scan_files">Nu s-au putut scana %d fişiere.</string>
+    <string name="notification_playing_name">Notificare de redare</string>
+    <string name="notification_playing_description">Notificarea de redare oferă acțiuni de redare/pauză etc.</string>
     <string name="app_widget_big_name">Phonograph - Mare</string>
     <string name="app_widget_classic_name">Phonograph - Clasic</string>
     <string name="app_widget_small_name">Phonograph - Mic</string>
