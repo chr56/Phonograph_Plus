@@ -170,6 +170,12 @@
     <string name="err_file_incorrect">File tidak benar!</string>
     <string name="err_failed_to_delete">Gagal menghapus</string>
     <string name="err_permission_manage_external_storage_denied">sepertinya Phonograph tidak mempunyai izin \"mengelola penyimpanan external\"!</string>
+    <string name="notification_playing_name">Notifikasi bermain</string>
+    <string name="notification_playing_description">Notifikasi bermain memberi tindakan untuk putar/jeda, dll.</string>
+    <string name="notification_update_name">Perbarui</string>
+    <string name="notification_update_description">Notifikasi dari aplikasi bisa di perbarui.</string>
+    <string name="notification_error_name">Laporan Kesalahan</string>
+    <string name="notification_background_name">Kerja Latar Belakang </string>
     <string name="app_widget_big_name">Phonograph - Besar</string>
     <string name="app_widget_classic_name">Phonograph - Klasik</string>
     <string name="app_widget_small_name">Phonograph - Kecil</string>
@@ -222,12 +228,14 @@
     <string name="pref_title_send_lyrics">Tampilkan lirik yang tersinkronisasi</string>
     <string name="pref_title_synchronized_lyrics_show">Tampilkan lirik yang tersinkronisasi</string>
     <string name="pref_title_use_legacy_favorite_playlist_impl">Gunakan mekanisme daftar putar favorit legacy</string>
+    <string name="perf_title_fixed_tab_layout">Perbaiki semua tab</string>
     <string name="pref_summary_audio_ducking">Pemberitahuan, navigasi dll.</string>
     <string name="pref_summary_classic_notification">Gunakan desain notifikasi klasik.</string>
     <string name="pref_summary_colored_app_shortcuts">Mewarnai pintasan-pintasan dengan warna utama.</string>
     <string name="pref_summary_colored_navigation_bar">Mewarnai bilah navigasi dengan warna primer. </string>
     <string name="pref_summary_colored_notification">Mewarnai notifikasi putar dengan warna yang cerah dari album.</string>
     <string name="pref_summary_display_lyrics_time_axis">Tampilkan waktu mulai lirik yang tersinkronisasi di lirik dialog.</string>
+    <string name="pref_summary_fixed_tab_layout">Tab di atas tidak dapat digulir, tetapi memutari ubin tanpa batas apapun.</string>
     <string name="pref_summary_gapless_playback">Dapat menyebabkan masalah pemutaran pada beberapa perangkat.</string>
     <string name="pref_summary_library_categories">Konfigurasi visibilitas dan urutan kategori perpustakaan.</string>
     <string name="pref_summary_playlist_files_operation_behaviour">Perilaku tentang bagaimana operasi daftar putar file ketika dibuat, diubah dll. Untuk file daftar putar.</string>

@@ -167,6 +167,9 @@
     <string name="err_failed_to_delete">فشل في الحذف</string>
     <string name="err_no_storage_write_permission">لا يملك تطبيق الحاكي (فُنُكراف) الاذونات اللازمة للكتابة او تعديل او حذف الملفات! </string>
     <string name="err_permission_manage_external_storage_denied">يبدو ان الحاكي (فُنُكراف) لا يملك الاذن للتحكم في الذاكرة الخارجية!</string>
+    <string name="notification_playing_name">إشعار التشغيل</string>
+    <string name="notification_playing_description">إشعار التشغيل يوفر أزرار تحكم للتشغيل/الإيقاف المؤقت إلخ.</string>
+    <string name="notification_background_name">العمل في الخلفية</string>
     <string name="app_widget_big_name">Phonograph - كبير</string>
     <string name="app_widget_classic_name">Phonograph - كلاسيكي</string>
     <string name="app_widget_small_name">Phonograph - صغير</string>
@@ -216,11 +219,13 @@
     <string name="pref_title_remember_last_tab">تذكر آخر لسان</string>
     <string name="pref_title_remember_shuffle">تذكر الخلط</string>
     <string name="pref_title_synchronized_lyrics_show">عرض كلمات الأغاني المتزامنة</string>
+    <string name="perf_title_fixed_tab_layout">إصلاح كافة علامات التبويب</string>
     <string name="pref_summary_audio_ducking">الإشعارات، التنقل، إلخ.</string>
     <string name="pref_summary_classic_notification">استعمال تصميم الإشعار الكلاسيكي.</string>
     <string name="pref_summary_colored_app_shortcuts">تلوين اختصارات التطبيق باللون الأساسي.</string>
     <string name="pref_summary_colored_navigation_bar">تلوين شريط التنقل باللون الأساسي.</string>
     <string name="pref_summary_colored_notification">\u062a\u0644\u0648\u064a\u0646 \u0627\u0644\u0625\u0634\u0639\u0627\u0631 \u0628\u0644\u0648\u0646 \u063a\u0644\u0627\u0641 \u0627\u0644\u0623\u0644\u0628\u0648\u0645 \u0627\u0644\u0628\u0627\u0631\u0632.</string>
+    <string name="pref_summary_fixed_tab_layout">علامات التبويب في الجزء العلوي لن تكون قابلة للتمرير، ولكن  سيتم تبويبها بحد معين. </string>
     <string name="pref_summary_gapless_playback">قد يسبب مشاكل في التشغيل على بعض الأجهزة.</string>
     <string name="pref_summary_library_categories">تخصيص رؤية وترتيب أقسام المكتبة.</string>
     <string name="pref_summary_playlist_files_operation_behaviour">السلوكيات حول كيفية تشغيل ملفات قائمة التشغيل عند الإنشاء، تعديل  لملفات قوائم التشغيل.</string>
