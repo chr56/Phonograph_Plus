@@ -221,6 +221,12 @@
     <string name="err_failed_to_delete">Impossibile eliminare</string>
     <string name="err_no_storage_write_permission">Phonograph non ha i permessi per scrivere modificare o cancellare i file!</string>
     <string name="err_permission_manage_external_storage_denied">sembra che Phonograph non abbia il permesso di \"gestire l\'archiviazione esterna\"!</string>
+    <string name="notification_playing_name">Notifica di riproduzione</string>
+    <string name="notification_playing_description">La notifica di riproduzione offre azioni per play/pausa ecc.</string>
+    <string name="notification_update_name">Aggiorna</string>
+    <string name="notification_update_description">Le notifiche dell\'app possono essere aggiornate.</string>
+    <string name="notification_error_name">Segnalazioni di errore</string>
+    <string name="notification_background_name">Lavoro di fondo</string>
     <string name="app_widget_big_name">Phonograph - Grande</string>
     <string name="app_widget_classic_name">Phonograph - Classico</string>
     <string name="app_widget_small_name">Phonograph - Piccolo</string>
@@ -285,6 +291,7 @@
     <string name="pref_title_synchronized_lyrics_show">Mostra testi sincronizzati</string>
     <string name="pref_title_use_legacy_favorite_playlist_impl">Usa il meccanismo legacy della playlist Preferiti</string>
     <string name="pref_title_use_legacy_status_bar_lyrics_api">Usa l\'API legacy StatusBar Lyrics</string>
+    <string name="perf_title_fixed_tab_layout">Fissa tutte le schede</string>
     <string name="pref_summary_audio_ducking">Notifiche, navigazione ecc.</string>
     <string name="pref_summary_auto_check_for_updates">Invia una notifica quando è disponibile una nuova versione.</string>
     <string name="pref_summary_broadcast_current_player_state">Trasmetti lo stato attuale del riproduttore ad altre applicazioni come Musixmatch.</string>
@@ -296,6 +303,7 @@
     <string name="pref_summary_colored_notification">La notifica \u00e8 colorata secondo la gamma di colori della copertina.</string>
     <string name="pref_summary_display_lyrics_time_axis">Visualizza l\'ora di inizio dei testi sincronizzati nella finestra di dialogo dei testi.</string>
     <string name="pref_summary_enable_monet">Utilizza un tema Material You basato sullo sfondo. (Funzione sperimentale, supporto parziale a Material You)</string>
+    <string name="pref_summary_fixed_tab_layout">Le schede in alto non saranno scrollabili, ma verranno affiancate senza alcun margine.</string>
     <string name="pref_summary_gapless_playback">Può causare problemi di riproduzione su alcuni dispositivi.</string>
     <string name="pref_summary_library_categories">Configura visibilità e ordine delle categorie della libreria.</string>
     <string name="pref_summary_load_lyrics">Interruttore generale dei testi, disattiva per disabilitare tutti i testi</string>
