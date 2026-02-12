@@ -32,11 +32,10 @@ fun createAlbum(id: Long, songs: List<Song>): Album {
         val songLatest = songs.maxBy { it.dateModified }
         val songWithAlbumArtist = songs.firstOrNull { !it.albumArtistName.isNullOrEmpty() }
         val songWithArtist = songs.firstOrNull { !it.artistName.isNullOrEmpty() }
-        val candidateSong = songWithAlbumArtist ?: songWithArtist ?: songLatest
 
         val title = songs.firstNotNullOfOrNull { it.albumName } ?: Album.UNKNOWN_ALBUM_DISPLAY_NAME
-        val artistId = candidateSong.artistId
-        val artistName = candidateSong.artistName
+        val artistId = songWithArtist?.artistId ?: songLatest.artistId
+        val artistName = songWithAlbumArtist?.albumArtistName ?: songWithArtist?.artistName
         val year = songLatest.year
         val dateModified = songLatest.dateModified
         return Album(
