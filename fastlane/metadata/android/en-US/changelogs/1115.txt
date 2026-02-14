@@ -1,0 +1,6 @@
+<b>1.11.5(1114) 2026.02.05</b>
+- Fix: glitchy Monet colors (since v1.11.3)
+- Fix: inverted text color on some dialogs in non-auto theme
+- Improve: support resetting Path Filter settings
+- New: add the shortcut of 'Scan Media' if no items to display
+- Development: build with JDK 21
