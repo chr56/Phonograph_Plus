@@ -1,23 +1,23 @@
-version: "1.11.5"
-channel: "STABLE"
-versionCode: 1114
-timestamp: 1770270000
+version: "1.12.0-dev1"
+channel: "PREVIEW"
+versionCode: 1116
+timestamp: 1771062000
 notes:
   en:
     items:
-      - "Fix: glitchy Monet colors (since v1.11.3)"
-      - "Fix: inverted text color on some dialogs in non-auto theme"
-      - "Improve: support resetting Path Filter settings"
-      - "New: add the shortcut of 'Scan Media' if no items to display"
-      - "Development: build with JDK 21"
+      - "Fix: picking of the album artist"
+      - "Improve: support genres search"
+      - "Improve: sync initial search tab with the current tab"
+      - "Improve: slightly accelerate response of searching"
+      - "Remove: queue validating and marking at start up (first introduced in v1.3.1 in 2023)"
 
   zh:
     items:
-      - "修复 异常 Monet 颜色 (v1.11.3 起存在)"
-      - "修复 非自动主题下，部分对话框文本颜色反转"
-      - "改进 支持重置文件过滤器设置"
-      - "新增 添加“扫描媒体”快捷方式，若无内容可显示"
-      - "开发 使用 JDK 21 构建"
+      - "修复 专辑艺术家的选择"
+      - "改进 支持搜索流派"
+      - "改进 初始搜索标签页与当前标签页同步"
+      - "改进 略微加快搜索响应速度"
+      - "移除 启动时的歌曲验证和标记 (2023 年首次于 v1.3.1 引入)"
 
-previousVersion: "1.11.4"
+previousVersion: "1.11.5"
 previousChannel: "STABLE"
