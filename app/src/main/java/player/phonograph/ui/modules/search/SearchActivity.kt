@@ -148,9 +148,16 @@ class SearchActivity : AbsSlidingMusicPanelActivity(), SearchView.OnQueryTextLis
                 val target = searchResultPageAdapter.lookup(page)
                 setCurrentItem(target, false)
             }
+            registerOnPageChangeCallback(pageChangeListener)
         }
     }
 
+    private val pageChangeListener = object : ViewPager2.OnPageChangeCallback() {
+        override fun onPageSelected(position: Int) {
+            val selectedType = SearchType.entries[position]
+            viewModel.switch(this@SearchActivity, selectedType)
+        }
+    }
 
     private fun setUpToolBar() {
         setSupportActionBar(binding.toolbar)
@@ -199,6 +206,11 @@ class SearchActivity : AbsSlidingMusicPanelActivity(), SearchView.OnQueryTextLis
 
         binding.toolbar.tintCollapseIcon(textColor)
         setSearchViewContentColor(searchView, textColor)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        binding.pager.unregisterOnPageChangeCallback(pageChangeListener)
     }
 
     override fun onQueryTextSubmit(query: String): Boolean {

@@ -28,67 +28,56 @@ import kotlinx.coroutines.launch
 
 class SearchActivityViewModel : ViewModel() {
 
+    private var currentType: SearchType = SearchType.SONGS
+    fun switch(context: Context, type: SearchType) {
+        currentType = type
+        search(context, currentType, _query.value)
+    }
+
     private var _query: MutableStateFlow<String> = MutableStateFlow("")
     val query get() = _query.asStateFlow()
     fun query(context: Context, query: String) {
         _query.value = query
-        search(context, query)
+        search(context, currentType, query)
     }
 
-    private var _songs: MutableStateFlow<List<Song>> = MutableStateFlow(emptyList())
-    val songs get() = _songs.asStateFlow()
-    private var _artists: MutableStateFlow<List<Artist>> = MutableStateFlow(emptyList())
-    val artists get() = _artists.asStateFlow()
-    private var _albums: MutableStateFlow<List<Album>> = MutableStateFlow(emptyList())
-    val albums get() = _albums.asStateFlow()
-    private var _playlists: MutableStateFlow<List<Playlist>> = MutableStateFlow(emptyList())
-    val playlists get() = _playlists.asStateFlow()
-    private var _genres: MutableStateFlow<List<Genre>> = MutableStateFlow(emptyList())
-    val genres get() = _genres.asStateFlow()
-    private var _songsInQueue: MutableStateFlow<List<QueueSong>> = MutableStateFlow(emptyList())
-    val songsInQueue get() = _songsInQueue.asStateFlow()
+    fun refresh(context: Context) {
+        search(context, currentType, query.value)
+    }
 
+    private var _songs = MutableStateFlow<List<Song>>(emptyList())
+    val songs = _songs.asStateFlow()
+    private var _artists = MutableStateFlow<List<Artist>>(emptyList())
+    val artists = _artists.asStateFlow()
+    private var _albums = MutableStateFlow<List<Album>>(emptyList())
+    val albums = _albums.asStateFlow()
+    private var _playlists = MutableStateFlow<List<Playlist>>(emptyList())
+    val playlists = _playlists.asStateFlow()
+    private var _genres = MutableStateFlow<List<Genre>>(emptyList())
+    val genres = _genres.asStateFlow()
+    private var _songsInQueue = MutableStateFlow<List<QueueSong>>(emptyList())
+    val songsInQueue = _songsInQueue.asStateFlow()
 
-    private var jobSongs: Job? = null
-    private var jobArtists: Job? = null
-    private var jobAlbums: Job? = null
-    private var jobPlaylists: Job? = null
-    private var jobGenres: Job? = null
-    private var jobSongsInQueue: Job? = null
+    private var searchJob: Job? = null
 
-    private fun search(context: Context, query: String) {
+    private fun search(context: Context, type: SearchType, query: String) {
+        searchJob?.cancel()
+
         if (query.isNotBlank()) {
-            jobSongs?.cancel()
-            jobSongs = viewModelScope.launch(Dispatchers.IO) {
-                _songs.value = Songs.searchByTitle(context, query)
-            }
-            jobArtists?.cancel()
-            jobArtists = viewModelScope.launch(Dispatchers.IO) {
-                _artists.value = Artists.searchByName(context, query)
-            }
-            jobAlbums?.cancel()
-            jobAlbums = viewModelScope.launch(Dispatchers.IO) {
-                _albums.value = Albums.searchByName(context, query)
-            }
-            jobPlaylists?.cancel()
-            jobPlaylists = viewModelScope.launch(Dispatchers.IO) {
-                _playlists.value = Playlists.searchByName(context, query)
-            }
-            jobGenres?.cancel()
-            jobGenres = viewModelScope.launch(Dispatchers.IO) {
-                _genres.value = Genres.searchByName(context, query)
-            }
-            jobSongsInQueue?.cancel()
-            jobSongsInQueue = viewModelScope.launch(Dispatchers.IO) {
-                val queueManager: QueueManager = GlobalContext.get().get()
-                _songsInQueue.value = queueManager.playingQueue
-                    .mapIndexedNotNull { index, song ->
-                        if (song.title.contains(query, true)) {
-                            QueueSong(song, index)
-                        } else {
-                            null
+            searchJob = viewModelScope.launch(Dispatchers.IO) {
+                when (type) {
+                    SearchType.SONGS     -> _songs.value = Songs.searchByTitle(context, query)
+                    SearchType.ARTISTS   -> _artists.value = Artists.searchByName(context, query)
+                    SearchType.ALBUMS    -> _albums.value = Albums.searchByName(context, query)
+                    SearchType.PLAYLISTS -> _playlists.value = Playlists.searchByName(context, query)
+                    SearchType.GENRES    -> _genres.value = Genres.searchByName(context, query)
+                    SearchType.QUEUE     -> {
+                        val queueManager: QueueManager = GlobalContext.get().get()
+                        _songsInQueue.value = queueManager.playingQueue.mapIndexedNotNull { index, song ->
+                            if (song.title.contains(query, true)) QueueSong(song, index) else null
                         }
                     }
+                }
             }
         } else {
             _songs.value = emptyList()
@@ -98,10 +87,6 @@ class SearchActivityViewModel : ViewModel() {
             _genres.value = emptyList()
             _songsInQueue.value = emptyList()
         }
-    }
-
-    fun refresh(context: Context) {
-        search(context, query.value)
     }
 
 }
