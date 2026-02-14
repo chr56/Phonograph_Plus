@@ -147,6 +147,7 @@ class SearchActivity : AbsSlidingMusicPanelActivity(), SearchView.OnQueryTextLis
             if (page != null) {
                 val target = searchResultPageAdapter.lookup(page)
                 setCurrentItem(target, false)
+                viewModel.switch(this@SearchActivity, SearchType.entries[target])
             }
             registerOnPageChangeCallback(pageChangeListener)
         }
