@@ -7,6 +7,7 @@ package player.phonograph.ui.modules.player
 import player.phonograph.mechanism.lyrics.LyricsLoader
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.AbsLyrics
+import player.phonograph.model.lyrics.LYRICS_ALIGN_CENTER
 import player.phonograph.model.lyrics.LyricsInfo
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
@@ -104,6 +105,11 @@ class LyricsViewModel : ViewModel() {
     private var _showSynchronizedLyrics: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val showSynchronizedLyrics get() = _showSynchronizedLyrics.asStateFlow()
 
+    private var _coverLyricsSize: MutableStateFlow<Float> = MutableStateFlow(22f)
+    val coverLyricsSize get() = _coverLyricsSize.asStateFlow()
+    private var _coverLyricsAlign: MutableStateFlow<String> = MutableStateFlow(LYRICS_ALIGN_CENTER)
+    val coverLyricsAlign get() = _coverLyricsAlign.asStateFlow()
+
     private var watchJob: Job? = null
     fun observeSettings(context: Context) {
         watchJob?.cancel()
@@ -112,6 +118,16 @@ class LyricsViewModel : ViewModel() {
             viewModelScope.launch(Dispatchers.IO) {
                 Setting(applicationContext)[Keys.synchronizedLyricsShow].flow.collect {
                     _showSynchronizedLyrics.value = it
+                }
+            }
+            viewModelScope.launch(Dispatchers.IO) {
+                Setting(applicationContext)[Keys.coverLyricsSize].flow.collect {
+                    _coverLyricsSize.value = it
+                }
+            }
+            viewModelScope.launch(Dispatchers.IO) {
+                Setting(applicationContext)[Keys.coverLyricsAlign].flow.collect {
+                    _coverLyricsAlign.value = it
                 }
             }
         }

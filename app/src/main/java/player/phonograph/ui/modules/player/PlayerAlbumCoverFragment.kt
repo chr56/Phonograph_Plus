@@ -12,6 +12,9 @@ import player.phonograph.databinding.FragmentAlbumCoverBinding
 import player.phonograph.databinding.FragmentPlayerAlbumCoverBinding
 import player.phonograph.foundation.compat.parcelable
 import player.phonograph.model.Song
+import player.phonograph.model.lyrics.LYRICS_ALIGN_CENTER
+import player.phonograph.model.lyrics.LYRICS_ALIGN_LEFT
+import player.phonograph.model.lyrics.LYRICS_ALIGN_RIGHT
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.modules.panel.AbsMusicServiceFragment
@@ -161,6 +164,24 @@ class PlayerAlbumCoverFragment : AbsMusicServiceFragment() {
                 resetLyricsLayout()
             } else {
                 hideLyricsLayout()
+            }
+        }
+        observe(lyricsViewModel.coverLyricsSize) {
+            withContext(Dispatchers.Main) {
+                binding.playerLyricsLine1.textSize = it
+                binding.playerLyricsLine2.textSize = it
+            }
+        }
+        observe(lyricsViewModel.coverLyricsAlign) {
+            val value: Int = when (it) {
+                LYRICS_ALIGN_CENTER -> View.TEXT_ALIGNMENT_CENTER
+                LYRICS_ALIGN_RIGHT  -> View.TEXT_ALIGNMENT_VIEW_END
+                LYRICS_ALIGN_LEFT   -> View.TEXT_ALIGNMENT_VIEW_START
+                else                -> View.TEXT_ALIGNMENT_CENTER
+            }
+            withContext(Dispatchers.Main) {
+                binding.playerLyricsLine1.textAlignment = value
+                binding.playerLyricsLine2.textAlignment = value
             }
         }
         observe(playerViewModel.favoriteState) { newState ->
