@@ -11,6 +11,7 @@ import player.phonograph.model.coil.ImageSourceConfig
 import player.phonograph.model.file.DefaultExcludedPaths
 import player.phonograph.model.file.DefaultIncludedPaths
 import player.phonograph.model.file.DefaultStartDirectory
+import player.phonograph.model.lyrics.LYRICS_ALIGN_CENTER
 import player.phonograph.model.notification.NotificationActionsConfig
 import player.phonograph.model.pages.PagesConfig
 import player.phonograph.model.repo.DEFAULT_TAG_SEPARATORS_ARTISTS
@@ -140,6 +141,10 @@ object Keys {
         get() = PrimitiveKey<Boolean>(booleanPK("display_lyrics_time_axis")) { true }
     val broadcastSynchronizedLyrics
         get() = PrimitiveKey<Boolean>(booleanPK("synchronized_lyrics_send")) { true }
+    val coverLyricsSize
+        get() = PrimitiveKey<Float>(floatPK("cover_lyrics_size")) { 22f }
+    val coverLyricsAlign
+        get() = PrimitiveKey<String>(stringPK("cover_lyrics_align")) { LYRICS_ALIGN_CENTER }
     //</editor-fold>
 
     //</editor-fold>
