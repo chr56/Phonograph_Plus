@@ -566,4 +566,11 @@
     <string name="help_scan_media">您可以為 Android MediaStore 請求掃描特定目錄中的媒體檔案，隨後引發音樂資料庫更新</string>
     <string name="help_refresh_database">若出現異常，您也可以選擇手動重新整理內部音樂資料庫</string>
     <string name="help_rebuild_database">如果必要您可以選擇完全重建資料庫；但是耗時較長，且在重建期間可能無法正常使用應用程式</string>
+    <string name="pref_title_lyrics_size_cover">歌詞字型大小 (主播放器)</string>
+    <string name="pref_summary_lyrics_size_cover">若同步歌詞可用，主播放器封面圖片上的逐行歌詞字型大小</string>
+    <string name="pref_title_lyrics_align_cover">歌詞對齊方向 (主播放器)</string>
+    <string name="pref_summary_lyrics_align_cover">若同步歌詞可用，主播放器封面圖片上的逐行歌詞對齊方向</string>
+    <string name="pref_value_align_left">左對齊</string>
+    <string name="pref_value_align_right">右對齊</string>
+    <string name="pref_value_align_center">居中</string>
 </resources>

@@ -8,6 +8,9 @@ import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.coil.cache.CacheStore
 import player.phonograph.mechanism.StatusBarLyric
+import player.phonograph.model.lyrics.LYRICS_ALIGN_CENTER
+import player.phonograph.model.lyrics.LYRICS_ALIGN_LEFT
+import player.phonograph.model.lyrics.LYRICS_ALIGN_RIGHT
 import player.phonograph.model.time.Duration
 import player.phonograph.model.time.TimeIntervalCalculationMode
 import player.phonograph.model.time.displayText
@@ -17,6 +20,8 @@ import player.phonograph.ui.modules.explorer.PathSelectorRequester
 import player.phonograph.ui.modules.setting.components.BooleanPreference
 import player.phonograph.ui.modules.setting.components.DialogPreference
 import player.phonograph.ui.modules.setting.components.ExternalPreference
+import player.phonograph.ui.modules.setting.components.FloatPreference
+import player.phonograph.ui.modules.setting.components.ListPreference
 import player.phonograph.ui.modules.setting.components.SettingsGroup
 import player.phonograph.ui.modules.setting.dialog.ClickModeSettingDialog
 import player.phonograph.ui.modules.setting.dialog.ExternalPlayRequestSettingDialog
@@ -171,6 +176,28 @@ fun PreferenceScreenContent() {
                         StatusBarLyric.stopLyric()
                     }
                 }
+            )
+            FloatPreference(
+                key = Keys.coverLyricsSize,
+                valueRange = 10f..28f,
+                steps = 8,
+                titleRes = R.string.pref_title_lyrics_size_cover,
+                summaryRes = R.string.pref_summary_lyrics_size_cover,
+            )
+            ListPreference(
+                key = Keys.coverLyricsAlign,
+                optionsValues = listOf(
+                    LYRICS_ALIGN_LEFT,
+                    LYRICS_ALIGN_RIGHT,
+                    LYRICS_ALIGN_CENTER
+                ),
+                optionsValuesLocalized = listOf(
+                    R.string.pref_value_align_left,
+                    R.string.pref_value_align_right,
+                    R.string.pref_value_align_center,
+                ),
+                titleRes = R.string.pref_title_lyrics_align_cover,
+                summaryRes = R.string.pref_summary_lyrics_align_cover,
             )
             BooleanPreference(
                 key = Keys.displaySynchronizedLyricsTimeAxis,

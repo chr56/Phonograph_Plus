@@ -401,6 +401,8 @@
     <string name="pref_title_use_legacy_favorite_playlist_impl">Use legacy favorite playlist mechanism</string>
     <string name="pref_title_use_legacy_status_bar_lyrics_api">Use legacy StatusBar Lyrics API</string>
     <string name="perf_title_fixed_tab_layout">Make all tabs fixed</string>
+    <string name="pref_title_lyrics_size_cover">Lyrics font size (Main Player)</string>
+    <string name="pref_title_lyrics_align_cover">Lyrics text alignment (Main Player)</string>
     <string name="pref_summary_always_play">Ignore any interruptions and continue to play, no matter what else is being played. (This may cause silent output in some circumstances.)</string>
     <string name="pref_summary_always_use_media_session_to_display_cover">Always use Media Session to provide cover images to system for Notification etc.</string>
     <string name="pref_summary_audio_ducking">Notifications, navigation etc.</string>
@@ -437,8 +439,13 @@
     <string name="pref_summary_synchronized_lyrics_show">Currently only synchronized lyrics in LRC format are supported. Either embedded or as a separate file.</string>
     <string name="pref_summary_use_legacy_favorite_playlist_impl">If enable this, app will save favorite songs to a m3u playlist in Storage instead of saving favorite songs into the internal database of app.(You can  export the list manually.)</string>
     <string name="pref_summary_use_legacy_status_bar_lyrics_api">If it is disabled, LyricGetter Api would be used, instead of StatusBarLyricAPI. This is used for Xposed Module StatusBar Lyrics version 6.x and above; Enable it if you are using older versions of StatusBar Lyrics.</string>
+    <string name="pref_summary_lyrics_size_cover">The font size of lyrics over the cover image in Main Player, if the synchronized lyrics present.</string>
+    <string name="pref_summary_lyrics_align_cover">The text alignment of lyrics over the cover image in Main Player, if the synchronized lyrics present.</string>
     <string name="pref_option_show_prompt">Show prompt dialog every time</string>
     <string name="pref_option_silence">Silence (keep in background without jumping to player)</string>
+    <string name="pref_value_align_left">left</string>
+    <string name="pref_value_align_right">right</string>
+    <string name="pref_value_align_center">center</string>
     <string name="style_card">Card</string>
     <string name="style_flat">Flat</string>
     <string name="primary_color">Primary color</string>
