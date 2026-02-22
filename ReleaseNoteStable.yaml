@@ -1,0 +1,29 @@
+version: "1.12.0"
+channel: "STABLE"
+versionCode: 1120
+timestamp: -1
+notes:
+  en:
+    items:
+      - "Fix: picking of the album artist"
+      - "Improve: support genres search"
+      - "Improve: sync initial search tab with the current tab"
+      - "Improve: slightly accelerate response of searching"
+      - "Improve: support adjusting lyrics fonts size and alignment"
+      - "Translation: update Ukrainian (by Max Leonidov)"
+      - "Translation: Remove Bulgarian and Croatian"
+      - "Remove: queue validating and marking at start up (first introduced in v1.3.1 in 2023)"
+
+  zh:
+    items:
+      - "修复 专辑艺术家的选择"
+      - "改进 支持搜索流派"
+      - "改进 初始搜索标签页与当前标签页同步"
+      - "改进 略微加快搜索响应速度"
+      - "改进 支持调整歌词字体大小和对齐方式"
+      - "翻译 更新乌克兰语 (Max Leonidov) "
+      - "翻译 移除保加利亚语和克罗地亚语"
+      - "移除 启动时的队列验证和标记 (2023 年首次于 v1.3.1 引入)"
+
+previousVersion: "1.11.5"
+previousChannel: "STABLE"

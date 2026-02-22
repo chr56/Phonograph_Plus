@@ -1,23 +1,21 @@
-version: "1.12.0-dev1"
+version: "1.12.0-dev2"
 channel: "PREVIEW"
-versionCode: 1116
-timestamp: 1771062000
+versionCode: 1117
+timestamp: -1
 notes:
   en:
     items:
-      - "Fix: picking of the album artist"
-      - "Improve: support genres search"
-      - "Improve: sync initial search tab with the current tab"
-      - "Improve: slightly accelerate response of searching"
-      - "Remove: queue validating and marking at start up (first introduced in v1.3.1 in 2023)"
+      - "Fix: initial search has no result (in v1.12.0-dev1)"
+      - "Improve: support adjusting lyrics fonts size and alignment"
+      - "Translation: update Ukrainian (by Max Leonidov)"
+      - "Translation: Remove Bulgarian and Croatian"
 
   zh:
     items:
-      - "修复 专辑艺术家的选择"
-      - "改进 支持搜索流派"
-      - "改进 初始搜索标签页与当前标签页同步"
-      - "改进 略微加快搜索响应速度"
-      - "移除 启动时的歌曲验证和标记 (2023 年首次于 v1.3.1 引入)"
+      - "修复 初次搜索无结果(v1.12.0‑dev1 中)"
+      - "改进 支持调整歌词字体大小和对齐方式"
+      - "翻译 更新乌克兰语 (Max Leonidov) "
+      - "翻译 移除保加利亚语和克罗地亚语"
 
-previousVersion: "1.11.5"
-previousChannel: "STABLE"
+previousVersion: "1.12.0-dev1"
+previousChannel: "PREVIEW"
