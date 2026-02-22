@@ -199,6 +199,13 @@ fun PreferenceScreenContent() {
                 titleRes = R.string.pref_title_lyrics_align_cover,
                 summaryRes = R.string.pref_summary_lyrics_align_cover,
             )
+            FloatPreference(
+                key = Keys.dialogLyricsSize,
+                valueRange = 8f..26f,
+                steps = 8,
+                titleRes = R.string.pref_title_lyrics_size_dialog,
+                summaryRes = R.string.pref_summary_lyrics_size_dialog,
+            )
             BooleanPreference(
                 key = Keys.displaySynchronizedLyricsTimeAxis,
                 titleRes = R.string.pref_title_display_lyrics_time_axis,

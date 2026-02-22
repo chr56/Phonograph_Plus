@@ -570,6 +570,8 @@
     <string name="pref_summary_lyrics_size_cover">若同步歌词可用，主播放器封面图片上的逐行歌词字体大小</string>
     <string name="pref_title_lyrics_align_cover">歌词对齐方向 (主播放器)</string>
     <string name="pref_summary_lyrics_align_cover">若同步歌词可用，主播放器封面图片上的逐行歌词对齐方向</string>
+    <string name="pref_title_lyrics_size_dialog">歌词字体大小 (详情)</string>
+    <string name="pref_summary_lyrics_size_dialog">歌词详情中的字体大小</string>
     <string name="pref_value_align_left">左对齐</string>
     <string name="pref_value_align_right">右对齐</string>
     <string name="pref_value_align_center">居中</string>
