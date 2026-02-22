@@ -47,6 +47,7 @@ import android.view.ViewGroup
 import android.widget.CompoundButton
 import android.widget.TextView
 import kotlin.math.abs
+import kotlin.math.max
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -208,10 +209,15 @@ class LyricsDialog : DialogFragment() {
     private lateinit var lyricsAdapter: LyricsAdapter
     private lateinit var linearLayoutManager: LinearLayoutManager
     private fun setupRecycleView(lyricsInfo: LyricsInfo) {
+        val context = requireContext()
         val lyrics =
             lyricsInfo.activatedLyrics ?: lyricsInfo.getOrElse(0) { ActualTextLyrics.from("NOT FOUND!?") }
         linearLayoutManager = LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
-        lyricsAdapter = LyricsAdapter(requireContext(), lyrics) { dialog?.dismiss() }
+        lyricsAdapter = LyricsAdapter(
+            context,
+            lyrics,
+            settings = LyricsAdapter.DisplaySettings.read(context)
+        ) { dialog?.dismiss() }
         binding.recyclerViewLyrics.apply {
             layoutManager = this@LyricsDialog.linearLayoutManager
             adapter = this@LyricsDialog.lyricsAdapter
@@ -346,6 +352,7 @@ class LyricsDialog : DialogFragment() {
 private class LyricsAdapter(
     private val context: Context,
     private var lyric: AbsLyrics,
+    private var settings: DisplaySettings,
     private val dismiss: (() -> Unit)?,
 ) : RecyclerView.Adapter<LyricsAdapter.ViewHolder>() {
 
@@ -360,7 +367,7 @@ private class LyricsAdapter(
         notifyDataSetChanged()
     }
 
-    class ViewHolder private constructor(itemView: View, val enableTimestamp: Boolean) :
+    class ViewHolder private constructor(itemView: View, val settings: DisplaySettings) :
             RecyclerView.ViewHolder(itemView) {
 
         val textLine: TextView = itemView.findViewById(R.id.dialog_lyrics_line)
@@ -377,6 +384,7 @@ private class LyricsAdapter(
             // Text Line
             textLine.text = actual.trim().toString()
             textLine.typeface = Typeface.DEFAULT
+            textLine.textSize = settings.fontSize
             textLine.setOnLongClickListener {
                 if (timestamp >= 0) {
                     MusicPlayerRemote.seekTo(timestamp)
@@ -389,6 +397,7 @@ private class LyricsAdapter(
             if (showTimestamp) {
                 textTime.text = lyricsTimestamp(timestamp)
                 textTime.typeface = Typeface.DEFAULT
+                textTime.textSize = max(settings.fontSize - 4, 6f)
                 textTime.visibility = View.VISIBLE
             } else {
                 textTime.visibility = View.GONE
@@ -399,7 +408,7 @@ private class LyricsAdapter(
             bindImpl(line, false, -1, dismiss)
 
         fun bind(line: String, timestamp: Int, dismiss: (() -> Unit)?) =
-            bindImpl(line, enableTimestamp, timestamp, dismiss)
+            bindImpl(line, settings.enableTimestamp, timestamp, dismiss)
 
         fun highlight(highlight: Boolean) {
             textLine.typeface = if (highlight) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
@@ -407,15 +416,29 @@ private class LyricsAdapter(
         }
 
         companion object {
-            fun inflate(context: Context, parent: ViewGroup, enableTimestamp: Boolean) =
-                ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_lyrics, parent, false), enableTimestamp)
+            fun inflate(context: Context, parent: ViewGroup, settings: DisplaySettings) =
+                ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_lyrics, parent, false), settings)
         }
     }
 
-    private val enableTimestamp: Boolean = Setting(context)[Keys.displaySynchronizedLyricsTimeAxis].data
+    class DisplaySettings(
+        val enableTimestamp: Boolean,
+        val fontSize: Float,
+    ) {
+        companion object {
+            fun read(context: Context): DisplaySettings {
+                val enableTimestamp = Setting(context)[Keys.displaySynchronizedLyricsTimeAxis].data
+                val fontSize = Setting(context)[Keys.dialogLyricsSize].data
+                return DisplaySettings(
+                    enableTimestamp,
+                    fontSize
+                )
+            }
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
-        ViewHolder.inflate(context, parent, enableTimestamp)
+        ViewHolder.inflate(context, parent, settings)
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         if (lyric is LrcLyrics) {
