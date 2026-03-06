@@ -7,15 +7,17 @@ notes:
     items:
       - "Fix: initial search has no result (in v1.12.0-dev1)"
       - "Improve: support adjusting lyrics fonts size and alignment"
-      - "Translation: update Ukrainian (by Max Leonidov)"
-      - "Translation: Remove Bulgarian and Croatian"
+      - "Translation: update Ukrainian (by Max Leonidov), Spanish (by Dino RTX (rtxdino36))"
+      - "Translation: remove Bulgarian and Croatian"
+      - "Development: build with Gradle 9.3.1, upgrade Kotlin to 2.3.10, update dependencies"
 
   zh:
     items:
       - "修复 初次搜索无结果(v1.12.0‑dev1 中)"
       - "改进 支持调整歌词字体大小和对齐方式"
-      - "翻译 更新乌克兰语 (Max Leonidov) "
+      - "翻译 更新乌克兰语 (Max Leonidov), 西班牙语 (Dino RTX (rtxdino36))"
       - "翻译 移除保加利亚语和克罗地亚语"
+      - "开发 使用 Gradle 9.3.1 构建, 更新 Kotlin 至 2.3.10, 更新依赖"
 
 previousVersion: "1.12.0-dev1"
 previousChannel: "PREVIEW"
