@@ -1,7 +1,7 @@
 version: "1.12.0-dev2"
 channel: "PREVIEW"
 versionCode: 1117
-timestamp: -1
+timestamp: 1772890000
 notes:
   en:
     items:
@@ -10,6 +10,7 @@ notes:
       - "Translation: update Ukrainian (by Max Leonidov), Spanish (by Dino RTX (rtxdino36))"
       - "Translation: remove Bulgarian and Croatian"
       - "Development: build with Gradle 9.3.1, upgrade Kotlin to 2.3.10, update dependencies"
+      - "New: [experimental] support parsing and reorganizing multiple artists and genres by customisable separators from related music tags; To enable this experimental feature, please manually switch 'Music Library Metadata Source' in Advanced Settings and then 'Refresh Database' in Scan Media."
 
   zh:
     items:
@@ -18,6 +19,7 @@ notes:
       - "翻译 更新乌克兰语 (Max Leonidov), 西班牙语 (Dino RTX (rtxdino36))"
       - "翻译 移除保加利亚语和克罗地亚语"
       - "开发 使用 Gradle 9.3.1 构建, 更新 Kotlin 至 2.3.10, 更新依赖"
+      - "新增 [实验性] 支持按照可自定义的分隔符解析和重组相关音乐标签中的多重艺术家和多重流派；此实验性功能按需启用，请在高级设置中手动切换“媒体库元数据源”后在扫描媒体中“刷新数据库”"
 
 previousVersion: "1.12.0-dev1"
 previousChannel: "PREVIEW"
