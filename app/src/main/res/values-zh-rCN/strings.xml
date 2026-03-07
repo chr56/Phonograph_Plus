@@ -575,4 +575,10 @@
     <string name="pref_value_align_left">左对齐</string>
     <string name="pref_value_align_right">右对齐</string>
     <string name="pref_value_align_center">居中</string>
+    <string name="pref_title_music_tags_artists_separators">音乐标签 - Artists 分隔符</string>
+    <string name="pref_title_music_tags_featuring_artists_abbr">音乐标签 - Featuring Artists 分隔符或缩写</string>
+    <string name="pref_title_music_tags_genres_separators">音乐标签 - Genres 分隔符</string>
+    <string name="pref_summary_music_tags_artists_separators">\'Artists\' 分隔符，用于分割标签中多艺术家</string>
+    <string name="pref_summary_music_tags_featuring_artists_abbr">\'Featuring Artists\' 分隔符或缩写, 用于提取某些标签（曲目名、专辑名等）中的艺术家</string>
+    <string name="pref_summary_music_tags_genres_separators">\'Genres\' 分隔符，用于提取标签中的多流派</string>
 </resources>

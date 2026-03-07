@@ -60,18 +60,13 @@ abstract class TagSeparatorsEditorDialog : ComposeViewDialogFragment() {
 
         val paths: List<String> by viewModel.separators.collectAsState()
 
-        val title = when (viewModel.target) {
-            TARGET_ABBR_FEATURES_ARTISTS -> "Features Artists Abbreviations"
-            TARGET_SEPARATORS_ARTISTS    -> "Artists Separators"
-            TARGET_SEPARATORS_GENRES     -> "Genres Separators"
-            else                         -> "N/A"
-        }
+        val title = stringResource(R.string.label_music_tags)
 
         val description = when (viewModel.target) {
-            TARGET_ABBR_FEATURES_ARTISTS -> "TARGET_ABBR_FEATURES_ARTISTS"
-            TARGET_SEPARATORS_ARTISTS    -> "TARGET_SEPARATORS_ARTISTS"
-            TARGET_SEPARATORS_GENRES     -> "TARGET_SEPARATORS_GENRES"
-            else                         -> ""
+            TARGET_ABBR_FEATURES_ARTISTS -> stringResource(R.string.pref_summary_music_tags_featuring_artists_abbr)
+            TARGET_SEPARATORS_ARTISTS    -> stringResource(R.string.pref_summary_music_tags_artists_separators)
+            TARGET_SEPARATORS_GENRES     -> stringResource(R.string.pref_summary_music_tags_genres_separators)
+            else                         -> stringResource(R.string.msg_unknown)
         }
 
         PhonographTheme {

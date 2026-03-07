@@ -23,6 +23,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun PreferenceScreenAdvanced() {
@@ -61,14 +62,14 @@ fun PreferenceScreenAdvanced() {
             ExperimentalContentThemeOverride {
                 DialogPreference(
                     dialog = TagSeparatorsEditorDialog.ArtistsSeparatorsEditor::class.java,
-                    title = "Music Tag Artists Separators",
+                    title = stringResource(R.string.pref_title_music_tags_artists_separators),
                     currentValueForHint = { context ->
                         Setting(context)[Keys.tagSeparatorsArtists].read().joinToString(" ")
                     }
                 )
                 DialogPreference(
                     dialog = TagSeparatorsEditorDialog.FeaturesArtistsAbbrEditor::class.java,
-                    title = "Music Tag Features Artists Abbreviations",
+                    title = stringResource(R.string.pref_title_music_tags_featuring_artists_abbr),
                     currentValueForHint = { context ->
                         Setting(context)[Keys.tagAbbrFeatureArtists].read().joinToString(" ")
                     }
@@ -76,7 +77,7 @@ fun PreferenceScreenAdvanced() {
                 /*
                 DialogPreference(
                     dialog = TagSeparatorsEditorDialog.GenreSeparatorsEditor::class.java,
-                    title = "Music Tag Genres Separators",
+                    title = stringResource(R.string.pref_title_music_tags_genres_separators),
                     currentValueForHint = { context ->
                         Setting(context)[Keys.tagSeparatorsGenres].read().joinToString(" ")
                     }

@@ -404,6 +404,9 @@
     <string name="pref_title_lyrics_size_cover">Lyrics font size (Main Player)</string>
     <string name="pref_title_lyrics_align_cover">Lyrics text alignment (Main Player)</string>
     <string name="pref_title_lyrics_size_dialog">Lyrics font size (Pop-up)</string>
+    <string name="pref_title_music_tags_artists_separators">Music Tags - Artists Separators</string>
+    <string name="pref_title_music_tags_featuring_artists_abbr">Music Tags - Featuring Artists Separators/Abbreviations/</string>
+    <string name="pref_title_music_tags_genres_separators">Music Tags - Genres Separators</string>
     <string name="pref_summary_always_play">Ignore any interruptions and continue to play, no matter what else is being played. (This may cause silent output in some circumstances.)</string>
     <string name="pref_summary_always_use_media_session_to_display_cover">Always use Media Session to provide cover images to system for Notification etc.</string>
     <string name="pref_summary_audio_ducking">Notifications, navigation etc.</string>
@@ -443,6 +446,9 @@
     <string name="pref_summary_lyrics_size_cover">The font size of lyrics over the cover image in Main Player, if the synchronized lyrics present.</string>
     <string name="pref_summary_lyrics_align_cover">The text alignment of lyrics over the cover image in Main Player, if the synchronized lyrics present.</string>
     <string name="pref_summary_lyrics_size_dialog">The font size of lyrics pop-up.</string>
+    <string name="pref_summary_music_tags_artists_separators">\'Artists\' Separators, used for separating multiple artists.</string>
+    <string name="pref_summary_music_tags_featuring_artists_abbr">\'Featuring Artists\' Separators or abbreviations, used for extracting featuring artists in music tags, such as \'Titles\' or \'Album\'.</string>
+    <string name="pref_summary_music_tags_genres_separators">\'Genres\' Separators, used for separating multiple genres.</string>
     <string name="pref_option_show_prompt">Show prompt dialog every time</string>
     <string name="pref_option_silence">Silence (keep in background without jumping to player)</string>
     <string name="pref_value_align_left">left</string>
