@@ -581,4 +581,7 @@
     <string name="pref_summary_music_tags_artists_separators">\'Artists\' 分隔符，用于分割标签中多艺术家</string>
     <string name="pref_summary_music_tags_featuring_artists_abbr">\'Featuring Artists\' 分隔符或缩写, 用于提取某些标签（曲目名、专辑名等）中的艺术家</string>
     <string name="pref_summary_music_tags_genres_separators">\'Genres\' 分隔符，用于提取标签中的多流派</string>
+    <string name="music_library_metadata_source">媒体库元数据源</string>
+    <string name="music_library_metadata_source_mediastore">Mediastore</string>
+    <string name="music_library_metadata_source_mediastore_parsed">Mediastore (解析)</string>
 </resources>

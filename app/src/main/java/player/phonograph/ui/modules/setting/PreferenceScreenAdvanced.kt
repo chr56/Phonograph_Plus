@@ -5,12 +5,14 @@
 package player.phonograph.ui.modules.setting
 
 import player.phonograph.R
+import player.phonograph.model.repo.PROVIDER_MEDIASTORE_DIRECT
 import player.phonograph.repo.loader.FavoriteSongs
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.compose.ExperimentalContentThemeOverride
 import player.phonograph.ui.modules.setting.components.BooleanPreference
 import player.phonograph.ui.modules.setting.components.DialogPreference
+import player.phonograph.ui.modules.setting.components.ListPreference
 import player.phonograph.ui.modules.setting.components.SettingsGroup
 import player.phonograph.ui.modules.setting.dialog.TagSeparatorsEditorDialog
 import androidx.compose.foundation.layout.Column
@@ -60,6 +62,17 @@ fun PreferenceScreenAdvanced() {
         }
         SettingsGroup(titleRes = R.string.pref_header_experimental) {
             ExperimentalContentThemeOverride {
+                ListPreference(
+                    key = Keys.musicLibraryBackend,
+                    optionsValues = listOf(
+                        PROVIDER_MEDIASTORE_DIRECT,
+                    ),
+                    optionsValuesLocalized = listOf(
+                        R.string.music_library_metadata_source_mediastore,
+                    ),
+                    title = stringResource(R.string.music_library_metadata_source),
+                ) { _, _ ->
+                }
                 DialogPreference(
                     dialog = TagSeparatorsEditorDialog.ArtistsSeparatorsEditor::class.java,
                     title = stringResource(R.string.pref_title_music_tags_artists_separators),
