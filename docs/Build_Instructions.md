@@ -6,7 +6,7 @@ _This document seeks to improve clarity and coherence._
 
 See also [Developer Guide](./Developer_Guide.md).
 
-_Last Updated at 2026.01.31_
+_Last Updated at 2026.03.08_
 
 ## Requirements
 
@@ -16,11 +16,11 @@ You may would like to build the application from source instead of developing an
 
 - A desktop computer [^PC]:
     - at least 4G RAM
-    - enough available storage space, on user home disk (at least ~2G)  
+    - enough available storage space, on user home disk (at least ~3G)  
 - Compatible desktop operating system [^PC]:
     - Windows 10/11 (tested)
     - Ubuntu 24.04 (tested)
-- JDK 21 (Android Gradle Plugin 8.13.2 along with gradle 8.14.3 are used in this project)
+- JDK 21 (Android Gradle Plugin 8.13.2 along with Gradle 9.3.1 are used in this project)
 - Android SDK (automatically downloaded via AGP)
 - Internet connection 
 
@@ -30,7 +30,7 @@ You may would like to build the application from source instead of developing an
 
 If you would like to contribute:
 
-- Android Studio Otter 2 Feature Drop | 2025.2.2
+- Android Studio Panda 2 | 2025.3.2
   (Note: JetBrain IDEA may not be compatible due to its limited support on latest Android Gradle Plugin) 
 
 ## Build Instructions
