@@ -69,7 +69,8 @@ class BasicSyncExecutor(private val musicDatabase: MusicDatabase) : SyncExecutor
 
 class RelationshipSyncExecutor(private val musicDatabase: MusicDatabase) : SyncExecutor {
 
-    override suspend fun check(context: Context): Boolean = defaultCheck(context, musicDatabase)
+    override suspend fun check(context: Context): Boolean = defaultCheck(context, musicDatabase) or
+            (musicDatabase.ArtistDao().count() == 0) or (musicDatabase.AlbumDao().count() == 0)
 
     override suspend fun sync(
         context: Context,
