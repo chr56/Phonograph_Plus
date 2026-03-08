@@ -77,7 +77,7 @@ See [Gallery](docs/Gallery.md)
 
 Translate Phonograph Plus into your language -> [Crowdin](https://crowdin.com/project/phonograph-plus)
 
-We have removed Swedish and Norwegian Nynorsk translations due to missing too many translations
+We have removed Bulgarian, Croatian, Swedish and Norwegian Nynorsk translations due to missing too much.
 
 ## **Trouble Shooting & FAQ**
 See [Trouble Shooting & FAQ](docs/FAQ.md)
