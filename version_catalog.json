@@ -1,6 +1,30 @@
 {
     "versions": [
         {
+            "channel": "stable",
+            "versionName": "1.12.0",
+            "versionCode": 1120,
+            "date": 1773220000,
+            "link": [
+                {
+                    "name": "Github Release (Website)",
+                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.12.0"
+                },
+                {
+                    "name": "Github Release Modern Variant APK (File Download Link)",
+                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v1.12.0/PhonographPlus_1.12.0_ModernStableRelease.apk"
+                },
+                {
+                    "name": "Github Release Legacy Variant APK (File Download Link)",
+                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v1.12.0/PhonographPlus_1.12.0_LegacyStableRelease.apk"
+                }
+            ],
+            "releaseNote": {
+                "zh-cn": "<ol><li>修复 专辑艺术家提取有误</li><li>改进 初始搜索标签页与当前标签页同步</li><li>改进 略微加快搜索响应速度</li><li>改进 支持搜索流派</li><li>改进 支持调整歌词字体大小和对齐方式</li><li>翻译 更新乌克兰语 (Max Leonidov), 西班牙语 (Dino RTX (rtxdino36))</li><li>翻译 移除保加利亚语和克罗地亚语</li><li>移除 启动时播放队列的验证和标记 (2023 年首次于 v1.3.1 引入)</li><li>开发 使用 Gradle 9.3.1 构建, 更新 Kotlin 至 2.3.10, 更新依赖</li><li>新增 [实验性] 支持按照可自定义的分隔符解析和重组相关音乐标签中的多重艺术家和多重流派；此实验性功能按需启用，请在高级设置中手动切换“媒体库元数据源”后在扫描媒体中“刷新数据库”；该功能将在稳定后默认启用</li></ol>",
+                "en": "<ol><li>Fix: incorrect album artist extraction</li><li>Improve: sync initial search tab with the current tab</li><li>Improve: slightly faster search response</li><li>Improve: genre search support</li><li>Improve: support adjusting lyrics fonts size and alignment</li><li>Translation: update Ukrainian (by Max Leonidov), Spanish (by Dino RTX (rtxdino36))</li><li>Translation: remove Bulgarian and Croatian</li><li>Remove: queue validating and marking at start up (first introduced in v1.3.1 in 2023)</li><li>Development: build with Gradle 9.3.1, upgrade Kotlin to 2.3.10, update dependencies</li><li>New: [experimental] support parsing and reorganizing multiple artists and genres by customizable separators from related music tags; To enable this experimental feature, please manually switch 'Music Library Metadata Source' in Advanced Settings and then 'Refresh Database' via Scan Media. This feature would be enabled by default upon stabilization in the future.</li></ol>"
+            }
+        },
+        {
             "channel": "preview",
             "versionName": "1.12.0-dev2",
             "versionCode": 1117,
@@ -22,54 +46,6 @@
             "releaseNote": {
                 "zh-cn": "<ol><li>修复 初次搜索无结果(v1.12.0‑dev1 中)</li><li>改进 支持调整歌词字体大小和对齐方式</li><li>翻译 更新乌克兰语 (Max Leonidov), 西班牙语 (Dino RTX (rtxdino36))</li><li>翻译 移除保加利亚语和克罗地亚语</li><li>开发 使用 Gradle 9.3.1 构建, 更新 Kotlin 至 2.3.10, 更新依赖</li><li>新增 [实验性] 支持按照可自定义的分隔符解析和重组相关音乐标签中的多重艺术家和多重流派；此实验性功能按需启用，请在高级设置中手动切换“媒体库元数据源”后在扫描媒体中“刷新数据库”</li></ol>",
                 "en": "<ol><li>Fix: initial search has no result (in v1.12.0-dev1)</li><li>Improve: support adjusting lyrics fonts size and alignment</li><li>Translation: update Ukrainian (by Max Leonidov), Spanish (by Dino RTX (rtxdino36))</li><li>Translation: remove Bulgarian and Croatian</li><li>Development: build with Gradle 9.3.1, upgrade Kotlin to 2.3.10, update dependencies</li><li>New: [experimental] support parsing and reorganizing multiple artists and genres by customisable separators from related music tags; To enable this experimental feature, please manually switch 'Music Library Metadata Source' in Advanced Settings and then 'Refresh Database' in Scan Media.</li></ol>"
-            }
-        },
-        {
-            "channel": "preview",
-            "versionName": "1.12.0-dev1",
-            "versionCode": 1116,
-            "date": 1771062000,
-            "link": [
-                {
-                    "name": "Github Release (Website)",
-                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.12.0-dev1"
-                },
-                {
-                    "name": "Github Release Modern Variant APK (File Download Link)",
-                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.12.0-dev1/PhonographPlus_1.12.0-dev1_ModernPreviewRelease.apk"
-                },
-                {
-                    "name": "Github Release Legacy Variant APK (File Download Link)",
-                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.12.0-dev1/PhonographPlus_1.12.0-dev1_LegacyPreviewRelease.apk"
-                }
-            ],
-            "releaseNote": {
-                "zh-cn": "<ol><li>修复 专辑艺术家的选择</li><li>改进 支持搜索流派</li><li>改进 初始搜索标签页与当前标签页同步</li><li>改进 略微加快搜索响应速度</li><li>移除 启动时的歌曲验证和标记 (2023 年首次于 v1.3.1 引入)</li></ol>",
-                "en": "<ol><li>Fix: picking of the album artist</li><li>Improve: support genres search</li><li>Improve: sync initial search tab with the current tab</li><li>Improve: slightly accelerate response of searching</li><li>Remove: queue validating and marking at start up (first introduced in v1.3.1 in 2023)</li></ol>"
-            }
-        },
-        {
-            "channel": "stable",
-            "versionName": "1.11.5",
-            "versionCode": 1114,
-            "date": 1770270000,
-            "link": [
-                {
-                    "name": "Github Release (Website)",
-                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.11.5"
-                },
-                {
-                    "name": "Github Release Modern Variant APK (File Download Link)",
-                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v1.11.5/PhonographPlus_1.11.5_ModernStableRelease.apk"
-                },
-                {
-                    "name": "Github Release Legacy Variant APK (File Download Link)",
-                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v1.11.5/PhonographPlus_1.11.5_LegacyStableRelease.apk"
-                }
-            ],
-            "releaseNote": {
-                "zh-cn": "<ol><li>修复 异常 Monet 颜色 (v1.11.3 起存在)</li><li>修复 非自动主题下，部分对话框文本颜色反转</li><li>改进 支持重置文件过滤器设置</li><li>新增 添加“扫描媒体”快捷方式，若无内容可显示</li><li>开发 使用 JDK 21 构建</li></ol>",
-                "en": "<ol><li>Fix: glitchy Monet colors (since v1.11.3)</li><li>Fix: inverted text color on some dialogs in non-auto theme</li><li>Improve: support resetting Path Filter settings</li><li>New: add the shortcut of 'Scan Media' if no items to display</li><li>Development: build with JDK 21</li></ol>"
             }
         }
     ]
