@@ -20,10 +20,13 @@ import player.phonograph.service.queue.QueueManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context
+import android.util.Log
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 
 class SearchActivityViewModel : ViewModel() {
@@ -31,18 +34,28 @@ class SearchActivityViewModel : ViewModel() {
     private var currentType: SearchType = SearchType.SONGS
     fun switch(context: Context, type: SearchType) {
         currentType = type
-        search(context, currentType, _query.value)
+        refresh(context)
     }
 
     private var _query: MutableStateFlow<String> = MutableStateFlow("")
     val query get() = _query.asStateFlow()
-    fun query(context: Context, query: String) {
-        _query.value = query
-        search(context, currentType, query)
+    fun submit(text: String) {
+        _query.value = text
     }
 
-    fun refresh(context: Context) {
-        search(context, currentType, query.value)
+
+    @OptIn(FlowPreview::class)
+    fun start(context: Context) {
+        searchJob?.cancel()
+        searchJob = viewModelScope.launch(Dispatchers.IO) {
+            query.debounce(450L).collect { query ->
+                search(context, currentType, query)
+            }
+        }
+    }
+
+    fun terminate() {
+        searchJob?.cancel()
     }
 
     private var _songs = MutableStateFlow<List<Song>>(emptyList())
@@ -60,22 +73,18 @@ class SearchActivityViewModel : ViewModel() {
 
     private var searchJob: Job? = null
 
-    private fun search(context: Context, type: SearchType, query: String) {
-        searchJob?.cancel()
-
+    private suspend fun search(context: Context, type: SearchType, query: String) {
         if (query.isNotBlank()) {
-            searchJob = viewModelScope.launch(Dispatchers.IO) {
-                when (type) {
-                    SearchType.SONGS     -> _songs.value = Songs.searchByTitle(context, query)
-                    SearchType.ARTISTS   -> _artists.value = Artists.searchByName(context, query)
-                    SearchType.ALBUMS    -> _albums.value = Albums.searchByName(context, query)
-                    SearchType.PLAYLISTS -> _playlists.value = Playlists.searchByName(context, query)
-                    SearchType.GENRES    -> _genres.value = Genres.searchByName(context, query)
-                    SearchType.QUEUE     -> {
-                        val queueManager: QueueManager = GlobalContext.get().get()
-                        _songsInQueue.value = queueManager.playingQueue.mapIndexedNotNull { index, song ->
-                            if (song.title.contains(query, true)) QueueSong(song, index) else null
-                        }
+            when (type) {
+                SearchType.SONGS     -> _songs.value = Songs.searchByTitle(context, query)
+                SearchType.ARTISTS   -> _artists.value = Artists.searchByName(context, query)
+                SearchType.ALBUMS    -> _albums.value = Albums.searchByName(context, query)
+                SearchType.PLAYLISTS -> _playlists.value = Playlists.searchByName(context, query)
+                SearchType.GENRES    -> _genres.value = Genres.searchByName(context, query)
+                SearchType.QUEUE     -> {
+                    val queueManager: QueueManager = GlobalContext.get().get()
+                    _songsInQueue.value = queueManager.playingQueue.mapIndexedNotNull { index, song ->
+                        if (song.title.contains(query, true)) QueueSong(song, index) else null
                     }
                 }
             }
@@ -89,4 +98,7 @@ class SearchActivityViewModel : ViewModel() {
         }
     }
 
+    fun refresh(context: Context) {
+        viewModelScope.launch(Dispatchers.IO) { search(context, currentType, query.value) }
+    }
 }

@@ -95,6 +95,7 @@ class SearchActivity : AbsSlidingMusicPanelActivity(), SearchView.OnQueryTextLis
         observe(viewModel.query) { text -> searchView?.setQuery(text, false) }
         observe(Setting(this@SearchActivity)[Keys.disableRealTimeSearch].flow) { disableRealTimeSearch = it }
         lifecycle.addObserver(MediaStoreListener())
+        viewModel.start(this)
     }
 
     override fun createContentView(): View = wrapSlidingMusicPanel(binding.root)
@@ -215,7 +216,7 @@ class SearchActivity : AbsSlidingMusicPanelActivity(), SearchView.OnQueryTextLis
     }
 
     override fun onQueryTextSubmit(query: String): Boolean {
-        viewModel.query(this, query)
+        viewModel.submit(query)
         hideSoftKeyboard()
         return false
     }
@@ -223,7 +224,7 @@ class SearchActivity : AbsSlidingMusicPanelActivity(), SearchView.OnQueryTextLis
     private var disableRealTimeSearch: Boolean = false
     override fun onQueryTextChange(newText: String): Boolean {
         if (!disableRealTimeSearch) {
-            viewModel.query(this, newText)
+            viewModel.submit(newText)
         }
         return false
     }
