@@ -26,6 +26,7 @@ import player.phonograph.ui.modules.explorer.PathSelectorContractTool
 import player.phonograph.ui.modules.explorer.PathSelectorRequester
 import util.theme.materials.MaterialColor
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -49,6 +50,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
@@ -64,8 +66,7 @@ class SettingsActivity : ComposeActivity(),
                          ICreateFileStorageAccessible, IOpenFileStorageAccessible,
                          PathSelectorRequester {
 
-    private val dropMenuState = mutableStateOf(false)
-
+    private val viewModel: SettingsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         registerActivityResultLauncherDelegate(
@@ -80,12 +81,13 @@ class SettingsActivity : ComposeActivity(),
             val scaffoldState = rememberScaffoldState()
             PhonographTheme {
                 SystemBarsPadded {
-                    var title by remember { mutableStateOf(resources.getString(R.string.action_settings)) }
+                    val resources = LocalResources.current
+                    var dropMenuState by remember { mutableStateOf(false) }
                     Scaffold(
                         scaffoldState = scaffoldState,
                         topBar = {
                             TopAppBar(
-                                title = { Text(title) },
+                                title = { Text(viewModel.currentTitle(resources)) },
                                 navigationIcon = {
                                     Icon(
                                         Icons.AutoMirrored.Default.ArrowBack, null,
@@ -102,19 +104,18 @@ class SettingsActivity : ComposeActivity(),
                                             Icon(Icons.Default.MoreVert, stringResource(id = R.string.action_more))
                                         },
                                         onClick = {
-                                            dropMenuState.value = true
+                                            dropMenuState = true
                                         }
                                     )
                                 },
                                 backgroundColor = MaterialTheme.colors.primary
                             )
                         },
-                    ) {
-                        Box(Modifier.padding(it)) {
-                            val state = remember { dropMenuState }
-                            PhonographPreferenceScreen(onBackPressedDispatcher) { title = it }
+                    ) { paddings ->
+                        Box(Modifier.padding(paddings)) {
+                            PhonographPreferenceScreen(viewModel)
                             Box(modifier = Modifier.align(Alignment.TopEnd)) {
-                                DropdownMenu(expanded = state.value, onDismissRequest = { state.value = false }) {
+                                DropdownMenu(expanded = dropMenuState, onDismissRequest = { dropMenuState = false }) {
                                     Menu()
                                 }
                             }

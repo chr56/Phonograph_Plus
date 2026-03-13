@@ -10,15 +10,14 @@ import player.phonograph.ui.modules.setting.PreferenceScreenAppearance
 import player.phonograph.ui.modules.setting.PreferenceScreenBehaviour
 import player.phonograph.ui.modules.setting.PreferenceScreenContent
 import player.phonograph.ui.modules.setting.PreferenceScreenNotification
-import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
+import player.phonograph.ui.modules.setting.SettingsViewModel
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 
 @Preview
 @Composable
 fun PhonographPreferenceScreenPreview() {
-    val owner = LocalOnBackPressedDispatcherOwner.current!!
-    PhonographPreferenceScreen(owner.onBackPressedDispatcher) {}
+    PhonographPreferenceScreen(SettingsViewModel())
 }
 
 

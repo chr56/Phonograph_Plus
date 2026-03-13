@@ -9,8 +9,7 @@ import player.phonograph.settings.PreferenceKey
 import player.phonograph.settings.Setting
 import player.phonograph.util.concurrent.lifecycleScopeOrNewOne
 import player.phonograph.util.theme.tintButtons
-import androidx.activity.OnBackPressedDispatcher
-import androidx.activity.addCallback
+import androidx.activity.compose.BackHandler
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
@@ -28,13 +27,9 @@ import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -43,9 +38,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import android.content.Context
-import android.content.res.Resources
 import kotlinx.coroutines.launch
 
 
@@ -60,30 +53,17 @@ private const val PAGE_ADVANCED = "advanced"
 private const val PAGE_UPDATES = "updates"
 
 @Composable
-fun PhonographPreferenceScreen(
-    onBackPressedDispatcher: OnBackPressedDispatcher,
-    onUpdateTitle: (String) -> Unit,
-) {
-    val lifecycleOwner = LocalLifecycleOwner.current
-    val context = LocalContext.current
-
-    var currentPage by rememberSaveable(key = "page") { mutableStateOf<String>(PAGE_HOME) }
-    LaunchedEffect(currentPage) {
-        onUpdateTitle(localize(context.resources, currentPage))
-        if (currentPage != PAGE_HOME) {
-            onBackPressedDispatcher.addCallback(lifecycleOwner, true) {
-                remove()
-                currentPage = PAGE_HOME
-            }
-        }
+fun PhonographPreferenceScreen(viewModel: SettingsViewModel) {
+    BackHandler(enabled = viewModel.currentPage != PAGE_HOME) {
+        viewModel.updatePage(PAGE_HOME)
     }
     Surface(Modifier.fillMaxSize()) {
         AnimatedContent(
-            currentPage,
+            viewModel.currentPage,
             transitionSpec = { animation(targetState == PAGE_HOME) }
         ) { target ->
             when (target) {
-                PAGE_HOME         -> PreferenceScreenHome { currentPage = it }
+                PAGE_HOME         -> PreferenceScreenHome { viewModel.updatePage(it) }
                 PAGE_APPEARANCE   -> PreferenceScreenAppearance()
                 PAGE_CONTENT      -> PreferenceScreenContent()
                 PAGE_BEHAVIOUR    -> PreferenceScreenBehaviour()
@@ -160,19 +140,6 @@ private fun SettingCategory(
 private fun animation(reverse: Boolean): ContentTransform = ContentTransform(
     targetContentEnter = slideInHorizontally { if (reverse) -it else it },
     initialContentExit = slideOutHorizontally { if (reverse) it else -it },
-)
-
-
-private fun localize(resources: Resources, page: Page): String = resources.getString(
-    when (page) {
-        PAGE_APPEARANCE   -> R.string.pref_category_appearance
-        PAGE_CONTENT      -> R.string.pref_category_content
-        PAGE_BEHAVIOUR    -> R.string.pref_category_behaviour
-        PAGE_NOTIFICATION -> R.string.pref_category_notification
-        PAGE_ADVANCED     -> R.string.pref_category_advanced
-        PAGE_UPDATES      -> R.string.pref_category_updates
-        else              -> R.string.action_settings
-    }
 )
 
 @Composable
