@@ -43,7 +43,9 @@
         <!--                                          -->
         <activity
             android:name=".ui.modules.main.MainActivity"
-            android:exported="true" />
+            android:exported="true">
+            <property android:name="android.window.PROPERTY_COMPAT_ALLOW_RESTRICTED_RESIZABILITY" android:value="true" />
+        </activity>
         <activity
             android:name=".ui.modules.auxiliary.LauncherActivity"
             android:exported="true"
@@ -128,7 +130,9 @@
             android:name=".ui.modules.auxiliary.PhonographIntroActivity"
             android:exported="true"
             android:label="@string/label_intro"
-            android:theme="@style/Theme.AppIntro" />
+            android:theme="@style/Theme.AppIntro">
+            <property android:name="android.window.PROPERTY_COMPAT_ALLOW_RESTRICTED_RESIZABILITY" android:value="true" />
+        </activity>
         <activity
             android:name=".ui.modules.album.AlbumDetailActivity"
             android:label="@string/label_album" />
