@@ -1,33 +1,16 @@
-version: "1.12.0"
-channel: "STABLE"
+version: "1.12.1-dev1"
+channel: "PREVIEW"
 versionCode: 1120
-timestamp: 1773220000
+timestamp: 1774278000
 notes:
   en:
     items:
-      - "Fix: incorrect album artist extraction"
-      - "Improve: sync initial search tab with the current tab"
-      - "Improve: slightly faster search response"
-      - "Improve: genre search support"
-      - "Improve: support adjusting lyrics fonts size and alignment"
-      - "Translation: update Ukrainian (by Max Leonidov), Spanish (by Dino RTX (rtxdino36))"
-      - "Translation: remove Bulgarian and Croatian"
-      - "Remove: queue validating and marking at start up (first introduced in v1.3.1 in 2023)"
-      - "Development: build with Gradle 9.3.1, upgrade Kotlin to 2.3.10, update dependencies"
-      - "New: [experimental] support parsing and reorganizing multiple artists and genres by customizable separators from related music tags; To enable this experimental feature, please manually switch 'Music Library Metadata Source' in Advanced Settings and then 'Refresh Database' via Scan Media. This feature would be enabled by default upon stabilization in the future."
-
+      - "Improve: search input debounce for better responsiveness"
+      - "Improve: throttled error notifications of music metadata extraction"
   zh:
     items:
-      - "修复 专辑艺术家提取有误"
-      - "改进 初始搜索标签页与当前标签页同步"
-      - "改进 略微加快搜索响应速度"
-      - "改进 支持搜索流派"
-      - "改进 支持调整歌词字体大小和对齐方式"
-      - "翻译 更新乌克兰语 (Max Leonidov), 西班牙语 (Dino RTX (rtxdino36))"
-      - "翻译 移除保加利亚语和克罗地亚语"
-      - "移除 启动时播放队列的验证和标记 (2023 年首次于 v1.3.1 引入)"
-      - "开发 使用 Gradle 9.3.1 构建, 更新 Kotlin 至 2.3.10, 更新依赖"
-      - "新增 [实验性] 支持按照可自定义的分隔符解析和重组相关音乐标签中的多重艺术家和多重流派；此实验性功能按需启用，请在高级设置中手动切换“媒体库元数据源”后在扫描媒体中“刷新数据库”；该功能将在稳定后默认启用"
+      - "改进 搜索输入消抖"
+      - "改进 防止提取元数据失败时错误消息泛滥"
 
-previousVersion: "1.11.5"
+previousVersion: "1.12.0"
 previousChannel: "STABLE"
