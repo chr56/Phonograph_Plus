@@ -1,16 +1,18 @@
-version: "1.12.1-dev1"
-channel: "PREVIEW"
-versionCode: 1120
-timestamp: 1774278000
+version: "1.12.1"
+channel: "STABLE"
+versionCode: 1121
+timestamp: 1774500000
 notes:
   en:
     items:
-      - "Improve: search input debounce for better responsiveness"
-      - "Improve: throttled error notifications of music metadata extraction"
+      - "Improve: search input debouncing for better responsiveness"
+      - "Improve: merging and throttling error notifications about background metadata extraction"
+      - "Development: upgrade Kotlin to 2.3.20, update dependencies"
   zh:
     items:
-      - "改进 搜索输入消抖"
+      - "改进 搜索输入防抖处理"
       - "改进 防止提取元数据失败时错误消息泛滥"
+      - "开发 更新 Kotlin 至 2.3.20, 更新依赖"
 
 previousVersion: "1.12.0"
 previousChannel: "STABLE"

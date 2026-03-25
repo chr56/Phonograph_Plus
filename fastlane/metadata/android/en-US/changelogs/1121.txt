@@ -1,0 +1,4 @@
+<b>1.12.1(1121) 2026.03.26</b>
+- Improve: search input debouncing for better responsiveness
+- Improve: merging and throttling error notifications about background metadata extraction
+- Development: upgrade Kotlin to 2.3.20, update dependencies
