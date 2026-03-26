@@ -17,6 +17,8 @@ import util.phonograph.model.constants.PREVIEW_WARNING_EN
 import util.phonograph.model.constants.PREVIEW_WARNING_ZH
 import util.phonograph.model.constants.VARIANTS_DESCRIPTION_BODY
 import util.phonograph.model.constants.VARIANTS_DESCRIPTION_TITLE
+import util.phonograph.model.constants.SIGNING_KEY_NOTICE_EN
+import util.phonograph.model.constants.SIGNING_KEY_NOTICE_ZH
 import util.phonograph.model.constants.compareLink
 import util.phonograph.model.constants.downloadLink
 import util.phonograph.utils.dateString
@@ -76,6 +78,8 @@ class GitHubReleaseMarkdown(private val metadata: ReleaseMetadata) : ReleaseMark
 
         // Variants Description
         target.append(title(VARIANTS_DESCRIPTION_TITLE, 2)).append('\n')
+        target.append(githubAlertBox("$SIGNING_KEY_NOTICE_EN\n$SIGNING_KEY_NOTICE_ZH"))
+        target.append('\n')
         target.append(
             VARIANTS_DESCRIPTION_BODY.trimIndent()
         ).append('\n')
