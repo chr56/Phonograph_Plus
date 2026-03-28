@@ -7,7 +7,6 @@ import java.util.Properties
 
 plugins {
     alias(libs.plugins.androidGradlePlugin)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlin.parcelize)
