@@ -298,20 +298,20 @@ object Keys {
         get() = CompositeKey<ItemLayoutStyle>(ItemLayoutProvider.LandSongItemLayoutProvider)
 
     val _albumItemLayout
-        get() = PrimitiveKey<Int>(intPK("album_item_layout")) { ItemLayoutStyle.LIST_3L.ordinal }
+        get() = PrimitiveKey<Int>(intPK("album_item_layout")) { ItemLayoutStyle.GRID.ordinal }
     val albumItemLayout
         get() = CompositeKey<ItemLayoutStyle>(ItemLayoutProvider.AlbumItemLayoutProvider)
     val _albumItemLayoutLand
-        get() = PrimitiveKey<Int>(intPK("album_item_layout_land")) { ItemLayoutStyle.LIST_3L.ordinal }
+        get() = PrimitiveKey<Int>(intPK("album_item_layout_land")) { ItemLayoutStyle.GRID.ordinal }
     val albumItemLayoutLand
         get() = CompositeKey<ItemLayoutStyle>(ItemLayoutProvider.LandAlbumItemLayoutProvider)
 
     val _artistItemLayout
-        get() = PrimitiveKey<Int>(intPK("artist_item_layout")) { ItemLayoutStyle.LIST.ordinal }
+        get() = PrimitiveKey<Int>(intPK("artist_item_layout")) { ItemLayoutStyle.LIST_NO_IMAGE.ordinal }
     val artistItemLayout
         get() = CompositeKey<ItemLayoutStyle>(ItemLayoutProvider.ArtistItemLayoutProvider)
     val _artistItemLayoutLand
-        get() = PrimitiveKey<Int>(intPK("artist_item_layout_land")) { ItemLayoutStyle.LIST_3L.ordinal }
+        get() = PrimitiveKey<Int>(intPK("artist_item_layout_land")) { ItemLayoutStyle.LIST.ordinal }
     val artistItemLayoutLand
         get() = CompositeKey<ItemLayoutStyle>(ItemLayoutProvider.LandArtistItemLayoutProvider)
 
@@ -331,13 +331,13 @@ object Keys {
     val songGridSizeLand
         get() = PrimitiveKey<Int>(intPK("song_grid_size_land")) { 2 }
     val albumGridSize
-        get() = PrimitiveKey<Int>(intPK("album_grid_size")) { 2 }
+        get() = PrimitiveKey<Int>(intPK("album_grid_size")) { 3 }
     val albumGridSizeLand
-        get() = PrimitiveKey<Int>(intPK("album_grid_size_land")) { 3 }
+        get() = PrimitiveKey<Int>(intPK("album_grid_size_land")) { 4 }
     val artistGridSize
-        get() = PrimitiveKey<Int>(intPK("artist_grid_size")) { 3 }
+        get() = PrimitiveKey<Int>(intPK("artist_grid_size")) { 2 }
     val artistGridSizeLand
-        get() = PrimitiveKey<Int>(intPK("artist_grid_size_land")) { 4 }
+        get() = PrimitiveKey<Int>(intPK("artist_grid_size_land")) { 3 }
     val genreGridSize
         get() = PrimitiveKey<Int>(intPK("genre_grid_size")) { 1 }
     val genreGridSizeLand

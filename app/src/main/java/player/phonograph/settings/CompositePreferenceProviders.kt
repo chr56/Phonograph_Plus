@@ -96,10 +96,10 @@ sealed class ItemLayoutProvider(backField: PrimitiveKey<Int>, default: () -> Ite
             ItemLayoutProvider(Keys._songItemLayout, { ItemLayoutStyle.LIST_EXTENDED })
 
     data object AlbumItemLayoutProvider :
-            ItemLayoutProvider(Keys._albumItemLayout, { ItemLayoutStyle.LIST_3L })
+            ItemLayoutProvider(Keys._albumItemLayout, { ItemLayoutStyle.GRID })
 
     data object ArtistItemLayoutProvider :
-            ItemLayoutProvider(Keys._artistItemLayout, { ItemLayoutStyle.LIST })
+            ItemLayoutProvider(Keys._artistItemLayout, { ItemLayoutStyle.LIST_NO_IMAGE })
 
     data object FolderItemLayoutProvider :
             ItemLayoutProvider(Keys._folderItemLayout, { ItemLayoutStyle.LIST })
@@ -108,10 +108,10 @@ sealed class ItemLayoutProvider(backField: PrimitiveKey<Int>, default: () -> Ite
             ItemLayoutProvider(Keys._songItemLayoutLand, { ItemLayoutStyle.LIST })
 
     data object LandAlbumItemLayoutProvider :
-            ItemLayoutProvider(Keys._albumItemLayoutLand, { ItemLayoutStyle.LIST_3L })
+            ItemLayoutProvider(Keys._albumItemLayoutLand, { ItemLayoutStyle.GRID })
 
     data object LandArtistItemLayoutProvider :
-            ItemLayoutProvider(Keys._artistItemLayoutLand, { ItemLayoutStyle.LIST_3L })
+            ItemLayoutProvider(Keys._artistItemLayoutLand, { ItemLayoutStyle.LIST })
 
     data object LandFolderItemLayoutProvider :
             ItemLayoutProvider(Keys._folderItemLayoutLand, { ItemLayoutStyle.LIST })
