@@ -14,13 +14,12 @@ plugins {
     alias(libs.plugins.artifactsRelease)
 }
 
-val isSigningFileExist: Boolean = rootProject.file("signing.properties").exists()
-var signingProperties = Properties()
-if (isSigningFileExist) {
-    rootProject.file("signing.properties").inputStream().use {
-        signingProperties.load(it)
-    }
-}
+// Signing key and secrets
+val keystoreFile = System.getenv("STORE_FILE") ?: project.findProperty("storeFile")?.toString()
+val keystorePassword = System.getenv("STORE_PASSWORD") ?: project.findProperty("storePassword")?.toString()
+val keyAliasValue = System.getenv("KEY_ALIAS") ?: project.findProperty("keyAlias")?.toString()
+val keyPasswordValue = System.getenv("KEY_PASSWORD") ?: project.findProperty("keyPassword")?.toString()
+val isKeystoreAvailable = !keystoreFile.isNullOrEmpty() && !keystorePassword.isNullOrEmpty()
 
 android {
     compileSdk = 36
@@ -52,11 +51,11 @@ android {
 
     signingConfigs {
         create("release") {
-            if (isSigningFileExist) {
-                storeFile = File(signingProperties["storeFile"] as String)
-                storePassword = signingProperties["storePassword"] as String
-                keyAlias = signingProperties["keyAlias"] as String
-                keyPassword = signingProperties["keyPassword"] as String
+            if (isKeystoreAvailable) {
+                storeFile = file(keystoreFile!!)
+                storePassword = keystorePassword
+                keyAlias = keyAliasValue
+                keyPassword = keyPasswordValue
             }
         }
     }
@@ -64,7 +63,7 @@ android {
     buildTypes {
         getByName("release") {
             // signing
-            if (isSigningFileExist) signingConfig = signingConfigs.getByName("release")
+            if (isKeystoreAvailable) signingConfig = signingConfigs.getByName("release")
 
             // shrink
             isMinifyEnabled = true
@@ -76,7 +75,7 @@ android {
         }
         getByName("debug") {
             // signing as well
-            if (isSigningFileExist) signingConfig = signingConfigs.getByName("release")
+            if (isKeystoreAvailable) signingConfig = signingConfigs.getByName("release")
 
             // package name
             applicationIdSuffix = ".debug"
