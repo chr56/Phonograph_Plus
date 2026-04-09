@@ -1,10 +1,11 @@
 /*
- *  Copyright (c) 2022~2025 chr_56
+ *  Copyright (c) 2022~2026 chr_56
  */
 
 package player.phonograph.repo.mediastore
 
 import player.phonograph.foundation.error.record
+import player.phonograph.foundation.mediastore.CURSOR_INDEX_ID
 import player.phonograph.foundation.mediastore.intoFirstSong
 import player.phonograph.foundation.mediastore.intoSongs
 import player.phonograph.foundation.mediastore.queryMediastoreAudio
@@ -18,6 +19,7 @@ import android.database.Cursor
 import android.provider.MediaStore.Audio.AudioColumns
 import android.provider.MediaStore.MediaColumns.DATE_ADDED
 import android.provider.MediaStore.MediaColumns.DATE_MODIFIED
+import kotlin.math.max
 
 
 object MediaStoreSongs : ISongs {
@@ -74,6 +76,15 @@ object MediaStoreSongs : ISongs {
     }
 
     override suspend fun total(context: Context): Int = querySongs(context = context)?.count ?: 0
+
+    suspend fun ids(context: Context): Set<Long> =
+        querySongs(context = context, sortOrder = null)?.use { cursor ->
+            val result = HashSet<Long>(max(cursor.count, 16))
+            while (cursor.moveToNext()) {
+                result.add(cursor.getLong(CURSOR_INDEX_ID))
+            }
+            result
+        } ?: emptySet()
 
     /**
      * Raw query songs with path filter

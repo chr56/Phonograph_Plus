@@ -10,6 +10,9 @@ import android.database.Cursor
 import android.provider.BaseColumns
 import android.provider.MediaStore.Audio.AudioColumns
 
+
+const val CURSOR_INDEX_ID = 0
+
 val BASE_SONG_PROJECTION = arrayOf(
     BaseColumns._ID, // 0
     AudioColumns.TITLE, // 1
