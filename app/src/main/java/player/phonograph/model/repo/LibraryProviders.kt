@@ -7,6 +7,9 @@ package player.phonograph.model.repo
 const val PROVIDER_MEDIASTORE_DIRECT = "mediastore"
 const val PROVIDER_MEDIASTORE_PARSED = "mediastore_parsed"
 
+const val SYNC_MODE_STANDARD = "standard"
+const val SYNC_MODE_EXCLUDE_GENRES = "exclude_genres"
+
 val DEFAULT_TAG_ABBR_FEATURES_ARTISTS: Set<String>
     get() = setOf(
         "feat.",
