@@ -7,6 +7,7 @@ package player.phonograph.repo.loader
 import player.phonograph.model.Genre
 import player.phonograph.model.Song
 import player.phonograph.model.repo.PROVIDER_MEDIASTORE_PARSED
+import player.phonograph.model.repo.SYNC_MODE_STANDARD
 import player.phonograph.model.repo.loader.Delegated
 import player.phonograph.model.repo.loader.IGenres
 import player.phonograph.repo.mediastore.MediaStoreGenres
@@ -20,10 +21,11 @@ import android.content.Context
  */
 object Genres : IGenres, Delegated<IGenres>() {
     override fun onCreateDelegate(context: Context): IGenres {
-        val preference = Setting(context)[Keys.musicLibraryBackend]
-        val impl: IGenres = when (preference.data) {
-            PROVIDER_MEDIASTORE_PARSED -> RoomGenres
-            else                       -> MediaStoreGenres
+        val source = Setting(context)[Keys.musicLibraryBackend].data
+        val syncMode = Setting(context)[Keys.musicLibrarySyncMode].data
+        val impl: IGenres = when {
+            source == PROVIDER_MEDIASTORE_PARSED && syncMode == SYNC_MODE_STANDARD -> RoomGenres
+            else                                                                   -> MediaStoreGenres
         }
         return impl
     }
