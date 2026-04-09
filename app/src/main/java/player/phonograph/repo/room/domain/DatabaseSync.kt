@@ -67,7 +67,10 @@ class BasicSyncExecutor(private val musicDatabase: MusicDatabase) : SyncExecutor
 
 }
 
-class RelationshipSyncExecutor(private val musicDatabase: MusicDatabase) : SyncExecutor {
+class RelationshipSyncExecutor(
+    private val musicDatabase: MusicDatabase,
+    private val withGenres: Boolean = true,
+) : SyncExecutor {
 
     override suspend fun check(context: Context): Boolean = defaultCheck(context, musicDatabase) ||
             (musicDatabase.ArtistDao().count() == 0) || (musicDatabase.AlbumDao().count() == 0)
@@ -76,7 +79,7 @@ class RelationshipSyncExecutor(private val musicDatabase: MusicDatabase) : SyncE
         context: Context,
         channel: ProgressConnection?,
     ): SyncReport {
-        val session = RelationshipSyncExecutorSession(context, musicDatabase, channel)
+        val session = RelationshipSyncExecutorSession(context, musicDatabase, channel, withGenres)
         return session.execute()
     }
 
@@ -86,6 +89,7 @@ class RelationshipSyncExecutorSession(
     private val context: Context,
     private val musicDatabase: MusicDatabase,
     private val channel: ProgressConnection?,
+    private val withGenres: Boolean,
 ) {
 
     private val songDao = musicDatabase.MediaStoreSongDao()
@@ -197,13 +201,15 @@ class RelationshipSyncExecutorSession(
 
         // Genres
         onProcessUpdate(process, total, "Analyzing Genres")
-        genreMap =
-            genreDao.all(SortMode(SortRef.MODIFIED_DATE, true))
-                .associateBy { it.name }
-                .toMutableMap()
-        newGenres = mutableListOf()
-        songToGenreMap = mutableMapOf()
-        analyzeGenres(newOrUpdated, songToGenreMap, genreMap, newGenres, process, total)
+        if (withGenres) { // Genres are optional for sync
+            genreMap =
+                genreDao.all(SortMode(SortRef.MODIFIED_DATE, true))
+                    .associateBy { it.name }
+                    .toMutableMap()
+            newGenres = mutableListOf()
+            songToGenreMap = mutableMapOf()
+            analyzeGenres(newOrUpdated, songToGenreMap, genreMap, newGenres, process, total)
+        }
         process += newOrUpdated.size
 
         musicDatabase.withTransaction {
@@ -246,42 +252,44 @@ class RelationshipSyncExecutorSession(
                     onProcessUpdate(process, total, "Update artist songs/album counters")
             }
 
-            // Step VI: Genres update
-            onProcessUpdate(process, total, "Update all affected genres")
-            for (newGenre in newGenres) {
-                // insert new Genres and update genre map with concrete id
-                val newId = genreDao.update(newGenre)
-                // Update map with the concrete DB ID for linkage
-                genreMap[newGenre.name] = newGenre.copy(id = newId)
-            }
-
-            // Step VII: Genres song relationships
-            val affectedGenreIds = mutableSetOf<Long>()
-            val updatedSongIds = newOrUpdated.map { it.id }
-            val newGenreLinkages = mutableListOf<LinkageGenreAndSong>()
-            for (song in newOrUpdated) {
-                onProcessUpdate(process, total, "Analyzing genre-songs relationship")
-                // Build new linkages
-                val genreNames = songToGenreMap[song.id] ?: emptyList()
-                for (name in genreNames) {
-                    val genreEntity = genreMap[name]
-                    if (genreEntity != null) {
-                        newGenreLinkages.add(LinkageGenreAndSong(genreEntity.id, song.id))
-                        affectedGenreIds.add(genreEntity.id) // for updating counter
-                    }
+            if (withGenres) {
+                // Step VI: Genres update
+                onProcessUpdate(process, total, "Update all affected genres")
+                for (newGenre in newGenres) {
+                    // insert new Genres and update genre map with concrete id
+                    val newId = genreDao.update(newGenre)
+                    // Update map with the concrete DB ID for linkage
+                    genreMap[newGenre.name] = newGenre.copy(id = newId)
                 }
-                process += 1
-            }
-            onProcessUpdate(process, total, "Update genre-songs relationships")
-            if (updatedSongIds.isNotEmpty()) relationshipGenreSongDao.removeSongs(updatedSongIds)
-            if (newGenreLinkages.isNotEmpty()) relationshipGenreSongDao.override(newGenreLinkages)
 
-            // Step VII: Genres song counter
-            onProcessUpdate(process, total, "Update genre-songs counter")
-            for (genreId in affectedGenreIds) {
-                val count = relationshipGenreSongDao.songIds(genreId).size
-                genreDao.updateCounter(genreId, count)
-            }
+                // Step VII: Genres song relationships
+                val affectedGenreIds = mutableSetOf<Long>()
+                val updatedSongIds = newOrUpdated.map { it.id }
+                val newGenreLinkages = mutableListOf<LinkageGenreAndSong>()
+                for (song in newOrUpdated) {
+                    onProcessUpdate(process, total, "Analyzing genre-songs relationship")
+                    // Build new linkages
+                    val genreNames = songToGenreMap[song.id] ?: emptyList()
+                    for (name in genreNames) {
+                        val genreEntity = genreMap[name]
+                        if (genreEntity != null) {
+                            newGenreLinkages.add(LinkageGenreAndSong(genreEntity.id, song.id))
+                            affectedGenreIds.add(genreEntity.id) // for updating counter
+                        }
+                    }
+                    process += 1
+                }
+                onProcessUpdate(process, total, "Update genre-songs relationships")
+                if (updatedSongIds.isNotEmpty()) relationshipGenreSongDao.removeSongs(updatedSongIds)
+                if (newGenreLinkages.isNotEmpty()) relationshipGenreSongDao.override(newGenreLinkages)
+
+                // Step VII: Genres song counter
+                onProcessUpdate(process, total, "Update genre-songs counter")
+                for (genreId in affectedGenreIds) {
+                    val count = relationshipGenreSongDao.songIds(genreId).size
+                    genreDao.updateCounter(genreId, count)
+                }
+            } // withGenre
         }
         onProcessUpdate(total, total, "All done")
     }
@@ -608,9 +616,11 @@ class RelationshipSyncExecutorSession(
                 allAffectedAlbums.addAll(albumDao.ids(albumIds).map { it.albumId })
             }
 
-            val genreRelationships = relationshipGenreSongDao.songs(missingSongIds)
-            allGenreRelationships.addAll(genreRelationships)
-            allAffectedGenres.addAll(genreRelationships.map { it.genreId })
+            if (withGenres) {
+                val genreRelationships = relationshipGenreSongDao.songs(missingSongIds)
+                allGenreRelationships.addAll(genreRelationships)
+                allAffectedGenres.addAll(genreRelationships.map { it.genreId })
+            }
         }
         process += 1
         onProcessUpdate(process, total, "Check relationships")
@@ -664,17 +674,19 @@ class RelationshipSyncExecutorSession(
             }
 
             // Step V: Genres & their relationships
-            relationshipGenreSongDao.remove(allGenreRelationships)
-            for (genreId in allAffectedGenres) {
-                if (process % PBI == 0) onProcessUpdate(process, total, "Remove or update genres")
-                process += 1
+            if (withGenres) {
+                relationshipGenreSongDao.remove(allGenreRelationships)
+                for (genreId in allAffectedGenres) {
+                    if (process % PBI == 0) onProcessUpdate(process, total, "Remove or update genres")
+                    process += 1
 
-                // Recount or delete if empty
-                val count = relationshipGenreSongDao.songIds(genreId).size
-                if (count <= 0) {
-                    genreDao.delete(genreId)
-                } else {
-                    genreDao.updateCounter(genreId, count)
+                    // Recount or delete if empty
+                    val count = relationshipGenreSongDao.songIds(genreId).size
+                    if (count <= 0) {
+                        genreDao.delete(genreId)
+                    } else {
+                        genreDao.updateCounter(genreId, count)
+                    }
                 }
             }
         }

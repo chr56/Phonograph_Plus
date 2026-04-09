@@ -22,7 +22,7 @@ object DatabaseActions {
     private suspend fun loopUpSyncExecutor(context: Context, musicDatabase: MusicDatabase): SyncExecutor {
         val mode = Setting(context)[Keys.musicLibraryBackend].read()
         val syncExecutor = when (mode) {
-            PROVIDER_MEDIASTORE_PARSED -> RelationshipSyncExecutor(musicDatabase)
+            PROVIDER_MEDIASTORE_PARSED -> RelationshipSyncExecutor(musicDatabase, withGenres = true)
             else                       -> BasicSyncExecutor(musicDatabase)
         }
         return syncExecutor
