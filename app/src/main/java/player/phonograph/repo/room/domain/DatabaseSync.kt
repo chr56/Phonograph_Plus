@@ -257,11 +257,10 @@ class RelationshipSyncExecutorSession(
 
             // Step VII: Genres song relationships
             val affectedGenreIds = mutableSetOf<Long>()
+            val updatedSongIds = newOrUpdated.map { it.id }
             val newGenreLinkages = mutableListOf<LinkageGenreAndSong>()
             for (song in newOrUpdated) {
                 onProcessUpdate(process, total, "Analyzing genre-songs relationship")
-                // Remove old linkages for this song
-                relationshipGenreSongDao.removeSong(song.id)
                 // Build new linkages
                 val genreNames = songToGenreMap[song.id] ?: emptyList()
                 for (name in genreNames) {
@@ -273,8 +272,9 @@ class RelationshipSyncExecutorSession(
                 }
                 process += 1
             }
-            onProcessUpdate(process, total, "Write genre-songs relationships")
-            relationshipGenreSongDao.override(newGenreLinkages)
+            onProcessUpdate(process, total, "Update genre-songs relationships")
+            if (updatedSongIds.isNotEmpty()) relationshipGenreSongDao.removeSongs(updatedSongIds)
+            if (newGenreLinkages.isNotEmpty()) relationshipGenreSongDao.override(newGenreLinkages)
 
             // Step VII: Genres song counter
             onProcessUpdate(process, total, "Update genre-songs counter")
@@ -292,20 +292,25 @@ class RelationshipSyncExecutorSession(
         total: Int,
     ): Pair<List<ArtistEntity>, List<String>> {
         onProcessUpdate(process, total, "Compare with existed artists")
+        val targetArtistNames = artists.filterNotNull().filterNot(String::isEmpty)
+        if (targetArtistNames.isEmpty()) {
+            return emptyList<ArtistEntity>() to emptyList()
+        }
         if (artistDao.count() == 0) {
             // Create for first time, all are new
             val empty = emptyList<ArtistEntity>()
-            val all = artists.filterNotNull().toList()
+            val all = targetArtistNames.toList()
             onProcessUpdate(process + artists.size, total, "No artists")
             return empty to all
         } else {
+            val existedByName = artistDao.named(targetArtistNames).associateBy { it.artistName }
             val affectedArtists = mutableListOf<ArtistEntity>()
             val newArtistNames = mutableListOf<String>()
             var subprocess = 0
             for (name in artists) {
                 subprocess += 1
                 if (name.isNullOrEmpty()) continue
-                val searched = artistDao.named(name)
+                val searched = existedByName[name]
                 if (searched != null) {
                     affectedArtists.add(searched)
                 } else {
@@ -324,6 +329,9 @@ class RelationshipSyncExecutorSession(
         total: Int,
     ): Pair<List<AlbumEntity>, Map<Long, String>> {
         onProcessUpdate(process, total, "Compare with existed albums")
+        if (albums.isEmpty()) {
+            return emptyList<AlbumEntity>() to emptyMap()
+        }
         if (albumDao.count() == 0) {
             // Create for first time, all are new
             val empty = emptyList<AlbumEntity>()
@@ -331,13 +339,14 @@ class RelationshipSyncExecutorSession(
             onProcessUpdate(process + albums.size, total, "No albums")
             return empty to all
         } else {
+            val existedById = albumDao.ids(albums.keys).associateBy { it.albumId }
             val affectedAlbums = mutableListOf<AlbumEntity>()
             val newAlbumNames = mutableMapOf<Long, String>()
             var subprocess = 0
             for ((id, name) in albums) {
                 subprocess += 1
                 if (name.isNullOrEmpty()) continue
-                val searched = albumDao.id(id)
+                val searched = existedById[id]
                 if (searched != null) {
                     affectedAlbums.add(searched)
                 } else {
@@ -566,17 +575,18 @@ class RelationshipSyncExecutorSession(
         val allSize = songDao.total()
 
         process = 0
-        total = 1 + allSize
+        total = 3 + allSize
 
         onProcessUpdate(0, total, "Find deleted songs")
         // Firstly search missing
         val allInDatabase = songDao.all(SortMode(SortRef.MODIFIED_DATE, true))
         process += 1
 
-        val missingEntities = searchMissing(context, allInDatabase, process, total)
-        process += allSize
+        val allInMediastore = MediaStoreSongs.ids(context)
+        process += 1
 
-        total += missingEntities.size // update total
+        val missingEntities = searchMissing(allInDatabase, allInMediastore, process, total)
+        process += allSize
 
         onProcessUpdate(process, total, "Check relationships")
         // And relationships
@@ -587,27 +597,23 @@ class RelationshipSyncExecutorSession(
         val allGenreRelationships: MutableList<LinkageGenreAndSong> = mutableListOf()
         val allAffectedGenres: MutableSet<Long> = mutableSetOf()
 
-        for (song in missingEntities) {
-            process += 1
-
-            // Artist
-            val artistRelationships = relationshipArtistSongDao.song(song.mediastorId)
+        val missingSongIds = missingEntities.map { it.mediastorId }
+        if (missingSongIds.isNotEmpty()) {
+            val artistRelationships = relationshipArtistSongDao.songs(missingSongIds)
             allArtistRelationships.addAll(artistRelationships)
-            val affectedArtists = artistRelationships.map { it.artistId }.toSet()
-            allAffectedArtists.addAll(affectedArtists)
-            // Albums
-            val album = albumDao.id(song.albumId)
-            if (album != null) {
-                allAffectedAlbums.add(album.albumId)
+            allAffectedArtists.addAll(artistRelationships.map { it.artistId })
+
+            val albumIds = missingEntities.map { it.albumId }.toSet()
+            if (albumIds.isNotEmpty()) {
+                allAffectedAlbums.addAll(albumDao.ids(albumIds).map { it.albumId })
             }
 
-            // genres
-            val genreRelationships = relationshipGenreSongDao.song(song.mediastorId)
+            val genreRelationships = relationshipGenreSongDao.songs(missingSongIds)
             allGenreRelationships.addAll(genreRelationships)
             allAffectedGenres.addAll(genreRelationships.map { it.genreId })
-
-            if (process % PBI == 0) onProcessUpdate(process, total, "Check relationships")
         }
+        process += 1
+        onProcessUpdate(process, total, "Check relationships")
 
         total += 1 + allAffectedArtists.size * 2 + allAffectedAlbums.size + allAffectedGenres.size // update total
 
@@ -620,30 +626,34 @@ class RelationshipSyncExecutorSession(
 
             // Step II: Artists relationship & song count
             relationshipArtistSongDao.remove(allArtistRelationships)
+            val deletedArtistIds: MutableSet<Long> = mutableSetOf()
             for (artistId in allAffectedArtists) {
                 if (process % PBI == 0) onProcessUpdate(process, total, "Remove or update artists")
                 process += 1
                 val songCount = queryDao.queryArtistSongCount(artistId)
                 if (songCount <= 0) {
                     artistDao.delete(artistId)
-                    relationshipArtistAlbumDao.removeArtist(artistId)
+                    deletedArtistIds.add(artistId)
                 } else {
                     artistDao.updateCounter(artistId = artistId, songCount = songCount)
                 }
             }
+            if (deletedArtistIds.isNotEmpty()) relationshipArtistAlbumDao.removeArtists(deletedArtistIds)
 
             // Step III: Albums song count
+            val deletedAlbumIds: MutableSet<Long> = mutableSetOf()
             for (albumId in allAffectedAlbums) {
                 if (process % PBI == 0) onProcessUpdate(process, total, "Remove or update albums")
                 process += 1
                 val songCount = queryDao.queryAlbumSongCount(albumId)
                 if (songCount <= 0) {
                     albumDao.delete(albumId)
-                    relationshipArtistAlbumDao.removeAlbum(albumId)
+                    deletedAlbumIds.add(albumId)
                 } else {
                     albumDao.updateCounter(albumId = albumId, songCount = songCount)
                 }
             }
+            if (deletedAlbumIds.isNotEmpty()) relationshipArtistAlbumDao.removeAlbums(deletedAlbumIds)
 
             // Step IV: Artists album count
             for (artistId in allAffectedArtists) {
@@ -673,9 +683,9 @@ class RelationshipSyncExecutorSession(
         return missingEntities.size
     }
 
-    private suspend fun searchMissing(
-        context: Context,
+    private fun searchMissing(
         allInDatabase: List<MediastoreSongEntity>,
+        allInMediastore: Set<Long>,
         process: Int,
         total: Int,
     ): List<MediastoreSongEntity> {
@@ -683,7 +693,7 @@ class RelationshipSyncExecutorSession(
         val missing = mutableListOf<MediastoreSongEntity>()
         for (song in allInDatabase) {
             subprocess += 1
-            if (MediaStoreSongs.id(context, song.mediastorId) == null) {
+            if (song.mediastorId !in allInMediastore) {
                 missing.add(song)
             }
             onProcessUpdate(process + subprocess, total, "Find deleted songs")
