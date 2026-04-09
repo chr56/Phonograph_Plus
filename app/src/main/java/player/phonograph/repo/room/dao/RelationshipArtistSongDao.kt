@@ -22,6 +22,9 @@ abstract class RelationshipArtistSongDao {
     @Query("SELECT * from $LINKAGE_ARTIST_SONG where ${Columns.MEDIASTORE_ID} = :songId")
     abstract fun song(songId: Long): List<LinkageSongAndArtist>
 
+    @Query("SELECT * from $LINKAGE_ARTIST_SONG where ${Columns.MEDIASTORE_ID} in (:songIds)")
+    abstract fun songs(songIds: Collection<Long>): List<LinkageSongAndArtist>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun override(linkage: LinkageSongAndArtist)
 

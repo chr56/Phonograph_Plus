@@ -34,6 +34,9 @@ abstract class AlbumDao {
     @Query("SELECT * from $ALBUMS where $ALBUM_ID = :id")
     abstract fun id(id: Long): AlbumEntity?
 
+    @Query("SELECT * from $ALBUMS where $ALBUM_ID in (:ids)")
+    abstract fun ids(ids: Collection<Long>): List<AlbumEntity>
+
     @Query("SELECT * from $ALBUMS where $ALBUM = :name")
     abstract fun named(name: String): AlbumEntity?
 

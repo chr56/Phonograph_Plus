@@ -37,6 +37,9 @@ abstract class ArtistDao {
     @Query("SELECT * from $ARTISTS where $ARTIST = :name")
     abstract fun named(name: String): ArtistEntity?
 
+    @Query("SELECT * from $ARTISTS where $ARTIST in (:names)")
+    abstract fun named(names: Collection<String>): List<ArtistEntity>
+
     @Query("SELECT COUNT(*) from $ARTISTS")
     abstract fun count(): Int
 

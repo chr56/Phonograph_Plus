@@ -22,6 +22,9 @@ abstract class RelationshipGenreSongDao {
     @Query("SELECT * from $LINKAGE_GENRE_SONG where ${Columns.MEDIASTORE_ID} = :songId")
     abstract fun song(songId: Long): List<LinkageGenreAndSong> // get by song id
 
+    @Query("SELECT * from $LINKAGE_GENRE_SONG where ${Columns.MEDIASTORE_ID} in (:songIds)")
+    abstract fun songs(songIds: Collection<Long>): List<LinkageGenreAndSong> // get by song ids
+
     @Query("SELECT ${Columns.MEDIASTORE_ID} from $LINKAGE_GENRE_SONG where ${Columns.GENRE_ID} = :genreId")
     abstract fun songIds(genreId: Long): List<Long>
 
@@ -37,17 +40,17 @@ abstract class RelationshipGenreSongDao {
     @Delete
     abstract fun remove(linkages: List<LinkageGenreAndSong>): Int
 
-    fun removeGenre(genreId: Long) {
-        for (item in genre(genreId)) {
-            remove(item)
-        }
-    }
+    @Query("DELETE FROM $LINKAGE_GENRE_SONG where ${Columns.GENRE_ID} = :genreId")
+    abstract fun removeGenre(genreId: Long): Int
 
-    fun removeSong(songId: Long) {
-        for (item in song(songId)) {
-            remove(item)
-        }
-    }
+    @Query("DELETE FROM $LINKAGE_GENRE_SONG where ${Columns.MEDIASTORE_ID} = :songId")
+    abstract fun removeSong(songId: Long): Int
+
+    @Query("DELETE FROM $LINKAGE_GENRE_SONG where ${Columns.GENRE_ID} in (:genreIds)")
+    abstract fun removeGenres(genreIds: Collection<Long>): Int
+
+    @Query("DELETE FROM $LINKAGE_GENRE_SONG where ${Columns.MEDIASTORE_ID} in (:songIds)")
+    abstract fun removeSongs(songIds: Collection<Long>): Int
 
     @Query("DELETE FROM $LINKAGE_GENRE_SONG")
     abstract suspend fun deleteAll(): Int

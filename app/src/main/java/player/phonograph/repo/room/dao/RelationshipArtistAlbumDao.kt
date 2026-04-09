@@ -34,15 +34,15 @@ abstract class RelationshipArtistAlbumDao {
     @Query("DELETE FROM $LINKAGE_ARTIST_ALBUM")
     abstract suspend fun deleteAll(): Int
 
-    fun removeAlbum(albumId: Long) {
-        for (item in album(albumId)) {
-            remove(item)
-        }
-    }
+    @Query("DELETE FROM $LINKAGE_ARTIST_ALBUM where ${Columns.ALBUM_ID} = :albumId")
+    abstract fun removeAlbum(albumId: Long): Int
 
-    fun removeArtist(artistId: Long) {
-        for (item in artist(artistId)) {
-            remove(item)
-        }
-    }
+    @Query("DELETE FROM $LINKAGE_ARTIST_ALBUM where ${Columns.ARTIST_ID} = :artistId")
+    abstract fun removeArtist(artistId: Long): Int
+
+    @Query("DELETE FROM $LINKAGE_ARTIST_ALBUM where ${Columns.ALBUM_ID} in (:albumIds)")
+    abstract fun removeAlbums(albumIds: Collection<Long>): Int
+
+    @Query("DELETE FROM $LINKAGE_ARTIST_ALBUM where ${Columns.ARTIST_ID} in (:artistIds)")
+    abstract fun removeArtists(artistIds: Collection<Long>): Int
 }
