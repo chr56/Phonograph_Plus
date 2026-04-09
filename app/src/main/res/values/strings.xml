@@ -529,6 +529,9 @@
     <string name="music_library_metadata_source">Music Library Metadata Source</string>
     <string name="music_library_metadata_source_mediastore">Mediastore</string>
     <string name="music_library_metadata_source_mediastore_parsed">Mediastore (Parsed)</string>
+    <string name="music_library_metadata_sync_mode">Music Library Sync Mode</string>
+    <string name="music_library_metadata_sync_mode_standard">Standard</string>
+    <string name="music_library_metadata_sync_mode_exclude_genres">Exclude Genres</string>
     <string name="permission_name_post_notifications">Post Notifications</string>
     <string name="permission_desc_post_notifications">Since Android T (13), applications require this permission to post notifications.</string>
     <string name="permission_name_read_media_audio">Read Media Audio</string>

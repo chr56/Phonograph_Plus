@@ -7,6 +7,8 @@ package player.phonograph.ui.modules.setting
 import player.phonograph.R
 import player.phonograph.model.repo.PROVIDER_MEDIASTORE_DIRECT
 import player.phonograph.model.repo.PROVIDER_MEDIASTORE_PARSED
+import player.phonograph.model.repo.SYNC_MODE_EXCLUDE_GENRES
+import player.phonograph.model.repo.SYNC_MODE_STANDARD
 import player.phonograph.repo.loader.Albums
 import player.phonograph.repo.loader.Artists
 import player.phonograph.repo.loader.FavoriteSongs
@@ -82,6 +84,18 @@ fun PreferenceScreenAdvanced() {
                     Songs.recreate(context) && Albums.recreate(context) &&
                             Artists.recreate(context) && Genres.recreate(context)
                 }
+                ListPreference(
+                    key = Keys.musicLibrarySyncMode,
+                    optionsValues = listOf(
+                        SYNC_MODE_STANDARD,
+                        SYNC_MODE_EXCLUDE_GENRES,
+                    ),
+                    optionsValuesLocalized = listOf(
+                        R.string.music_library_metadata_sync_mode_standard,
+                        R.string.music_library_metadata_sync_mode_exclude_genres,
+                    ),
+                    title = stringResource(R.string.music_library_metadata_sync_mode),
+                )
                 DialogPreference(
                     dialog = TagSeparatorsEditorDialog.ArtistsSeparatorsEditor::class.java,
                     title = stringResource(R.string.pref_title_music_tags_artists_separators),

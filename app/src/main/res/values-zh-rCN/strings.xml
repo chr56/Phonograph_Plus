@@ -584,4 +584,7 @@
     <string name="music_library_metadata_source">媒体库元数据源</string>
     <string name="music_library_metadata_source_mediastore">Mediastore</string>
     <string name="music_library_metadata_source_mediastore_parsed">Mediastore (解析)</string>
+    <string name="music_library_metadata_sync_mode">媒体库同步模式</string>
+    <string name="music_library_metadata_sync_mode_standard">标准</string>
+    <string name="music_library_metadata_sync_mode_exclude_genres">不包含流派</string>
 </resources>
