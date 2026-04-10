@@ -6,8 +6,8 @@ package player.phonograph.ui.views
 
 import player.phonograph.R
 import player.phonograph.databinding.ItemTextBinding
-import player.phonograph.util.theme.ThemeSettingsDelegate.textColorPrimary
 import player.phonograph.util.theme.getTintedDrawableOnBackground
+import player.phonograph.util.theme.textColorPrimary
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.annotation.SuppressLint

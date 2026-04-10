@@ -11,8 +11,8 @@ import player.phonograph.ui.modules.player.PlayPauseButtonOnClickHandler
 import player.phonograph.ui.views.PlayPauseDrawable
 import player.phonograph.util.theme.ThemeSettingsDelegate.isNightTheme
 import player.phonograph.util.theme.getTintedDrawable
+import player.phonograph.util.theme.secondaryTextColorOn
 import player.phonograph.util.theme.themeIconColor
-import util.theme.color.secondaryTextColor
 import util.theme.view.tint
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
@@ -83,7 +83,7 @@ class PlayerControllerClassicStyledBinding : PlayerControllerBinding() {
     private var disconnectedDrawable: Drawable? = null
     override fun setupPlayPauseButton(context: Context) {
         val fabBackgroundColor = if (isNightTheme(context.resources)) Color.LTGRAY else Color.WHITE
-        val fabIconColor = context.secondaryTextColor(fabBackgroundColor)
+        val fabIconColor = secondaryTextColorOn(context, fabBackgroundColor)
         playPauseDrawable = PlayPauseDrawable(context).apply {
             colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
                 fabIconColor, BlendModeCompat.SRC_IN

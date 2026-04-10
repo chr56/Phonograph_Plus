@@ -3,7 +3,7 @@ package player.phonograph.ui.appwidgets
 import player.phonograph.R
 import player.phonograph.coil.palette.PaletteColorTarget
 import player.phonograph.model.Song
-import util.theme.color.secondaryTextColor
+import player.phonograph.util.theme.secondaryTextColor
 import androidx.core.graphics.drawable.toBitmapOrNull
 import android.content.Context
 import android.graphics.Bitmap
@@ -44,7 +44,7 @@ class AppWidgetCard : BaseAppWidget() {
         if (cardRadius == 0f) cardRadius = context.resources.getDimension(
             R.dimen.app_widget_card_radius
         )
-        val fallbackColor = context.secondaryTextColor(false)
+        val fallbackColor = secondaryTextColor(context, false)
 
         // Load the album cover async and push the update on completion
         loadImage(

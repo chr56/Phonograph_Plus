@@ -7,7 +7,7 @@ package player.phonograph.ui.dialogs
 import player.phonograph.mechanism.backup.Backup
 import player.phonograph.model.backup.BackupItem
 import player.phonograph.ui.adapter.SortableListAdapter
-import player.phonograph.util.theme.ThemeSettingsDelegate.textColorPrimary
+import player.phonograph.util.theme.textColorPrimary
 import androidx.appcompat.widget.AppCompatTextView
 import android.view.Gravity
 import android.view.View

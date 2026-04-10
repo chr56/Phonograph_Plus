@@ -32,8 +32,8 @@ import player.phonograph.util.text.buildInfoString
 import player.phonograph.util.text.infoString
 import player.phonograph.util.text.readableDuration
 import player.phonograph.util.theme.ThemeSettingsDelegate.isNightTheme
-import player.phonograph.util.theme.ThemeSettingsDelegate.textColorPrimary
 import player.phonograph.util.theme.getTintedDrawable
+import player.phonograph.util.theme.textColorPrimary
 import player.phonograph.util.theme.themeFooterColor
 import player.phonograph.util.theme.themeIconColor
 import player.phonograph.util.theme.tintButtons

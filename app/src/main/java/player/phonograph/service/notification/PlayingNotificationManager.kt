@@ -22,8 +22,8 @@ import player.phonograph.settings.SettingObserver
 import player.phonograph.ui.modules.main.MainActivity
 import player.phonograph.util.permissions.checkNotificationPermission
 import player.phonograph.util.theme.getTintedDrawable
-import util.theme.color.primaryTextColor
-import util.theme.color.secondaryTextColor
+import player.phonograph.util.theme.secondaryTextColorOn
+import player.phonograph.util.theme.textColorOn
 import androidx.annotation.LayoutRes
 import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
@@ -359,8 +359,8 @@ class PlayingNotificationManager : ServiceComponent {
                     hasText2 = true, config
                 )
 
-            val primaryTextColor = service.primaryTextColor(backgroundColor)
-            val secondaryTextColor = service.secondaryTextColor(backgroundColor)
+            val primaryTextColor = textColorOn(service, backgroundColor)
+            val secondaryTextColor = secondaryTextColorOn(service, backgroundColor)
 
             layoutCompat.updateNotificationTextColor(primaryTextColor, secondaryTextColor, false)
             layoutExpanded.updateNotificationTextColor(primaryTextColor, secondaryTextColor, true)
@@ -539,7 +539,7 @@ class PlayingNotificationManager : ServiceComponent {
          * @return Icon Bitmap of this [action]
          */
         private fun icon(action: NotificationAction, status: MusicServiceStatus, backgroundColor: Int): Bitmap {
-            val color = service.primaryTextColor(backgroundColor)
+            val color = textColorOn(service, backgroundColor)
             val drawable = service.getTintedDrawable(action.icon(status), color)!!
             return drawable.toBitmap(
                 width = (drawable.intrinsicWidth * 1.5f).toInt(),

@@ -21,8 +21,8 @@ import player.phonograph.service.MusicService
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.ui.modules.auxiliary.LauncherActivity
 import player.phonograph.util.text.infoString
+import player.phonograph.util.theme.defaultTextColor
 import player.phonograph.util.theme.getTintedDrawable
-import util.theme.color.primaryTextColor
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes
@@ -137,7 +137,7 @@ abstract class BaseAppWidget : AppWidgetProvider() {
     }
 
     private fun RemoteViews.updateButtons(context: Context, isPlaying: Boolean) {
-        val color = context.primaryTextColor(darkBackground)
+        val color = defaultTextColor(context, darkBackground)
         bindDrawable(context, R.id.button_next, R.drawable.ic_skip_next_white_24dp, color)
         bindDrawable(context, R.id.button_prev, R.drawable.ic_skip_previous_white_24dp, color)
         bindDrawable(context, R.id.button_toggle_play_pause, playPauseRes(isPlaying), color)
@@ -244,7 +244,15 @@ abstract class BaseAppWidget : AppWidgetProvider() {
 
     protected val queueManager: QueueManager get() = GlobalContext.get().get()
 
-    protected fun createRoundedBitmap(drawable: Drawable?, width: Int, height: Int, tl: Float, tr: Float, bl: Float, br: Float): Bitmap? {
+    protected fun createRoundedBitmap(
+        drawable: Drawable?,
+        width: Int,
+        height: Int,
+        tl: Float,
+        tr: Float,
+        bl: Float,
+        br: Float,
+    ): Bitmap? {
         if (drawable == null) return null
         val bitmap = createBitmap(width, height)
         val c = Canvas(bitmap)

@@ -32,15 +32,14 @@ import player.phonograph.util.text.readableDuration
 import player.phonograph.util.theme.ThemeSettingsDelegate.accentColor
 import player.phonograph.util.theme.ThemeSettingsDelegate.primaryColor
 import player.phonograph.util.theme.getTintedDrawable
+import player.phonograph.util.theme.secondaryTextColorOn
+import player.phonograph.util.theme.textColorOn
 import player.phonograph.util.ui.BottomViewWindowInsetsController
 import player.phonograph.util.ui.applyControllableWindowInsetsAsBottomView
 import player.phonograph.util.ui.hideKeyboard
 import player.phonograph.util.ui.menuProvider
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import player.phonograph.util.ui.showKeyboard
-import util.theme.color.primaryTextColor
-import util.theme.color.secondaryDisabledTextColor
-import util.theme.color.secondaryTextColor
 import util.theme.view.menu.tintOverflowButtonColor
 import util.theme.view.menu.tintToolbarMenuActionIcons
 import util.theme.view.setBackgroundTint
@@ -225,8 +224,8 @@ class PlaylistDetailActivity :
         }
 
         // colors
-        val textColor = secondaryTextColor(primaryColor())
-        val iconColor = secondaryDisabledTextColor(primaryColor())
+        val textColor = secondaryTextColorOn(this, primaryColor())
+        val iconColor = secondaryTextColorOn(this, primaryColor())
         with(binding) {
             nameIcon.setImageDrawable(
                 getTintedDrawable(
@@ -335,7 +334,7 @@ class PlaylistDetailActivity :
     }
 
     private fun setupMenu(menu: Menu) {
-        val iconColor = primaryTextColor(panelViewModel.activityColor.value)
+        val iconColor = textColorOn(this, panelViewModel.activityColor.value)
         PlaylistToolbarMenuProvider(::execute).inflateMenu(menu, this, viewModel.playlist, iconColor)
         tintToolbarMenuActionIcons(menu, iconColor)
         tintOverflowButtonColor(this, iconColor)

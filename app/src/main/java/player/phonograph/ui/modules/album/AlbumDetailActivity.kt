@@ -33,13 +33,13 @@ import player.phonograph.util.text.songCountString
 import player.phonograph.util.text.totalDuration
 import player.phonograph.util.theme.ThemeSettingsDelegate.primaryColor
 import player.phonograph.util.theme.getTintedDrawable
+import player.phonograph.util.theme.secondaryTextColorOn
+import player.phonograph.util.theme.textColorOn
 import player.phonograph.util.theme.updateSystemBarsColor
 import player.phonograph.util.ui.BottomViewWindowInsetsController
 import player.phonograph.util.ui.applyControllableWindowInsetsAsBottomView
 import player.phonograph.util.ui.menuProvider
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
-import util.theme.color.primaryTextColor
-import util.theme.color.secondaryTextColor
 import util.theme.view.menu.tintOverflowButtonColor
 import util.theme.view.menu.tintToolbarMenuActionIcons
 import util.theme.view.toolbar.setToolbarColor
@@ -166,11 +166,13 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvider
         updateSystemBarsColor(color, Color.TRANSPARENT)
         setToolbarColor(viewBinding.toolbar, color)
 
-        val secondaryTextColor = secondaryTextColor(color)
+        val secondaryTextColor = secondaryTextColorOn(this, color)
+        val primaryTextColor = textColorOn(this, color)
+
 
         val artistIcon = getTintedDrawable(R.drawable.ic_person_white_24dp, secondaryTextColor)!!
         viewBinding.artistText.setCompoundDrawablesWithIntrinsicBounds(artistIcon, null, null, null)
-        viewBinding.artistText.setTextColor(primaryTextColor(color))
+        viewBinding.artistText.setTextColor(primaryTextColor)
         viewBinding.artistText.compoundDrawablePadding = 16
 
         val songCountIcon = getTintedDrawable(R.drawable.ic_music_note_white_24dp, secondaryTextColor)!!
@@ -205,7 +207,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvider
     }
 
     private fun setupMenu(menu: Menu) {
-        val iconColor = primaryTextColor(panelViewModel.activityColor.value)
+        val iconColor = textColorOn(this, panelViewModel.activityColor.value)
         DetailToolbarMenuProviders.AlbumToolbarMenuProvider.inflateMenu(menu, this, viewModel.album.value, iconColor)
         tintToolbarMenuActionIcons(menu, iconColor)
         tintOverflowButtonColor(this, iconColor)

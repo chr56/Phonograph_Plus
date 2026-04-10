@@ -8,10 +8,10 @@ import coil.request.Disposable
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import player.phonograph.coil.palette.PaletteColorViewTarget
 import player.phonograph.model.ui.ItemLayoutStyle
+import player.phonograph.util.theme.secondaryTextColorOn
+import player.phonograph.util.theme.textColorOn
 import player.phonograph.util.theme.themeFooterColor
 import player.phonograph.util.theme.themeIconColor
-import util.theme.color.primaryTextColor
-import util.theme.color.secondaryTextColor
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import android.annotation.SuppressLint
@@ -167,11 +167,13 @@ open class DisplayAdapter<I>(
         protected open fun setPaletteColors(color: Int) {
             paletteColorContainer?.let { paletteColorContainer ->
                 val context = itemView.context
+                val textColor = textColorOn(context, color)
+                val secondaryTextColor = secondaryTextColorOn(context, color)
                 paletteColorContainer.setBackgroundColor(color)
-                title?.setTextColor(context.primaryTextColor(color))
-                text?.setTextColor(context.secondaryTextColor(color))
-                textSecondary?.setTextColor(context.secondaryTextColor(color))
-                textTertiary?.setTextColor(context.secondaryTextColor(color))
+                title?.setTextColor(textColor)
+                text?.setTextColor(secondaryTextColor)
+                textSecondary?.setTextColor(secondaryTextColor)
+                textTertiary?.setTextColor(secondaryTextColor)
             }
         }
 

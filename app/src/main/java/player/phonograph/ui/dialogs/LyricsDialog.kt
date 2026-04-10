@@ -24,9 +24,9 @@ import player.phonograph.util.observe
 import player.phonograph.util.text.lyricsTimestamp
 import player.phonograph.util.theme.ThemeSettingsDelegate.primaryColor
 import player.phonograph.util.theme.getTintedDrawable
+import player.phonograph.util.theme.textColorOn
 import player.phonograph.util.theme.themeFooterColor
 import player.phonograph.util.ui.applyLargeDialog
-import util.theme.color.primaryTextColor
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -39,7 +39,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Typeface
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -132,7 +131,7 @@ class LyricsDialog : DialogFragment() {
         for ((index, lyrics) in info.withIndex()) {
             val requireCheck = info.isActive(index)
             val chip = createChip(
-                lyrics.source.name(requireContext()), index, requireCheck, null, this::onChipClicked
+                lyrics.source.name(requireContext()), index, requireCheck, 0, this::onChipClicked
             )
             binding.types.addView(chip)
             if (requireCheck) chipSelected = chip
@@ -142,7 +141,7 @@ class LyricsDialog : DialogFragment() {
                 getString(R.string.action_load),
                 -1,
                 false,
-                getTintedDrawable(R.drawable.ic_add_white_24dp, requireContext().primaryTextColor())
+                R.drawable.ic_add_white_24dp
             ) { _, _ -> manualLoadLyrics() })
         // binding.types.isSelectionRequired = true
     }
@@ -152,7 +151,7 @@ class LyricsDialog : DialogFragment() {
         label: String,
         index: Int,
         checked: Boolean = false,
-        icon: Drawable? = null,
+        iconRes: Int = 0,
         callback: (Chip, Int) -> Unit,
     ) = Chip(requireContext()).apply {
         text = label
@@ -162,7 +161,14 @@ class LyricsDialog : DialogFragment() {
         setOnClickListener {
             callback(it as Chip, index)
         }
-        if (icon != null) chipIcon = icon
+        if (iconRes != 0) {
+            chipIcon = getTintedDrawable(
+                iconRes, textColorOn(
+                    requireContext(), if (checked) primaryColor()
+                    else themeFooterColor(requireContext())
+                )
+            )
+        }
     }
 
     private fun onChipClicked(chip: Chip, index: Int) {
@@ -336,13 +342,12 @@ class LyricsDialog : DialogFragment() {
     //region Theme & Color
 
     private fun chipBackgroundColor(checked: Boolean) = ColorStateList.valueOf(
-        if (checked) primaryColor()
-        else themeFooterColor(requireContext())
+        if (checked) primaryColor() else themeFooterColor(requireContext())
     )
 
     private fun chipTextColor(checked: Boolean) = ColorStateList.valueOf(
-        if (checked) requireContext().primaryTextColor(primaryColor())
-        else requireContext().primaryTextColor(themeFooterColor(requireContext()))
+        if (checked) textColorOn(requireContext(), primaryColor())
+        else textColorOn(requireContext(), themeFooterColor(requireContext()))
     )
 
     //endregion

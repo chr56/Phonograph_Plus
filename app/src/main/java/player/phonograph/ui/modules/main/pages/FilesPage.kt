@@ -27,8 +27,8 @@ import player.phonograph.ui.modules.popup.ListOptionsPopup
 import player.phonograph.util.asList
 import player.phonograph.util.concurrent.coroutineToast
 import player.phonograph.util.observe
-import player.phonograph.util.theme.ThemeSettingsDelegate.textColorPrimary
 import player.phonograph.util.theme.getTintedDrawableOnBackground
+import player.phonograph.util.theme.textColorPrimary
 import androidx.fragment.app.commitNow
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle

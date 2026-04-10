@@ -24,11 +24,11 @@ import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
 import player.phonograph.util.observe
 import player.phonograph.util.theme.ThemeSettingsDelegate.accentColor
 import player.phonograph.util.theme.ThemeSettingsDelegate.primaryColor
+import player.phonograph.util.theme.textColorOn
 import player.phonograph.util.ui.BottomViewWindowInsetsController
 import player.phonograph.util.ui.applyControllableWindowInsetsAsBottomView
 import player.phonograph.util.ui.menuProvider
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
-import util.theme.color.primaryTextColor
 import util.theme.view.menu.tintOverflowButtonColor
 import util.theme.view.menu.tintToolbarMenuActionIcons
 import util.theme.view.toolbar.setToolbarColor
@@ -126,7 +126,7 @@ class GenreDetailActivity : AbsSlidingMusicPanelActivity(),
     }
 
     private fun setupMenu(menu: Menu) {
-        val iconColor = primaryTextColor(panelViewModel.activityColor.value)
+        val iconColor = textColorOn(this, panelViewModel.activityColor.value)
         DetailToolbarMenuProviders.GenreEntityToolbarMenuProvider.inflateMenu(menu, this, genre, iconColor)
         tintToolbarMenuActionIcons(menu, iconColor)
         tintOverflowButtonColor(this, iconColor)

@@ -30,13 +30,12 @@ import player.phonograph.ui.modules.player.controller.PlayerControllerFragment
 import player.phonograph.ui.modules.setting.dialog.NowPlayingScreenStylePreferenceDialog
 import player.phonograph.util.observe
 import player.phonograph.util.theme.getTintedDrawable
+import player.phonograph.util.theme.secondaryTextColorOn
+import player.phonograph.util.theme.textColorOn
 import player.phonograph.util.ui.PHONOGRAPH_ANIM_TIME
 import player.phonograph.util.ui.backgroundColorTransitionAnimator
 import player.phonograph.util.ui.isLandscape
 import player.phonograph.util.ui.setupValueAnimator
-import util.theme.color.primaryTextColor
-import util.theme.color.secondaryTextColor
-import util.theme.color.toolbarIconColor
 import util.theme.view.menu.setMenuColor
 import util.theme.view.menu.tintOverflowButtonColor
 import util.theme.view.menu.tintToolbarMenuActionIcons
@@ -339,8 +338,8 @@ abstract class AbsPlayerFragment :
 
     protected fun setToolbarWidgetColor(backgroundColor: Int) {
         val context: Context = requireContext()
-        val titleTextColor = context.primaryTextColor(backgroundColor)
-        val subtitleTextColor = context.secondaryTextColor(backgroundColor)
+        val titleTextColor = textColorOn(context, backgroundColor)
+        val subtitleTextColor = secondaryTextColorOn(context, backgroundColor)
 
         val playerToolbar = requireToolbar()
         playerToolbar.setToolbarTextColor(titleTextColor, titleTextColor, subtitleTextColor)
@@ -360,7 +359,7 @@ abstract class AbsPlayerFragment :
                 favoriteMenuItem?.apply {
                     icon = getTintedDrawable(
                         if (isFavorite) R.drawable.ic_favorite_white_24dp else R.drawable.ic_favorite_border_white_24dp,
-                        toolbarIconColor(requireContext(), Color.TRANSPARENT)
+                        textColorOn(requireContext(), Color.TRANSPARENT)
                     )
                     title =
                         if (isFavorite) getString(R.string.action_remove_from_favorites)

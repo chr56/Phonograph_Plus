@@ -14,11 +14,12 @@ import player.phonograph.ui.modules.setting.SettingsActivity
 import player.phonograph.util.text.currentDate
 import player.phonograph.util.text.dateTimeSuffixCompat
 import player.phonograph.util.text.getDeviceInfo
+import player.phonograph.util.theme.defaultTextColor
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.systemNightMode
+import player.phonograph.util.theme.textColorOn
 import player.phonograph.util.theme.updateSystemBarsColor
 import player.phonograph.util.ui.alertDialog
-import util.theme.color.primaryTextColor
 import util.theme.materials.MaterialColor
 import util.theme.view.toolbar.setToolbarColor
 import androidx.core.content.IntentCompat
@@ -100,7 +101,7 @@ class CrashActivity : ToolbarActivity() {
 
         // display textview
         binding.crashText.text = fullReportText
-        binding.crashText.setTextColor(primaryTextColor(systemNightMode(resources.configuration) ?: false))
+        binding.crashText.setTextColor(defaultTextColor(this, systemNightMode(resources.configuration) ?: false))
 
         // button "copy to clipboard"
         binding.copyToClipboard.setOnClickListener {
@@ -147,7 +148,7 @@ class CrashActivity : ToolbarActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         attach(menu) {
             menuItem(0, R.id.nav_settings, 1, getString(R.string.action_settings)) {
-                icon = getTintedDrawable(R.drawable.ic_settings_white_24dp, context.primaryTextColor(colorPrimary))
+                icon = getTintedDrawable(R.drawable.ic_settings_white_24dp, textColorOn(context, colorPrimary))
                 showAsActionFlag = SHOW_AS_ACTION_IF_ROOM
                 onClick {
                     Handler(Looper.getMainLooper()).postDelayed(
@@ -229,7 +230,7 @@ class CrashActivity : ToolbarActivity() {
                     colorPrimaryDeep
                 )
             )
-            setColorFilter(primaryTextColor(colorPrimary))
+            setColorFilter(textColorOn(this@CrashActivity, colorPrimary))
         }
 
     }

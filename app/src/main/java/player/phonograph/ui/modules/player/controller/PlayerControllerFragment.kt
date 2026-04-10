@@ -15,16 +15,14 @@ import player.phonograph.ui.modules.panel.AbsMusicServiceFragment
 import player.phonograph.ui.modules.panel.PanelViewModel
 import player.phonograph.util.component.MusicProgressUpdateDelegate
 import player.phonograph.util.observe
-import util.theme.color.isColorLight
-import util.theme.color.primaryTextColor
-import util.theme.color.secondaryTextColor
+import player.phonograph.util.theme.defaultTextColor
+import player.phonograph.util.theme.secondaryTextColorOn
 import androidx.lifecycle.Lifecycle
 import android.graphics.Point
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kotlin.getValue
 
 abstract class PlayerControllerFragment<B : PlayerControllerBinding> : AbsMusicServiceFragment() {
 
@@ -69,7 +67,7 @@ abstract class PlayerControllerFragment<B : PlayerControllerBinding> : AbsMusicS
 
         binding.setupPlayPauseButton(view.context)
         binding.setUpProgressSlider()
-        binding.setupProgressBarTextColor(view.context.primaryTextColor(true))
+        binding.setupProgressBarTextColor(defaultTextColor(view.context, true))
 
         for ((position, function) in readButtonConfiguration()) {
             binding.designate(function, position)
@@ -91,8 +89,8 @@ abstract class PlayerControllerFragment<B : PlayerControllerBinding> : AbsMusicS
         }
         observe(panelViewModel.colorChange) { (oldColor, newColor) ->
             val context = requireContext()
-            val oldControlsColor = context.secondaryTextColor(!isColorLight(oldColor))
-            val newControlsColor = context.secondaryTextColor(!isColorLight(newColor))
+            val oldControlsColor = secondaryTextColorOn(context, oldColor)
+            val newControlsColor = secondaryTextColorOn(context, newColor)
             binding.onUpdateColor(oldControlsColor, newControlsColor, false)
         }
     }

@@ -4,9 +4,8 @@
 
 package player.phonograph.util.theme
 
-import player.phonograph.util.theme.ThemeSettingsDelegate.textColorOnAccentColor
-import player.phonograph.util.theme.ThemeSettingsDelegate.textColorOnPrimaryColor
-import player.phonograph.util.theme.ThemeSettingsDelegate.textColorPrimary
+import player.phonograph.util.theme.ThemeSettingsDelegate.accentColor
+import player.phonograph.util.theme.ThemeSettingsDelegate.primaryColor
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.core.content.res.ResourcesCompat
@@ -57,12 +56,12 @@ fun Context.getTintedDrawableOnBackground(
 fun Context.getTintedDrawableOnPrimary(
     @DrawableRes id: Int,
     mode: BlendModeCompat = BlendModeCompat.SRC_IN,
-): Drawable? = getTintedDrawable(id, textColorOnPrimaryColor(this), mode)
+): Drawable? = getTintedDrawable(id, textColorOn(this, primaryColor()), mode)
 
 fun Context.getTintedDrawableOnAccent(
     @DrawableRes id: Int,
     mode: BlendModeCompat = BlendModeCompat.SRC_IN,
-): Drawable? = getTintedDrawable(id, textColorOnAccentColor(this), mode)
+): Drawable? = getTintedDrawable(id, textColorOn(this, accentColor()), mode)
 
 fun blendColorFilter(color: Int, mode: BlendModeCompat) =
     BlendModeColorFilterCompat.createBlendModeColorFilterCompat(color, mode)

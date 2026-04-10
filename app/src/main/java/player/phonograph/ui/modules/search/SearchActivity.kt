@@ -25,12 +25,12 @@ import player.phonograph.util.observe
 import player.phonograph.util.theme.ThemeSettingsDelegate.accentColor
 import player.phonograph.util.theme.ThemeSettingsDelegate.primaryColor
 import player.phonograph.util.theme.getTintedDrawable
+import player.phonograph.util.theme.secondaryTextColorOn
+import player.phonograph.util.theme.textColorOn
 import player.phonograph.util.theme.updateSystemBarsColor
 import player.phonograph.util.ui.hideKeyboard
 import player.phonograph.util.ui.menuProvider
 import util.theme.color.darkenColor
-import util.theme.color.primaryTextColor
-import util.theme.color.secondaryTextColor
 import util.theme.view.searchview.setSearchViewContentColor
 import util.theme.view.toolbar.setToolbarColor
 import util.theme.view.toolbar.tintCollapseIcon
@@ -122,7 +122,10 @@ class SearchActivity : AbsSlidingMusicPanelActivity(), SearchView.OnQueryTextLis
             }
             with(tabs) {
                 tabMode = TabLayout.MODE_SCROLLABLE
-                setTabTextColors(secondaryTextColor(primaryColor), primaryTextColor(primaryColor))
+                setTabTextColors(
+                    secondaryTextColorOn(this@SearchActivity, primaryColor()),
+                    textColorOn(this@SearchActivity, primaryColor)
+                )
                 setSelectedTabIndicatorColor(accentColor)
             }
             with(actionBarContainer) {
@@ -134,7 +137,12 @@ class SearchActivity : AbsSlidingMusicPanelActivity(), SearchView.OnQueryTextLis
         }
         mediator.attach()
         with(binding.config) {
-            setImageDrawable(getTintedDrawable(R.drawable.ic_settings_white_24dp, primaryTextColor(primaryColor)))
+            setImageDrawable(
+                getTintedDrawable(
+                    R.drawable.ic_settings_white_24dp,
+                    textColorOn(this@SearchActivity, primaryColor)
+                )
+            )
             setBackgroundDrawable(null)
             setOnClickListener {
                 if (popup == null) {
@@ -204,7 +212,7 @@ class SearchActivity : AbsSlidingMusicPanelActivity(), SearchView.OnQueryTextLis
             }
         }
 
-        val textColor = primaryTextColor(primaryColor())
+        val textColor = textColorOn(this@SearchActivity, primaryColor())
 
         binding.toolbar.tintCollapseIcon(textColor)
         setSearchViewContentColor(searchView, textColor)

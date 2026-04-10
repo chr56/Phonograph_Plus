@@ -32,7 +32,7 @@ import player.phonograph.util.logMetrics
 import player.phonograph.util.observe
 import player.phonograph.util.text.infoString
 import player.phonograph.util.theme.ThemeSettingsDelegate.accentColor
-import player.phonograph.util.theme.ThemeSettingsDelegate.textColorPrimary
+import player.phonograph.util.theme.textColorPrimary
 import player.phonograph.util.theme.themeIconColor
 import util.theme.view.navigationview.setItemIconColors
 import util.theme.view.navigationview.setItemTextColors

@@ -32,8 +32,8 @@ import player.phonograph.ui.modules.web.WebSearchLauncher
 import player.phonograph.util.concurrent.runOnMainHandler
 import player.phonograph.util.permissions.navigateToAppDetailSetting
 import player.phonograph.util.permissions.navigateToStorageSetting
-import player.phonograph.util.theme.ThemeSettingsDelegate.textColorPrimary
 import player.phonograph.util.theme.getTintedDrawable
+import player.phonograph.util.theme.textColorPrimary
 import androidx.core.net.toUri
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope

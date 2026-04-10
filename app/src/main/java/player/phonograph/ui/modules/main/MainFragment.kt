@@ -31,8 +31,8 @@ import player.phonograph.util.observe
 import player.phonograph.util.theme.ThemeSettingsDelegate.accentColor
 import player.phonograph.util.theme.ThemeSettingsDelegate.primaryColor
 import player.phonograph.util.theme.getTintedDrawable
+import player.phonograph.util.theme.textColorOn
 import player.phonograph.util.ui.menuProvider
-import util.theme.color.primaryTextColor
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.BlendModeColorFilterCompat
@@ -41,11 +41,8 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.withStarted
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
-import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.ArrayMap
@@ -54,7 +51,6 @@ import android.view.Menu
 import android.view.MenuItem.SHOW_AS_ACTION_ALWAYS
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 
 class MainFragment : Fragment() {
@@ -237,8 +233,8 @@ class MainFragment : Fragment() {
 
     private val primaryColor by lazy(LazyThreadSafetyMode.NONE) { primaryColor() }
     private val accentColor by lazy(LazyThreadSafetyMode.NONE) { accentColor() }
-    private val primaryTextColor by lazy(LazyThreadSafetyMode.NONE) { mainActivity.primaryTextColor(primaryColor) }
-    private val secondaryTextColor by lazy(LazyThreadSafetyMode.NONE) { mainActivity.primaryTextColor(primaryColor) }
+    private val primaryTextColor by lazy(LazyThreadSafetyMode.NONE) { textColorOn(mainActivity, primaryColor) }
+    private val secondaryTextColor by lazy(LazyThreadSafetyMode.NONE) { textColorOn(mainActivity, primaryColor) }
     //endregion
 
     companion object {

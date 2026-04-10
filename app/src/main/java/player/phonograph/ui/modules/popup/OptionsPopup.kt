@@ -5,7 +5,7 @@
 package player.phonograph.ui.modules.popup
 
 import player.phonograph.util.theme.ThemeSettingsDelegate.accentColor
-import player.phonograph.util.theme.ThemeSettingsDelegate.textColorSecondary
+import player.phonograph.util.theme.textColorSecondary
 import player.phonograph.util.theme.themeFloatingBackgroundColor
 import player.phonograph.util.ui.convertDpToPixel
 import androidx.viewbinding.ViewBinding

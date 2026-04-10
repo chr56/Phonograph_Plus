@@ -40,14 +40,13 @@ import player.phonograph.util.text.songCountString
 import player.phonograph.util.text.totalDuration
 import player.phonograph.util.theme.ThemeSettingsDelegate.primaryColor
 import player.phonograph.util.theme.getTintedDrawable
+import player.phonograph.util.theme.secondaryTextColorOn
+import player.phonograph.util.theme.textColorOn
 import player.phonograph.util.theme.themeFooterColor
 import player.phonograph.util.theme.updateSystemBarsColor
 import player.phonograph.util.ui.BottomViewWindowInsetsController
 import player.phonograph.util.ui.applyControllableWindowInsetsAsBottomView
 import player.phonograph.util.ui.menuProvider
-import util.theme.color.primaryTextColor
-import util.theme.color.secondaryTextColor
-import util.theme.color.toolbarTitleColor
 import util.theme.view.menu.tintOverflowButtonColor
 import util.theme.view.menu.tintToolbarMenuActionIcons
 import util.theme.view.toolbar.setToolbarColor
@@ -162,10 +161,10 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvide
 
         setSupportActionBar(viewBinding.toolbar) // needed to auto readjust the toolbar content color
         setToolbarColor(viewBinding.toolbar, color)
-        viewBinding.toolbar.setTitleTextColor(toolbarTitleColor(this, color))
+        viewBinding.toolbar.setTitleTextColor(textColorOn(this, color))
 
         updateSystemBarsColor(color, Color.TRANSPARENT)
-        val secondaryTextColor = secondaryTextColor(color)
+        val secondaryTextColor = secondaryTextColorOn(this, color)
         viewBinding.durationIcon.setImageDrawable(
             getTintedDrawable(R.drawable.ic_timer_white_24dp, secondaryTextColor)
         )
@@ -192,7 +191,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvide
     }
 
     private fun setupMenu(menu: Menu) {
-        val iconColor = primaryTextColor(panelViewModel.activityColor.value)
+        val iconColor = textColorOn(this, panelViewModel.activityColor.value)
         DetailToolbarMenuProviders.ArtistToolbarMenuProvider.inflateMenu(
             menu, this, viewModel.artist.value ?: Artist(), iconColor
         )

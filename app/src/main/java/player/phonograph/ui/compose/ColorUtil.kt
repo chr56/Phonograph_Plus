@@ -4,14 +4,12 @@
 
 package player.phonograph.ui.compose
 
-import util.theme.color.primaryTextColor
+import player.phonograph.util.theme.defaultTextColor
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
-import androidx.compose.ui.graphics.toArgb
 import android.content.Context
 import android.graphics.Color.RGBToHSV
 import kotlin.math.abs
-import kotlin.math.roundToInt
 
 
 private fun Color.hsvShift(by: Float): Color {
@@ -52,5 +50,5 @@ fun Color.getReverseColor(): Color {
 
 fun textColorOn(context: Context, color: Color): Color =
     Color(
-        context.primaryTextColor(color.toArgb())
+        defaultTextColor(context, !color.isColorLight())
     )

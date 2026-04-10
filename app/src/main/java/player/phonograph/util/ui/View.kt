@@ -5,8 +5,8 @@
 package player.phonograph.util.ui
 
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
-import player.phonograph.util.theme.resolveColor
-import util.theme.color.primaryTextColor
+import player.phonograph.util.theme.resolveThemeColor
+import player.phonograph.util.theme.textColorOn
 import util.theme.color.withAlpha
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -28,13 +28,13 @@ fun hitTest(v: View, x: Int, y: Int): Boolean {
 
 fun FastScrollRecyclerView.setUpFastScrollRecyclerViewColor(context: Context, color: Int) {
     setPopupBgColor(color)
-    setPopupTextColor(context.primaryTextColor(color))
+    setPopupTextColor(textColorOn(context, color))
     setThumbColor(color)
     setTrackColor(
         withAlpha(
-            context.resolveColor(
+            context.resolveThemeColor(
                 androidx.appcompat.R.attr.colorControlNormal,
-                context.primaryTextColor()
+                player.phonograph.R.color.default_text_color_secondary,
             ), 0.12f
         )
     )
