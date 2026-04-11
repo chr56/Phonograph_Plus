@@ -63,6 +63,7 @@ class App : Application(), ImageLoaderFactory {
         val nightMode = systemNightMode(newConfig)
         postDelayedOnceHandlerCallback(Handler(Looper.getMainLooper()), 550, 536870912) {
             changeGlobalNightMode(nightMode)
+            ThemeSettingsDelegate.onConfigurationChanged(newConfig)
         }
         // Localization
         super.onConfigurationChanged(
