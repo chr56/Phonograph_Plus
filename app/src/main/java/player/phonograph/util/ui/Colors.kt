@@ -578,5 +578,7 @@ object MonetColor {
 
     val defaultMonetPrimaryColor get() = MonetColorPalette(ACCENT1, DEPTH_400)
     val defaultMonetAccentColor get() = MonetColorPalette(ACCENT1, DEPTH_700)
+    val defaultMonetPrimaryColorForNight get() = MonetColorPalette(ACCENT1, DEPTH_300)
+    val defaultMonetAccentColorForNight get() = MonetColorPalette(ACCENT1, DEPTH_600)
 
 }

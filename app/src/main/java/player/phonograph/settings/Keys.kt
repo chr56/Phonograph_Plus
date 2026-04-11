@@ -49,13 +49,23 @@ object Keys {
     val selectedPrimaryColor
         get() = PrimitiveKey<Int>(intPK("primary_color_selected")) { MaterialColor.Blue._A400.asColor }
     val selectedAccentColor
-        get() = PrimitiveKey<Int>(intPK("accent_color_selected")) { MaterialColor.Yellow._900.asColor }
+        get() = PrimitiveKey<Int>(intPK("accent_color_selected")) { MaterialColor.Amber._800.asColor }
+    val selectedPrimaryColorForNight
+        get() = PrimitiveKey<Int>(intPK("primary_color_selected_for_night")) { MaterialColor.Indigo._600.asColor }
+    val selectedAccentColorForNight
+        get() = PrimitiveKey<Int>(intPK("accent_color_selected_for_night")) { MaterialColor.Orange._800.asColor }
+    val enableColorSchemeForNight
+        get() = PrimitiveKey<Boolean>(booleanPK("enable_dark_colors")) { true }
     val enableMonet
         get() = PrimitiveKey<Boolean>(booleanPK("enable_monet")) { false }
     val monetPalettePrimaryColor
         get() = PrimitiveKey<Int>(intPK("primary_color_monet_palette")) { MonetColor.defaultMonetPrimaryColor.value }
     val monetPaletteAccentColor
         get() = PrimitiveKey<Int>(intPK("accent_color_monet_palette")) { MonetColor.defaultMonetAccentColor.value }
+    val monetPalettePrimaryColorForNight
+        get() = PrimitiveKey<Int>(intPK("primary_color_monet_palette_for_night")) { MonetColor.defaultMonetPrimaryColorForNight.value }
+    val monetPaletteAccentColorForNight
+        get() = PrimitiveKey<Int>(intPK("accent_color_monet_palette_for_night")) { MonetColor.defaultMonetAccentColorForNight.value }
     val coloredAppShortcuts
         get() = PrimitiveKey<Boolean>(booleanPK("colored_app_shortcuts")) { true }
     //</editor-fold>
