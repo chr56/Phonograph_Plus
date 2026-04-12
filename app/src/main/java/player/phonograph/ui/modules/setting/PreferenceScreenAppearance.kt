@@ -21,6 +21,7 @@ import player.phonograph.ui.modules.setting.dialog.LanguageSettingDialog
 import player.phonograph.ui.modules.setting.dialog.MaterialColorPickerDialog
 import player.phonograph.ui.modules.setting.dialog.MonetColorPickerDialog
 import player.phonograph.ui.modules.setting.dialog.NowPlayingScreenStylePreferenceDialog
+import player.phonograph.util.theme.ThemeSettingsDelegate
 import player.phonograph.util.ui.ColorPalette
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
@@ -30,10 +31,12 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import android.annotation.SuppressLint
 import android.os.Build.VERSION.SDK_INT
@@ -95,6 +98,21 @@ fun PreferenceScreenAppearance() {
                 summaryRes = R.string.accent_color_desc,
                 ColorPalette.Variant.Accent
             )
+            BooleanPreference(
+                key = Keys.enableColorSchemeForNight,
+                titleRes = R.string.pref_title_enable_night_color_scheme,
+                summaryRes = R.string.pref_summary_enable_night_color_scheme,
+            )
+            ColorPreference(
+                titleRes = R.string.primary_color_for_night,
+                summaryRes = R.string.primary_color_for_night_desc,
+                ColorPalette.Variant.PrimaryForNight
+            )
+            ColorPreference(
+                titleRes = R.string.accent_color_for_night,
+                summaryRes = R.string.accent_color_for_night_desc,
+                ColorPalette.Variant.AccentForNight
+            )
             if (SDK_INT >= N_MR1) BooleanPreference(
                 key = Keys.coloredAppShortcuts,
                 titleRes = R.string.pref_title_app_shortcuts,
@@ -149,16 +167,42 @@ private fun ColorPreference(
     @StringRes summaryRes: Int,
     variant: ColorPalette.Variant,
 ) {
-    val color = when (variant) {
-        ColorPalette.Variant.Primary -> MaterialTheme.colors.primary
-        ColorPalette.Variant.Accent  -> MaterialTheme.colors.secondary
-    }
     val context = LocalContext.current
-    ColorPreference(titleRes, summaryRes, color) {
+
+    val enableNightColorsPreference = remember { Setting(context)[Keys.enableColorSchemeForNight] }
+    val enableNightColors by enableNightColorsPreference.flow.collectAsState(enableNightColorsPreference.default)
+
+    val enableMonetPreference = remember { Setting(context)[Keys.enableMonet] }
+    val enableMonet by enableMonetPreference.flow.collectAsState(enableMonetPreference.default)
+
+    val source = remember(enableMonet, variant) {
+        if (enableMonet) {
+            when (variant) {
+                ColorPalette.Variant.Primary         -> ThemeSettingsDelegate.monetPalettePrimaryColor
+                ColorPalette.Variant.Accent          -> ThemeSettingsDelegate.monetPaletteAccentColor
+                ColorPalette.Variant.PrimaryForNight -> ThemeSettingsDelegate.monetPalettePrimaryColorForNight
+                ColorPalette.Variant.AccentForNight  -> ThemeSettingsDelegate.monetPaletteAccentColorForNight
+            }
+        } else {
+            when (variant) {
+                ColorPalette.Variant.Primary         -> ThemeSettingsDelegate.selectedPrimaryColor
+                ColorPalette.Variant.Accent          -> ThemeSettingsDelegate.selectedAccentColor
+                ColorPalette.Variant.PrimaryForNight -> ThemeSettingsDelegate.selectedPrimaryColorForNight
+                ColorPalette.Variant.AccentForNight  -> ThemeSettingsDelegate.selectedAccentColorForNight
+            }
+        }
+    }
+    val color by source.collectAsState(0)
+
+    val nightVariants =
+        variant == ColorPalette.Variant.PrimaryForNight || variant == ColorPalette.Variant.AccentForNight
+    val hidden = nightVariants && !enableNightColors
+
+    if (!hidden) ColorPreference(titleRes, summaryRes, Color(color)) {
         if (SDK_INT >= S && Setting(context)[Keys.enableMonet].data) {
             MonetColorPickerDialog.showColorChooserDialog(context, variant)
         } else {
-            MaterialColorPickerDialog.showColorChooserDialog(context, color.toArgb(), variant)
+            MaterialColorPickerDialog.showColorChooserDialog(context, color, variant)
         }
     }
 }

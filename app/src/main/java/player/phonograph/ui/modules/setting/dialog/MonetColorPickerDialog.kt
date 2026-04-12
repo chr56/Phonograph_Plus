@@ -41,8 +41,10 @@ class MonetColorPickerDialog : ComposeViewDialogFragment() {
     private lateinit var mode: ColorPalette.Variant
     private val settingKey
         get() = when (mode) {
-            ColorPalette.Variant.Primary -> Keys.monetPalettePrimaryColor
-            ColorPalette.Variant.Accent  -> Keys.monetPaletteAccentColor
+            ColorPalette.Variant.Primary        -> Keys.monetPalettePrimaryColor
+            ColorPalette.Variant.Accent          -> Keys.monetPaletteAccentColor
+            ColorPalette.Variant.PrimaryForNight -> Keys.monetPalettePrimaryColorForNight
+            ColorPalette.Variant.AccentForNight  -> Keys.monetPaletteAccentColorForNight
         }
 
     private fun read(): MonetColor.MonetColorPalette {
@@ -70,7 +72,7 @@ class MonetColorPickerDialog : ComposeViewDialogFragment() {
                 AdvancedDialogFrame(
                     modifier = Modifier,
                     title = stringResource(R.string.dynamic_colors),
-                    navigationButtonIcon= rememberVectorPainter(Icons.Default.Close),
+                    navigationButtonIcon = rememberVectorPainter(Icons.Default.Close),
                     onDismissRequest = ::dismiss,
                     actions = listOf(
                         ActionItem(

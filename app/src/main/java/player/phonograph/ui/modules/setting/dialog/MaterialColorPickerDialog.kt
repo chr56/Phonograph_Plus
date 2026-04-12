@@ -64,7 +64,7 @@ class MaterialColorPickerDialog : ComposeViewDialogFragment() {
                 AdvancedDialogFrame(
                     modifier = Modifier,
                     title = stringResource(R.string.pref_header_colors),
-                    navigationButtonIcon= rememberVectorPainter(Icons.Default.Close),
+                    navigationButtonIcon = rememberVectorPainter(Icons.Default.Close),
                     onDismissRequest = ::dismiss,
                     actions = listOf(
                         ActionItem(
@@ -132,10 +132,13 @@ class MaterialColorPickerDialog : ComposeViewDialogFragment() {
 
 
     private fun applyNewColor(context: Context, color: Int, variant: ColorPalette.Variant) {
-        when (variant) {
-            ColorPalette.Variant.Primary -> Setting(context)[Keys.selectedPrimaryColor].data = color
-            ColorPalette.Variant.Accent  -> Setting(context)[Keys.selectedAccentColor].data = color
+        val key = when (variant) {
+            ColorPalette.Variant.Primary        -> Keys.selectedPrimaryColor
+            ColorPalette.Variant.Accent          -> Keys.selectedAccentColor
+            ColorPalette.Variant.PrimaryForNight -> Keys.selectedPrimaryColorForNight
+            ColorPalette.Variant.AccentForNight  -> Keys.selectedAccentColorForNight
         }
+        Setting(context)[key].data = color
         if (SDK_INT >= VERSION_CODES.N_MR1) {
             PhonographShortcutManager.updateDynamicShortcuts(context)
         }

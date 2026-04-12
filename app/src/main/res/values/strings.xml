@@ -407,6 +407,7 @@
     <string name="pref_title_music_tags_artists_separators">Music Tags - Artists Separators</string>
     <string name="pref_title_music_tags_featuring_artists_abbr">Music Tags - Featuring Artists Separators/Abbreviations/</string>
     <string name="pref_title_music_tags_genres_separators">Music Tags - Genres Separators</string>
+    <string name="pref_title_enable_night_color_scheme">Night color schemes</string>
     <string name="pref_summary_always_play">Ignore any interruptions and continue to play, no matter what else is being played. (This may cause silent output in some circumstances.)</string>
     <string name="pref_summary_always_use_media_session_to_display_cover">Always use Media Session to provide cover images to system for Notification etc.</string>
     <string name="pref_summary_audio_ducking">Notifications, navigation etc.</string>
@@ -449,6 +450,7 @@
     <string name="pref_summary_music_tags_artists_separators">\'Artists\' Separators, used for separating multiple artists.</string>
     <string name="pref_summary_music_tags_featuring_artists_abbr">\'Featuring Artists\' Separators or abbreviations, used for extracting featuring artists in music tags, such as \'Titles\' or \'Album\'.</string>
     <string name="pref_summary_music_tags_genres_separators">\'Genres\' Separators, used for separating multiple genres.</string>
+    <string name="pref_summary_enable_night_color_scheme">Use another color scheme for night themes.</string>
     <string name="pref_option_show_prompt">Show prompt dialog every time</string>
     <string name="pref_option_silence">Silence (keep in background without jumping to player)</string>
     <string name="pref_value_align_left">left</string>
@@ -460,6 +462,10 @@
     <string name="accent_color">Accent color</string>
     <string name="primary_color_desc">The primary theme color</string>
     <string name="accent_color_desc">The accent theme color</string>
+    <string name="primary_color_for_night">Primary color for night</string>
+    <string name="accent_color_for_night">Accent color for night</string>
+    <string name="primary_color_for_night_desc">The primary theme color, but applied only for night themes</string>
+    <string name="accent_color_for_night_desc">The accent theme color, but applied only for night themes</string>
     <string name="dynamic_colors">Dynamic Colors</string>
     <string name="theme_name_auto_lightblack">"Auto (Light/Black)"</string>
     <string name="theme_name_auto_lightdark">"Auto (Light/Dark)"</string>

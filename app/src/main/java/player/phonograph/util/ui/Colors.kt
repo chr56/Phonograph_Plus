@@ -15,7 +15,8 @@ import android.os.Build.VERSION_CODES.S
 object ColorPalette {
 
     enum class Variant {
-        Primary, Accent;
+        Primary, Accent,
+        PrimaryForNight, AccentForNight;
     }
 
     //region Dynamic Colors

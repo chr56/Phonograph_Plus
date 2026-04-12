@@ -157,6 +157,10 @@
     <string name="accent_color">强调色</string>
     <string name="primary_color_desc">主题主色调</string>
     <string name="accent_color_desc">主题强调色</string>
+    <string name="primary_color_for_night">主色调（暗色主题）</string>
+    <string name="accent_color_for_night">强调色（暗色主题）</string>
+    <string name="primary_color_for_night_desc">主题主色调（暗色主题）</string>
+    <string name="accent_color_for_night_desc">主题强调色（暗色主题）</string>
     <string name="action_update_image">更新图片</string>
     <string name="msg_empty_playlist">播放列表为空</string>
     <string name="msg_no_playlists">没有播放列表</string>
@@ -587,4 +591,6 @@
     <string name="music_library_metadata_sync_mode">媒体库同步模式</string>
     <string name="music_library_metadata_sync_mode_standard">标准</string>
     <string name="music_library_metadata_sync_mode_exclude_genres">不包含流派</string>
+    <string name="pref_title_enable_night_color_scheme">独立夜间主题配色方案</string>
+    <string name="pref_summary_enable_night_color_scheme">为暗色模式或夜间主题使用另外一套配色方案</string>
 </resources>

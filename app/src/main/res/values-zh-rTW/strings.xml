@@ -157,6 +157,10 @@
     <string name="accent_color">重點色調</string>
     <string name="primary_color_desc">主色調</string>
     <string name="accent_color_desc">重點色調</string>
+    <string name="primary_color_for_night">主色調（暗色主題）</string>
+    <string name="accent_color_for_night">重點色調（暗色主題）</string>
+    <string name="primary_color_for_night_desc">暗色主題主色調</string>
+    <string name="accent_color_for_night_desc">暗色主題重點色調</string>
     <string name="action_update_image">更新圖片</string>
     <string name="msg_empty_playlist">播放清單是空的</string>
     <string name="msg_no_playlists">沒有播放清單</string>
@@ -587,4 +591,6 @@
     <string name="music_library_metadata_sync_mode">音樂庫同步模式</string>
     <string name="music_library_metadata_sync_mode_standard">標準</string>
     <string name="music_library_metadata_sync_mode_exclude_genres">不含類型</string>
+    <string name="pref_title_enable_night_color_scheme">獨立夜間主題配色方案</string>
+    <string name="pref_summary_enable_night_color_scheme">為暗色模式或夜間主題使用另外一套配色方案</string>
 </resources>
