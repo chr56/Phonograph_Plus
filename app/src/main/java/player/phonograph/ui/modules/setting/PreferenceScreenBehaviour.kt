@@ -8,9 +8,12 @@ import player.phonograph.R
 import player.phonograph.settings.Keys
 import player.phonograph.ui.NavigationUtil
 import player.phonograph.ui.modules.setting.components.BooleanPreference
+import player.phonograph.ui.modules.setting.components.DialogPreference
 import player.phonograph.ui.modules.setting.components.ExternalPreference
 import player.phonograph.ui.modules.setting.components.FloatPreference
 import player.phonograph.ui.modules.setting.components.SettingsGroup
+import player.phonograph.ui.modules.setting.dialog.ClickModeSettingDialog
+import player.phonograph.ui.modules.setting.dialog.ExternalPlayRequestSettingDialog
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -56,6 +59,36 @@ fun PreferenceScreenBehaviour() {
                 titleRes = R.string.pref_title_always_play,
             )
             EqualizerSetting()
+        }
+        SettingsGroup(titleRes = R.string.pref_header_interactions) {
+            DialogPreference(
+                dialog = ClickModeSettingDialog::class.java,
+                titleRes = R.string.pref_title_click_behavior,
+                summaryRes = R.string.pref_summary_click_behavior,
+                reset = {
+                    resetPreference(
+                        it,
+                        R.string.pref_title_click_behavior,
+                        Keys.songItemClickMode,
+                        Keys.songItemClickExtraFlag,
+                    )
+                }
+            )
+            DialogPreference(
+                dialog = ExternalPlayRequestSettingDialog::class.java,
+                titleRes = R.string.pref_title_external_play_request,
+                summaryRes = R.string.pref_summary_external_play_request,
+                reset = {
+                    resetPreference(
+                        it,
+                        R.string.pref_title_external_play_request,
+                        Keys.externalPlayRequestMultipleMode,
+                        Keys.externalPlayRequestSingleMode,
+                        Keys.externalPlayRequestShowPrompt,
+                        Keys.externalPlayRequestSilence,
+                    )
+                }
+            )
         }
         SettingsGroup(titleRes = R.string.pref_header_player_behaviour) {
             BooleanPreference(

@@ -47,6 +47,7 @@ private typealias Page = String
 private const val PAGE_HOME = "home"
 private const val PAGE_APPEARANCE = "appearance"
 private const val PAGE_CONTENT = "content"
+private const val PAGE_LYRICS = "lyrics"
 private const val PAGE_BEHAVIOUR = "behaviours"
 private const val PAGE_NOTIFICATION = "notification"
 private const val PAGE_ADVANCED = "advanced"
@@ -66,6 +67,7 @@ fun PhonographPreferenceScreen(viewModel: SettingsViewModel) {
                 PAGE_HOME         -> PreferenceScreenHome { viewModel.updatePage(it) }
                 PAGE_APPEARANCE   -> PreferenceScreenAppearance()
                 PAGE_CONTENT      -> PreferenceScreenContent()
+                PAGE_LYRICS       -> PreferenceScreenLyrics()
                 PAGE_BEHAVIOUR    -> PreferenceScreenBehaviour()
                 PAGE_NOTIFICATION -> PreferenceScreenNotification()
                 PAGE_ADVANCED     -> PreferenceScreenAdvanced()
@@ -92,6 +94,9 @@ private fun PreferenceScreenHome(navigateTo: (Page) -> Unit) {
             }
             SettingCategory(R.string.pref_category_notification, R.drawable.ic_notifications_white_24dp) {
                 navigateTo(PAGE_NOTIFICATION)
+            }
+            SettingCategory(R.string.label_lyrics, R.drawable.ic_music_note_white_24dp) {
+                navigateTo(PAGE_LYRICS)
             }
             SettingCategory(R.string.pref_category_advanced, R.drawable.ic_developer_mode_white_24dp) {
                 navigateTo(PAGE_ADVANCED)
