@@ -7,7 +7,7 @@ package player.phonograph.repo.room
 import player.phonograph.foundation.notification.ProgressNotificationConnection
 import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.repo.sync.SyncReport
-import player.phonograph.model.repo.PROVIDER_MEDIASTORE_PARSED
+import player.phonograph.model.repo.PROVIDER_INTERNAL_DATABASE
 import player.phonograph.model.repo.SYNC_MODE_EXCLUDE_GENRES
 import player.phonograph.model.repo.sync.SyncExecutor
 import player.phonograph.repo.room.domain.BasicSyncExecutor
@@ -25,7 +25,7 @@ object DatabaseActions {
         val strategy = Setting(context)[Keys.musicLibrarySyncMode].read()
         val withGenres = strategy != SYNC_MODE_EXCLUDE_GENRES
         val syncExecutor = when (backend) {
-            PROVIDER_MEDIASTORE_PARSED -> RelationshipSyncExecutor(musicDatabase, withGenres)
+            PROVIDER_INTERNAL_DATABASE -> RelationshipSyncExecutor(musicDatabase, withGenres)
             else                       -> BasicSyncExecutor(musicDatabase)
         }
         return syncExecutor

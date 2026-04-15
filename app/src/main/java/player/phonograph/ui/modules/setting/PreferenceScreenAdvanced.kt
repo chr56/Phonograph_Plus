@@ -6,7 +6,7 @@ package player.phonograph.ui.modules.setting
 
 import player.phonograph.R
 import player.phonograph.model.repo.PROVIDER_MEDIASTORE_DIRECT
-import player.phonograph.model.repo.PROVIDER_MEDIASTORE_PARSED
+import player.phonograph.model.repo.PROVIDER_INTERNAL_DATABASE
 import player.phonograph.model.repo.SYNC_MODE_EXCLUDE_GENRES
 import player.phonograph.model.repo.SYNC_MODE_STANDARD
 import player.phonograph.repo.loader.Albums
@@ -73,7 +73,7 @@ fun PreferenceScreenAdvanced() {
                     key = Keys.musicLibraryBackend,
                     optionsValues = listOf(
                         PROVIDER_MEDIASTORE_DIRECT,
-                        PROVIDER_MEDIASTORE_PARSED,
+                        PROVIDER_INTERNAL_DATABASE,
                     ),
                     optionsValuesLocalized = listOf(
                         R.string.music_library_metadata_source_mediastore,

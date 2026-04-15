@@ -1,11 +1,11 @@
 /*
- *  Copyright (c) 2022~2025 chr_56
+ *  Copyright (c) 2022~2026 chr_56
  */
 
 package player.phonograph.model.repo
 
 const val PROVIDER_MEDIASTORE_DIRECT = "mediastore"
-const val PROVIDER_MEDIASTORE_PARSED = "mediastore_parsed"
+const val PROVIDER_INTERNAL_DATABASE = "mediastore_parsed"
 
 const val SYNC_MODE_STANDARD = "standard"
 const val SYNC_MODE_EXCLUDE_GENRES = "exclude_genres"
