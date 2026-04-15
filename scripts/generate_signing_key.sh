@@ -9,7 +9,7 @@
 #   $SECRETS_KEY_ALIAS       : [secret] signing key key alias
 # Optional Environment Variables:
 #   $KEYSTORE_FILE           : recovered key store file (default:`.././key.jdk`)
-#   $CONFIG_FILE             : generated `signing.properties` file (default:`.././signing.properties`)
+#   $CONFIG_FILE             : properties file (default:`~/.gradle/gradle.properties`)
 
 echo "Generate signing key and config..."
 
@@ -21,7 +21,7 @@ else
 fi
 
 if [ -z "$CONFIG_FILE" ]; then
-  export CONFIG_FILE=.././signing.properties
+  export CONFIG_FILE=~/.gradle/gradle.properties
   echo "WARNING: CONFIG_FILE not specified! use default: $CONFIG_FILE"
 else
   echo "CONFIG_FILE   path: $CONFIG_FILE"
@@ -33,9 +33,10 @@ then
   echo "recovering..."
   # recover keystore from base64
   printf "%s" "$SECRETS_KEY"  | base64 -d | tee "$KEYSTORE_FILE" > /dev/null
-  # write signing.properties
-  printf "storePassword=%s\n" "$SECRETS_STORE_PASSWORD"  | tee -a "$CONFIG_FILE" > /dev/null
+  # write properties
+  printf "\n # Signing properties"                       | tee -a "$CONFIG_FILE" > /dev/null
   printf "storeFile=%s\n" "$KEYSTORE_FILE"               | tee -a "$CONFIG_FILE" > /dev/null
+  printf "storePassword=%s\n" "$SECRETS_STORE_PASSWORD"  | tee -a "$CONFIG_FILE" > /dev/null
   printf "keyAlias=%s\n" "$SECRETS_KEY_ALIAS"            | tee -a "$CONFIG_FILE" > /dev/null
   printf "keyPassword=%s\n" "$SECRETS_KEY_PASSWORD"      | tee -a "$CONFIG_FILE" > /dev/null
   # print information
