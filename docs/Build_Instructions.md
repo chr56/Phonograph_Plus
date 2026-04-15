@@ -6,13 +6,13 @@ _This document seeks to improve clarity and coherence._
 
 See also [Developer Guide](./Developer_Guide.md).
 
-_Last Updated at 2026.03.08_
+_Last Updated at 2026.04.15_
 
 ## Requirements
 
 ### Build Environment:
 
-You may would like to build the application from source instead of developing and contributing. 
+You would like to build the application from source instead of developing and contributing. 
 
 - A desktop computer [^PC]:
     - at least 4G RAM
@@ -20,7 +20,7 @@ You may would like to build the application from source instead of developing an
 - Compatible desktop operating system [^PC]:
     - Windows 10/11 (tested)
     - Ubuntu 24.04 (tested)
-- JDK 21 (Android Gradle Plugin 8.13.2 along with Gradle 9.3.1 are used in this project)
+- JDK 21 (Android Gradle Plugin 9.1.0 along with Gradle 9.3.1 are used in this project)
 - Android SDK (automatically downloaded via AGP)
 - Internet connection 
 
@@ -82,7 +82,8 @@ See [Generate A New Keystore for Signing](#generate_keystore) if you hadn't.
 
 ### 5. Configure Signing Configuration
 
-Create `signing.properties` in the repository root (replace <\*> with yours):
+Set environment variables `STORE_FILE`, `STORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD` to values for your signing keys; 
+Or append `<USER_HOME>\.gradle\gradle.properties` (replace <\*> with yours):
 
 ```properties
 storeFile=<path-to-signing-key>
@@ -91,7 +92,7 @@ keyAlias=<key-alias>
 keyPassword=<key-password>
 ```
 
-See Also Appendix [Generate `signing.properties`](#generate_signing_properties)
+See Also Appendix [Generate Signing Configuration](#generate_signing_properties)
 
 ### 6. Build Project
 
@@ -122,16 +123,25 @@ to move apk to `./products/ModernStableRelease` and rename to `Phonograph Plus_<
 Use JDK's `keytool` to generate a new one if you haven't:
 
 ```shell
-keytool -genkeypair -storepass <keystore-password> -alias <key-alias> -keypass <key-password> -keyalg RSA -keysize 2048 -keystore <your-signing-key-file-path->
+keytool -genkeypair -storepass <keystore-password> -alias <key-alias> -keypass <key-password> -keyalg RSA -keysize 2048 -keystore <your-signing-key-file-path>
 ```
 
-### Generate `signing.properties` <a id="generate_signing_properties"></a>
+### Generate Signing Configuration <a id="generate_signing_properties"></a>
 
-You can create `signing.properties` by these commands (replace <\*> with yours):
+For bash users, you can append global `gradle.properties` via these commands (replace <\*> with yours), if Gradle home directory is set to default:
 
 ```shell
-echo "storeFile=<your-signing-key-file-path>" >> ./signing.properties
-echo "storePassword=<keystore-password>" >> ./signing.properties
-echo "keyAlias=<key-alias>" >> ./signing.properties
-echo "keyPassword=<key-password>" >> ./signing.properties
+echo "storeFile=<your-signing-key-file-path>" >> ~/.gradle/gradle.properties
+echo "storePassword=<keystore-password>" >> ~/.gradle/gradle.properties
+echo "keyAlias=<key-alias>" >> ~/.gradle/gradle.properties
+echo "keyPassword=<key-password>" >> ~/.gradle/gradle.properties
+```
+(_local `gradle.properties` in project root is passible as well_)
+
+Or export environment variables every time:
+```shell
+export STORE_FILE=<your-signing-key-file-path>
+export STORE_PASSWORD=<keystore-password>
+export KEY_ALIAS=<key-alias>
+export KEY_PASSWORD=<key-password>
 ```
