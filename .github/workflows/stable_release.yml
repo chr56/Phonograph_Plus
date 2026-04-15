@@ -44,7 +44,7 @@ jobs:
           SECRETS_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
           SECRETS_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEYSTORE_FILE: ${{ github.workspace }}/key.jdk
-          CONFIG_FILE: ${{ github.workspace }}/signing.properties
+          CONFIG_FILE: ${{ github.workspace }}/gradle.properties
         run: |
           bash ${{ github.workspace }}/scripts/generate_signing_key.sh
 
