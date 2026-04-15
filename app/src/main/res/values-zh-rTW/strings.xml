@@ -586,8 +586,7 @@
     <string name="pref_summary_music_tags_featuring_artists_abbr">\'Featuring Artists\' 分隔符或縮寫，用於提取某些標籤（曲目名、專輯名等）中的藝術家</string>
     <string name="pref_summary_music_tags_genres_separators">\'Genres\' 分隔符，用於提取標籤中的多流派</string>
     <string name="music_library_metadata_source">音樂庫後設資料來源</string>
-    <string name="music_library_metadata_source_mediastore">Mediastore</string>
-    <string name="music_library_metadata_source_mediastore_parsed">Mediastore (解析)</string>
+    <string name="music_library_metadata_source_database">內部資料庫</string>
     <string name="music_library_metadata_sync_mode">音樂庫同步模式</string>
     <string name="music_library_metadata_sync_mode_standard">標準</string>
     <string name="music_library_metadata_sync_mode_exclude_genres">不含類型</string>

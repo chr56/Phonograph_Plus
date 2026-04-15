@@ -524,8 +524,7 @@
     <string name="image_source_external_file">Arquivo Externo</string>
     <string name="image_source_config">Configuração de Fonte de Imagem</string>
     <string name="music_library_metadata_source">Fonte de Metadados da Biblioteca de Música</string>
-    <string name="music_library_metadata_source_mediastore">Mediastore</string>
-    <string name="music_library_metadata_source_mediastore_parsed">Mediastore (Analisado)</string>
+    <string name="music_library_metadata_source_database">Banco de Dados Interno</string>
     <string name="permission_name_post_notifications">Publicar Notificações</string>
     <string name="permission_desc_post_notifications">Desde o Android T (13) aplicativos precisam dessa permissão para publicar notificações.</string>
     <string name="permission_name_read_media_audio">Ler Mídia de Áudio</string>

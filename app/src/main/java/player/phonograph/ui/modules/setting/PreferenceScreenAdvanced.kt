@@ -77,7 +77,7 @@ fun PreferenceScreenAdvanced() {
                     ),
                     optionsValuesLocalized = listOf(
                         R.string.music_library_metadata_source_mediastore,
-                        R.string.music_library_metadata_source_mediastore_parsed,
+                        R.string.music_library_metadata_source_database,
                     ),
                     title = stringResource(R.string.music_library_metadata_source),
                 ) { _, _ ->
