@@ -7,6 +7,7 @@ import player.phonograph.model.Song
 import player.phonograph.util.ui.getScreenSize
 import androidx.core.graphics.drawable.toBitmapOrNull
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Handler
@@ -22,7 +23,7 @@ class AppWidgetBig : BaseAppWidget() {
 
     override val name: String = NAME
 
-    override val darkBackground: Boolean get() = true
+    override fun darkBackground(resources: Resources): Boolean = true
 
     override fun updateText(context: Context, view: RemoteViews, song: Song) {
         if (TextUtils.isEmpty(song.title) && TextUtils.isEmpty(song.artistName)) {

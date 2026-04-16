@@ -37,7 +37,7 @@
 
     <item>
         <shape>
-            <solid android:color="@android:color/white"/>
+            <solid android:color="@color/background_footer_lightdark"/>
             <corners android:radius="@dimen/app_widget_card_radius"/>
         </shape>
     </item>

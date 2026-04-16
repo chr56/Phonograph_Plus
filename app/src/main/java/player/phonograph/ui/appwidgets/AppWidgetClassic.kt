@@ -17,8 +17,6 @@ class AppWidgetClassic : BaseAppWidget() {
 
     override val name: String = NAME
 
-    override val darkBackground: Boolean get() = false
-
 
     override fun updateText(context: Context, view: RemoteViews, song: Song) {
         // Set the titles and artwork
@@ -44,7 +42,7 @@ class AppWidgetClassic : BaseAppWidget() {
         if (cardRadius == 0f) cardRadius = context.resources.getDimension(
             R.dimen.app_widget_card_radius
         )
-        val fallbackColor: Int = secondaryTextColor(context, false)
+        val fallbackColor = secondaryTextColor(context, darkBackground(context.resources))
         // Load the album cover async and push the update on completion
         loadImage(
             context = context.applicationContext,
@@ -58,29 +56,17 @@ class AppWidgetClassic : BaseAppWidget() {
                 success = { result, paletteColor ->
                     val bitmap = result.toBitmapOrNull()
                     cachedCover = bitmap
-                    updateWidget(view, context, isPlaying, bitmap, paletteColor)
+                    updateButtons(context, view, isPlaying, paletteColor)
+                    updateImage(context, view, limitBitmap(bitmap))
                     pushUpdate(context, appWidgetIds, view)
                 },
                 error = { _, _ ->
-                    updateWidget(view, context, isPlaying, null, fallbackColor)
+                    updateButtons(context, view, isPlaying, fallbackColor)
+                    updateImage(context, view, null)
                     pushUpdate(context, appWidgetIds, view)
                 },
             )
         )
-    }
-
-    private fun updateWidget(
-        appWidgetView: RemoteViews,
-        context: Context,
-        isPlaying: Boolean,
-        bitmap: Bitmap?,
-        color: Int,
-    ) {
-        appWidgetView.bindDrawable(context, R.id.button_toggle_play_pause, playPauseRes(isPlaying), color)
-        appWidgetView.bindDrawable(context, R.id.button_next, R.drawable.ic_skip_next_white_24dp, color)
-        appWidgetView.bindDrawable(context, R.id.button_prev, R.drawable.ic_skip_previous_white_24dp, color)
-
-        updateImage(context, appWidgetView, limitBitmap(bitmap))
     }
 
     override fun updateImage(

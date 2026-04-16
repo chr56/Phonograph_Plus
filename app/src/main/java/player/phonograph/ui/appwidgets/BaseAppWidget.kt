@@ -21,8 +21,9 @@ import player.phonograph.service.MusicService
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.ui.modules.auxiliary.LauncherActivity
 import player.phonograph.util.text.infoString
-import player.phonograph.util.theme.defaultTextColor
 import player.phonograph.util.theme.getTintedDrawable
+import player.phonograph.util.theme.secondaryTextColor
+import player.phonograph.util.theme.systemNightMode
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes
@@ -56,8 +57,6 @@ abstract class BaseAppWidget : AppWidgetProvider() {
     protected abstract val layoutId: Int
 
     protected abstract val name: String
-
-    protected abstract val darkBackground: Boolean
 
     protected abstract val clickableAreas: IntArray
 
@@ -122,9 +121,10 @@ abstract class BaseAppWidget : AppWidgetProvider() {
         isPlaying: Boolean, song: Song? = queueManager.currentSong,
     ) {
         RemoteViews(context.packageName, layoutId).also { remoteViews ->
-            remoteViews.updateButtons(context, isPlaying)
+            val color = secondaryTextColor(context, darkBackground(context.resources))
             remoteViews.setupButtonsClick(context)
             remoteViews.setupLaunchingClick(context)
+            updateButtons(context, remoteViews, isPlaying, color)
             if (song != null) updateText(context, remoteViews, song)
             if (cachedCover != null) {
                 updateImage(context, remoteViews, limitBitmap(cachedCover))
@@ -136,21 +136,20 @@ abstract class BaseAppWidget : AppWidgetProvider() {
         }
     }
 
-    private fun RemoteViews.updateButtons(context: Context, isPlaying: Boolean) {
-        val color = defaultTextColor(context, darkBackground)
-        bindDrawable(context, R.id.button_next, R.drawable.ic_skip_next_white_24dp, color)
-        bindDrawable(context, R.id.button_prev, R.drawable.ic_skip_previous_white_24dp, color)
-        bindDrawable(context, R.id.button_toggle_play_pause, playPauseRes(isPlaying), color)
+    protected open fun darkBackground(resources: Resources) = systemNightMode(resources.configuration) ?: false
+
+    protected fun updateButtons(context: Context, remoteViews: RemoteViews, isPlaying: Boolean, @ColorInt color: Int) {
+        remoteViews.bindDrawable(context, R.id.button_next, R.drawable.ic_skip_next_white_24dp, color)
+        remoteViews.bindDrawable(context, R.id.button_prev, R.drawable.ic_skip_previous_white_24dp, color)
+        remoteViews.bindDrawable(context, R.id.button_toggle_play_pause, playPauseRes(isPlaying), color)
     }
 
-    protected fun RemoteViews.bindDrawable(
+    private fun RemoteViews.bindDrawable(
         context: Context,
         @IdRes id: Int,
         @DrawableRes drawable: Int,
         @ColorInt textColor: Int,
-    ) = setImageViewBitmap(
-        id, context.getTintedDrawable(drawable, textColor)!!.toBitmap()
-    )
+    ) = setImageViewBitmap(id, context.getTintedDrawable(drawable, textColor)!!.toBitmap())
 
     private fun RemoteViews.setupButtonsClick(context: Context) {
         var pendingIntent: PendingIntent? = null
