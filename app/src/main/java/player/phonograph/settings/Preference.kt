@@ -9,6 +9,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 
@@ -73,7 +74,7 @@ class CompositePreference<T>(key: CompositeKey<T>, val dataStore: DataStore<Pref
 
     override val flow: Flow<T> get() = provider.flow(dataStore)
 
-    override suspend fun read(): T = flow.first() ?: provider.defaultValue()
+    override suspend fun read(): T = flow.firstOrNull() ?: provider.defaultValue()
 
     override suspend fun edit(value: () -> T) {
         provider.edit(dataStore, value)
