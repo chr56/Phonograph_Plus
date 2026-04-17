@@ -95,13 +95,13 @@ class CreatePlaylistDialogActivity : DialogActivity(),
             spinnerContainer.visibility =
                 if (viewModel.parameter.userAction == Parameter.USER_ACTION_CREATE) View.VISIBLE else View.GONE
             val options = listOf(
-                getString(R.string.label_file_playlists),
                 getString(R.string.label_database_playlists),
+                getString(R.string.label_file_playlists),
             )
             val callback: (Int) -> Unit = { position: Int ->
                 when (position) {
-                    1 -> viewModel.updateMode(CreatePlaylistViewModel.MODE_DATABASE)
-                    0 -> viewModel.updateMode(
+                    0 -> viewModel.updateMode(CreatePlaylistViewModel.MODE_DATABASE)
+                    1 -> viewModel.updateMode(
                         if (viewModel.useSAF) CreatePlaylistViewModel.MODE_FILE_SAF else CreatePlaylistViewModel.MODE_FILE_MEDIASTORE
                     )
                 }
