@@ -6,8 +6,6 @@ package player.phonograph.repo.room
 
 import player.phonograph.foundation.notification.ProgressNotificationConnection
 import player.phonograph.mechanism.event.EventHub
-import player.phonograph.model.repo.PROVIDER_MEDIASTORE_DIRECT
-import player.phonograph.model.repo.SYNC_MODE_EXCLUDE_GENRES
 import player.phonograph.model.repo.sync.SyncExecutor
 import player.phonograph.model.repo.sync.SyncReport
 import player.phonograph.repo.room.domain.BasicSyncExecutor
@@ -21,12 +19,10 @@ import android.util.Log
 object DatabaseActions {
 
     private suspend fun loopUpSyncExecutor(context: Context, musicDatabase: MusicDatabase): SyncExecutor {
-        val backend = Setting(context)[Keys.musicLibrarySource].read()
-        val strategy = Setting(context)[Keys.musicLibrarySyncMode].read()
-        val withGenres = strategy != SYNC_MODE_EXCLUDE_GENRES
-        val syncExecutor = when (backend) {
-            PROVIDER_MEDIASTORE_DIRECT -> BasicSyncExecutor(musicDatabase)
-            else                       -> RelationshipSyncExecutor(musicDatabase, withGenres)
+        val backend = Setting(context)[Keys.musicLibraryBackend].read()
+        val syncExecutor = when {
+            backend.syncBasicDatabase -> BasicSyncExecutor(musicDatabase)
+            else                      -> RelationshipSyncExecutor(musicDatabase, backend.syncWithGenres)
         }
         return syncExecutor
     }

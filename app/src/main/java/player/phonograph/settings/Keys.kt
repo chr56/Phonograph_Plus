@@ -17,6 +17,7 @@ import player.phonograph.model.pages.PagesConfig
 import player.phonograph.model.repo.DEFAULT_TAG_SEPARATORS_ARTISTS
 import player.phonograph.model.repo.DEFAULT_TAG_ABBR_FEATURES_ARTISTS
 import player.phonograph.model.repo.DEFAULT_TAG_SEPARATORS_GENRES
+import player.phonograph.model.repo.MusicLibraryBackendOptions
 import player.phonograph.model.repo.PROVIDER_INTERNAL_DATABASE
 import player.phonograph.model.repo.SYNC_MODE_STANDARD
 import player.phonograph.model.sort.SortMode
@@ -215,10 +216,12 @@ object Keys {
     //</editor-fold>
 
     //<editor-fold desc="Experimental">
+    val musicLibraryBackend
+        get() = CompositeKey<MusicLibraryBackendOptions>(MusicLibraryBackendPreferenceProvider)
     val musicLibrarySource
-        get() = PrimitiveKey<String>(stringPK("music_library_backend")) { PROVIDER_INTERNAL_DATABASE }
+        get() = PrimitiveKey<String>(stringPK("music_library_source")) { PROVIDER_INTERNAL_DATABASE }
     val musicLibrarySyncMode
-        get() = PrimitiveKey<String>(stringPK("database_sync_mode")) { SYNC_MODE_STANDARD }
+        get() = PrimitiveKey<String>(stringPK("music_library_sync_mode")) { SYNC_MODE_STANDARD }
     val tagSeparatorsGenres
         get() = PrimitiveKey<Set<String>>(stringSetPK("tag_separators_genres")) { DEFAULT_TAG_SEPARATORS_GENRES }
     val tagSeparatorsArtists

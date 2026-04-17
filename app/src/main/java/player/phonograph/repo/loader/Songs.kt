@@ -5,8 +5,6 @@
 package player.phonograph.repo.loader
 
 import player.phonograph.model.Song
-import player.phonograph.model.repo.PROVIDER_INTERNAL_DATABASE
-import player.phonograph.model.repo.PROVIDER_MEDIASTORE_DIRECT
 import player.phonograph.model.repo.loader.Delegated
 import player.phonograph.model.repo.loader.ISongs
 import player.phonograph.repo.mediastore.MediaStoreSongs
@@ -21,12 +19,8 @@ import android.content.Context
 object Songs : ISongs, Delegated<ISongs>() {
 
     override fun onCreateDelegate(context: Context): ISongs {
-        val preference = Setting(context)[Keys.musicLibrarySource]
-        val impl: ISongs = when (preference.data) {
-            PROVIDER_MEDIASTORE_DIRECT -> MediaStoreSongs
-            PROVIDER_INTERNAL_DATABASE -> RoomSongs
-            else                       -> RoomSongs
-        }
+        val backend = Setting(context)[Keys.musicLibraryBackend].data
+        val impl: ISongs = if (backend.useMediaStoreSongs) MediaStoreSongs else RoomSongs
         return impl
     }
 

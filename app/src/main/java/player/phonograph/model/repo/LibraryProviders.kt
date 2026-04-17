@@ -4,6 +4,17 @@
 
 package player.phonograph.model.repo
 
+interface MusicLibraryBackendOptions {
+
+    val useMediaStoreSongs: Boolean
+    val useMediaStoreArtists: Boolean
+    val useMediaStoreAlbums: Boolean
+    val useMediaStoreGenres: Boolean
+
+    val syncBasicDatabase: Boolean
+    val syncWithGenres: Boolean
+}
+
 const val PROVIDER_MEDIASTORE_DIRECT = "mediastore"
 const val PROVIDER_INTERNAL_DATABASE = "internal_database"
 

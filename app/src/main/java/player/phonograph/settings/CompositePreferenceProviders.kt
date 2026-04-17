@@ -7,6 +7,11 @@ package player.phonograph.settings
 import player.phonograph.model.coil.ImageSourceConfig
 import player.phonograph.model.notification.NotificationActionsConfig
 import player.phonograph.model.pages.PagesConfig
+import player.phonograph.model.repo.MusicLibraryBackendOptions
+import player.phonograph.model.repo.PROVIDER_INTERNAL_DATABASE
+import player.phonograph.model.repo.PROVIDER_MEDIASTORE_DIRECT
+import player.phonograph.model.repo.SYNC_MODE_EXCLUDE_GENRES
+import player.phonograph.model.repo.SYNC_MODE_STANDARD
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.model.time.Duration
@@ -259,5 +264,44 @@ data object NowPlayingScreenStylePreferenceProvider : JsonPreferenceProvider<Now
 
     private val parser by lazy {
         Json { ignoreUnknownKeys = true }
+    }
+}
+
+data object MusicLibraryBackendPreferenceProvider : CompositePreferenceProvider<MusicLibraryBackendOptions> {
+    override val defaultValue: () -> MusicLibraryBackendOptions
+        get() = {
+            MusicLibraryBackendOptionsParser(
+                Keys.musicLibrarySource.defaultValue(),
+                Keys.musicLibrarySyncMode.defaultValue(),
+            )
+        }
+
+    private fun <T> singleFlowOf(preferences: Flow<Preferences>, key: PrimitiveKey<T>): Flow<T> =
+        preferences.map { it[key.preferenceKey] ?: key.defaultValue() }
+
+    override fun flow(dataStore: DataStore<Preferences>): Flow<MusicLibraryBackendOptions> {
+        val musicLibrarySource = singleFlowOf(dataStore.data, Keys.musicLibrarySource)
+        val musicLibrarySyncMode = singleFlowOf(dataStore.data, Keys.musicLibrarySyncMode)
+        return combine(musicLibrarySource, musicLibrarySyncMode) { source: String, syncMode: String ->
+            MusicLibraryBackendOptionsParser(source, syncMode)
+        }
+    }
+
+    override suspend fun edit(dataStore: DataStore<Preferences>, value: () -> MusicLibraryBackendOptions) {
+        // unable to edit
+    }
+
+    class MusicLibraryBackendOptionsParser(
+        dataSource: String,
+        syncMode: String,
+    ) : MusicLibraryBackendOptions {
+        override val useMediaStoreSongs: Boolean = dataSource == PROVIDER_MEDIASTORE_DIRECT
+        override val useMediaStoreArtists: Boolean = dataSource == PROVIDER_MEDIASTORE_DIRECT
+        override val useMediaStoreAlbums: Boolean = dataSource == PROVIDER_MEDIASTORE_DIRECT
+        override val useMediaStoreGenres: Boolean =
+            dataSource == PROVIDER_MEDIASTORE_DIRECT || (dataSource == PROVIDER_INTERNAL_DATABASE && syncMode == SYNC_MODE_EXCLUDE_GENRES)
+
+        override val syncBasicDatabase: Boolean = dataSource == PROVIDER_MEDIASTORE_DIRECT
+        override val syncWithGenres: Boolean = syncMode == SYNC_MODE_STANDARD
     }
 }
