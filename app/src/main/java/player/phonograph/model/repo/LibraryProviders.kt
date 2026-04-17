@@ -5,7 +5,7 @@
 package player.phonograph.model.repo
 
 const val PROVIDER_MEDIASTORE_DIRECT = "mediastore"
-const val PROVIDER_INTERNAL_DATABASE = "mediastore_parsed"
+const val PROVIDER_INTERNAL_DATABASE = "internal_database"
 
 const val SYNC_MODE_STANDARD = "standard"
 const val SYNC_MODE_EXCLUDE_GENRES = "exclude_genres"
