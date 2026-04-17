@@ -22,7 +22,7 @@ import android.content.Context
  */
 object Genres : IGenres, Delegated<IGenres>() {
     override fun onCreateDelegate(context: Context): IGenres {
-        val source = Setting(context)[Keys.musicLibraryBackend].data
+        val source = Setting(context)[Keys.musicLibrarySource].data
         val syncMode = Setting(context)[Keys.musicLibrarySyncMode].data
         val impl: IGenres = when {
             source == PROVIDER_MEDIASTORE_DIRECT                                         -> MediaStoreGenres

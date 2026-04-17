@@ -21,7 +21,7 @@ import android.util.Log
 object DatabaseActions {
 
     private suspend fun loopUpSyncExecutor(context: Context, musicDatabase: MusicDatabase): SyncExecutor {
-        val backend = Setting(context)[Keys.musicLibraryBackend].read()
+        val backend = Setting(context)[Keys.musicLibrarySource].read()
         val strategy = Setting(context)[Keys.musicLibrarySyncMode].read()
         val withGenres = strategy != SYNC_MODE_EXCLUDE_GENRES
         val syncExecutor = when (backend) {

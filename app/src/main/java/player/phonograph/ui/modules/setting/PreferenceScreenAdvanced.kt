@@ -70,7 +70,7 @@ fun PreferenceScreenAdvanced() {
         SettingsGroup(titleRes = R.string.pref_header_experimental) {
             ExperimentalContentThemeOverride {
                 ListPreference(
-                    key = Keys.musicLibraryBackend,
+                    key = Keys.musicLibrarySource,
                     optionsValues = listOf(
                         PROVIDER_MEDIASTORE_DIRECT,
                         PROVIDER_INTERNAL_DATABASE,

@@ -20,7 +20,7 @@ import android.content.Context
  */
 object Artists : IArtists, Delegated<IArtists>() {
     override fun onCreateDelegate(context: Context): IArtists {
-        val preference = Setting(context)[Keys.musicLibraryBackend]
+        val preference = Setting(context)[Keys.musicLibrarySource]
         val impl: IArtists = when (preference.data) {
             PROVIDER_MEDIASTORE_DIRECT -> MediaStoreArtists
             PROVIDER_INTERNAL_DATABASE -> RoomArtists

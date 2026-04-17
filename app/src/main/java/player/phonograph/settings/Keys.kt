@@ -215,7 +215,7 @@ object Keys {
     //</editor-fold>
 
     //<editor-fold desc="Experimental">
-    val musicLibraryBackend
+    val musicLibrarySource
         get() = PrimitiveKey<String>(stringPK("music_library_backend")) { PROVIDER_INTERNAL_DATABASE }
     val musicLibrarySyncMode
         get() = PrimitiveKey<String>(stringPK("database_sync_mode")) { SYNC_MODE_STANDARD }
