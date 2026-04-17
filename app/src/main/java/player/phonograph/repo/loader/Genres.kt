@@ -7,7 +7,8 @@ package player.phonograph.repo.loader
 import player.phonograph.model.Genre
 import player.phonograph.model.Song
 import player.phonograph.model.repo.PROVIDER_INTERNAL_DATABASE
-import player.phonograph.model.repo.SYNC_MODE_STANDARD
+import player.phonograph.model.repo.PROVIDER_MEDIASTORE_DIRECT
+import player.phonograph.model.repo.SYNC_MODE_EXCLUDE_GENRES
 import player.phonograph.model.repo.loader.Delegated
 import player.phonograph.model.repo.loader.IGenres
 import player.phonograph.repo.mediastore.MediaStoreGenres
@@ -24,8 +25,9 @@ object Genres : IGenres, Delegated<IGenres>() {
         val source = Setting(context)[Keys.musicLibraryBackend].data
         val syncMode = Setting(context)[Keys.musicLibrarySyncMode].data
         val impl: IGenres = when {
-            source == PROVIDER_INTERNAL_DATABASE && syncMode == SYNC_MODE_STANDARD -> RoomGenres
-            else                                                                   -> MediaStoreGenres
+            source == PROVIDER_MEDIASTORE_DIRECT                                         -> MediaStoreGenres
+            source == PROVIDER_INTERNAL_DATABASE && syncMode == SYNC_MODE_EXCLUDE_GENRES -> MediaStoreGenres
+            else                                                                         -> RoomGenres
         }
         return impl
     }
