@@ -42,6 +42,7 @@ import player.phonograph.model.metadata.MusicMetadata
 import player.phonograph.model.metadata.MusicTagFormat
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES
+import android.util.Log
 import java.io.File
 import java.io.FileNotFoundException
 import java.nio.file.Files
@@ -238,6 +239,12 @@ object JAudioTaggerExtractor : MetadataExtractor {
         } catch (e: Exception) {
             collector?.collect(MetadataExtractingException(e))
             null
+        } catch (e: NoClassDefFoundError) {
+            Log.e(TAG, "JAudioTagger library is corrupted due to obfuscating", e)
+            null
+        } catch (e: ExceptionInInitializerError) {
+            Log.e(TAG, "JAudioTagger library is corrupted due to obfuscating", e)
+            null
         }
     }
 
@@ -249,6 +256,12 @@ object JAudioTaggerExtractor : MetadataExtractor {
             metadata.firstArtwork?.binaryData
         } catch (e: Exception) {
             collector?.collect(e)
+            null
+        } catch (e: NoClassDefFoundError) {
+            Log.e(TAG, "JAudioTagger library is corrupted due to obfuscating", e)
+            null
+        } catch (e: ExceptionInInitializerError) {
+            Log.e(TAG, "JAudioTagger library is corrupted due to obfuscating", e)
             null
         }
     }
