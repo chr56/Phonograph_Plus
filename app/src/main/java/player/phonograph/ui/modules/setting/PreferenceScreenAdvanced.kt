@@ -5,34 +5,28 @@
 package player.phonograph.ui.modules.setting
 
 import player.phonograph.R
-import player.phonograph.model.repo.PROVIDER_MEDIASTORE_DIRECT
-import player.phonograph.model.repo.PROVIDER_INTERNAL_DATABASE
-import player.phonograph.model.repo.SYNC_MODE_EXCLUDE_GENRES
-import player.phonograph.model.repo.SYNC_MODE_STANDARD
-import player.phonograph.repo.loader.Albums
-import player.phonograph.repo.loader.Artists
 import player.phonograph.repo.loader.FavoriteSongs
-import player.phonograph.repo.loader.Genres
-import player.phonograph.repo.loader.Songs
 import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
 import player.phonograph.ui.compose.ExperimentalContentThemeOverride
 import player.phonograph.ui.modules.setting.components.BooleanPreference
-import player.phonograph.ui.modules.setting.components.DialogPreference
-import player.phonograph.ui.modules.setting.components.ListPreference
 import player.phonograph.ui.modules.setting.components.SettingsGroup
-import player.phonograph.ui.modules.setting.dialog.TagSeparatorsEditorDialog
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 
 @Composable
 fun PreferenceScreenAdvanced() {
@@ -69,53 +63,10 @@ fun PreferenceScreenAdvanced() {
         }
         SettingsGroup(titleRes = R.string.pref_header_experimental) {
             ExperimentalContentThemeOverride {
-                ListPreference(
-                    key = Keys.musicLibrarySource,
-                    optionsValues = listOf(
-                        PROVIDER_MEDIASTORE_DIRECT,
-                        PROVIDER_INTERNAL_DATABASE,
-                    ),
-                    optionsValuesLocalized = listOf(
-                        R.string.music_library_metadata_source_mediastore,
-                        R.string.music_library_metadata_source_database,
-                    ),
-                    title = stringResource(R.string.music_library_metadata_source),
-                ) { _, _ ->
-                    Songs.recreate(context) && Albums.recreate(context) &&
-                            Artists.recreate(context) && Genres.recreate(context)
-                }
-                ListPreference(
-                    key = Keys.musicLibrarySyncMode,
-                    optionsValues = listOf(
-                        SYNC_MODE_STANDARD,
-                        SYNC_MODE_EXCLUDE_GENRES,
-                    ),
-                    optionsValuesLocalized = listOf(
-                        R.string.music_library_metadata_sync_mode_standard,
-                        R.string.music_library_metadata_sync_mode_exclude_genres,
-                    ),
-                    title = stringResource(R.string.music_library_metadata_sync_mode),
-                )
-                DialogPreference(
-                    dialog = TagSeparatorsEditorDialog.ArtistsSeparatorsEditor::class.java,
-                    title = stringResource(R.string.pref_title_music_tags_artists_separators),
-                    currentValueForHint = { context ->
-                        Setting(context)[Keys.tagSeparatorsArtists].read().joinToString(" ")
-                    }
-                )
-                DialogPreference(
-                    dialog = TagSeparatorsEditorDialog.FeaturesArtistsAbbrEditor::class.java,
-                    title = stringResource(R.string.pref_title_music_tags_featuring_artists_abbr),
-                    currentValueForHint = { context ->
-                        Setting(context)[Keys.tagAbbrFeatureArtists].read().joinToString(" ")
-                    }
-                )
-                DialogPreference(
-                    dialog = TagSeparatorsEditorDialog.GenreSeparatorsEditor::class.java,
-                    title = stringResource(R.string.pref_title_music_tags_genres_separators),
-                    currentValueForHint = { context ->
-                        Setting(context)[Keys.tagSeparatorsGenres].read().joinToString(" ")
-                    }
+                Text(
+                    stringResource(R.string.msg_empty),
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+                    textAlign = TextAlign.Center,
                 )
             }
         }
