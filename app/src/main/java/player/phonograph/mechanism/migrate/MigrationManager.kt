@@ -64,6 +64,7 @@ object MigrationManager {
                 migrate(ColoredSystemBarsMigrationRule())
                 migrate(PreloadImagesMigrationRule())
                 migrate(NowPlayingScreenMigrationRule())
+                migrate(MusicLibraryBackendMigrationRule())
                 migrate(PathFilterMigrationRule())
                 migrate(FavoritesMigrationRule())
             }

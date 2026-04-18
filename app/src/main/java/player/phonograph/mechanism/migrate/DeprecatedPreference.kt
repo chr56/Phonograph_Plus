@@ -99,4 +99,7 @@ object DeprecatedPreference {
     // NowPlayingScreen: "refactored since 1100"
     const val NOW_PLAYING_SCREEN_ID = "now_playing_screen_id"
 
+    // Experimental, now has been replaced by multiple items since 1122
+    const val MUSIC_LIBRARY_BACKEND = "music_library_backend"
+
 }

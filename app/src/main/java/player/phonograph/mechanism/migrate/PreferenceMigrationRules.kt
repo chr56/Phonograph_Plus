@@ -50,6 +50,13 @@ class NowPlayingScreenMigrationRule : PreferenceMigrationRule(introduced = 1100)
         removeSettingItem(context, DeprecatedPreference.NOW_PLAYING_SCREEN_ID)
     }
 }
+
+class MusicLibraryBackendMigrationRule : PreferenceMigrationRule(introduced = 1122) {
+    override fun execute(context: Context) {
+        removeSettingItem(context, DeprecatedPreference.MUSIC_LIBRARY_BACKEND)
+    }
+}
+
 //endregion
 
 sealed class PreferenceMigrationRule(introduced: Int) : VersionMigrationRule(introduced) {
