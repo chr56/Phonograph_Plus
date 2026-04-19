@@ -160,7 +160,7 @@ seekArc = { module = "com.github.chr56:SeekArc", version = "1.0" }
 slidingUpPanel = { module = "com.github.chr56:AndroidSlidingUpPanel", version = "1.0" }
 recyclerviewFastscroll = { module = "com.simplecityapps:recyclerview-fastscroll", version = "2.0.1" }
 licensesdialog = { module = "de.psdev.licensesdialog:licensesdialog", version = "2.2.0" }
-jaudiotagger = { module = "com.github.chr56:jaudiotagger", version = "0.0.3" }
+jaudiotagger = { module = "com.github.chr56:jaudiotagger", version = "0.1.0" }
 observablescrollview = { module = "com.github.chr56:Android-ObservableScrollView-Retro", version = "0.0.1" }
 appIntro = { module = "com.github.AppIntro:AppIntro", version = "6.3.1" }
 advrecyclerview = { module = "com.h6ah4i.android.widget.advrecyclerview:advrecyclerview", version = "1.0.0" }
