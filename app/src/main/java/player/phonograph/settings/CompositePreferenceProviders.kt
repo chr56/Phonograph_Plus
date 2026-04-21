@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2026 chr_56
  */
 
 package player.phonograph.settings
@@ -13,7 +13,6 @@ import player.phonograph.model.repo.PROVIDER_MEDIASTORE_DIRECT
 import player.phonograph.model.repo.SYNC_MODE_EXCLUDE_GENRES
 import player.phonograph.model.repo.SYNC_MODE_STANDARD
 import player.phonograph.model.sort.SortMode
-import player.phonograph.model.sort.SortRef
 import player.phonograph.model.time.Duration
 import player.phonograph.model.time.TimeIntervalCalculationMode
 import player.phonograph.model.ui.ItemLayoutStyle
@@ -37,19 +36,20 @@ interface CompositePreferenceProvider<T> {
     fun flow(dataStore: DataStore<Preferences>): Flow<T>
     suspend fun edit(dataStore: DataStore<Preferences>, value: () -> T)
 }
+
 /**
- * Provider for Composite Preference which has only one [backField],
- * and we just need to deserialize and serialize
+ * Provider for Composite Preference with only one underlying PrimitiveKey [backField] only.
+ * @param backField underlying PrimitiveKey, that can be simply deserialized and serialized
  * @param T backfield primitive type
  * @param R actual composite preference type
  */
-sealed class MonoPreferenceProvider<T, R>(
-    private val backField: PrimitiveKey<R>,
-    override val defaultValue: () -> T,
-) : CompositePreferenceProvider<T> {
+sealed class MonoPreferenceProvider<T, R>(private val backField: PrimitiveKey<R>) : CompositePreferenceProvider<T> {
 
     abstract fun read(flow: Flow<R>): Flow<T>
     abstract fun save(data: T): R
+    abstract fun default(raw: R): T
+
+    override val defaultValue: () -> T get() = { default(backField.defaultValue()) }
 
     override fun flow(dataStore: DataStore<Preferences>): Flow<T> {
         val preferencesFlow = dataStore.data
@@ -65,9 +65,9 @@ sealed class MonoPreferenceProvider<T, R>(
 }
 
 data object CheckUpdateIntervalPreferenceProvider :
-        MonoPreferenceProvider<Duration, String>(
-            Keys._checkUpdateInterval, { Duration.Day(1) }
-        ) {
+        MonoPreferenceProvider<Duration, String>(Keys._checkUpdateInterval) {
+
+    override fun default(raw: String): Duration = Duration.from(raw) ?: Duration.Day(1)
 
     override fun read(flow: Flow<String>): Flow<Duration> =
         flow.map { Duration.from(it) ?: defaultValue() }
@@ -76,84 +76,25 @@ data object CheckUpdateIntervalPreferenceProvider :
         data.serialise()
 }
 
-sealed class SortModePreferenceProvider(backField: PrimitiveKey<String>) :
-        MonoPreferenceProvider<SortMode, String>(
-            backField, { SortMode(SortRef.ID) }
-        ) {
+class SortModePreferenceProvider(backField: PrimitiveKey<String>) :
+        MonoPreferenceProvider<SortMode, String>(backField) {
+    override fun default(raw: String): SortMode = SortMode.deserialize(raw)
     override fun read(flow: Flow<String>): Flow<SortMode> = flow.map { SortMode.deserialize(it) }
     override fun save(data: SortMode): String = data.serialize()
-
-    data object SongSortMode : SortModePreferenceProvider(Keys._songSortMode)
-    data object AlbumSortMode : SortModePreferenceProvider(Keys._albumSortMode)
-    data object ArtistSortMode : SortModePreferenceProvider(Keys._artistSortMode)
-    data object GenreSortMode : SortModePreferenceProvider(Keys._genreSortMode)
-    data object PlaylistSortMode : SortModePreferenceProvider(Keys._playlistSortMode)
-    data object CollectionSortMode : SortModePreferenceProvider(Keys._collectionSortMode)
-    data object FileSortMode : SortModePreferenceProvider(Keys._fileSortMode)
 }
 
-sealed class ItemLayoutProvider(backField: PrimitiveKey<Int>, default: () -> ItemLayoutStyle) :
-        MonoPreferenceProvider<ItemLayoutStyle, Int>(backField, default) {
+class ItemLayoutProvider(backField: PrimitiveKey<Int>) :
+        MonoPreferenceProvider<ItemLayoutStyle, Int>(backField) {
+    override fun default(raw: Int): ItemLayoutStyle = ItemLayoutStyle.from(raw)
     override fun read(flow: Flow<Int>): Flow<ItemLayoutStyle> = flow.map { ItemLayoutStyle.from(it) }
     override fun save(data: ItemLayoutStyle): Int = data.ordinal
-
-    data object SongItemLayoutProvider :
-            ItemLayoutProvider(Keys._songItemLayout, { ItemLayoutStyle.LIST_EXTENDED })
-
-    data object AlbumItemLayoutProvider :
-            ItemLayoutProvider(Keys._albumItemLayout, { ItemLayoutStyle.GRID })
-
-    data object ArtistItemLayoutProvider :
-            ItemLayoutProvider(Keys._artistItemLayout, { ItemLayoutStyle.LIST_NO_IMAGE })
-
-    data object FolderItemLayoutProvider :
-            ItemLayoutProvider(Keys._folderItemLayout, { ItemLayoutStyle.LIST })
-
-    data object LandSongItemLayoutProvider :
-            ItemLayoutProvider(Keys._songItemLayoutLand, { ItemLayoutStyle.LIST })
-
-    data object LandAlbumItemLayoutProvider :
-            ItemLayoutProvider(Keys._albumItemLayoutLand, { ItemLayoutStyle.GRID })
-
-    data object LandArtistItemLayoutProvider :
-            ItemLayoutProvider(Keys._artistItemLayoutLand, { ItemLayoutStyle.LIST })
-
-    data object LandFolderItemLayoutProvider :
-            ItemLayoutProvider(Keys._folderItemLayoutLand, { ItemLayoutStyle.LIST })
 }
 
-object LastAddedCutOffDurationPreferenceProvider : CompositePreferenceProvider<Long> {
-    override val defaultValue: () -> Long get() = { System.currentTimeMillis() }
-
-    override fun flow(dataStore: DataStore<Preferences>): Flow<Long> {
-        val keyDuration = Keys._lastAddedCutOffDuration
-        val keyMode = Keys._lastAddedCutOffMode
-
-        val rawDuration = dataStore.data.map { it[keyDuration.preferenceKey] ?: keyDuration.defaultValue() }
-        val rawMode = dataStore.data.map { it[keyMode.preferenceKey] ?: keyMode.defaultValue() }
-
-
-        val duration = rawDuration.map { Duration.from(it) }
-        val mode = rawMode.map { TimeIntervalCalculationMode.from(it) }
-
-        return mode.combine(duration) { calculationMode, lastAddedDuration ->
-            if (calculationMode != null && lastAddedDuration != null) {
-                System.currentTimeMillis() - when (calculationMode) {
-                    TimeIntervalCalculationMode.PAST -> TimeInterval.past(lastAddedDuration)
-                    TimeIntervalCalculationMode.RECENT -> TimeInterval.recently(lastAddedDuration)
-                }
-            } else {
-                System.currentTimeMillis()
-            }
-        }
-    }
-
-    override suspend fun edit(dataStore: DataStore<Preferences>, value: () -> Long) {
-        // unable to edit
-    }
-}
-
-
+/**
+ * Provider for Composite Preference in JSON, stored in one underlying PrimitiveKey [backField]
+ * @param backField underlying PrimitiveKey stores raw JSON
+ * @param T the Composite type
+ */
 sealed class JsonPreferenceProvider<T>(
     private val backField: PrimitiveKey<String>,
     override val defaultValue: () -> T,
@@ -267,7 +208,42 @@ data object NowPlayingScreenStylePreferenceProvider : JsonPreferenceProvider<Now
     }
 }
 
-data object MusicLibraryBackendPreferenceProvider : CompositePreferenceProvider<MusicLibraryBackendOptions> {
+/**
+ * Provider for Composite Preference, which is read only and may be derived from multiple keys
+ */
+sealed class ReadOnlyPreferenceProvider<T> : CompositePreferenceProvider<T> {
+
+    fun <T> readPrimitiveKey(preferences: Flow<Preferences>, key: PrimitiveKey<T>): Flow<T> =
+        preferences.map { it[key.preferenceKey] ?: key.defaultValue() }
+
+    override suspend fun edit(dataStore: DataStore<Preferences>, value: () -> T) {
+        // unable to edit
+    }
+}
+
+object LastAddedCutOffDurationPreferenceProvider : ReadOnlyPreferenceProvider<Long>() {
+    override val defaultValue: () -> Long get() = { System.currentTimeMillis() }
+
+    override fun flow(dataStore: DataStore<Preferences>): Flow<Long> {
+        val duration = readPrimitiveKey(dataStore.data, Keys._lastAddedCutOffDuration)
+            .map(Duration::from)
+        val mode = readPrimitiveKey(dataStore.data, Keys._lastAddedCutOffMode)
+            .map(TimeIntervalCalculationMode::from)
+        return combine(mode, duration) { calculationMode, lastAddedDuration ->
+            if (calculationMode != null && lastAddedDuration != null) {
+                System.currentTimeMillis() - when (calculationMode) {
+                    TimeIntervalCalculationMode.PAST -> TimeInterval.past(lastAddedDuration)
+                    TimeIntervalCalculationMode.RECENT -> TimeInterval.recently(lastAddedDuration)
+                }
+            } else {
+                System.currentTimeMillis()
+            }
+        }
+    }
+}
+
+
+object MusicLibraryBackendPreferenceProvider : ReadOnlyPreferenceProvider<MusicLibraryBackendOptions>() {
     override val defaultValue: () -> MusicLibraryBackendOptions
         get() = {
             MusicLibraryBackendOptionsParser(
@@ -276,19 +252,12 @@ data object MusicLibraryBackendPreferenceProvider : CompositePreferenceProvider<
             )
         }
 
-    private fun <T> singleFlowOf(preferences: Flow<Preferences>, key: PrimitiveKey<T>): Flow<T> =
-        preferences.map { it[key.preferenceKey] ?: key.defaultValue() }
-
     override fun flow(dataStore: DataStore<Preferences>): Flow<MusicLibraryBackendOptions> {
-        val musicLibrarySource = singleFlowOf(dataStore.data, Keys.musicLibrarySource)
-        val musicLibrarySyncMode = singleFlowOf(dataStore.data, Keys.musicLibrarySyncMode)
+        val musicLibrarySource = readPrimitiveKey(dataStore.data, Keys.musicLibrarySource)
+        val musicLibrarySyncMode = readPrimitiveKey(dataStore.data, Keys.musicLibrarySyncMode)
         return combine(musicLibrarySource, musicLibrarySyncMode) { source: String, syncMode: String ->
             MusicLibraryBackendOptionsParser(source, syncMode)
         }
-    }
-
-    override suspend fun edit(dataStore: DataStore<Preferences>, value: () -> MusicLibraryBackendOptions) {
-        // unable to edit
     }
 
     class MusicLibraryBackendOptionsParser(

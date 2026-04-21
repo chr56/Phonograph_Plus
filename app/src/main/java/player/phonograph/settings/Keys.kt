@@ -85,10 +85,10 @@ object Keys {
         get() = CompositeKey<PagesConfig>(HomeTabConfigPreferenceProvider)
     val rememberLastTab
         get() = PrimitiveKey<Boolean>(booleanPK("remember_last_tab")) { true }
-    val lastPage
-        get() = PrimitiveKey<Int>(intPK("last_start_page")) { 0 } // HIDDEN FROM UI
     val fixedTabLayout
         get() = PrimitiveKey<Boolean>(booleanPK("fixed_tab_layout")) { false }
+    val lastPage
+        get() = PrimitiveKey<Int>(intPK("last_start_page")) { 0 } // HIDDEN FROM UI
     //</editor-fold>
 
     //</editor-fold>
@@ -104,6 +104,21 @@ object Keys {
         get() = PrimitiveKey<Set<String>>(stringSetPK("path_filter_include_paths")) { DefaultIncludedPaths }
     //</editor-fold>
 
+    //<editor-fold desc="Library">
+    val musicLibraryBackend
+        get() = CompositeKey<MusicLibraryBackendOptions>(MusicLibraryBackendPreferenceProvider)
+    val musicLibrarySource
+        get() = PrimitiveKey<String>(stringPK("music_library_source")) { PROVIDER_INTERNAL_DATABASE }
+    val musicLibrarySyncMode
+        get() = PrimitiveKey<String>(stringPK("music_library_sync_mode")) { SYNC_MODE_STANDARD }
+    val tagSeparatorsGenres
+        get() = PrimitiveKey<Set<String>>(stringSetPK("tag_separators_genres")) { DEFAULT_TAG_SEPARATORS_GENRES }
+    val tagSeparatorsArtists
+        get() = PrimitiveKey<Set<String>>(stringSetPK("tag_separators_artists")) { DEFAULT_TAG_SEPARATORS_ARTISTS }
+    val tagAbbrFeatureArtists
+        get() = PrimitiveKey<Set<String>>(stringSetPK("tag_abbr_features_artists")) { DEFAULT_TAG_ABBR_FEATURES_ARTISTS }
+    //</editor-fold>
+
     //<editor-fold desc="Images">
     val _imageSourceConfigJson
         get() = PrimitiveKey<String>(stringPK("image_source_config")) { "{}" }
@@ -111,21 +126,6 @@ object Keys {
         get() = CompositeKey<ImageSourceConfig>(CoilImageSourcePreferenceProvider)
     val imageCache
         get() = PrimitiveKey<Boolean>(booleanPK("image_cache")) { false }
-    //</editor-fold>
-
-    //<editor-fold desc="Interactions">
-    val songItemClickMode
-        get() = PrimitiveKey<Int>(intPK("song_item_click_extra_flag")) { SongClickMode.SONG_PLAY_NOW }
-    val songItemClickExtraFlag
-        get() = PrimitiveKey<Int>(intPK("song_item_click_extra_mode")) { SongClickMode.FLAG_MASK_PLAY_QUEUE_IF_EMPTY }
-    val externalPlayRequestShowPrompt
-        get() = PrimitiveKey<Boolean>(booleanPK("external_play_request_show_prompt")) { false }
-    val externalPlayRequestSingleMode
-        get() = PrimitiveKey<Int>(intPK("external_play_request_single_mode")) { SongClickMode.SONG_PLAY_NOW }
-    val externalPlayRequestMultipleMode
-        get() = PrimitiveKey<Int>(intPK("external_play_request_multiple_mode")) { SongClickMode.QUEUE_PLAY_NOW }
-    val externalPlayRequestSilence
-        get() = PrimitiveKey<Boolean>(booleanPK("external_play_request_silence")) { false }
     //</editor-fold>
 
     //<editor-fold desc="Playlist">
@@ -144,23 +144,6 @@ object Keys {
         get() = PrimitiveKey<String>(stringPK("start_directory")) { DefaultStartDirectory }
     //</editor-fold>
 
-    //<editor-fold desc="Lyrics">
-    val enableLyrics
-        get() = PrimitiveKey<Boolean>(booleanPK("enable_lyrics")) { true }
-    val synchronizedLyricsShow
-        get() = PrimitiveKey<Boolean>(booleanPK("synchronized_lyrics_show")) { true }
-    val displaySynchronizedLyricsTimeAxis
-        get() = PrimitiveKey<Boolean>(booleanPK("display_lyrics_time_axis")) { true }
-    val broadcastSynchronizedLyrics
-        get() = PrimitiveKey<Boolean>(booleanPK("synchronized_lyrics_send")) { true }
-    val coverLyricsSize
-        get() = PrimitiveKey<Float>(floatPK("cover_lyrics_size")) { 22f }
-    val coverLyricsAlign
-        get() = PrimitiveKey<String>(stringPK("cover_lyrics_align")) { LYRICS_ALIGN_CENTER }
-    val dialogLyricsSize
-        get() = PrimitiveKey<Float>(floatPK("dialog_lyrics_size")) { 18f }
-    //</editor-fold>
-
     //</editor-fold>
 
     //<editor-fold desc="Behaviour">
@@ -172,6 +155,21 @@ object Keys {
         get() = PrimitiveKey<Boolean>(booleanPK("resume_after_audio_focus_gain")) { false }
     val alwaysPlay
         get() = PrimitiveKey<Boolean>(booleanPK("always_play")) { false }
+    //</editor-fold>
+
+    //<editor-fold desc="Interactions">
+    val songItemClickMode
+        get() = PrimitiveKey<Int>(intPK("song_item_click_extra_flag")) { SongClickMode.SONG_PLAY_NOW }
+    val songItemClickExtraFlag
+        get() = PrimitiveKey<Int>(intPK("song_item_click_extra_mode")) { SongClickMode.FLAG_MASK_PLAY_QUEUE_IF_EMPTY }
+    val externalPlayRequestShowPrompt
+        get() = PrimitiveKey<Boolean>(booleanPK("external_play_request_show_prompt")) { false }
+    val externalPlayRequestSingleMode
+        get() = PrimitiveKey<Int>(intPK("external_play_request_single_mode")) { SongClickMode.SONG_PLAY_NOW }
+    val externalPlayRequestMultipleMode
+        get() = PrimitiveKey<Int>(intPK("external_play_request_multiple_mode")) { SongClickMode.QUEUE_PLAY_NOW }
+    val externalPlayRequestSilence
+        get() = PrimitiveKey<Boolean>(booleanPK("external_play_request_silence")) { false }
     //</editor-fold>
 
     //<editor-fold desc="Player Behaviour">
@@ -200,6 +198,23 @@ object Keys {
         get() = CompositeKey<NotificationActionsConfig>(NotificationActionsPreferenceProvider)
     //</editor-fold>
 
+    //<editor-fold desc="Lyrics">
+    val enableLyrics
+        get() = PrimitiveKey<Boolean>(booleanPK("enable_lyrics")) { true }
+    val synchronizedLyricsShow
+        get() = PrimitiveKey<Boolean>(booleanPK("synchronized_lyrics_show")) { true }
+    val displaySynchronizedLyricsTimeAxis
+        get() = PrimitiveKey<Boolean>(booleanPK("display_lyrics_time_axis")) { true }
+    val broadcastSynchronizedLyrics
+        get() = PrimitiveKey<Boolean>(booleanPK("synchronized_lyrics_send")) { true }
+    val coverLyricsSize
+        get() = PrimitiveKey<Float>(floatPK("cover_lyrics_size")) { 22f }
+    val coverLyricsAlign
+        get() = PrimitiveKey<String>(stringPK("cover_lyrics_align")) { LYRICS_ALIGN_CENTER }
+    val dialogLyricsSize
+        get() = PrimitiveKey<Float>(floatPK("dialog_lyrics_size")) { 18f }
+    //</editor-fold>
+
     //<editor-fold desc="Advanced">
 
     //<editor-fold desc="Compatibility">
@@ -216,18 +231,6 @@ object Keys {
     //</editor-fold>
 
     //<editor-fold desc="Experimental">
-    val musicLibraryBackend
-        get() = CompositeKey<MusicLibraryBackendOptions>(MusicLibraryBackendPreferenceProvider)
-    val musicLibrarySource
-        get() = PrimitiveKey<String>(stringPK("music_library_source")) { PROVIDER_INTERNAL_DATABASE }
-    val musicLibrarySyncMode
-        get() = PrimitiveKey<String>(stringPK("music_library_sync_mode")) { SYNC_MODE_STANDARD }
-    val tagSeparatorsGenres
-        get() = PrimitiveKey<Set<String>>(stringSetPK("tag_separators_genres")) { DEFAULT_TAG_SEPARATORS_GENRES }
-    val tagSeparatorsArtists
-        get() = PrimitiveKey<Set<String>>(stringSetPK("tag_separators_artists")) { DEFAULT_TAG_SEPARATORS_ARTISTS }
-    val tagAbbrFeatureArtists
-        get() = PrimitiveKey<Set<String>>(stringSetPK("tag_abbr_features_artists")) { DEFAULT_TAG_ABBR_FEATURES_ARTISTS }
     //</editor-fold>
 
     //</editor-fold>
@@ -260,31 +263,31 @@ object Keys {
     val _songSortMode
         get() = PrimitiveKey<String>(stringPK("song_sort_mode")) { SortMode(SortRef.ID, false).serialize() }
     val songSortMode
-        get() = CompositeKey<SortMode>(SortModePreferenceProvider.SongSortMode)
+        get() = CompositeKey<SortMode>(SortModePreferenceProvider(_songSortMode))
     val _albumSortMode
         get() = PrimitiveKey<String>(stringPK("album_sort_mode")) { SortMode(SortRef.ID, false).serialize() }
     val albumSortMode
-        get() = CompositeKey<SortMode>(SortModePreferenceProvider.AlbumSortMode)
+        get() = CompositeKey<SortMode>(SortModePreferenceProvider(_albumSortMode))
     val _artistSortMode
         get() = PrimitiveKey<String>(stringPK("artist_sort_mode")) { SortMode(SortRef.ID, false).serialize() }
     val artistSortMode
-        get() = CompositeKey<SortMode>(SortModePreferenceProvider.ArtistSortMode)
+        get() = CompositeKey<SortMode>(SortModePreferenceProvider(_artistSortMode))
     val _genreSortMode
         get() = PrimitiveKey<String>(stringPK("genre_sort_mode")) { SortMode(SortRef.ID, false).serialize() }
     val genreSortMode
-        get() = CompositeKey<SortMode>(SortModePreferenceProvider.GenreSortMode)
+        get() = CompositeKey<SortMode>(SortModePreferenceProvider(_genreSortMode))
     val _fileSortMode
         get() = PrimitiveKey<String>(stringPK("file_sort_mode")) { SortMode(SortRef.ID, false).serialize() }
     val fileSortMode
-        get() = CompositeKey<SortMode>(SortModePreferenceProvider.FileSortMode)
+        get() = CompositeKey<SortMode>(SortModePreferenceProvider(_fileSortMode))
     val _collectionSortMode
         get() = PrimitiveKey<String>(stringPK("song_collection_sort_mode")) { SortMode(SortRef.ID, false).serialize() }
     val collectionSortMode
-        get() = CompositeKey<SortMode>(SortModePreferenceProvider.CollectionSortMode)
+        get() = CompositeKey<SortMode>(SortModePreferenceProvider(_collectionSortMode))
     val _playlistSortMode
         get() = PrimitiveKey<String>(stringPK("playlist_sort_mode")) { SortMode(SortRef.ID, false).serialize() }
     val playlistSortMode
-        get() = CompositeKey<SortMode>(SortModePreferenceProvider.PlaylistSortMode)
+        get() = CompositeKey<SortMode>(SortModePreferenceProvider(_playlistSortMode))
     //</editor-fold>
 
     //<editor-fold desc="ColoredFooters">
@@ -307,38 +310,38 @@ object Keys {
     val _songItemLayout
         get() = PrimitiveKey<Int>(intPK("song_item_layout")) { ItemLayoutStyle.LIST_EXTENDED.ordinal }
     val songItemLayout
-        get() = CompositeKey<ItemLayoutStyle>(ItemLayoutProvider.SongItemLayoutProvider)
+        get() = CompositeKey<ItemLayoutStyle>(ItemLayoutProvider(_songItemLayout))
     val _songItemLayoutLand
         get() = PrimitiveKey<Int>(intPK("song_item_layout_land")) { ItemLayoutStyle.LIST.ordinal }
     val songItemLayoutLand
-        get() = CompositeKey<ItemLayoutStyle>(ItemLayoutProvider.LandSongItemLayoutProvider)
+        get() = CompositeKey<ItemLayoutStyle>(ItemLayoutProvider(_songItemLayoutLand))
 
     val _albumItemLayout
         get() = PrimitiveKey<Int>(intPK("album_item_layout")) { ItemLayoutStyle.GRID.ordinal }
     val albumItemLayout
-        get() = CompositeKey<ItemLayoutStyle>(ItemLayoutProvider.AlbumItemLayoutProvider)
+        get() = CompositeKey<ItemLayoutStyle>(ItemLayoutProvider(_albumItemLayout))
     val _albumItemLayoutLand
         get() = PrimitiveKey<Int>(intPK("album_item_layout_land")) { ItemLayoutStyle.GRID.ordinal }
     val albumItemLayoutLand
-        get() = CompositeKey<ItemLayoutStyle>(ItemLayoutProvider.LandAlbumItemLayoutProvider)
+        get() = CompositeKey<ItemLayoutStyle>(ItemLayoutProvider(_albumItemLayoutLand))
 
     val _artistItemLayout
         get() = PrimitiveKey<Int>(intPK("artist_item_layout")) { ItemLayoutStyle.LIST_NO_IMAGE.ordinal }
     val artistItemLayout
-        get() = CompositeKey<ItemLayoutStyle>(ItemLayoutProvider.ArtistItemLayoutProvider)
+        get() = CompositeKey<ItemLayoutStyle>(ItemLayoutProvider(_artistItemLayout))
     val _artistItemLayoutLand
         get() = PrimitiveKey<Int>(intPK("artist_item_layout_land")) { ItemLayoutStyle.LIST.ordinal }
     val artistItemLayoutLand
-        get() = CompositeKey<ItemLayoutStyle>(ItemLayoutProvider.LandArtistItemLayoutProvider)
+        get() = CompositeKey<ItemLayoutStyle>(ItemLayoutProvider(_artistItemLayoutLand))
 
     val _folderItemLayout
         get() = PrimitiveKey<Int>(intPK("folder_item_layout")) { ItemLayoutStyle.LIST.ordinal }
     val folderItemLayout
-        get() = CompositeKey<ItemLayoutStyle>(ItemLayoutProvider.FolderItemLayoutProvider)
+        get() = CompositeKey<ItemLayoutStyle>(ItemLayoutProvider(_folderItemLayout))
     val _folderItemLayoutLand
         get() = PrimitiveKey<Int>(intPK("folder_item_layout_land")) { ItemLayoutStyle.LIST_3L.ordinal }
     val folderItemLayoutLand
-        get() = CompositeKey<ItemLayoutStyle>(ItemLayoutProvider.LandFolderItemLayoutProvider)
+        get() = CompositeKey<ItemLayoutStyle>(ItemLayoutProvider(_folderItemLayoutLand))
     //</editor-fold>
 
     //<editor-fold desc="Grid Size">
