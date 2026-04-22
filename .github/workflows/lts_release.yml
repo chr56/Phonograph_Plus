@@ -11,22 +11,22 @@ jobs:
 
   build:
     name: Build
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         PRODUCT_VARIANT: [ ModernStableRelease, LegacyStableRelease ]
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up JDK
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           java-version: '21'
           distribution: 'adopt'
 
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
@@ -60,7 +60,7 @@ jobs:
           tree -aF ./products
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: Artifacts_${{ matrix.PRODUCT_VARIANT }}
           path: |
@@ -75,17 +75,17 @@ jobs:
 
   upload:
     name: Release & Upload
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     needs:
       - build
     permissions:
       contents: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Download Artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           path: products
           pattern: Artifacts_*
@@ -96,7 +96,7 @@ jobs:
           tree -aF ./products
 
       - name: Release New Version
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         id: release_github
         # if: startsWith(github.ref, 'refs/tags/preview_')
         with:

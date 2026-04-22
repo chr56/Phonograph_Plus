@@ -10,22 +10,22 @@ jobs:
 
   build:
     name: Build
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         PRODUCT_VARIANT: [ ModernNextRelease, LegacyNextRelease ]
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up JDK
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           java-version: '21'
           distribution: 'adopt'
 
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
@@ -59,7 +59,7 @@ jobs:
           tree -aF ./products
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: Artifacts_${{ matrix.PRODUCT_VARIANT }}
           path: |
@@ -74,22 +74,22 @@ jobs:
 
   changelog:
     name: Generate Changelogs
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     permissions:
       contents: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up JDK
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           java-version: '21'
           distribution: 'adopt'
           cache: gradle
 
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v5
 
       - name: Grant Execute Permission for Gradlew
         run:
@@ -104,7 +104,7 @@ jobs:
           ./gradlew tools:changelog-generator:GenerateEscapedMarkdownReleaseNote
 
       - name: Upload Changelogs
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: Changelogs
           path: |
@@ -115,7 +115,7 @@ jobs:
 
   upload:
     name: Release & Upload
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     needs:
       - build
       - changelog
@@ -123,17 +123,17 @@ jobs:
       contents: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Download Artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           path: products
           pattern: Artifacts_*
           merge-multiple: true
 
       - name: Download Changelogs
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           pattern: Changelogs
           merge-multiple: true
@@ -144,7 +144,7 @@ jobs:
           ls | grep ReleaseNote
 
       - name: Release New Version
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         id: release_github
         if: startsWith(github.ref, 'refs/tags/eap_')
         with:
@@ -162,7 +162,7 @@ jobs:
           token: ${{ secrets.TOKEN }}
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.11'
 
