@@ -3,7 +3,6 @@
 import tools.release.git.getGitHash
 import tools.release.registerPublishTask
 import tools.release.text.NameSegment
-import java.util.Properties
 
 plugins {
     alias(libs.plugins.androidGradlePlugin)
@@ -13,6 +12,8 @@ plugins {
     alias(libs.plugins.kotlin.ksp)
     alias(libs.plugins.artifactsRelease)
 }
+
+val appName = "Phonograph Plus"
 
 // Signing key and secrets
 val keystoreFile = System.getenv("STORE_FILE") ?: project.findProperty("storeFile")?.toString()
@@ -26,15 +27,6 @@ android {
     buildToolsVersion = "36.0.0"
     namespace = "player.phonograph"
 
-    val appName = "Phonograph Plus"
-
-    buildFeatures {
-        resValues = true
-        buildConfig = true
-        viewBinding = true
-        compose = true
-    }
-
     defaultConfig {
         minSdk = 24
         targetSdk = 36
@@ -43,10 +35,16 @@ android {
         versionCode = 1121
         versionName = "1.12.1"
 
-
         proguardFiles(File("proguard-rules-base.pro"), File("proguard-rules-app.pro"))
 
         manifestPlaceholders["GIT_COMMIT_HASH"] = "-"
+    }
+
+    buildFeatures {
+        resValues = true
+        buildConfig = true
+        viewBinding = true
+        compose = true
     }
 
     signingConfigs {
@@ -142,32 +140,6 @@ android {
         }
 
     }
-    androidComponents {
-
-        val moduleName = project.name
-        onVariants(selector().all()) { variant ->
-            // Rename
-            for (output in variant.outputs) {
-                val outputImpl = output as? com.android.build.api.variant.impl.VariantOutputImpl ?: continue
-                val origin = outputImpl.outputFileName.get()
-                val new = origin.replace(moduleName, "PhonographPlus-${output.versionName.get()}")
-                outputImpl.outputFileName.set(new)
-            }
-        }
-
-        beforeVariants(selector().withBuildType("release")) { variantBuilder ->
-            val favors = variantBuilder.productFlavors
-            // no "release" type
-            if (favors.contains("channel" to "checkout")) {
-                variantBuilder.enable = false
-            }
-        }
-
-        val name = appName.replace(Regex("\\s"), "") //remove white space
-        onVariants(selector().withBuildType("release")) { variant ->
-            tasks.registerPublishTask(name, variant)
-        }
-    }
 
     lint {
         abortOnError = false
@@ -177,25 +149,52 @@ android {
         checkReleaseBuilds = false
     }
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
-    }
-
-    kotlin {
-        jvmToolchain(21)
-    }
-
-    ksp {
-        arg("room.schemaLocation", "$projectDir/schemas")
-        // arg("room.incremental", "true")
-    }
-
     dependenciesInfo {
         includeInApk = false
         includeInBundle = false
     }
 
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
+    }
+
+}
+
+kotlin {
+    jvmToolchain(21)
+}
+
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
+    // arg("room.incremental", "true")
+}
+
+androidComponents {
+
+    val moduleName = project.name
+    onVariants(selector().all()) { variant ->
+        // Rename
+        for (output in variant.outputs) {
+            val outputImpl = output as? com.android.build.api.variant.impl.VariantOutputImpl ?: continue
+            val origin = outputImpl.outputFileName.get()
+            val new = origin.replace(moduleName, "PhonographPlus-${output.versionName.get()}")
+            outputImpl.outputFileName.set(new)
+        }
+    }
+
+    beforeVariants(selector().withBuildType("release")) { variantBuilder ->
+        val favors = variantBuilder.productFlavors
+        // no "release" type
+        if (favors.contains("channel" to "checkout")) {
+            variantBuilder.enable = false
+        }
+    }
+
+    val name = appName.replace(Regex("\\s"), "") //remove white space
+    onVariants(selector().withBuildType("release")) { variant ->
+        tasks.registerPublishTask(name, variant)
+    }
 }
 
 androidPublish {
@@ -210,9 +209,6 @@ tasks.whenTaskAdded {
     }
 }
 
-/**
- * Now, this project is using [VersionCatalog] (./gradle/libs.versions.toml)
- */
 dependencies {
 
     implementation(libs.androidx.core)
