@@ -43,6 +43,11 @@ jobs:
       matrix:
         PRODUCT_VARIANT: [ModernCheckoutDebug, LegacyCheckoutDebug]
     runs-on: ubuntu-24.04
+    env:
+      STORE_FILE: ${{ github.workspace }}/key.jdk
+      STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+      KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+      KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -59,16 +64,11 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Generate Sign Config
-        env:
-          SECRETS_KEY: ${{ secrets.KEY }}
-          SECRETS_STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
-          SECRETS_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-          SECRETS_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEYSTORE_FILE: ${{ github.workspace }}/key.jdk
-          CONFIG_FILE: ${{ github.workspace }}/gradle.properties
+      - name: Recover Signing Keystore
         run: |
-          bash ${{ github.workspace }}/scripts/generate_signing_key.sh
+          bash ${{ github.workspace }}/scripts/recover_signing_key.sh \
+            --secrets-key "${{ secrets.KEY }}" \
+            --keystore-file "${STORE_FILE}"
 
       - name: Clean before building
         id: gradle-clean
