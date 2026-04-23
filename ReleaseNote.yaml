@@ -1,7 +1,7 @@
 version: "2.0.0-dev1"
-channel: "STABLE"
+channel: "PREVIEW"
 versionCode: 1122
-timestamp: 1774800000
+timestamp: 1776959000
 notes:
   en:
     items:
