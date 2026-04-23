@@ -1,6 +1,30 @@
 {
     "versions": [
         {
+            "channel": "preview",
+            "versionName": "2.0.0-dev1",
+            "versionCode": 1122,
+            "date": 1776959000,
+            "link": [
+                {
+                    "name": "Github Release (Website)",
+                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_2.0.0-dev1"
+                },
+                {
+                    "name": "Github Release Modern Variant APK (File Download Link)",
+                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_2.0.0-dev1/PhonographPlus_2.0.0-dev1_ModernPreviewRelease.apk"
+                },
+                {
+                    "name": "Github Release Legacy Variant APK (File Download Link)",
+                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_2.0.0-dev1/PhonographPlus_2.0.0-dev1_LegacyPreviewRelease.apk"
+                }
+            ],
+            "releaseNote": {
+                "zh-cn": "<ol><li>修改 默认启用多重艺术家和多重流派解析（从实验性功能转正）</li><li>修改 调整部分默认设置，并重组设置分类</li><li>修改 默认创建数据库播放列表</li><li>新增 桌面小部件支持深色模式</li><li>优化 支持在夜间模式下使用另一套配色方案</li><li>优化 支持跳过流派解析与同步</li><li>优化 内部数据库同步性能</li><li>翻译 更新 巴西葡萄牙语（Ricardo）、荷兰语（Polovinci）</li><li>开发 适配 SDK API 36 (Android 16)</li><li>开发 升级 AGP 至 9.1.0</li></ol>",
+                "en": "<ol><li>Modify: Multiple artists and genres parsing is now enabled by default (graduated from experimental)</li><li>Modify: change some default settings, and reorganized settings pages</li><li>Modify: create database playlists by default</li><li>New: add dark mode support for widgets</li><li>Improve: support using another color scheme for night</li><li>Improve: support skipping genres parsing and synchronization</li><li>Improve: performance of internal database synchronization</li><li>Translation: update Portuguese Brazilian (by Ricardo), Dutch (by Polovinci)</li><li>Development: targeting SDK API 36 (Android 16)</li><li>Development: upgrade AGP to 9.1.0</li></ol>"
+            }
+        },
+        {
             "channel": "stable",
             "versionName": "1.12.1",
             "versionCode": 1121,
@@ -22,54 +46,6 @@
             "releaseNote": {
                 "zh-cn": "<ol><li>改进 搜索输入防抖处理</li><li>改进 防止提取元数据失败时错误消息泛滥</li><li>开发 更新 Kotlin 至 2.3.20, 更新依赖</li></ol>",
                 "en": "<ol><li>Improve: search input debouncing for better responsiveness</li><li>Improve: merging and throttling error notifications about background metadata extraction</li><li>Development: upgrade Kotlin to 2.3.20, update dependencies</li></ol>"
-            }
-        },
-        {
-            "channel": "preview",
-            "versionName": "1.12.1-dev1",
-            "versionCode": 1120,
-            "date": 1774278000,
-            "link": [
-                {
-                    "name": "Github Release (Website)",
-                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.12.1-dev1"
-                },
-                {
-                    "name": "Github Release Modern Variant APK (File Download Link)",
-                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.12.1-dev1/PhonographPlus_1.12.1-dev1_ModernPreviewRelease.apk"
-                },
-                {
-                    "name": "Github Release Legacy Variant APK (File Download Link)",
-                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.12.1-dev1/PhonographPlus_1.12.1-dev1_LegacyPreviewRelease.apk"
-                }
-            ],
-            "releaseNote": {
-                "zh-cn": "<ol><li>改进 搜索输入消抖</li><li>改进 防止提取元数据失败时错误消息泛滥</li></ol>",
-                "en": "<ol><li>Improve: search input debounce for better responsiveness</li><li>Improve: throttled error notifications of music metadata extraction</li></ol>"
-            }
-        },
-        {
-            "channel": "stable",
-            "versionName": "1.12.0",
-            "versionCode": 1120,
-            "date": 1773220000,
-            "link": [
-                {
-                    "name": "Github Release (Website)",
-                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.12.0"
-                },
-                {
-                    "name": "Github Release Modern Variant APK (File Download Link)",
-                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v1.12.0/PhonographPlus_1.12.0_ModernStableRelease.apk"
-                },
-                {
-                    "name": "Github Release Legacy Variant APK (File Download Link)",
-                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v1.12.0/PhonographPlus_1.12.0_LegacyStableRelease.apk"
-                }
-            ],
-            "releaseNote": {
-                "zh-cn": "<ol><li>修复 专辑艺术家提取有误</li><li>改进 初始搜索标签页与当前标签页同步</li><li>改进 略微加快搜索响应速度</li><li>改进 支持搜索流派</li><li>改进 支持调整歌词字体大小和对齐方式</li><li>翻译 更新乌克兰语 (Max Leonidov), 西班牙语 (Dino RTX (rtxdino36))</li><li>翻译 移除保加利亚语和克罗地亚语</li><li>移除 启动时播放队列的验证和标记 (2023 年首次于 v1.3.1 引入)</li><li>开发 使用 Gradle 9.3.1 构建, 更新 Kotlin 至 2.3.10, 更新依赖</li><li>新增 [实验性] 支持按照可自定义的分隔符解析和重组相关音乐标签中的多重艺术家和多重流派；此实验性功能按需启用，请在高级设置中手动切换“媒体库元数据源”后在扫描媒体中“刷新数据库”；该功能将在稳定后默认启用</li></ol>",
-                "en": "<ol><li>Fix: incorrect album artist extraction</li><li>Improve: sync initial search tab with the current tab</li><li>Improve: slightly faster search response</li><li>Improve: genre search support</li><li>Improve: support adjusting lyrics fonts size and alignment</li><li>Translation: update Ukrainian (by Max Leonidov), Spanish (by Dino RTX (rtxdino36))</li><li>Translation: remove Bulgarian and Croatian</li><li>Remove: queue validating and marking at start up (first introduced in v1.3.1 in 2023)</li><li>Development: build with Gradle 9.3.1, upgrade Kotlin to 2.3.10, update dependencies</li><li>New: [experimental] support parsing and reorganizing multiple artists and genres by customizable separators from related music tags; To enable this experimental feature, please manually switch 'Music Library Metadata Source' in Advanced Settings and then 'Refresh Database' via Scan Media. This feature would be enabled by default upon stabilization in the future.</li></ol>"
             }
         }
     ]
