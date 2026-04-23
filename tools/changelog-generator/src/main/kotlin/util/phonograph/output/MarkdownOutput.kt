@@ -78,7 +78,7 @@ class GitHubReleaseMarkdown(private val metadata: ReleaseMetadata) : ReleaseMark
 
         // Variants Description
         target.append(title(VARIANTS_DESCRIPTION_TITLE, 2)).append('\n')
-        target.append(githubAlertBox("$SIGNING_KEY_NOTICE_EN\n$SIGNING_KEY_NOTICE_ZH"))
+        target.append(githubAlertBox("$SIGNING_KEY_NOTICE_EN\n$SIGNING_KEY_NOTICE_ZH", AlertType.Important))
         target.append('\n')
         target.append(
             VARIANTS_DESCRIPTION_BODY.trimIndent()
