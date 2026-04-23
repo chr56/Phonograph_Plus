@@ -56,6 +56,8 @@ android {
                 storePassword = keystorePassword
                 keyAlias = keyAliasValue
                 keyPassword = keyPasswordValue
+            } else {
+                print("No signing key configured!")
             }
         }
     }
