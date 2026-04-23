@@ -27,11 +27,17 @@ Phonograph is a light-weighted material designed local music player for Android.
 [<img src="https://img.shields.io/github/v/release/chr56/phonograph_plus?label=Github%20Releases%20(Latest)&include_prereleases" alt="Github%20Release%20(Latest)">](https://github.com/chr56/Phonograph_Plus/releases/)
 [<img src="https://img.shields.io/f-droid/v/player.phonograph.plus?label=F-droid" alt="F-droid">](https://f-droid.org/packages/player.phonograph.plus/)
 
-Phonograph Plus is available on GitHub Releases (Stable Channel and Preview Channel[^1]) and F-Droid[^2] (Stable Channel).
+> [!IMPORTANT]
+> After 2027 worldwide (or Sept 2026 for some countries), you may have some difficulties when installing Phonograph Plus on devices with enforced Play Protect. 
+> We may stop releasing installable APK artifacts but only source code in 2027. 
+> See [Android Developer Verification](./docs/Version_Guide.md#android-developer-verification) for details.
+
+Phonograph Plus is available on GitHub Releases (Stable Channel and Preview Channel[^1]) and F-Droid[^2] (Stable Channel). 
+For descriptions on different version variants, please see [Version Guide](./docs/Version_Guide.md).
 
 [^1]: Package name of Preview version has suffix of `preview`. 
 
-[^2]: Reproducible Builds are enabled on F-droid, Apks from F-droid shall be exactly equivalent to ones from GitHub Releases, byte by byte.
+[^2]: Reproducible Builds are enabled on F-droid, APKs from F-droid shall be exactly equivalent to ones from GitHub Releases, byte by byte.
 
 
 ## **Features**

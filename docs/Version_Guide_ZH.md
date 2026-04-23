@@ -24,3 +24,28 @@ Target SDK 为 28（Android 9），以绕过 Android 10 中引入的 _Scope Stor
 <br/>
 
 另请参阅 [开发指南](./Developer_Guide.md#build-variants)
+
+
+# Play Protect 与安装限制
+
+### Android Developer Verification
+
+_中国大陆机型可能并不受影响（~或更惨~）_
+
+> 从2027年起全球范围内（某些国家为2026年9月），未通过 Google Play 或 Android 开发者控制台
+> 提交开发者身份验证信息的 Android 应用**无法“容易”安装**在认证的 Android 设备上。
+
+简单来说，若开发者未将个人身份证明证件和包名与签名密钥指纹等应用信息提交至 Google，其未认证签名的 APK 文件可能**无法“容易”安装**在搭载 Google Mobile Service (GMS) 并启用了 Play Protect 的设备上。
+
+
+### 影响
+
+通过 Google Play 以外渠道分发的应用（如 Phonograph Plus）将受到严重影响；尽管未来可能存在“高级流程”，但 **对大多数用户而言，“侧载”将变得更加困难**；目前，Google 意向坚定不动摇。
+
+更多细节与跟进请关注 [官方页面](https://developer.android.com/developer-verification) 和 [第三方页面](https://keepandroidopen.org/)。
+
+### 未来计划
+
+回应此政策，计划从 **2027年4月1日**（或 **2027年8月10日**）起，**不再发布 APK 安装包，仅发布源代码**；请自行编译Phonograph Plus。
+
+如果 Android 进一步封闭和限制，取决于 Google 的后续政策，Phonograph Plus 可能最终在**2028**年起**彻底停更**。
