@@ -8,6 +8,7 @@ import org.koin.core.context.GlobalContext
 import player.phonograph.repo.room.dao.AlbumDao
 import player.phonograph.repo.room.dao.ArtistDao
 import player.phonograph.repo.room.dao.FavoritesSongsDao
+import player.phonograph.repo.room.dao.ImageCacheDao
 import player.phonograph.repo.room.dao.GenreDao
 import player.phonograph.repo.room.dao.MediaStoreSongDao
 import player.phonograph.repo.room.dao.MetadataDao
@@ -21,6 +22,7 @@ import player.phonograph.repo.room.dao.RelationshipGenreSongDao
 import player.phonograph.repo.room.entity.AlbumEntity
 import player.phonograph.repo.room.entity.ArtistEntity
 import player.phonograph.repo.room.entity.FavoriteSongEntity
+import player.phonograph.repo.room.entity.ImageCacheEntity
 import player.phonograph.repo.room.entity.GenreEntity
 import player.phonograph.repo.room.entity.LinkageAlbumAndArtist
 import player.phonograph.repo.room.entity.LinkageGenreAndSong
@@ -45,6 +47,7 @@ import java.io.Closeable
         PlaylistSongEntity::class,
         FavoriteSongEntity::class,
         PinedPlaylistsEntity::class,
+        ImageCacheEntity::class,
         AlbumEntity::class,
         ArtistEntity::class,
         LinkageAlbumAndArtist::class,
@@ -55,7 +58,10 @@ import java.io.Closeable
     ],
     version = MusicDatabase.DATABASE_REVISION,
     exportSchema = true,
-    autoMigrations = [AutoMigration(from = 1, to = 2)]
+    autoMigrations = [
+        AutoMigration(from = 1, to = 2),
+        AutoMigration(from = 2, to = 3),
+    ]
 )
 abstract class MusicDatabase : RoomDatabase(), Closeable {
     abstract fun MetadataDao(): MetadataDao
@@ -71,13 +77,14 @@ abstract class MusicDatabase : RoomDatabase(), Closeable {
     abstract fun GenreDao(): GenreDao
     abstract fun RelationshipGenreSongDao(): RelationshipGenreSongDao
     abstract fun QueryDao(): QueryDao
+    abstract fun ImageCacheDao(): ImageCacheDao
     override fun close() {
         super.close()
     }
 
     companion object {
         const val DATABASE_NAME = "music_database_v1.db"
-        const val DATABASE_REVISION = 2
+        const val DATABASE_REVISION = 3
 
         fun instance(context: Context): MusicDatabase =
             Room.databaseBuilder(context, MusicDatabase::class.java, DATABASE_NAME)
