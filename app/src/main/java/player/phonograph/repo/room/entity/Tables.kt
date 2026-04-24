@@ -15,6 +15,7 @@ object Tables {
     const val PINED_PLAYLISTS = "favorite_playlists"
 
     const val METADATA = "metadata"
+    const val IMAGE_CACHE = "cache_images"
 
     const val ALBUMS = "albums"
     const val ARTISTS = "artists"

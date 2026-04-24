@@ -47,6 +47,13 @@ object Columns {
     const val METADATA_KEY = "key"
     const val METADATA_VALUE = "value"
 
+    // image cache
+    const val CACHE_DOMAIN = "cache_domain"
+    const val CACHE_ID = "cache_id"
+    const val CACHE_SOURCE= "cache_source"
+    const val CACHE_TIMESTAMP = "timestamp"
+    const val CACHE_EMPTY = "empty"
+    const val CACHE_FILENAME = "filename"
 
     // Misc
     const val ROLE = "role"
