@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022~2025 chr_56
+ *  Copyright (c) 2022~2026 chr_56
  */
 
 package player.phonograph.coil.cache
@@ -17,6 +17,8 @@ import player.phonograph.coil.model.ArtistImage
 import player.phonograph.coil.model.LoaderTarget
 import player.phonograph.coil.model.SongImage
 import player.phonograph.foundation.error.record
+import player.phonograph.repo.room.domain.RoomImageCache
+import player.phonograph.repo.room.entity.ImageCacheEntity
 import player.phonograph.util.file.createOrOverrideFileRecursive
 import androidx.core.graphics.drawable.toBitmapOrNull
 import android.content.Context
@@ -28,38 +30,34 @@ import java.util.UUID
 class CacheStore(val context: Context) {
 
     interface Cache<T : LoaderTarget> {
-        fun set(target: T, data: FetchResult, type: Int)
-        fun get(target: T, type: Int): FetchResult?
-        fun markNoImage(target: T, type: Int)
-        fun isNoImage(target: T, type: Int): Boolean
+        fun set(target: T, data: FetchResult, source: Int)
+        fun get(target: T, source: Int): FetchResult?
+        fun markNoImage(target: T, source: Int)
+        fun isNoImage(target: T, source: Int): Boolean
     }
 
     sealed class DefaultCache<T : LoaderTarget>(
         protected val context: Context,
-        private val tableName: CacheDatabase.Target,
+        private val domain: Int,
     ) : Cache<T> {
 
-        override fun isNoImage(target: T, type: Int): Boolean {
-            val cacheDatabase = CacheDatabase.instance(context)
-            val result = cacheDatabase.fetch(tableName, target.id, type)
+        override fun isNoImage(target: T, source: Int): Boolean {
+            val result = RoomImageCache.fetch(domain, target.id, source)
             return result.isEmpty()
         }
 
-        override fun markNoImage(target: T, type: Int) {
-            val cacheDatabase = CacheDatabase.instance(context)
-            cacheDatabase.register(tableName, target.id, type, null)
+        override fun markNoImage(target: T, source: Int) {
+            RoomImageCache.register(domain, target.id, source, null)
         }
 
         override fun set(
             target: T,
             data: FetchResult,
-            type: Int,
+            source: Int,
         ) {
             val uuid = UUID.randomUUID().toString()
 
-            val cacheDatabase = CacheDatabase.instance(context)
-
-            val result = cacheDatabase.register(tableName, target.id, type, uuid)
+            val result = RoomImageCache.register(domain, target.id, source, uuid)
 
             if (!result) {
                 Log.i(TAG, "Failed to insert cache database")
@@ -92,11 +90,8 @@ class CacheStore(val context: Context) {
             }
         }
 
-        override fun get(target: T, type: Int): FetchResult? {
-
-            val cacheDatabase = CacheDatabase.instance(context)
-
-            val uuid = cacheDatabase.fetch(tableName, target.id, type).existedOrNull() ?: return null
+        override fun get(target: T, source: Int): FetchResult? {
+            val uuid = RoomImageCache.fetch(domain, target.id, source).existedOrNull() ?: return null
 
             val targetFile = rootCacheDir(context).resolve(uuid)
 
@@ -124,15 +119,15 @@ class CacheStore(val context: Context) {
     }
 
 
-    class AudioFiles(context: Context) : DefaultCache<SongImage>(context, CacheDatabase.Target.SONG)
-    class AlbumImages(context: Context) : DefaultCache<AlbumImage>(context, CacheDatabase.Target.ALBUM)
-    class ArtistImages(context: Context) : DefaultCache<ArtistImage>(context, CacheDatabase.Target.ARTIST)
+    class AudioFiles(context: Context) : DefaultCache<SongImage>(context, ImageCacheEntity.DOMAIN_SONG)
+    class AlbumImages(context: Context) : DefaultCache<AlbumImage>(context, ImageCacheEntity.DOMAIN_ALBUM)
+    class ArtistImages(context: Context) : DefaultCache<ArtistImage>(context, ImageCacheEntity.DOMAIN_ARTIST)
 
 
     companion object {
 
         fun clear(context: Context) {
-            CacheDatabase.instance(context).clear()
+            RoomImageCache.clear()
             rootCacheDir(context).deleteRecursively()
         }
 
