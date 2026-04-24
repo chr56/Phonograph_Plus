@@ -1,8 +1,8 @@
 /*
- *  Copyright (c) 2022~2025 chr_56
+ *  Copyright (c) 2022~2026 chr_56
  */
 
-package player.phonograph.repo.room.domain
+package player.phonograph.repo.room.sync
 
 import player.phonograph.mechanism.metadata.RelationshipResolver
 import player.phonograph.mechanism.metadata.RelationshipResolver.AccumulatedSongRelationship
@@ -31,48 +31,15 @@ import player.phonograph.repo.room.entity.MediastoreSongEntity
 import androidx.room.withTransaction
 import android.content.Context
 
-suspend fun defaultCheck(context: Context, musicDatabase: MusicDatabase): Boolean {
-    val songsCountMediastore = MediaStoreSongs.total(context)
-    val latestMediastore = MediaStoreSongs.lastest(context)
-
-    val songsCountDatabase = musicDatabase.MediaStoreSongDao().total()
-    val latestDatabase = musicDatabase.MediaStoreSongDao().latest()
-
-    return if (songsCountMediastore != songsCountDatabase || latestDatabase == null || latestMediastore == null) {
-        true
-    } else {
-        latestMediastore.dateModified >= latestDatabase.dateModified
-    }
-}
-
-class BasicSyncExecutor(private val musicDatabase: MusicDatabase) : SyncExecutor {
-
-    override suspend fun check(context: Context): Boolean = defaultCheck(context, musicDatabase)
-
-    override suspend fun sync(
-        context: Context,
-        channel: ProgressConnection?,
-    ): SyncReport {
-        val songsMediastore = MediaStoreSongs.all(context)
-        val total = songsMediastore.size
-        channel?.onProcessUpdate(0, total)
-        val songDao = musicDatabase.MediaStoreSongDao()
-        musicDatabase.withTransaction {
-            songDao.deleteAll()
-            songDao.update(songsMediastore.map(EntityConverter::fromSongModel))
-        }
-        channel?.onProcessUpdate(total, total)
-        return SyncReport(success = true, modified = total)
-    }
-
-}
-
+/**
+ * [SyncExecutor] with complex relationship solving
+ */
 class RelationshipSyncExecutor(
     private val musicDatabase: MusicDatabase,
     private val withGenres: Boolean = true,
 ) : SyncExecutor {
 
-    override suspend fun check(context: Context): Boolean = defaultCheck(context, musicDatabase) ||
+    override suspend fun check(context: Context): Boolean = SyncExecutors.defaultCheck(context, musicDatabase) ||
             (musicDatabase.ArtistDao().count() == 0) || (musicDatabase.AlbumDao().count() == 0)
 
     override suspend fun sync(
@@ -85,7 +52,7 @@ class RelationshipSyncExecutor(
 
 }
 
-class RelationshipSyncExecutorSession(
+private class RelationshipSyncExecutorSession(
     private val context: Context,
     private val musicDatabase: MusicDatabase,
     private val channel: ProgressConnection?,

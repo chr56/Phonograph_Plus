@@ -6,26 +6,13 @@ package player.phonograph.repo.room
 
 import player.phonograph.foundation.notification.ProgressNotificationConnection
 import player.phonograph.mechanism.event.EventHub
-import player.phonograph.model.repo.sync.SyncExecutor
 import player.phonograph.model.repo.sync.SyncReport
-import player.phonograph.repo.room.domain.BasicSyncExecutor
-import player.phonograph.repo.room.domain.RelationshipSyncExecutor
-import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
+import player.phonograph.repo.room.sync.SyncExecutors
 import androidx.room.withTransaction
 import android.content.Context
 import android.util.Log
 
 object DatabaseActions {
-
-    private suspend fun loopUpSyncExecutor(context: Context, musicDatabase: MusicDatabase): SyncExecutor {
-        val backend = Setting(context)[Keys.musicLibraryBackend].read()
-        val syncExecutor = when {
-            backend.syncBasicDatabase -> BasicSyncExecutor(musicDatabase)
-            else                      -> RelationshipSyncExecutor(musicDatabase, backend.syncWithGenres)
-        }
-        return syncExecutor
-    }
 
     private suspend fun deleteTablesOfNonUserData(musicDatabase: MusicDatabase) {
         musicDatabase.RelationshipGenreSongDao().deleteAll()
@@ -63,7 +50,7 @@ object DatabaseActions {
         progress: ProgressNotificationConnection? = null,
         force: Boolean = false,
     ): SyncReport? {
-        val syncExecutor = loopUpSyncExecutor(context, musicDatabase)
+        val syncExecutor = SyncExecutors.obtain(context, musicDatabase)
         return if (force || syncExecutor.check(context)) {
             try {
                 syncExecutor.sync(context, progress)
