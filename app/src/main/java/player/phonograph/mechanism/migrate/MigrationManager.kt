@@ -67,6 +67,7 @@ object MigrationManager {
                 migrate(MusicLibraryBackendMigrationRule())
                 migrate(PathFilterMigrationRule())
                 migrate(FavoritesMigrationRule())
+                migrate(ImageCacheMigrationRule())
             }
 
             Log.i(TAG, "End Migration")

@@ -121,6 +121,16 @@ class FavoritesMigrationRule : UserDataMigrationRule(introduced = 1104) {
     }
 }
 
+class ImageCacheMigrationRule : UserDataMigrationRule(1122) {
+    override fun execute(context: Context) {
+        removeDatabase(context, DATABASE_NAME_IMAGE_CACHE, true)
+    }
+
+    companion object {
+        const val DATABASE_NAME_IMAGE_CACHE = "_image_cache.db"
+    }
+}
+
 sealed class UserDataMigrationRule(introduced: Int) : VersionMigrationRule(introduced) {
 
     /**
