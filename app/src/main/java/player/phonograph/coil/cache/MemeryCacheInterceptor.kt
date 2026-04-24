@@ -17,7 +17,7 @@ import player.phonograph.model.Song
 import player.phonograph.settings.Keys
 import androidx.collection.LruCache
 
-class CacheInterceptor : Interceptor {
+class MemeryCacheInterceptor : Interceptor {
 
     private val lruCache = LruCache<Long, PaletteBitmapDrawable>(8)
 
