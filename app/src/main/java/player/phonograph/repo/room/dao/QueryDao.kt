@@ -17,7 +17,7 @@ import player.phonograph.repo.room.entity.Columns.ARTIST
 import player.phonograph.repo.room.entity.Columns.ARTIST_ID
 import player.phonograph.repo.room.entity.Columns.GENRE
 import player.phonograph.repo.room.entity.Columns.MEDIASTORE_ID
-import player.phonograph.repo.room.entity.Columns.PATH
+import player.phonograph.repo.room.entity.Columns.MEDIASTORE_PATH
 import player.phonograph.repo.room.entity.Columns.TITLE
 import player.phonograph.repo.room.entity.GenreEntity
 import player.phonograph.repo.room.entity.MediastoreSongEntity
@@ -68,7 +68,7 @@ abstract class QueryDao {
 
     fun songsWithPath(path: String, sortMode: SortMode): List<MediastoreSongEntity> = searchSongEntity(
         SimpleSQLiteQuery(
-            "SELECT * from $MEDIASTORE_SONGS where $PATH like ? order by ${roomSongQuerySortOrder(sortMode)}",
+            "SELECT * from $MEDIASTORE_SONGS where $MEDIASTORE_PATH like ? order by ${roomSongQuerySortOrder(sortMode)}",
             arrayOf<Any>(path)
         )
     )
