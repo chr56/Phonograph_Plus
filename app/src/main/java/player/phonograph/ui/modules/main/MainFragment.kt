@@ -34,11 +34,13 @@ import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.textColorOn
 import player.phonograph.util.ui.menuProvider
 import androidx.annotation.DrawableRes
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -55,9 +57,9 @@ import java.lang.ref.WeakReference
 
 class MainFragment : Fragment() {
 
-    val mainActivity: MainActivity get() = requireActivity() as MainActivity
+    val hostActivity: FragmentActivity get() = requireActivity()
 
-    private val drawerViewModel: MainDrawerViewModel by viewModels({ mainActivity })
+    private val drawerViewModel: MainDrawerViewModel by viewModels({ hostActivity })
 
     private var _viewBinding: FragmentHomeBinding? = null
     private val binding: FragmentHomeBinding get() = _viewBinding!!
@@ -108,10 +110,10 @@ class MainFragment : Fragment() {
             setBackgroundColor(primaryColor)
             navigationIcon = getDrawable(R.drawable.ic_menu_white_24dp)!!
             setTitleTextColor(primaryTextColor)
-            title = requireActivity().getString(R.string.app_name)
+            title = getString(R.string.app_name)
         }
 
-        mainActivity.setSupportActionBar(binding.toolbar)
+        (hostActivity as? AppCompatActivity)?.setSupportActionBar(binding.toolbar)
         with(binding.tabs) {
             setTabTextColors(secondaryTextColor, primaryTextColor)
             setSelectedTabIndicatorColor(accentColor)
@@ -134,7 +136,7 @@ class MainFragment : Fragment() {
                 onClick {
                     val page = drawerViewModel.pages.value?.getOrNull(drawerViewModel.selectedPage.value)
                     startActivity(
-                        SearchActivity.launchingIntent(mainActivity, page)
+                        SearchActivity.launchingIntent(hostActivity, page)
                     )
                     true
                 }
@@ -207,7 +209,7 @@ class MainFragment : Fragment() {
     /**
      *  the popup window for [AbsPage]
      */
-    val popup: ListOptionsPopup by lazy { ListOptionsPopup(mainActivity) }
+    val popup: ListOptionsPopup by lazy { ListOptionsPopup(hostActivity) }
 
     fun addOnAppBarOffsetChangedListener(onOffsetChangedListener: OnOffsetChangedListener) {
         binding.appbar.addOnOffsetChangedListener(onOffsetChangedListener)
@@ -225,7 +227,7 @@ class MainFragment : Fragment() {
 
     //region Utils
     private fun getDrawable(@DrawableRes resId: Int): Drawable? {
-        return AppCompatResources.getDrawable(mainActivity, resId)?.also {
+        return AppCompatResources.getDrawable(hostActivity, resId)?.also {
             it.colorFilter =
                 BlendModeColorFilterCompat.createBlendModeColorFilterCompat(primaryTextColor, BlendModeCompat.SRC_IN)
         }
@@ -233,8 +235,8 @@ class MainFragment : Fragment() {
 
     private val primaryColor by lazy(LazyThreadSafetyMode.NONE) { primaryColor() }
     private val accentColor by lazy(LazyThreadSafetyMode.NONE) { accentColor() }
-    private val primaryTextColor by lazy(LazyThreadSafetyMode.NONE) { textColorOn(mainActivity, primaryColor) }
-    private val secondaryTextColor by lazy(LazyThreadSafetyMode.NONE) { textColorOn(mainActivity, primaryColor) }
+    private val primaryTextColor by lazy(LazyThreadSafetyMode.NONE) { textColorOn(hostActivity, primaryColor) }
+    private val secondaryTextColor by lazy(LazyThreadSafetyMode.NONE) { textColorOn(hostActivity, primaryColor) }
     //endregion
 
     companion object {

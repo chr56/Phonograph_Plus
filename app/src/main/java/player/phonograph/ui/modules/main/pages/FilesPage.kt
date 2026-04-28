@@ -107,8 +107,7 @@ class FilesPage : AbsPage() {
         binding.panel.setExpanded(false)
         binding.panel.addOnOffsetChangedListener(innerAppbarOffsetListener)
 
-        val context = mainActivity
-        context.attach(binding.panelToolbar.menu) {
+        view.context.attach(binding.panelToolbar.menu) {
             menuItem(NONE, NONE, 999, getString(R.string.action_settings)) {
                 icon = context.getTintedDrawableOnBackground(R.drawable.ic_tune_white_24dp)
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
@@ -125,8 +124,8 @@ class FilesPage : AbsPage() {
             configAppBarActionButton(this)
         }
 
-        binding.panelText.setTextColor(textColorPrimary(context))
-        binding.panelToolbar.setTitleTextColor(textColorPrimary(context))
+        binding.panelText.setTextColor(textColorPrimary(view.context))
+        binding.panelToolbar.setTitleTextColor(textColorPrimary(view.context))
 
         observe(viewLifecycleOwner.lifecycle, model.currentFiles, state = Lifecycle.State.STARTED) { files ->
             binding.panelText.text = headerText(resources, files.size)
