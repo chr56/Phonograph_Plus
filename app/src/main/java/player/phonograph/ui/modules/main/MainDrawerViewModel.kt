@@ -8,7 +8,9 @@ import player.phonograph.model.pages.PagesConfig
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.settings.SettingObserver
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewModelScope
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
@@ -42,19 +44,27 @@ class MainDrawerViewModel : ViewModel() {
     val fixedTabLayout: StateFlow<Boolean> = _fixedTabLayout.asStateFlow()
 
 
-    fun observeSettings(context: Context) {
+    fun observeSettings(context: Context, lifecycle: Lifecycle) {
         SettingObserver(context, viewModelScope).apply {
             collect(Keys.homeTabConfig, Dispatchers.IO) {
-                _pages.value = it
+                lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                    _pages.value = it
+                }
             }
             collect(Keys.rememberLastTab, Dispatchers.IO) {
-                _rememberLastTab.value = it
+                lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                    _rememberLastTab.value = it
+                }
             }
             collect(Keys.lastPage, Dispatchers.IO) {
-                _lastPage.value = it
+                lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                    _lastPage.value = it
+                }
             }
             collect(Keys.fixedTabLayout, Dispatchers.IO) {
-                _fixedTabLayout.value = it
+                lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                    _fixedTabLayout.value = it
+                }
             }
         }
     }

@@ -40,7 +40,10 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.drawerlayout.widget.DrawerLayout.SimpleDrawerListener
+import androidx.fragment.app.commit
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -88,30 +91,28 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
             pathSelectorContractTool
         )
 
-        if (savedInstanceState == null) {
-            drawerViewModel.observeSettings(this)
-
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, MainFragment.newInstance(), "home")
-                .commit()
-        }
-
+        drawerViewModel.observeSettings(this, lifecycle)
 
         lifecycleScope.launch {
-            drawerViewModel.pages.collect { pagesConfig ->
-                setUpDrawer(pagesConfig)
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                drawerViewModel.pages.collect { pagesConfig ->
+                    setUpDrawer(pagesConfig)
+                }
+            }
+        }
+
+        if (supportFragmentManager.findFragmentByTag("HOME") == null) {
+            supportFragmentManager.commit {
+                replace(R.id.fragment_container, MainFragment.newInstance(), "HOME")
             }
         }
 
 
-        Handler(Looper.getMainLooper()).postDelayed(
-            {
-                val showUpgradeDialog = intent.getBooleanExtra(UPGRADABLE, false)
-                if (showUpgradeDialog) {
-                    showUpgradeDialog(intent.parcelableExtra(VERSION_INFO) as? VersionCatalog)
-                }
-            }, 900
-        )
+        if (intent.getBooleanExtra(UPGRADABLE, false)) {
+            Handler(Looper.getMainLooper()).postDelayed(
+                { showUpgradeDialog(intent.parcelableExtra(VERSION_INFO) as? VersionCatalog) }, 900
+            )
+        }
 
         lifecycleScope.launch(Dispatchers.Default) { latelySetup() }
         debug { logMetrics("MainActivity.onCreate()") }
