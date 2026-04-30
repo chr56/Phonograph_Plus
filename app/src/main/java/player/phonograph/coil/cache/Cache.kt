@@ -19,11 +19,14 @@ import player.phonograph.coil.model.SongImage
 import player.phonograph.foundation.error.record
 import player.phonograph.repo.room.domain.RoomImageCache
 import player.phonograph.repo.room.entity.ImageCacheEntity
+import player.phonograph.util.concurrent.lifecycleScopeOrNewOne
 import player.phonograph.util.file.createOrOverrideFileRecursive
 import androidx.core.graphics.drawable.toBitmapOrNull
 import android.content.Context
 import android.graphics.Bitmap
 import android.util.Log
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.UUID
 
 
@@ -127,8 +130,10 @@ class CacheStore(val context: Context) {
     companion object {
 
         fun clear(context: Context) {
-            RoomImageCache.clear()
-            rootCacheDir(context).deleteRecursively()
+            context.lifecycleScopeOrNewOne().launch(Dispatchers.IO) {
+                RoomImageCache.clear()
+                rootCacheDir(context).deleteRecursively()
+            }
         }
 
         private const val TAG = "CacheStore"
