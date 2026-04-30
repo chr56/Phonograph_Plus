@@ -12,9 +12,12 @@ notes:
       - "Improve: support using another color scheme for night"
       - "Improve: support skipping genres parsing and synchronization"
       - "Improve: performance of internal database synchronization"
+      - "Fix: crash when restoring playlists and playing folders or external files, due to path lookup failures"
+      - "Fix: occasionally all tabs disappearing when returning to the foreground on some devices"
       - "Translation: update Portuguese Brazilian (by Ricardo), Dutch (by Polovinci)"
       - "Development: targeting SDK API 36 (Android 16)"
-      - "Development: upgrade AGP to 9.1.0"
+      - "Development: migrate image cache mechanism to new database"
+      - "Development: upgrade AGP to 9.1.0， update dependencies"
   zh:
     items:
       - "修改 默认启用多重艺术家和多重流派解析（从实验性功能转正）"
@@ -24,9 +27,12 @@ notes:
       - "优化 支持在夜间模式下使用另一套配色方案"
       - "优化 支持跳过流派解析与同步"
       - "优化 内部数据库同步性能"
+      - "修复 因路径查找失败导致的恢复播放列表、播放文件夹或外部文件时崩溃的问题"
+      - "修复 部分设备上切回前台后偶尔全部标签页消失"
       - "翻译 更新 巴西葡萄牙语（Ricardo）、荷兰语（Polovinci）"
       - "开发 适配 SDK API 36 (Android 16)"
-      - "开发 升级 AGP 至 9.1.0"
+      - "开发 将图片缓存机制迁移至新数据库"
+      - "开发 升级 AGP 至 9.1.0, 更新依赖"
 
 previousVersion: "1.12.1"
 previousChannel: "STABLE"

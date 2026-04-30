@@ -1,32 +1,20 @@
-version: "2.0.0-dev1"
+version: "2.0.0-dev2"
 channel: "PREVIEW"
-versionCode: 1122
-timestamp: 1776959000
+versionCode: 1123
+timestamp: 1777560000
 notes:
   en:
     items:
-      - "Modify: Multiple artists and genres parsing is now enabled by default (graduated from experimental)"
-      - "Modify: change some default settings, and reorganized settings pages"
-      - "Modify: create database playlists by default"
-      - "New: add dark mode support for widgets"
-      - "Improve: support using another color scheme for night"
-      - "Improve: support skipping genres parsing and synchronization"
-      - "Improve: performance of internal database synchronization"
-      - "Translation: update Portuguese Brazilian (by Ricardo), Dutch (by Polovinci)"
-      - "Development: targeting SDK API 36 (Android 16)"
-      - "Development: upgrade AGP to 9.1.0"
+      - "Fix: crash when restoring playlists and playing folders or external files, due to path lookup failures"
+      - "Fix: occasionally all tabs disappearing when returning to the foreground on some devices"
+      - "Development: migrate image cache mechanism to new database"
+      - "Development: update dependencies"
   zh:
     items:
-      - "修改 默认启用多重艺术家和多重流派解析（从实验性功能转正）"
-      - "修改 调整部分默认设置，并重组设置分类"
-      - "修改 默认创建数据库播放列表"
-      - "新增 桌面小部件支持深色模式"
-      - "优化 支持在夜间模式下使用另一套配色方案"
-      - "优化 支持跳过流派解析与同步"
-      - "优化 内部数据库同步性能"
-      - "翻译 更新 巴西葡萄牙语（Ricardo）、荷兰语（Polovinci）"
-      - "开发 适配 SDK API 36 (Android 16)"
-      - "开发 升级 AGP 至 9.1.0"
+      - "修复 因路径查找失败导致的恢复播放列表、播放文件夹或外部文件时崩溃的问题"
+      - "修复 部分设备上切回前台后偶尔全部标签页消失"
+      - "开发 将图片缓存机制迁移至新数据库"
+      - "开发 更新依赖"
 
-previousVersion: "1.12.1"
-previousChannel: "STABLE"
+previousVersion: "2.0.0-dev1"
+previousChannel: "PREVIEW"
