@@ -12,9 +12,9 @@ import coil.request.SuccessResult
 import player.phonograph.coil.PARAMETERS_KEY_CACHE
 import player.phonograph.coil.palette.PaletteBitmapDrawable
 import player.phonograph.coil.quickCache
-import player.phonograph.coil.retriever.SettingCollector
 import player.phonograph.model.Song
 import player.phonograph.settings.Keys
+import player.phonograph.settings.SettingCollector
 import androidx.collection.LruCache
 
 class MemeryCacheInterceptor : Interceptor {

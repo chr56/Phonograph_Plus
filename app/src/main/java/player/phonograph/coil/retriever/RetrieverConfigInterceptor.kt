@@ -8,6 +8,7 @@ import coil.intercept.Interceptor
 import coil.request.ImageResult
 import player.phonograph.coil.PARAMETERS_KEY_IMAGE_SOURCE_CONFIG
 import player.phonograph.settings.Keys
+import player.phonograph.settings.SettingCollector
 
 class RetrieverConfigInterceptor : Interceptor {
 
