@@ -31,5 +31,5 @@ __Download Links__: [Modern Variant](%s) | [Legacy Variant](%s)
 """
 
 
-const val SIGNING_KEY_NOTICE_EN = "Signing key of Phonograph Plus is scheduled to be rotate or replaced in version 2.0.0!"
-const val SIGNING_KEY_NOTICE_ZH = "签名密钥计划于 v2.0.0 中轮转或替换！"
+const val SIGNING_KEY_NOTICE_EN = "Since version 2.0, signing key of Phonograph Plus would be scheduled to be replaced or rotated, as one of major breaks!"
+const val SIGNING_KEY_NOTICE_ZH = "自 v2.0 起，签名密钥将被更替或轮转（破坏性变更项之一）！"
