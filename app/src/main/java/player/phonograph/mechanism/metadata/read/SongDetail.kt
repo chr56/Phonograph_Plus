@@ -4,7 +4,7 @@
 
 package player.phonograph.mechanism.metadata.read
 
-import player.phonograph.coil.loadImage
+import player.phonograph.mechanism.coil.loadImage
 import player.phonograph.mechanism.metadata.JAudioTaggerMetadata
 import player.phonograph.mechanism.metadata.JAudioTaggerMetadataKeyTranslator.toFieldKey
 import player.phonograph.model.Song

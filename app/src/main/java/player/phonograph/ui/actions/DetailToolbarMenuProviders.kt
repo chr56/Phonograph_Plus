@@ -7,7 +7,7 @@ package player.phonograph.ui.actions
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import player.phonograph.R
-import player.phonograph.coil.CustomArtistImageStore
+import player.phonograph.mechanism.coil.CustomArtistImageStore
 import player.phonograph.mechanism.playlist.PlaylistSongsActions
 import player.phonograph.model.Album
 import player.phonograph.model.Artist

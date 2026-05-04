@@ -9,7 +9,7 @@ import coil.target.Target
 import lib.storage.extension.rootDirectory
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.coil.loadImage
+import player.phonograph.mechanism.coil.loadImage
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Genre

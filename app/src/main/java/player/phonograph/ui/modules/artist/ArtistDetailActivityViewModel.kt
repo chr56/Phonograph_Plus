@@ -6,8 +6,8 @@ package player.phonograph.ui.modules.artist
 
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.coil.loadImage
-import player.phonograph.coil.palette.PaletteColorTarget
+import player.phonograph.mechanism.coil.loadImage
+import player.phonograph.mechanism.coil.palette.PaletteColorTarget
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Song

@@ -12,11 +12,11 @@ import org.koin.core.context.GlobalContext
 import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
 import player.phonograph.BuildConfig.DEBUG
-import player.phonograph.coil.createPhonographImageLoader
 import player.phonograph.foundation.Reboot
 import player.phonograph.foundation.error.crashActivity
 import player.phonograph.foundation.error.startCrashActivity
 import player.phonograph.foundation.localization.ContextLocaleDelegate
+import player.phonograph.mechanism.coil.createPhonographImageLoader
 import player.phonograph.repo.moduleLoaders
 import player.phonograph.service.moduleQueue
 import player.phonograph.service.queue.QueueManager

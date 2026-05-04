@@ -6,7 +6,7 @@ package player.phonograph.ui.adapter
 
 import coil.request.Disposable
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
-import player.phonograph.coil.palette.PaletteColorViewTarget
+import player.phonograph.mechanism.coil.palette.PaletteColorViewTarget
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.ui.resource.Layouts
 import player.phonograph.util.theme.secondaryTextColorOn

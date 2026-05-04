@@ -7,7 +7,7 @@ package player.phonograph.ui.modules.explorer
 import coil.request.Disposable
 import coil.target.Target
 import player.phonograph.R
-import player.phonograph.coil.loadImage
+import player.phonograph.mechanism.coil.loadImage
 import player.phonograph.model.file.FileItem
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.ui.actions.ActionMenuProviders

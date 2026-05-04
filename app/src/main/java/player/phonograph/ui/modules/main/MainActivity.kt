@@ -8,13 +8,13 @@ import lib.storage.launcher.IOpenFileStorageAccessible
 import lib.storage.launcher.OpenDirStorageAccessDelegate
 import lib.storage.launcher.OpenFileStorageAccessDelegate
 import player.phonograph.R
-import player.phonograph.coil.loadImage
 import player.phonograph.databinding.ActivityMainContentBinding
 import player.phonograph.databinding.ActivityMainDrawerBinding
 import player.phonograph.foundation.compat.parcelableExtra
 import player.phonograph.foundation.error.warning
 import player.phonograph.mechanism.PhonographShortcutManager
 import player.phonograph.mechanism.UpdateChecker
+import player.phonograph.mechanism.coil.loadImage
 import player.phonograph.model.Song
 import player.phonograph.model.pages.PagesConfig
 import player.phonograph.model.version.VersionCatalog

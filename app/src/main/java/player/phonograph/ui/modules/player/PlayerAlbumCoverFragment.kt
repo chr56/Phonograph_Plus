@@ -4,13 +4,13 @@ import coil.request.Disposable
 import coil.request.Parameters
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import player.phonograph.R
-import player.phonograph.coil.PARAMETERS_KEY_PALETTE
-import player.phonograph.coil.PARAMETERS_KEY_QUICK_CACHE
-import player.phonograph.coil.loadImage
-import player.phonograph.coil.palette.PaletteColorTarget
 import player.phonograph.databinding.FragmentAlbumCoverBinding
 import player.phonograph.databinding.FragmentPlayerAlbumCoverBinding
 import player.phonograph.foundation.compat.parcelable
+import player.phonograph.mechanism.coil.PARAMETERS_KEY_PALETTE
+import player.phonograph.mechanism.coil.PARAMETERS_KEY_QUICK_CACHE
+import player.phonograph.mechanism.coil.loadImage
+import player.phonograph.mechanism.coil.palette.PaletteColorTarget
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LYRICS_ALIGN_CENTER
 import player.phonograph.model.lyrics.LYRICS_ALIGN_LEFT

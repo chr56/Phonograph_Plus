@@ -6,7 +6,7 @@ package player.phonograph.ui.modules.setting
 
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.coil.cache.CacheStore
+import player.phonograph.mechanism.coil.cache.CacheStore
 import player.phonograph.model.repo.PROVIDER_INTERNAL_DATABASE
 import player.phonograph.model.repo.PROVIDER_MEDIASTORE_DIRECT
 import player.phonograph.model.repo.SYNC_MODE_EXCLUDE_GENRES

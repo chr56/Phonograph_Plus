@@ -13,7 +13,7 @@ import mms.lastfm.LastFmWikiData
 import mms.lastfm.Tags
 import mms.musicbrainz.MusicBrainzAction
 import player.phonograph.R
-import player.phonograph.coil.lastfm.LastFmImageBundle
+import player.phonograph.mechanism.coil.lastfm.LastFmImageBundle
 import player.phonograph.ui.compose.components.Chip
 import player.phonograph.ui.compose.components.HorizontalTextItem
 import player.phonograph.ui.compose.components.VerticalTextItem

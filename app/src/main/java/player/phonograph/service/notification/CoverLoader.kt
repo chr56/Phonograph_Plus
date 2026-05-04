@@ -10,8 +10,8 @@ import coil.request.ImageRequest
 import coil.request.Parameters
 import coil.size.Size
 import player.phonograph.R
-import player.phonograph.coil.PARAMETERS_KEY_PALETTE
-import player.phonograph.coil.palette.PaletteColorTarget
+import player.phonograph.mechanism.coil.PARAMETERS_KEY_PALETTE
+import player.phonograph.mechanism.coil.palette.PaletteColorTarget
 import player.phonograph.model.Song
 import player.phonograph.util.theme.themeFooterColor
 import androidx.annotation.ColorInt

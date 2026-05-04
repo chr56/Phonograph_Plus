@@ -13,7 +13,7 @@ import mms.lastfm.LastFmImage
 import mms.lastfm.LastFmSearchResults
 import mms.lastfm.TrackResult
 import player.phonograph.R
-import player.phonograph.coil.lastfm.LastFmImageBundle
+import player.phonograph.mechanism.coil.lastfm.LastFmImageBundle
 import player.phonograph.ui.compose.components.ListItem
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight

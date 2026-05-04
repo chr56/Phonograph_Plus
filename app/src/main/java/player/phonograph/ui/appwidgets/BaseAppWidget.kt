@@ -11,7 +11,7 @@ import coil.request.Parameters
 import coil.target.Target
 import org.koin.core.context.GlobalContext
 import player.phonograph.R
-import player.phonograph.coil.PARAMETERS_KEY_PALETTE
+import player.phonograph.mechanism.coil.PARAMETERS_KEY_PALETTE
 import player.phonograph.model.Song
 import player.phonograph.model.service.ACTION_CONNECT_WIDGETS
 import player.phonograph.model.service.ACTION_NEXT

@@ -44,4 +44,4 @@
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.metadata.* extends player.phonograph.mechanism.metadata.read.TagReader { public *** read(...); }
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.* extends player.phonograph.mechanism.IUriParser { public <methods>; }
 
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.coil.retriever.FetcherDelegate { abstract <methods>; }
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.coil.retriever.FetcherDelegate { abstract <methods>; }
