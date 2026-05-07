@@ -143,6 +143,13 @@ object Backup {
             val tmpDir = SessionManger.sessionDirectory(session)
             val manifest = readManifest(context, session)
             require(manifest != null) { "No Manifest!" }
+             // check
+            require(manifest.phonographVersionCode >= 1082) {
+                "Could not import backups created before v1.8.2! [current ${manifest.phonographVersion}]"
+            }
+            require(manifest.phonographVersionCode != 1110) {
+                "Backups created by v1.11.0 are broken in nature!"
+            }
             // filter
             val selected = manifest.files.filterKeys { it in content }
             for ((item, relativePath) in selected) {
