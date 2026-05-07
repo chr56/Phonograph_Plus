@@ -181,6 +181,8 @@ object Keys {
         get() = PrimitiveKey<Boolean>(booleanPK("auto_skip_unplayable")) { false }
     val seekJumpInterval
         get() = PrimitiveKey<Float>(floatPK("seek_jump_interval")) { 5f }
+    val enableHistory
+        get() = PrimitiveKey<Boolean>(booleanPK("enable_history")) { true }
     //</editor-fold>
 
     //</editor-fold>
