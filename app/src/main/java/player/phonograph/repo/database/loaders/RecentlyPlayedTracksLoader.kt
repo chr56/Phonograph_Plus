@@ -4,24 +4,19 @@
 
 package player.phonograph.repo.database.loaders
 
-import org.koin.core.context.GlobalContext
 import player.phonograph.repo.database.store.HistoryStore
 import android.content.Context
 import android.database.Cursor
 
-class RecentlyPlayedTracksLoader(private val historyStore: HistoryStore) : DatabaseAgentLoader() {
+object RecentlyPlayedTracksLoader : DatabaseAgentLoader() {
 
     override suspend fun queryCursorImpl(context: Context): Cursor? =
-        historyStore.queryRecentIds()
+        HistoryStore.get().queryRecentIds()
             .intoSongCursor(context, HistoryStore.RecentStoreColumns.ID)
 
     override val cleanable: Boolean = true
 
     override suspend fun clean(context: Context, existed: List<Long>) {
-        historyStore.gc(existed)
-    }
-
-    companion object {
-        fun get() = GlobalContext.get().get<RecentlyPlayedTracksLoader>()
+        HistoryStore.get().gc(existed)
     }
 }
