@@ -113,6 +113,11 @@ fun PreferenceScreenBehaviour() {
                 valueRange = 5f..30f,
                 steps = 4
             )
+            BooleanPreference(
+                key = Keys.enableHistory,
+                summaryRes = R.string.pref_summary_enable_history,
+                titleRes = R.string.pref_title_enable_history,
+            )
         }
         Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.systemBars))
     }
