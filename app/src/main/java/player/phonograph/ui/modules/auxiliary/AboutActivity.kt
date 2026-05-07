@@ -2,7 +2,9 @@ package player.phonograph.ui.modules.auxiliary
 
 import de.psdev.licensesdialog.LicensesDialog
 import player.phonograph.App
+import player.phonograph.GITHUB_LINK
 import player.phonograph.R
+import player.phonograph.TRANSLATE_LINk
 import player.phonograph.databinding.ActivityAboutBinding
 import player.phonograph.foundation.error.warning
 import player.phonograph.mechanism.UpdateChecker
@@ -26,18 +28,13 @@ import player.phonograph.util.ui.applyWindowInsetsAsBottomView
 import util.theme.color.darkenColor
 import util.theme.view.toolbar.setToolbarColor
 import androidx.annotation.Keep
-import androidx.appcompat.widget.AppCompatButton
 import androidx.lifecycle.lifecycleScope
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.os.Looper
 import android.view.View
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -45,72 +42,17 @@ import kotlinx.coroutines.launch
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
-class AboutActivity : ToolbarActivity(), View.OnClickListener {
+class AboutActivity : ToolbarActivity() {
     private lateinit var binding: ActivityAboutBinding
-
-    private lateinit var appIcon: ImageView
-    private lateinit var appVersion: TextView
-    private lateinit var appVersionHash: TextView
-    private lateinit var appVariant: TextView
-    private lateinit var changelog: LinearLayout
-    private lateinit var checkUpgrade: LinearLayout
-    private lateinit var intro: LinearLayout
-    private lateinit var licenses: LinearLayout
-    private lateinit var writeAnEmail: LinearLayout
-    private lateinit var followOnTwitter: LinearLayout
-    private lateinit var forkOnGitHub: LinearLayout
-    private lateinit var visitWebsite: LinearLayout
-    private lateinit var reportBugs: LinearLayout
-    private lateinit var translate: LinearLayout
-    private lateinit var cracked: LinearLayout
-    private lateinit var aidanFollestadGitHub: AppCompatButton
-    private lateinit var michaelCookWebsite: AppCompatButton
-    private lateinit var maartenCorpelWebsite: AppCompatButton
-    private lateinit var maartenCorpelTwitter: AppCompatButton
-    private lateinit var aleksandarTesicTwitter: AppCompatButton
-    private lateinit var eugeneCheungGitHub: AppCompatButton
-    private lateinit var eugeneCheungWebsite: AppCompatButton
-    private lateinit var adrianTwitter: AppCompatButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityAboutBinding.inflate(layoutInflater)
-        binding()
-
         setContentView(binding.root)
         updateSystemBarsColor(darkenColor(primaryColor()), Color.TRANSPARENT)
 
         setUpViews()
-    }
-
-    private fun binding() {
-        appIcon = binding.activityAboutMainContent.cardAboutAppLayout.phonographIcon
-        appVersion = binding.activityAboutMainContent.cardAboutAppLayout.appVersion
-        appVersionHash = binding.activityAboutMainContent.cardAboutAppLayout.appVersionHash
-        appVariant = binding.activityAboutMainContent.cardAboutAppLayout.appVariant
-        changelog = binding.activityAboutMainContent.cardAboutAppLayout.changelog
-        checkUpgrade = binding.activityAboutMainContent.cardAboutAppLayout.checkUpgrade
-        licenses = binding.activityAboutMainContent.cardAboutAppLayout.licenses
-        forkOnGitHub = binding.activityAboutMainContent.cardAboutAppLayout.forkOnGithub
-
-        writeAnEmail = binding.activityAboutMainContent.cardAuthorLayout.writeAnEmail
-        followOnTwitter = binding.activityAboutMainContent.cardAuthorLayout.followOnTwitter
-        visitWebsite = binding.activityAboutMainContent.cardAuthorLayout.visitWebsite
-
-        intro = binding.activityAboutMainContent.cardSupportDevelopmentLayout.intro
-        reportBugs = binding.activityAboutMainContent.cardSupportDevelopmentLayout.reportBugs
-        translate = binding.activityAboutMainContent.cardSupportDevelopmentLayout.translate
-        cracked = binding.activityAboutMainContent.cardSupportDevelopmentLayout.cracked
-
-        aidanFollestadGitHub = binding.activityAboutMainContent.cardSpecialThanksLayout.aidanFollestadGitHub
-        michaelCookWebsite = binding.activityAboutMainContent.cardSpecialThanksLayout.michaelCookWebsite
-        maartenCorpelTwitter = binding.activityAboutMainContent.cardSpecialThanksLayout.maartenCorpelTwitter
-        maartenCorpelWebsite = binding.activityAboutMainContent.cardSpecialThanksLayout.maartenCorpelWebsite
-        aleksandarTesicTwitter = binding.activityAboutMainContent.cardSpecialThanksLayout.aleksandarTesicTwitter
-        eugeneCheungGitHub = binding.activityAboutMainContent.cardSpecialThanksLayout.eugeneCheungGitHub
-        eugeneCheungWebsite = binding.activityAboutMainContent.cardSpecialThanksLayout.eugeneCheungWebsite
-        adrianTwitter = binding.activityAboutMainContent.cardSpecialThanksLayout.adrianTwitter
     }
 
     private fun setUpViews() {
@@ -130,158 +72,136 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
     @Keep
     @SuppressLint("SetTextI18n")
     private fun setUpAppVersion() {
-        appVersion.text = currentVersionName(this)
+        val appAboutLayout = binding.activityAboutMainContent.cardAboutAppLayout
+
+        appAboutLayout.appVersion.text = currentVersionName(this)
+
+        val appVersionHash = appAboutLayout.appVersionHash
         try {
             appVersionHash.text = gitRevisionHash(this).substring(0, 8)
             appVersionHash.visibility = View.VISIBLE
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             appVersionHash.visibility = View.INVISIBLE
         }
+
+        val appVariant = appAboutLayout.appVariant
         try {
             val variant = currentVariant()
             appVariant.text = "$variant Variant"
-        } catch (e: Exception) {
+            appVariant.visibility = View.VISIBLE
+        } catch (_: Exception) {
             appVariant.visibility = View.GONE
         }
     }
 
     private fun setUpOnClickListeners() {
+        val appAboutLayout = binding.activityAboutMainContent.cardAboutAppLayout
+        val originalAuthorLayout = binding.activityAboutMainContent.cardAuthorLayout
+        val currentMaintainerLayout = binding.activityAboutMainContent.cardAuthorLayoutModifier
+        val supportLayout = binding.activityAboutMainContent.cardSupportDevelopmentLayout
+        val specialThanksLayout = binding.activityAboutMainContent.cardSpecialThanksLayout
 
-        changelog.setOnClickListener(this)
-        checkUpgrade.setOnClickListener(this)
-        intro.setOnClickListener(this)
-        licenses.setOnClickListener(this)
-        followOnTwitter.setOnClickListener(this)
-        forkOnGitHub.setOnClickListener(this)
-        visitWebsite.setOnClickListener(this)
-        reportBugs.setOnClickListener(this)
-        translate.setOnClickListener(this)
-        writeAnEmail.setOnClickListener(this)
-        aidanFollestadGitHub.setOnClickListener(this)
-        michaelCookWebsite.setOnClickListener(this)
-        maartenCorpelWebsite.setOnClickListener(this)
-        maartenCorpelTwitter.setOnClickListener(this)
-        aleksandarTesicTwitter.setOnClickListener(this)
-        eugeneCheungGitHub.setOnClickListener(this)
-        eugeneCheungWebsite.setOnClickListener(this)
-        adrianTwitter.setOnClickListener(this)
+        appAboutLayout.changelog.setOnClickListener {
+            ChangelogDialog.create().show(supportFragmentManager, "CHANGELOG")
+        }
+        appAboutLayout.checkUpgrade.setOnClickListener {
+            checkForUpdates()
+        }
+        appAboutLayout.licenses.setOnClickListener {
+            showLicenseDialog()
+        }
+        appAboutLayout.forkOnGithub.setOnClickListener {
+            openUrl(GITHUB_LINK)
+        }
+        appAboutLayout.phonographIcon.setOnLongClickListener {
+            DebugDialog().show(supportFragmentManager, "DEBUG")
+            true
+        }
 
-        appIcon.setOnLongClickListener {
-            DebugDialog().show(supportFragmentManager, "DebugDialog")
-            return@setOnLongClickListener true
-        } // debug Menu
+        originalAuthorLayout.writeAnEmail.setOnClickListener {
+            sendEmail()
+        }
+        originalAuthorLayout.followOnTwitter.setOnClickListener {
+            openUrl(KABOUZEID_TWITTER)
+        }
+        originalAuthorLayout.visitWebsite.setOnClickListener {
+            openUrl(KABOUZEID_WEBSITE)
+        }
+        currentMaintainerLayout.github.setOnClickListener {
+            openUrl(CHR56_GITHUB)
+        }
 
-        binding.activityAboutMainContent.cardAuthorLayoutModifier.github.setOnClickListener(this)
-    }
+        supportLayout.intro.setOnClickListener {
+            startActivity(Intent(this, PhonographIntroActivity::class.java))
+        }
+        supportLayout.reportBugs.setOnClickListener {
+            ReportIssueDialog().show(supportFragmentManager, "REPORT_ISSUE")
+        }
+        supportLayout.translate.setOnClickListener {
+            openUrl(TRANSLATE_LINk)
+        }
 
-    override fun onClick(v: View) {
-        when (v) {
-            changelog                                                        -> {
-                ChangelogDialog.create().show(supportFragmentManager, "CHANGELOG_DIALOG")
-            }
-
-            checkUpgrade                                                     -> {
-                lifecycleScope.launch(Dispatchers.Unconfined) {
-                    UpdateChecker.checkUpdate { versionCatalog: VersionCatalog, upgradable: Boolean ->
-                        if (upgradable) {
-                            UpgradeInfoDialog.create(versionCatalog).show(supportFragmentManager, "UPGRADE_DIALOG")
-                            val ignored = Setting(App.instance)[Keys.ignoreUpgradeDate].data
-                            val current = versionCatalog.latest(currentReleaseChannel)?.date ?: 0
-                            if (ignored >= current) {
-                                toast(getString(R.string.msg_ignored_update))
-                            }
-                        } else {
-                            toast(getText(R.string.msg_no_updates))
-                        }
-                    }
-                }
-            }
-
-            licenses                                                         -> {
-                showLicenseDialog()
-            }
-
-            intro                                                            -> {
-                startActivity(Intent(this, PhonographIntroActivity::class.java))
-            }
-
-            followOnTwitter                                                  -> {
-                openUrl(TWITTER)
-            }
-
-            forkOnGitHub                                                     -> {
-                openUrl(GITHUB)
-            }
-
-            visitWebsite                                                     -> {
-                openUrl(WEBSITE)
-            }
-
-            reportBugs                                                       -> {
-                ReportIssueDialog().show(supportFragmentManager, "ReportIssueDialog")
-            }
-
-            writeAnEmail                                                     -> {
-                val intent = Intent(Intent.ACTION_SENDTO)
-                intent.data = Uri.parse("mailto:contact@kabouzeid.com")
-                intent.putExtra(Intent.EXTRA_EMAIL, "contact@kabouzeid.com")
-                intent.putExtra(Intent.EXTRA_SUBJECT, "Phonograph")
-                startActivity(Intent.createChooser(intent, "E-Mail"))
-            }
-
-            translate                                                        -> {
-                openUrl(TRANSLATE)
-            }
-
-            aidanFollestadGitHub                                             -> {
-                openUrl(AIDAN_FOLLESTAD_GITHUB)
-            }
-
-            michaelCookWebsite                                               -> {
-                openUrl(MICHAEL_COOK_WEBSITE)
-            }
-
-            maartenCorpelWebsite                                             -> {
-                openUrl(MAARTEN_CORPEL_WEBSITE)
-            }
-
-            maartenCorpelTwitter                                             -> {
-                openUrl(MAARTEN_CORPEL_TWITTER)
-            }
-
-            aleksandarTesicTwitter                                           -> {
-                openUrl(ALEKSANDAR_TESIC_TWITTER)
-            }
-
-            eugeneCheungGitHub                                               -> {
-                openUrl(EUGENE_CHEUNG_GITHUB)
-            }
-
-            eugeneCheungWebsite                                              -> {
-                openUrl(EUGENE_CHEUNG_WEBSITE)
-            }
-
-            adrianTwitter                                                    -> {
-                openUrl(ADRIAN_TWITTER)
-            }
-
-            binding.activityAboutMainContent.cardAuthorLayoutModifier.github -> {
-                openUrl(GITHUB_MODIFIER)
-            }
+        specialThanksLayout.aidanFollestadGitHub.setOnClickListener {
+            openUrl(AIDAN_FOLLESTAD_GITHUB)
+        }
+        specialThanksLayout.michaelCookWebsite.setOnClickListener {
+            openUrl(MICHAEL_COOK_WEBSITE)
+        }
+        specialThanksLayout.maartenCorpelWebsite.setOnClickListener {
+            openUrl(MAARTEN_CORPEL_WEBSITE)
+        }
+        specialThanksLayout.maartenCorpelTwitter.setOnClickListener {
+            openUrl(MAARTEN_CORPEL_TWITTER)
+        }
+        specialThanksLayout.aleksandarTesicTwitter.setOnClickListener {
+            openUrl(ALEKSANDAR_TESIC_TWITTER)
+        }
+        specialThanksLayout.eugeneCheungGitHub.setOnClickListener {
+            openUrl(EUGENE_CHEUNG_GITHUB)
+        }
+        specialThanksLayout.eugeneCheungWebsite.setOnClickListener {
+            openUrl(EUGENE_CHEUNG_WEBSITE)
+        }
+        specialThanksLayout.adrianTwitter.setOnClickListener {
+            openUrl(ADRIAN_TWITTER)
         }
     }
 
     private fun openUrl(url: String) {
-        val i = Intent(Intent.ACTION_VIEW)
-        i.data = Uri.parse(url)
-        i.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        startActivity(i)
+        startActivity(Intent(Intent.ACTION_VIEW).apply {
+            data = Uri.parse(url)
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        })
     }
 
-    private fun toast(text: CharSequence) {
-        Looper.prepare()
-        Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
-        Looper.loop()
+    private fun sendEmail() {
+        val intent = Intent(Intent.ACTION_SENDTO).apply {
+            data = Uri.parse(EMAIL_URI)
+            putExtra(Intent.EXTRA_EMAIL, EMAIL_ADDRESS)
+            putExtra(Intent.EXTRA_SUBJECT, EMAIL_SUBJECT)
+        }
+        startActivity(Intent.createChooser(intent, EMAIL_CHOOSER_TITLE))
+    }
+
+    private fun checkForUpdates() {
+        lifecycleScope.launch {
+            UpdateChecker.checkUpdate { versionCatalog: VersionCatalog, upgradable: Boolean ->
+                if (upgradable) {
+                    UpgradeInfoDialog.create(versionCatalog).show(supportFragmentManager, "UPGRADE")
+                    val ignored = Setting(App.instance)[Keys.ignoreUpgradeDate].data
+                    val current = versionCatalog.latest(currentReleaseChannel)?.date ?: 0
+                    if (ignored >= current) {
+                        lifecycleScope.launch(Dispatchers.Main) {
+                            Toast.makeText(this@AboutActivity, R.string.msg_ignored_update, Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                } else {
+                    lifecycleScope.launch(Dispatchers.Main) {
+                        Toast.makeText(this@AboutActivity, R.string.msg_no_updates, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
     }
 
     private fun showLicenseDialog() {
@@ -304,14 +224,9 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
     }
 
     companion object {
-        private const val GITHUB = "https://github.com/chr56/Phonograph_Plus"
-        private const val TWITTER = "https://twitter.com/swiftkarim"
-        private const val WEBSITE = "https://kabouzeid.com/"
-
-        private const val GITHUB_MODIFIER = "https://github.com/chr56/"
-
-        private const val TRANSLATE = "https://crowdin.com/project/phonograph-plus"
-
+        private const val CHR56_GITHUB = "https://github.com/chr56/"
+        private const val KABOUZEID_TWITTER = "https://twitter.com/swiftkarim"
+        private const val KABOUZEID_WEBSITE = "https://kabouzeid.com/"
         private const val AIDAN_FOLLESTAD_GITHUB = "https://github.com/afollestad"
         private const val MICHAEL_COOK_WEBSITE = "https://cookicons.co/"
         private const val MAARTEN_CORPEL_WEBSITE = "https://maartencorpel.com/"
@@ -320,5 +235,10 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
         private const val EUGENE_CHEUNG_GITHUB = "https://github.com/arkon"
         private const val EUGENE_CHEUNG_WEBSITE = "https://echeung.me/"
         private const val ADRIAN_TWITTER = "https://twitter.com/froschgames"
+
+        private const val EMAIL_ADDRESS = "contact@kabouzeid.com"
+        private const val EMAIL_CHOOSER_TITLE = "E-Mail"
+        private const val EMAIL_SUBJECT = "Phonograph"
+        private const val EMAIL_URI = "mailto:$EMAIL_ADDRESS"
     }
 }
