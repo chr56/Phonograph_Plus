@@ -54,8 +54,6 @@ import kotlinx.coroutines.runBlocking
 class MusicService : MediaBrowserServiceCompat(),
                      QueueObserver, PlayerStateObserver {
 
-    private val songPlayCountHelper = SongPlayCountHelper()
-
     val queueManager: QueueManager = get()
 
     private val controller: PlayerController = PlayerController()
@@ -106,6 +104,9 @@ class MusicService : MediaBrowserServiceCompat(),
         }
         settingObserver.collect(Keys.seekJumpInterval) { interval ->
             seekJumpInterval = (interval * 1000).toInt()
+        }
+        settingObserver.collect(Keys.enableHistory) { state ->
+            enableHistory = state
         }
         // misc
         AppWidgetUpdateReceiver.register(this)
@@ -280,6 +281,10 @@ class MusicService : MediaBrowserServiceCompat(),
         sendBroadcast(Intent(what).apply { `package` = ACTUAL_PACKAGE_NAME })
     }
 
+    private var enableHistory: Boolean = false
+
+    private val songPlayCountHelper = SongPlayCountHelper()
+
     private fun handleChangeInternal(what: String) {
         when (what) {
 
@@ -319,12 +324,12 @@ class MusicService : MediaBrowserServiceCompat(),
                     controller.saveCurrentMills()
 
                     // add to history
-                    coroutineScope.launch(Dispatchers.IO) {
+                    if (enableHistory) coroutineScope.launch(Dispatchers.IO) {
                         DynamicTracks.RecentTracks.add(currentSong.id)
                     }
 
                     // check for bumping
-                    songPlayCountHelper.checkForBumpingPlayCount(coroutineScope) // old
+                    if (enableHistory) songPlayCountHelper.checkForBumpingPlayCount(coroutineScope) // old
                     songPlayCountHelper.songMonitored = queueManager.currentSong // new
                 }
             }
