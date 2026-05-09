@@ -69,6 +69,7 @@ jobs:
           bash ${{ github.workspace }}/scripts/recover_signing_key.sh \
             --secrets-key "${{ secrets.KEY }}" \
             --keystore-file "${STORE_FILE}"
+        continue-on-error: true
 
       - name: Clean before building
         id: gradle-clean
