@@ -23,8 +23,8 @@ val keyPasswordValue = System.getenv("KEY_PASSWORD") ?: project.findProperty("ke
 val isKeystoreAvailable = !keystoreFile.isNullOrEmpty() && !keystorePassword.isNullOrEmpty()
 
 android {
-    compileSdk = 36
-    buildToolsVersion = "36.0.0"
+    compileSdk = 37
+    buildToolsVersion = "37.0.0"
     namespace = "player.phonograph"
 
     defaultConfig {
