@@ -1,20 +1,22 @@
-version: "2.0.0-dev2"
+version: "2.0.0-dev3"
 channel: "PREVIEW"
-versionCode: 1123
-timestamp: 1777560000
+versionCode: 1124
+timestamp: 1778858000
 notes:
   en:
     items:
-      - "Fix: crash when restoring playlists and playing folders or external files, due to path lookup failures"
-      - "Fix: occasionally all tabs disappearing when returning to the foreground on some devices"
-      - "Development: migrate image cache mechanism to new database"
+      - "Improve: support disabling history"
+      - "Distribution: raise minimal requirement to Android 8 (API 26), except for Legacy variant"
+      - "Development: build with SDK 37"
+      - "Development: build with Gradle 9.5.1, build with AGP 9.2.1"
       - "Development: update dependencies"
   zh:
     items:
-      - "修复 因路径查找失败导致的恢复播放列表、播放文件夹或外部文件时崩溃的问题"
-      - "修复 部分设备上切回前台后偶尔全部标签页消失"
-      - "开发 将图片缓存机制迁移至新数据库"
+      - "改进 支持禁用历史记录"
+      - "分发 最低要求升至 Android 8 (API 26)，Legacy 版本除外"
+      - "开发 使用 SDK 37 构建"
+      - "开发 使用 Gradle 9.5.1 构建, 使用 AGP 9.2.1 构建"
       - "开发 更新依赖"
 
-previousVersion: "2.0.0-dev1"
+previousVersion: "2.0.0-dev2"
 previousChannel: "PREVIEW"
