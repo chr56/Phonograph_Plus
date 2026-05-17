@@ -141,29 +141,31 @@ private class RelationshipSyncExecutorSession(
             ArtistEntity(artistId = name.hashCode().toLong(), artistName = name)
         }
 
-        fun lookupRelatedArtistId(name: String): Long {
-            val artists = affectedArtists.filter { it.artistName == name }
-                .ifEmpty { newArtists.filter { it.artistName == name } }
-            return artists.firstOrNull()?.artistId ?: 0
-        }
+        val artistNameToId: Map<String, Long> =
+            (affectedArtists + newArtists).associate { it.artistName to it.artistId }
 
         // Albums
+        val relationshipsByAlbumId: Map<Long, List<SongRelationship>> =
+            relationships.groupBy { it.albumId }
+        val relationshipsByAlbumName: Map<String, List<SongRelationship>> =
+            relationships.filter { it.albumName != null }.groupBy { it.albumName!! }
+
         val albumsLookup = lookupExistedAlbums(affected.albums, process, total)
         affectedAlbums = albumsLookup.first
         newAlbumNames = albumsLookup.second
         process += affected.albums.size
         newAlbums = createNewAlbums(
-            newAlbumNames, relationships, process, total, lookupArtistId = ::lookupRelatedArtistId
+            newAlbumNames, artistNameToId, relationshipsByAlbumId, process, total
         )
         process += newAlbumNames.size
         modifiedAlbums = modifyAlbums(
-            affectedAlbums, relationships, process, total, lookupArtistId = ::lookupRelatedArtistId
+            affectedAlbums, artistNameToId, relationshipsByAlbumId, relationshipsByAlbumName, process, total
         )
         process += affectedAlbums.size
 
         // LinkageAlbumAndArtist
         val (linkageSongAndArtists, linkageAlbumAndArtists) =
-            createLinkages(relationships, process, total, lookupArtistId = ::lookupRelatedArtistId)
+            createLinkages(relationships, artistNameToId, process, total)
         process += relationships.size
 
         // Genres
@@ -180,28 +182,24 @@ private class RelationshipSyncExecutorSession(
         process += newOrUpdated.size
 
         musicDatabase.withTransaction {
+            onProcessUpdate(process, total, "Write all affected items")
             // Step I: Songs registry
-            onProcessUpdate(process, total, "Write all affected songs")
             songDao.update(affectedSongs)
             process += 1
 
             // Step II: Artists registry
-            onProcessUpdate(process, total, "Write all affected artists")
             artistDao.update(newArtists)
             process += 1
 
             // Step III: Albums registry
-            onProcessUpdate(process, total, "Write all affected albums")
             albumDao.update(newAlbums)
             albumDao.update(modifiedAlbums)
             process += 1
 
-            // Step IV: Cross reference registry
-            onProcessUpdate(process, total, "Write artist-albums relationships")
+            // Step IV: Cross-reference registry
             relationshipArtistAlbumDao.override(linkageAlbumAndArtists)
             process += 1
 
-            onProcessUpdate(process, total, "Write artist-songs relationships")
             relationshipArtistSongDao.override(linkageSongAndArtists)
             process += 1
 
@@ -371,34 +369,33 @@ private class RelationshipSyncExecutorSession(
 
     private fun createNewAlbums(
         newAlbumNames: Map<Long, String>,
-        relationships: List<SongRelationship>,
+        artistNameToId: Map<String, Long>,
+        relationshipsByAlbumId: Map<Long, List<SongRelationship>>,
         process: Int,
         total: Int,
-        lookupArtistId: (String) -> Long,
     ): List<AlbumEntity> {
         var subprocess = 0
         onProcessUpdate(process, total, "Create new albums")
         return newAlbumNames.map { (id, name) ->
             subprocess += 1
-            val albumSongs =
-                relationships.filter { it.albumId == id }
+            val albumSongs = relationshipsByAlbumId[id] ?: emptyList()
             if (subprocess % PBI == 0) onProcessUpdate(process + subprocess, total, "Create new albums")
-            createNewAlbum(albumSongs, id, name, lookupArtistId = lookupArtistId)
+            createNewAlbum(albumSongs, artistNameToId, id, name)
         }
     }
 
     private fun createNewAlbum(
         albumSongs: List<SongRelationship>,
+        artistNameToId: Map<String, Long>,
         id: Long,
         name: String,
-        lookupArtistId: (String) -> Long,
     ): AlbumEntity {
         val year = albumSongs.maxOf { it.song.year }
         val dateModified = albumSongs.maxOf { it.song.dateModified }
         val candidateArtistList =
             albumSongs.flatMap { it.albumArtists }.ifEmpty { albumSongs.flatMap { it.defaultArtists } }
         val candidateArtist = candidateArtistList.firstOrNull().orEmpty()
-        val artistId = lookupArtistId(candidateArtist)
+        val artistId = artistNameToId[candidateArtist] ?: 0
         return AlbumEntity(
             albumId = id,
             albumName = name,
@@ -412,22 +409,21 @@ private class RelationshipSyncExecutorSession(
 
     private fun modifyAlbums(
         affectedAlbums: List<AlbumEntity>,
-        relationships: List<SongRelationship>,
+        artistNameToId: Map<String, Long>,
+        relationshipsByAlbumId: Map<Long, List<SongRelationship>>,
+        relationshipsByAlbumName: Map<String, List<SongRelationship>>,
         process: Int,
         total: Int,
-        lookupArtistId: (String) -> Long,
     ): List<AlbumEntity> {
         var subprocess = 0
         onProcessUpdate(process, total, "Refresh existed albums")
         return affectedAlbums.map { album ->
             subprocess += 1
-            val albumSongs =
-                relationships.filter {
-                    it.albumId == album.albumId || (it.albumName != null && it.albumName == album.albumName)
-                }
-            modifyAlbum(album, albumSongs, lookupArtistId = lookupArtistId).also {
-                if (subprocess % PBI == 0)
-                    onProcessUpdate(process + subprocess, total, "Refresh existed albums")
+            val byId = relationshipsByAlbumId[album.albumId].orEmpty()
+            val byName = album.albumName.let { relationshipsByAlbumName[it].orEmpty() }
+            val albumSongs = if (byName.isEmpty()) byId else (byId + byName).distinct()
+            modifyAlbum(album, albumSongs, artistNameToId).also {
+                if (subprocess % PBI == 0) onProcessUpdate(process + subprocess, total, "Refresh existed albums")
             }
         }
     }
@@ -435,7 +431,7 @@ private class RelationshipSyncExecutorSession(
     private fun modifyAlbum(
         album: AlbumEntity,
         newAlbumSongs: List<SongRelationship>,
-        lookupArtistId: (String) -> Long,
+        artistNameToId: Map<String, Long>,
     ): AlbumEntity {
         var year = album.year
         var dateModified = album.dateModified
@@ -456,7 +452,7 @@ private class RelationshipSyncExecutorSession(
                 dateModified = dateModified,
                 songCount = album.songCount + newAlbumSongs.size,
                 albumArtistName = albumArtistName,
-                artistId = lookupArtistId(albumArtistName),
+                artistId = artistNameToId[albumArtistName] ?: 0,
             )
         } else {
             album.copy(
@@ -469,9 +465,9 @@ private class RelationshipSyncExecutorSession(
 
     private fun createLinkages(
         relationships: List<SongRelationship>,
+        artistNameToId: Map<String, Long>,
         process: Int,
         total: Int,
-        lookupArtistId: (String) -> Long,
     ): Pair<List<LinkageSongAndArtist>, List<LinkageAlbumAndArtist>> {
         onProcessUpdate(process, total, "Create relationships")
         val linkageSongAndArtists = mutableListOf<LinkageSongAndArtist>()
@@ -483,7 +479,7 @@ private class RelationshipSyncExecutorSession(
                 relationship.artists.map { name ->
                     LinkageAlbumAndArtist(
                         albumId = relationship.albumId,
-                        artistId = lookupArtistId(name)
+                        artistId = artistNameToId[name] ?: 0
                     )
                 }
             )
@@ -491,7 +487,7 @@ private class RelationshipSyncExecutorSession(
                 relationship.albumArtists.map { name ->
                     LinkageSongAndArtist(
                         songId = relationship.song.id,
-                        artistId = lookupArtistId(name),
+                        artistId = artistNameToId[name] ?: 0,
                         role = ROLE_ALBUM_ARTIST,
                     )
                 }
@@ -500,7 +496,7 @@ private class RelationshipSyncExecutorSession(
                 relationship.defaultArtists.map { name ->
                     LinkageSongAndArtist(
                         songId = relationship.song.id,
-                        artistId = lookupArtistId(name),
+                        artistId = artistNameToId[name] ?: 0,
                         role = ROLE_ARTIST,
                     )
                 }
@@ -509,7 +505,7 @@ private class RelationshipSyncExecutorSession(
                 relationship.composerArtists.map { name ->
                     LinkageSongAndArtist(
                         songId = relationship.song.id,
-                        artistId = lookupArtistId(name),
+                        artistId = artistNameToId[name] ?: 0,
                         role = ROLE_COMPOSER,
                     )
                 }
@@ -518,7 +514,7 @@ private class RelationshipSyncExecutorSession(
                 relationship.featureArtists.map { name ->
                     LinkageSongAndArtist(
                         songId = relationship.song.id,
-                        artistId = lookupArtistId(name),
+                        artistId = artistNameToId[name] ?: 0,
                         role = ROLE_FEATURE_ARTIST,
                     )
                 }
