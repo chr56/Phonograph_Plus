@@ -82,14 +82,14 @@ See [Generate A New Keystore for Signing](#generate_keystore) if you hadn't.
 
 ### 5. Configure Signing Configuration
 
-Set environment variables `STORE_FILE`, `STORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD` to values for your signing keys; 
+Set environment variables `RELEASE_KEYSTORE_FILE`, `RELEASE_KEYSTORE_PASSWORD`, `RELEASE_KEY_ALIAS`, `RELEASE_KEY_PASSWORD` to values for your signing keys; 
 Or append `<USER_HOME>\.gradle\gradle.properties` (replace <\*> with yours):
 
 ```properties
-storeFile=<path-to-signing-key>
-storePassword=<keystore-password>
-keyAlias=<key-alias>
-keyPassword=<key-password>
+release.keystoreFile=<path-to-signing-key>
+release.keystorePassword=<keystore-password>
+release.keyAlias=<key-alias>
+release.keyPassword=<key-password>
 ```
 
 See Also Appendix [Generate Signing Configuration](#generate_signing_properties)
@@ -131,17 +131,17 @@ keytool -genkeypair -storepass <keystore-password> -alias <key-alias> -keypass <
 For bash users, you can append global `gradle.properties` via these commands (replace <\*> with yours), if Gradle home directory is set to default:
 
 ```shell
-echo "storeFile=<your-signing-key-file-path>" >> ~/.gradle/gradle.properties
-echo "storePassword=<keystore-password>" >> ~/.gradle/gradle.properties
-echo "keyAlias=<key-alias>" >> ~/.gradle/gradle.properties
-echo "keyPassword=<key-password>" >> ~/.gradle/gradle.properties
+echo "release.keystoreFile=<your-signing-key-file-path>" >> ~/.gradle/gradle.properties
+echo "release.keystorePassword=<keystore-password>" >> ~/.gradle/gradle.properties
+echo "release.keyAlias=<key-alias>" >> ~/.gradle/gradle.properties
+echo "release.keyPassword=<key-password>" >> ~/.gradle/gradle.properties
 ```
 (_local `gradle.properties` in project root is passible as well_)
 
 Or export environment variables every time:
 ```shell
-export STORE_FILE=<your-signing-key-file-path>
-export STORE_PASSWORD=<keystore-password>
-export KEY_ALIAS=<key-alias>
-export KEY_PASSWORD=<key-password>
+export RELEASE_KEYSTORE_FILE=<your-signing-key-file-path>
+export RELEASE_KEYSTORE_PASSWORD=<keystore-password>
+export RELEASE_KEY_ALIAS=<key-alias>
+export RELEASE_KEY_PASSWORD=<key-password>
 ```
