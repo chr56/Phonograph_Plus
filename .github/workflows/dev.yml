@@ -44,10 +44,10 @@ jobs:
         PRODUCT_VARIANT: [ModernCheckoutDebug, LegacyCheckoutDebug]
     runs-on: ubuntu-24.04
     env:
-      STORE_FILE: ${{ github.workspace }}/key.jdk
-      STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
-      KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-      KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+      RELEASE_KEYSTORE_FILE: ${{ github.workspace }}/key.jdk
+      RELEASE_KEYSTORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+      RELEASE_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+      RELEASE_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -68,7 +68,7 @@ jobs:
         run: |
           bash ${{ github.workspace }}/scripts/recover_signing_key.sh \
             --secrets-key "${{ secrets.KEY }}" \
-            --keystore-file "${STORE_FILE}"
+            --keystore-file "${RELEASE_KEYSTORE_FILE}"
         continue-on-error: true
 
       - name: Clean before building

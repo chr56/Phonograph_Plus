@@ -16,10 +16,10 @@ jobs:
       matrix:
         PRODUCT_VARIANT: [ ModernStableRelease, LegacyStableRelease ]
     env:
-      STORE_FILE: ${{ github.workspace }}/key.jdk
-      STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
-      KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-      KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+      RELEASE_KEYSTORE_FILE: ${{ github.workspace }}/key.jdk
+      RELEASE_KEYSTORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+      RELEASE_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+      RELEASE_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -40,7 +40,7 @@ jobs:
         run: |
           bash ${{ github.workspace }}/scripts/recover_signing_key.sh \
             --secrets-key "${{ secrets.KEY }}" \
-            --keystore-file "${STORE_FILE}"
+            --keystore-file "${RELEASE_KEYSTORE_FILE}"
 
       - name: Prepare Gradlew
         # just download gradle wrapper, start gradle daemon, make actual build logs clean
