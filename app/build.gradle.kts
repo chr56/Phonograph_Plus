@@ -16,10 +16,10 @@ plugins {
 val appName = "Phonograph Plus"
 
 // Signing key and secrets
-val keystoreFile = System.getenv("STORE_FILE") ?: project.findProperty("storeFile")?.toString()
-val keystorePassword = System.getenv("STORE_PASSWORD") ?: project.findProperty("storePassword")?.toString()
-val keyAliasValue = System.getenv("KEY_ALIAS") ?: project.findProperty("keyAlias")?.toString()
-val keyPasswordValue = System.getenv("KEY_PASSWORD") ?: project.findProperty("keyPassword")?.toString()
+val keystoreFile = System.getenv("RELEASE_KEYSTORE_FILE") ?: project.findProperty("release.keystoreFile")?.toString()
+val keystorePassword = System.getenv("RELEASE_KEYSTORE_PASSWORD") ?: project.findProperty("release.keystorePassword")?.toString()
+val keyAliasValue = System.getenv("RELEASE_KEY_ALIAS") ?: project.findProperty("release.keyAlias")?.toString()
+val keyPasswordValue = System.getenv("RELEASE_KEY_PASSWORD") ?: project.findProperty("release.keyPassword")?.toString()
 val isKeystoreAvailable = !keystoreFile.isNullOrEmpty() && !keystorePassword.isNullOrEmpty()
 
 android {
