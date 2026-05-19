@@ -115,6 +115,13 @@ android {
 
             resValue("string", "app_name", appName)
         }
+        // Signing key rotation
+        create("intermediate") {
+            dimension = "channel"
+            matchingFallbacks.add("stable")
+
+            resValue("string", "app_name", appName)
+        }
         // for checkout to locate a bug and ci etc.
         create("checkout") {
             dimension = "channel"
