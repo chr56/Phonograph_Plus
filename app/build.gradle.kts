@@ -73,6 +73,10 @@ android {
             manifestPlaceholders["GIT_COMMIT_HASH"] = getGitHash(false) ?: "n/a"
             vcsInfo.include = false // we have our means
         }
+        create("intermediateRelease") {            // Variants for key rotation
+            initWith(getByName("release"))
+            signingConfig = null
+        }
         getByName("debug") {
             // signing as well
             if (isKeystoreAvailable) signingConfig = signingConfigs.getByName("release")
@@ -110,13 +114,6 @@ android {
         }
         // F-droid special variant, base on Stable, for reproducibility
         create("fdroid") {
-            dimension = "channel"
-            matchingFallbacks.add("stable")
-
-            resValue("string", "app_name", appName)
-        }
-        // Signing key rotation
-        create("intermediate") {
             dimension = "channel"
             matchingFallbacks.add("stable")
 
@@ -192,16 +189,11 @@ androidComponents {
         }
     }
 
-    beforeVariants(selector().withBuildType("release")) { variantBuilder ->
-        val favors = variantBuilder.productFlavors
-        // no "release" type
-        if (favors.contains("channel" to "checkout")) {
-            variantBuilder.enable = false
-        }
-    }
-
     val name = appName.replace(Regex("\\s"), "") //remove white space
     onVariants(selector().withBuildType("release")) { variant ->
+        tasks.registerPublishTask(name, variant)
+    }
+    onVariants(selector().withBuildType("intermediateRelease")) { variant ->
         tasks.registerPublishTask(name, variant)
     }
 }
