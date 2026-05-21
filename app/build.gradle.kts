@@ -23,7 +23,11 @@ val keyPasswordValue = System.getenv("RELEASE_KEY_PASSWORD") ?: project.findProp
 val isKeystoreAvailable = !keystoreFile.isNullOrEmpty() && !keystorePassword.isNullOrEmpty()
 
 android {
-    compileSdk = 37
+    compileSdk {
+        version = release(37) {
+            minorApiLevel = 0
+        }
+    }
     buildToolsVersion = "37.0.0"
     namespace = "player.phonograph"
 
