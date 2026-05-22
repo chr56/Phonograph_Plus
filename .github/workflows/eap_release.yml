@@ -15,10 +15,10 @@ jobs:
       matrix:
         PRODUCT_VARIANT: [ ModernNextRelease, LegacyNextRelease ]
     env:
-      RELEASE_KEYSTORE_FILE: ${{ github.workspace }}/key.jdk
-      RELEASE_KEYSTORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
-      RELEASE_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-      RELEASE_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+      RELEASE_KEYSTORE_FILE: ${{ github.workspace }}/signing-key.jdk
+      RELEASE_KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+      RELEASE_KEY_ALIAS: ${{ secrets.KEYSTORE_ALIAS }}
+      RELEASE_KEY_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -38,7 +38,7 @@ jobs:
       - name: Recover Signing Keystore
         run: |
           bash ${{ github.workspace }}/scripts/recover_signing_key.sh \
-            --secrets-key "${{ secrets.KEY }}" \
+            --secrets-key "${{ secrets.KEYSTORE_FILE_BASE64 }}" \
             --keystore-file "${RELEASE_KEYSTORE_FILE}"
 
       - name: Prepare Gradlew
