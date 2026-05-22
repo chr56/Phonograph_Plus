@@ -19,6 +19,7 @@ jobs:
       matrix:
         PRODUCT_VARIANT: [
           ModernStableRelease, LegacyStableRelease,
+          ModernStableIntermediateRelease,  # variant with the rotated key
           ModernFdroidRelease
         ]
     env:
@@ -58,6 +59,33 @@ jobs:
           mkdir products
           ./gradlew assemble${{ matrix.PRODUCT_VARIANT }} Publish${{ matrix.PRODUCT_VARIANT }} --stacktrace
           echo "Artifacts: $(tree -aF ./products)"
+
+      - name: Recover Legacy Signing Keystore
+        if: matrix.PRODUCT_VARIANT == 'ModernStableIntermediateRelease'
+        env:
+          LEGACY_KEYSTORE_FILE: ${{ github.workspace }}/signing-key-legacy.jdk
+        run: |
+          bash ${{ github.workspace }}/scripts/recover_signing_key.sh \
+            --secrets-key "${{ secrets.KEYSTORE_FILE_BASE64_LEGACY }}" \
+            --keystore-file "${LEGACY_KEYSTORE_FILE}"
+
+      - name: Sign with Rotated Key
+        if: matrix.PRODUCT_VARIANT == 'ModernStableIntermediateRelease'
+        env:
+          KEYSTORE_FILE: ${{ github.workspace }}/signing-key.jdk
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEYSTORE_ALIAS: ${{ secrets.KEYSTORE_ALIAS }}
+          OLD_KEYSTORE_FILE: ${{ github.workspace }}/signing-key-legacy.jdk
+          OLD_KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD_LEGACY }}
+          OLD_KEYSTORE_ALIAS: ${{ secrets.KEYSTORE_ALIAS_LEGACY }}
+        run: |
+          # Sign with the script
+          for apk in ${{ github.workspace }}/products/${{ matrix.PRODUCT_VARIANT }}/*.apk; do
+            [ -f "$apk" ] || continue
+            bash ${{ github.workspace }}/scripts/sign-apk.sh "$apk"
+          done
+          # Check files
+          tree -aF ./products/${{ matrix.PRODUCT_VARIANT }}
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v7
