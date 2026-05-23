@@ -1,19 +1,21 @@
 version: "2.0.0-dev3"
 channel: "PREVIEW"
 versionCode: 1124
-timestamp: 1778858000
+timestamp: 1779555000
 notes:
   en:
     items:
-      - "Improve: support disabling history"
+      - "Distribution: IMPORTANT! since the version, we replaced our signing key, as a breaking change. You need to uninstall first or use Intermediate variant; see related institutions to migrate or transit."
       - "Distribution: raise minimal requirement to Android 8 (API 26), except for Legacy variant"
+      - "Improve: support disabling history"
       - "Development: build with SDK 37"
       - "Development: build with Gradle 9.5.1, build with AGP 9.2.1"
       - "Development: update dependencies"
   zh:
     items:
-      - "改进 支持禁用历史记录"
+      - "分发 注意！自该版本起，签名已被更换；请卸载后重装或使用 Intermediate 过渡包完成升级！"
       - "分发 最低要求升至 Android 8 (API 26)，Legacy 版本除外"
+      - "改进 支持禁用历史记录"
       - "开发 使用 SDK 37 构建"
       - "开发 使用 Gradle 9.5.1 构建, 使用 AGP 9.2.1 构建"
       - "开发 更新依赖"
