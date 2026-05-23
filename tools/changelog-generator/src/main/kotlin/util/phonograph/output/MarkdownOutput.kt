@@ -5,6 +5,7 @@
 package util.phonograph.output
 
 import util.phonograph.formater.MarkdownFormater
+import util.phonograph.model.BuildType
 import util.phonograph.model.OutputFormat
 import util.phonograph.model.ReleaseChannel
 import util.phonograph.model.ReleaseMetadata
@@ -19,8 +20,11 @@ import util.phonograph.model.constants.VARIANTS_DESCRIPTION_BODY
 import util.phonograph.model.constants.VARIANTS_DESCRIPTION_TITLE
 import util.phonograph.model.constants.SIGNING_KEY_NOTICE_EN
 import util.phonograph.model.constants.SIGNING_KEY_NOTICE_ZH
+import util.phonograph.model.constants.SIGNING_KEY_WARNING_EN
+import util.phonograph.model.constants.SIGNING_KEY_WARNING_ZH
 import util.phonograph.model.constants.compareLink
 import util.phonograph.model.constants.downloadLink
+import util.phonograph.model.variantQualifierOf
 import util.phonograph.utils.dateString
 import java.io.Writer
 
@@ -60,6 +64,10 @@ class GitHubReleaseMarkdown(private val metadata: ReleaseMetadata) : ReleaseMark
         target.append('\n')
 
         // Warnings
+
+        target.append(githubAlertBox("$SIGNING_KEY_WARNING_EN\n$SIGNING_KEY_WARNING_ZH", AlertType.Caution))
+        target.append('\n')
+
         val warning = previewWarning(metadata.channel)
         if (warning != null) {
             target.append(warning)
@@ -90,11 +98,16 @@ class GitHubReleaseMarkdown(private val metadata: ReleaseMetadata) : ReleaseMark
             downloadLink(metadata.tag, metadata.version, metadata.variant(TargetVariant.MODERN))
         val downloadLinkLegacy =
             downloadLink(metadata.tag, metadata.version, metadata.variant(TargetVariant.LEGACY))
+        val downloadLinkTransition =
+            downloadLink(metadata.tag, metadata.version,
+                variantQualifierOf(TargetVariant.MODERN, metadata.channel, BuildType.INTERMEDIA_RELEASE)
+            )
         target.append(
             String.format(
                 DOWNLOAD_LINK_TEMPLATE,
                 downloadLinkModern,
-                downloadLinkLegacy
+                downloadLinkLegacy,
+                downloadLinkTransition,
             ).trimIndent()
         )
         target.append('\n')

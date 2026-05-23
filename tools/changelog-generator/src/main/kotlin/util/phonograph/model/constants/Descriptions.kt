@@ -6,6 +6,8 @@ package util.phonograph.model.constants
 
 const val OVERFLOWED_MESSAGE = "...(Visit project homepage to see full changelogs)"
 
+const val SIGNING_KEY_WARNING_EN = "We have changes the signing key since this version. You need uninstall first before upgrading. \nHowever, if your device carries Android 9 and above, you can install apk with `IntermediaRelease` to transit to new key smoothly without uninstalling first."
+const val SIGNING_KEY_WARNING_ZH = "该版本起，我们使用了新的签名密钥；更新前需要先卸载再安装\n但是，若 Android 9 及其以上用户，可安装带有 `IntermediaRelease` 的安装包，则可无需卸载即可迁到新签名密钥！"
 
 const val PREVIEW_WARNING_EN =
     "This is a _Preview Channel_ Release (identified by `preview` suffix in the package name), stability and quality are not guaranteed."
@@ -21,15 +23,15 @@ const val VARIANTS_DESCRIPTION_TITLE = "Version Variants Description / 版本说
 const val VARIANTS_DESCRIPTION_BODY = """
 -> [Version Guide](docs/Version_Guide.md) / [版本指南](docs/Version_Guide_ZH.md)
 
-**TL;DR**: If you are a user of Android 7 ~ 10, please consider to use `Legacy`; If not, use `Modern`. The `Fdroid` is identical to the version on F‑droid; and the signature is same with others.
-**太长不看**: 若为 Android 7 ~ 10 用户，请考虑使用 `Legacy` 版本；否则，请使用 `Modern` 版本。另外带 `Fdroid` 为 F-droid 上完全相同的版本，签名与其他版本相同。
+**TL;DR**: If you are a user of Android 10, 7 and 7.1, please consider to use `Legacy`; If not, use `Modern`. The `Fdroid` is identical to the version on F‑droid; and the signature is same with others. Recently, you may need Intermediate variant to transit to new signing key.
+**太长不看**: 若为 Android 10 或 7 及 7.1 用户，请考虑使用 `Legacy` 版本；否则，请使用 `Modern` 版本。另外带 `Fdroid` 为 F-droid 上完全相同的版本，签名与其他版本相同。近期可能需要 Intermediate 版本过渡至新签名。
 """
 
 
 const val DOWNLOAD_LINK_TEMPLATE = """
-__Download Links__: [Modern Variant](%s) | [Legacy Variant](%s) 
+__Download Links__: [Modern Variant](%s) | [Legacy Variant](%s) | [Intermediate Variant for transition](%s) 
 """
 
 
-const val SIGNING_KEY_NOTICE_EN = "Since version 2.0, signing key of Phonograph Plus would be scheduled to be replaced or rotated, as one of major breaks!"
-const val SIGNING_KEY_NOTICE_ZH = "自 v2.0 起，签名密钥将被更替或轮转（破坏性变更项之一）！"
+const val SIGNING_KEY_NOTICE_EN = "Since version 2.0.0-dev3, signing key of Phonograph Plus would be scheduled to be replaced or rotated, as one of major breaks!\nYou need uninstall first before upgrading. However, if your device carries Android 9 and above, you can install apk with `IntermediaRelease` to transit to new key smoothly without uninstalling first."
+const val SIGNING_KEY_NOTICE_ZH = "自 v2.0.0-dev3 起，签名密钥将被更替或轮转（破坏性变更项之一）！\n更新前需要先卸载再安装；但是，若 Android 9 及其以上用户，可安装带有 `IntermediaRelease` 的安装包，则可无需卸载即可迁到新签名密钥！"
