@@ -99,9 +99,8 @@ class GitHubReleaseMarkdown(private val metadata: ReleaseMetadata) : ReleaseMark
         val downloadLinkLegacy =
             downloadLink(metadata.tag, metadata.version, metadata.variant(TargetVariant.LEGACY))
         val downloadLinkTransition =
-            downloadLink(metadata.tag, metadata.version,
-                variantQualifierOf(TargetVariant.MODERN, metadata.channel, BuildType.INTERMEDIA_RELEASE)
-            )
+            downloadLink(metadata.tag, metadata.version, metadata.intermediateVariant())
+
         target.append(
             String.format(
                 DOWNLOAD_LINK_TEMPLATE,

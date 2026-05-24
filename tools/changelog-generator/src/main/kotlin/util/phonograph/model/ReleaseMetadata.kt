@@ -22,6 +22,8 @@ data class ReleaseMetadata(
 
     fun variant(variant: TargetVariant): String = variantQualifierOf(variant, channel, BuildType.RELEASE)
 
+    fun intermediateVariant(): String = variantQualifierOf(TargetVariant.MODERN, channel, BuildType.INTERMEDIA_RELEASE)
+
     fun language(lang: Language): Notes.Note = notes.language(lang)
 
 

@@ -28,8 +28,8 @@ enum class ReleaseChannel(val favorName: String, val tagPrefix: String, val isPr
 @Serializable
 enum class BuildType(val string: String) {
     RELEASE("Release"),
+    INTERMEDIA_RELEASE("IntermediateRelease"),
     DEBUG("Debug"),
-    INTERMEDIA_RELEASE("IntermediaRelease"),
     ;
 }
 
