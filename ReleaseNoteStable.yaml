@@ -5,7 +5,7 @@ timestamp: 1780000000
 notes:
   en:
     items:
-      - "Distribution: IMPORTANT! since the version, we replaced our signing key, as a breaking change. You need to uninstall first or use Intermediate variant; see related institutions to migrate or transit."
+      - "Distribution: IMPORTANT! since the version, we replaced our signing key, as a breaking change. You need to uninstall first or use Intermediate variant; see related instructions to migrate or transit."
       - "Distribution: raise minimal requirement to Android 8 (API 26), except for Legacy variant"
       - "Modify: Multiple artists and genres parsing is now enabled by default (graduated from experimental)"
       - "Modify: change some default settings, and reorganized settings pages"

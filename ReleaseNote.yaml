@@ -5,7 +5,7 @@ timestamp: 1779555000
 notes:
   en:
     items:
-      - "Distribution: IMPORTANT! since the version, we replaced our signing key, as a breaking change. You need to uninstall first or use Intermediate variant; see related institutions to migrate or transit."
+      - "Distribution: IMPORTANT! since the version, we replaced our signing key, as a breaking change. You need to uninstall first or use Intermediate variant; see related instructions to migrate or transit."
       - "Distribution: raise minimal requirement to Android 8 (API 26), except for Legacy variant"
       - "Improve: support disabling history"
       - "Development: build with SDK 37"
