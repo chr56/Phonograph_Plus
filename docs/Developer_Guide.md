@@ -37,9 +37,13 @@ See [List of Libraries and Gradle Plugins in Use](./List_of_Libraries.md) for de
 
 Since 1.8[^1], we have two Flavor Dimension currently: `channel` (for different release channels), `target` (for Android platforms).
 
-And, there are two default `BuildType`s (`debug`/`release`), and all `release` shrinks and minifies.
+Typically, there are two default `BuildType`s (`debug`/`release`); all `release` shrinks and minifies. 
 
-[^1]: Before 1.8, there is only one flavor `purpose`/`channel`.
+However, since 2.0, due to replacement of signing key, `BuildType` named `intermediateRelease` has been added.
+`intermediateRelease` is used to be signed with rotated keys, signed with both old and new keys 
+(in APK signature scheme v3 format for Android 9 and higher), to make users transit smoothly. It is just a temporary `BuildType`.
+
+[^1]: Before 1.8, there is only one flavor `channel`(or `purpose`), without `target`.
 
 #### Dimension `channel`
 

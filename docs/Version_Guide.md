@@ -1,5 +1,9 @@
 # **Version Guide**: Which Version to Download?
 
+> [!CAUTION]
+> We changed the signing key since version 2.0.0. 
+> See [Signing key rotation and replacement](#signing-key-rotation-and-replacement) for detail.
+
 **_TL;DR_**: If you are a user of Android 7~10, use `Legacy`; If not, use `Modern`. Besides, `Fdroid` is exactly identical with apk on Fdroid;
 ignore it.
 
@@ -27,7 +31,33 @@ due to installer(uninstaller) crashing on Android 10 with physical SD card.
 <br/>
 <br/>
 
-See also [Development Guild $ Build Variants](./Developer_Guide.md#build-variants)
+See also [Development Guide $ Build Variants](./Developer_Guide.md#build-variants)
+
+---
+
+# Signing key rotation and replacement
+
+**_TL;DR_**: For Android 9 and higher, install apk containig `IntermediateRelease` to transit smoothly; Otherwise, you have to uninstall first before upgrading to v2.0.
+
+Due to various reasons[^skr], since v2.0.0, it is decided to **replace** the old signing key with new one:
+
+|                 | Serial               | Fingerprint SHA-256                                              |
+|-----------------|----------------------|------------------------------------------------------------------|
+| Old signing key | 0x3BEE71AB           | 01654EB9348B2C802FCBF21282DE0CDCA2A226337B9A2FA201E3AC376B0CE76C |
+| New signing key | 0x00FFE5FCD512F9C835 | 5DACA926C8E9BB628FFEF98B7A228C6564CCC29ED5031695A030E15120271AB7 |
+
+Hence, typically, you may have to **uninstall first** before upgrading to v2.0. 
+
+However, for users **Android 9** and higher, we prepare a special variant **`IntermediateRelease`**. 
+This variant is signed with rotated key, which uses both old and new keys with rotation lineage; 
+this means users can **install it directly** to transit to new key smoothly without uninstall first. 
+But this is a feature available for Android 9 and higher (_APK signature scheme v3_), 
+users with legacy devices still have to uninstall first before installing.
+
+
+[^skr]: The old key is too "personal" (it is used for other personal projects), 
+and its certificate has been expired (but typically system do not verify it).
+
 
 --- 
 
