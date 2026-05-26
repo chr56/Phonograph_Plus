@@ -4,6 +4,7 @@
 
 package player.phonograph.ui.compose
 
+import player.phonograph.model.ui.GeneralTheme
 import player.phonograph.model.ui.GeneralTheme.Companion.THEME_AUTO_LIGHTBLACK
 import player.phonograph.model.ui.GeneralTheme.Companion.THEME_BLACK
 import player.phonograph.model.ui.GeneralTheme.Companion.THEME_DARK
@@ -34,6 +35,14 @@ import android.app.Activity
 @Composable
 fun PhonographTheme(content: @Composable () -> Unit) {
     val colors = phonographColors()
+    PhonographTheme(colors = colors) {
+        content()
+    }
+}
+
+@Composable
+fun PhonographTheme(@GeneralTheme theme: String, content: @Composable () -> Unit) {
+    val colors = phonographColors(theme)
     PhonographTheme(colors = colors) {
         content()
     }
@@ -74,6 +83,11 @@ fun ExperimentalContentThemeOverride(content: @Composable (() -> Unit)) {
 private fun phonographColors(): Colors {
     val resources = LocalResources.current
     val theme by ThemeSettingsDelegate.underlyingTheme(resources).collectAsState(THEME_AUTO_LIGHTBLACK)
+    return phonographColors(theme)
+}
+
+@Composable
+private fun phonographColors(@GeneralTheme theme: String): Colors {
     val colorPalette: ColorPalette = defaultColorPalette()
     return when (theme) {
         THEME_DARK  -> colorSchemaDark(colorPalette)
@@ -83,10 +97,16 @@ private fun phonographColors(): Colors {
     }
 }
 
+
 @Composable
 private fun experimentalContentColors(): Colors {
     val resources = LocalResources.current
     val theme by ThemeSettingsDelegate.underlyingTheme(resources).collectAsState(THEME_AUTO_LIGHTBLACK)
+    return experimentalContentColors(theme)
+}
+
+@Composable
+private fun experimentalContentColors(@GeneralTheme theme: String): Colors {
     val colorPalette: ColorPalette = defaultColorPalette()
     return when (theme) {
         THEME_DARK  -> colorSchemaDark(colorPalette).copy(
