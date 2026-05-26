@@ -7,7 +7,7 @@ package player.phonograph.ui.modules.main
 import player.phonograph.model.pages.PagesConfig
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
-import player.phonograph.settings.SettingObserver
+import player.phonograph.settings.SettingsObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.repeatOnLifecycle
@@ -45,7 +45,7 @@ class MainDrawerViewModel : ViewModel() {
 
 
     fun observeSettings(context: Context, lifecycle: Lifecycle) {
-        SettingObserver(context, viewModelScope).apply {
+        SettingsObserver(context, viewModelScope).apply {
             collect(Keys.homeTabConfig, Dispatchers.IO) {
                 lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                     _pages.value = it

@@ -14,14 +14,14 @@ import player.phonograph.mechanism.coil.palette.PaletteBitmapDrawable
 import player.phonograph.mechanism.coil.quickCache
 import player.phonograph.model.Song
 import player.phonograph.settings.Keys
-import player.phonograph.settings.SettingCollector
+import player.phonograph.settings.SettingsCollector
 import androidx.collection.LruCache
 
 class MemeryCacheInterceptor : Interceptor {
 
     private val lruCache = LruCache<Long, PaletteBitmapDrawable>(8)
 
-    private val collector = SettingCollector { Keys.imageCache }
+    private val collector = SettingsCollector { Keys.imageCache }
 
     override suspend fun intercept(chain: Interceptor.Chain): ImageResult {
 

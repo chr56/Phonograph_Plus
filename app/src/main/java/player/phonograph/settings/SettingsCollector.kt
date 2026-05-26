@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class SettingCollector<T>(val preferenceKey: () -> PreferenceKey<T>) {
+class SettingsCollector<T>(val preferenceKey: () -> PreferenceKey<T>) {
 
     private var current: T? = null
     private var job: Job? = null
@@ -29,7 +29,7 @@ class SettingCollector<T>(val preferenceKey: () -> PreferenceKey<T>) {
                 flow.collect { current = it }
             }
         } else {
-            Log.d("SettingCollector", "$key is already init once before!")
+            Log.d("SettingsCollector", "$key is already init once before!")
         }
         return withContext(Dispatchers.IO) { flow.first() }
     }

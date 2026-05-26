@@ -8,11 +8,11 @@ import coil.intercept.Interceptor
 import coil.request.ImageResult
 import player.phonograph.mechanism.coil.PARAMETERS_KEY_IMAGE_SOURCE_CONFIG
 import player.phonograph.settings.Keys
-import player.phonograph.settings.SettingCollector
+import player.phonograph.settings.SettingsCollector
 
 class RetrieverConfigInterceptor : Interceptor {
 
-    private val collector = SettingCollector { Keys.imageSourceConfig }
+    private val collector = SettingsCollector { Keys.imageSourceConfig }
 
     override suspend fun intercept(chain: Interceptor.Chain): ImageResult {
 

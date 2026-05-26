@@ -19,7 +19,7 @@ import player.phonograph.service.ServiceComponent
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.service.util.MediaButtonIntentReceiver
 import player.phonograph.settings.Keys
-import player.phonograph.settings.SettingObserver
+import player.phonograph.settings.SettingsObserver
 import player.phonograph.ui.resource.Icons
 import player.phonograph.ui.resource.Texts
 import android.app.PendingIntent
@@ -83,8 +83,8 @@ class MediaSessionController : ServiceComponent {
 
         created = true
 
-        val settingObserver = SettingObserver(musicService, musicService.coroutineScope)
-        settingObserver.collect(Keys.notificationActions) { config ->
+        val settingsObserver = SettingsObserver(musicService, musicService.coroutineScope)
+        settingsObserver.collect(Keys.notificationActions) { config ->
             updateCustomActions(config)
         }
 

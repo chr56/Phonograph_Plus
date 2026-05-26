@@ -18,7 +18,7 @@ import player.phonograph.model.service.PlayerState.STOPPED
 import player.phonograph.service.MusicService
 import player.phonograph.service.ServiceComponent
 import player.phonograph.settings.Keys
-import player.phonograph.settings.SettingObserver
+import player.phonograph.settings.SettingsObserver
 import player.phonograph.ui.modules.main.MainActivity
 import player.phonograph.ui.resource.Icons
 import player.phonograph.ui.resource.Texts
@@ -57,7 +57,7 @@ class PlayingNotificationManager : ServiceComponent {
 
     private lateinit var notificationManager: NotificationManagerCompat
 
-    private lateinit var settingObserver: SettingObserver
+    private lateinit var settingsObserver: SettingsObserver
 
     private var classicNotification: Boolean = false
     private var coloredNotification: Boolean = true
@@ -91,19 +91,19 @@ class PlayingNotificationManager : ServiceComponent {
             channelCreated = true
         }
 
-        settingObserver = SettingObserver(service, service.coroutineScope)
+        settingsObserver = SettingsObserver(service, service.coroutineScope)
 
-        settingObserver.collect(Keys.classicNotification) { value ->
+        settingsObserver.collect(Keys.classicNotification) { value ->
             classicNotification = value
             implementation = if (value) ClassicNotification() else MediaStyleNotification()
         }
-        settingObserver.collect(Keys.coloredNotification) { value ->
+        settingsObserver.collect(Keys.coloredNotification) { value ->
             coloredNotification = value
         }
-        settingObserver.collect(Keys.notificationActions) { config ->
+        settingsObserver.collect(Keys.notificationActions) { config ->
             actionsConfig = config
         }
-        settingObserver.collect(Keys.persistentPlaybackNotification) { value ->
+        settingsObserver.collect(Keys.persistentPlaybackNotification) { value ->
             persistent = value
             while (implementation == null) yield()
             if (value) { //todo
@@ -141,7 +141,7 @@ class PlayingNotificationManager : ServiceComponent {
     fun updateNotification(song: Song?, status: MusicServiceStatus) {
         if (song != null) {
             if (song != lastSong || status != lastServiceStatus) {
-                val actions = actionsConfig ?: settingObserver.blocking(Keys.notificationActions)
+                val actions = actionsConfig ?: settingsObserver.blocking(Keys.notificationActions)
                 // Only update notification for actual changes
                 lastSong = song
                 lastServiceStatus = status
@@ -149,7 +149,7 @@ class PlayingNotificationManager : ServiceComponent {
             }
         } else {
             if (persistent) {
-                val actions = actionsConfig ?: settingObserver.blocking(Keys.notificationActions)
+                val actions = actionsConfig ?: settingsObserver.blocking(Keys.notificationActions)
                 implementation?.empty(status, actions)
             } else {
                 removeNotification()

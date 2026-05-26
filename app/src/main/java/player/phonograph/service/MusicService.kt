@@ -29,7 +29,7 @@ import player.phonograph.service.util.AppWidgetUpdateReceiver
 import player.phonograph.service.util.MusicServiceUtil
 import player.phonograph.service.util.SongPlayCountHelper
 import player.phonograph.settings.Keys
-import player.phonograph.settings.SettingObserver
+import player.phonograph.settings.SettingsObserver
 import androidx.media.MediaBrowserServiceCompat
 import android.content.Context
 import android.content.Intent
@@ -94,18 +94,18 @@ class MusicService : MediaBrowserServiceCompat(),
         // process updater
         throttledTimer = ThrottledTimer(controller.handler)
 
-        // setting
-        val settingObserver = SettingObserver(this, coroutineScope)
-        settingObserver.collect(Keys.broadcastCurrentPlayerState) { broadcastCurrentPlayerState ->
+        // settings
+        val settingsObserver = SettingsObserver(this, coroutineScope)
+        settingsObserver.collect(Keys.broadcastCurrentPlayerState) { broadcastCurrentPlayerState ->
             throttledTimer.broadcastCurrentPlayerState = broadcastCurrentPlayerState
         }
-        settingObserver.collect(Keys.alwaysUseMediaSessionToDisplayCover) { alwaysUseMediaSessionToDisplayCover ->
+        settingsObserver.collect(Keys.alwaysUseMediaSessionToDisplayCover) { alwaysUseMediaSessionToDisplayCover ->
             couldPutCover = SDK_INT >= VERSION_SET_COVER_USING_METADATA || alwaysUseMediaSessionToDisplayCover
         }
-        settingObserver.collect(Keys.seekJumpInterval) { interval ->
+        settingsObserver.collect(Keys.seekJumpInterval) { interval ->
             seekJumpInterval = (interval * 1000).toInt()
         }
-        settingObserver.collect(Keys.enableHistory) { state ->
+        settingsObserver.collect(Keys.enableHistory) { state ->
             enableHistory = state
         }
         // misc

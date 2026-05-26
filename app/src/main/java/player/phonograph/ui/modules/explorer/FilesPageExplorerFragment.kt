@@ -6,7 +6,7 @@ package player.phonograph.ui.modules.explorer
 
 import player.phonograph.model.file.FileItem
 import player.phonograph.settings.Keys
-import player.phonograph.settings.SettingObserver
+import player.phonograph.settings.SettingsObserver
 import player.phonograph.ui.actions.ActionMenuProviders
 import player.phonograph.ui.actions.ClickActionProviders
 import player.phonograph.ui.modules.panel.PanelViewModel
@@ -65,7 +65,7 @@ class FilesPageExplorerFragment : AbsFilesExplorerFragment() {
         bottomViewWindowInsetsController = binding.recyclerView.applyControllableWindowInsetsAsBottomView()
         observe(panelViewModel.isPanelHidden) { hidden -> bottomViewWindowInsetsController.enabled = hidden }
 
-        SettingObserver(view.context, lifecycleScope).apply {
+        SettingsObserver(view.context, lifecycleScope).apply {
             jobs += collect(Keys.showFileImages) { value ->
                 (adapter.presenter as? FileItemPresenter)?.loadCover = value
                 @SuppressLint("NotifyDataSetChanged")

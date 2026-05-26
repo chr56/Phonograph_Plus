@@ -16,7 +16,7 @@ import player.phonograph.service.util.LyricsUpdater
 import player.phonograph.service.util.QueuePreferenceManager
 import player.phonograph.service.util.makeErrorMessage
 import player.phonograph.settings.Keys
-import player.phonograph.settings.SettingObserver
+import player.phonograph.settings.SettingsObserver
 import androidx.core.content.ContextCompat
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -129,17 +129,17 @@ class PlayerController : ServiceComponent, Controller {
 
 
     private fun observeSettings(service: MusicService) {
-        val settingObserver = SettingObserver(service, service.coroutineScope)
-        settingObserver.collect(Keys.audioDucking) { value ->
+        val settingsObserver = SettingsObserver(service, service.coroutineScope)
+        settingsObserver.collect(Keys.audioDucking) { value ->
             audioDucking = value
         }
-        settingObserver.collect(Keys.resumeAfterAudioFocusGain) { value ->
+        settingsObserver.collect(Keys.resumeAfterAudioFocusGain) { value ->
             resumeAfterAudioFocusGain = value
         }
-        settingObserver.collect(Keys.alwaysPlay) { value ->
+        settingsObserver.collect(Keys.alwaysPlay) { value ->
             ignoreAudioFocus = value
         }
-        settingObserver.collect(Keys.gaplessPlayback) { gaplessPlayback ->
+        settingsObserver.collect(Keys.gaplessPlayback) { gaplessPlayback ->
             handler.post {
                 val controllerImpl = _impl
                 if (controllerImpl is VanillaAudioPlayerControllerImpl && controllerImpl.created) {
@@ -150,10 +150,10 @@ class PlayerController : ServiceComponent, Controller {
                 }
             }
         }
-        settingObserver.collect(Keys.autoSkipUnplayable) { value ->
+        settingsObserver.collect(Keys.autoSkipUnplayable) { value ->
             shouldAutoSkipUnplayable = value
         }
-        settingObserver.collect(Keys.broadcastSynchronizedLyrics) { value ->
+        settingsObserver.collect(Keys.broadcastSynchronizedLyrics) { value ->
             broadcastSynchronizedLyrics = value
         }
     }

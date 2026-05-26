@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
-class SettingObserver(
+class SettingsObserver(
     context: Context,
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO),
     private val setting: Setting = Setting(context),
