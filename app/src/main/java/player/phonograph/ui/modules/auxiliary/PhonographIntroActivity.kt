@@ -20,6 +20,7 @@ import player.phonograph.databinding.FragmentIntroBinding
 import player.phonograph.databinding.FragmentIntroSlideSettingBinding
 import player.phonograph.databinding.ItemSimpleBinding
 import player.phonograph.mechanism.backup.Backup
+import player.phonograph.model.ui.GeneralTheme.Companion.THEME_DARK
 import player.phonograph.settings.Keys
 import player.phonograph.settings.PrerequisiteSettings
 import player.phonograph.settings.Settings
@@ -252,7 +253,7 @@ class PhonographIntroActivity : AppIntro(), IOpenFileStorageAccessible, IRequest
                                 val sessionId =
                                     Backup.Import.startImportBackupFromArchive(context = activity, stream)
                                 launch(Dispatchers.Main) {
-                                    BackupImportDialog.newInstance(sessionId)
+                                    BackupImportDialog.newInstance(sessionId, THEME_DARK)
                                         .show(activity.supportFragmentManager, "IMPORT")
                                 }
                             }
