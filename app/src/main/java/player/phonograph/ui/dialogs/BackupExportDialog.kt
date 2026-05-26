@@ -9,6 +9,7 @@ import player.phonograph.R
 import player.phonograph.foundation.error.warning
 import player.phonograph.mechanism.backup.Backup
 import player.phonograph.model.backup.BackupItem
+import player.phonograph.model.ui.GeneralTheme
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.ActionItem
@@ -23,6 +24,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.stringResource
@@ -31,6 +33,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.annotation.SuppressLint
+import android.os.Bundle
 import android.view.LayoutInflater
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -41,8 +44,18 @@ class BackupExportDialog : ComposeViewDialogFragment() {
     private var adapter: BackupChooserAdapter? = null
 
     @Composable
+    private fun withTheme(content: @Composable () -> Unit) {
+        val theme = remember { arguments?.getString(KEY_THEME) }
+        if (theme != null) {
+            PhonographTheme(theme, content = content)
+        } else {
+            PhonographTheme(content = content)
+        }
+    }
+
+    @Composable
     override fun Content() {
-        PhonographTheme {
+        withTheme {
             LimitedDialog(onDismiss = ::dismiss) {
                 AdvancedDialogFrame(
                     modifier = Modifier,
@@ -50,7 +63,7 @@ class BackupExportDialog : ComposeViewDialogFragment() {
                         R.string.action_export,
                         stringResource(R.string.label_backup)
                     ),
-                    navigationButtonIcon= rememberVectorPainter(Icons.Default.Close),
+                    navigationButtonIcon = rememberVectorPainter(Icons.Default.Close),
                     onDismissRequest = ::dismiss,
                     actions = listOf(
                         ActionItem(
@@ -129,6 +142,14 @@ class BackupExportDialog : ComposeViewDialogFragment() {
 
     companion object {
         private const val TAG = "BackupExportDialog"
+
+        private const val KEY_THEME = "theme"
+        fun create(@GeneralTheme theme: String) = BackupExportDialog().apply {
+            arguments = Bundle().apply {
+                putString(KEY_THEME, theme)
+            }
+        }
+
         private fun defaultBackupName(): String = "phonograph_plus_backup_${dateTimeSuffixCompat(currentDate())}.zip"
     }
 }

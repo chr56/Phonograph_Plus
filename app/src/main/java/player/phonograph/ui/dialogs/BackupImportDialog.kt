@@ -8,6 +8,7 @@ import player.phonograph.R
 import player.phonograph.foundation.Reboot
 import player.phonograph.foundation.error.warning
 import player.phonograph.mechanism.backup.Backup
+import player.phonograph.model.ui.GeneralTheme
 import player.phonograph.settings.PrerequisiteSettings
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
@@ -42,18 +43,28 @@ import kotlinx.coroutines.withContext
 class BackupImportDialog : ComposeViewDialogFragment() {
 
     private var sessionId: Long = 0
+    private var generalTheme: String? = null
 
     private var adapter: BackupChooserAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        generalTheme = arguments?.getString(KEY_THEME)
         sessionId = arguments?.getLong(KEY_SESSION) ?: throw IllegalArgumentException("No session id!")
     }
 
+    @Composable
+    private fun withTheme(theme: String? = null, content: @Composable () -> Unit) {
+        if (theme != null) {
+            PhonographTheme(theme, content = content)
+        } else {
+            PhonographTheme(content = content)
+        }
+    }
 
     @Composable
     override fun Content() {
-        PhonographTheme {
+        withTheme(generalTheme) {
             LimitedDialog(onDismiss = ::dismiss) {
                 AdvancedDialogFrame(
                     modifier = Modifier,
@@ -159,10 +170,12 @@ class BackupImportDialog : ComposeViewDialogFragment() {
     companion object {
         private const val TAG = "BackupImportDialog"
         private const val KEY_SESSION = "session"
-        fun newInstance(sessionId: Long): BackupImportDialog =
+        private const val KEY_THEME = "theme"
+        fun newInstance(sessionId: Long, @GeneralTheme theme: String? = null): BackupImportDialog =
             BackupImportDialog().apply {
                 arguments = Bundle().apply {
                     putLong(KEY_SESSION, sessionId)
+                    if (theme != null) putString(KEY_THEME, theme)
                 }
             }
     }
