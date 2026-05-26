@@ -20,7 +20,7 @@ import player.phonograph.model.pages.PagesConfig
 import player.phonograph.model.version.VersionCatalog
 import player.phonograph.settings.Keys
 import player.phonograph.settings.PrerequisiteSettings
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import player.phonograph.ui.dialogs.ChangelogDialog
 import player.phonograph.ui.dialogs.UpgradeInfoDialog
 import player.phonograph.ui.modules.explorer.PathSelectorContractTool
@@ -242,7 +242,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                     )
                 }
             }
-            Setting(this@MainActivity)[Keys.lastCheckUpgradeTimeStamp].data = System.currentTimeMillis()
+            Settings(this@MainActivity)[Keys.lastCheckUpgradeTimeStamp].data = System.currentTimeMillis()
         }
     }
 
@@ -274,12 +274,12 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
         // check changelog
         checkChangelog()
         // check upgrade
-        val setting = Setting(this)
+        val settings = Settings(this)
         lifecycleScope.launch {
-            setting[Keys.checkUpgradeAtStartup].flow.collect { enabled ->
+            settings[Keys.checkUpgradeAtStartup].flow.collect { enabled ->
                 if (enabled) {
-                    val lastTimeStamp = setting[Keys.lastCheckUpgradeTimeStamp].data
-                    val interval = setting[Keys.checkUpdateInterval].data
+                    val lastTimeStamp = settings[Keys.lastCheckUpgradeTimeStamp].data
+                    val interval = settings[Keys.checkUpdateInterval].data
                     if (System.currentTimeMillis() > lastTimeStamp + interval.toSeconds() * 1000L) {
                         checkUpdate()
                     } else {

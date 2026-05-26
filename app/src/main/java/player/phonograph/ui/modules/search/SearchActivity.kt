@@ -18,7 +18,7 @@ import player.phonograph.databinding.ActivitySearchBinding
 import player.phonograph.databinding.PopupWindowSearchBinding
 import player.phonograph.mechanism.event.EventHub
 import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.modules.popup.OptionsPopup
 import player.phonograph.util.observe
@@ -93,7 +93,7 @@ class SearchActivity : AbsSlidingMusicPanelActivity(), SearchView.OnQueryTextLis
         updateSystemBarsColor(darkenColor(primaryColor()), Color.TRANSPARENT)
 
         observe(viewModel.query) { text -> searchView?.setQuery(text, false) }
-        observe(Setting(this@SearchActivity)[Keys.disableRealTimeSearch].flow) { disableRealTimeSearch = it }
+        observe(Settings(this@SearchActivity)[Keys.disableRealTimeSearch].flow) { disableRealTimeSearch = it }
         lifecycle.addObserver(MediaStoreListener())
         viewModel.start(this)
     }

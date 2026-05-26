@@ -8,7 +8,7 @@ import player.phonograph.R
 import player.phonograph.model.coil.ImageSource
 import player.phonograph.model.coil.ImageSourceConfig
 import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import player.phonograph.ui.adapter.SortableListAdapter
 import player.phonograph.ui.compose.components.ActionItem
 import player.phonograph.ui.resource.Texts
@@ -60,7 +60,7 @@ class ImageSourceConfigDialog : AbsSettingsDialog() {
                     val view = LayoutInflater.from(context).inflate(R.layout.recycler_view_wrapped, null)
                     val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view)
 
-                    val config: ImageSourceConfig = Setting(requireContext())[Keys.imageSourceConfig].data
+                    val config: ImageSourceConfig = Settings(requireContext())[Keys.imageSourceConfig].data
                     val configAdapter = ImageSourceConfigAdapter(config).also { it.init() }
 
                     adapter = configAdapter
@@ -90,7 +90,7 @@ class ImageSourceConfigDialog : AbsSettingsDialog() {
                     Toast.LENGTH_SHORT
                 ).show()
             }
-            Setting(requireContext())[Keys.imageSourceConfig].data = sourceConfig
+            Settings(requireContext())[Keys.imageSourceConfig].data = sourceConfig
             dismiss()
         } else {
             Toast.makeText(
@@ -102,7 +102,7 @@ class ImageSourceConfigDialog : AbsSettingsDialog() {
     }
 
     private fun actionReset() {
-        Setting(requireContext())[Keys.imageSourceConfig].data = ImageSourceConfig.DEFAULT
+        Settings(requireContext())[Keys.imageSourceConfig].data = ImageSourceConfig.DEFAULT
         dismiss()
     }
 

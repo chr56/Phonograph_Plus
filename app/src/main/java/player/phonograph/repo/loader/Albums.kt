@@ -10,7 +10,7 @@ import player.phonograph.model.repo.loader.IAlbums
 import player.phonograph.repo.mediastore.MediaStoreAlbums
 import player.phonograph.repo.room.domain.RoomAlbums
 import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import android.content.Context
 
 /**
@@ -18,7 +18,7 @@ import android.content.Context
  */
 object Albums : IAlbums, Delegated<IAlbums>() {
     override fun onCreateDelegate(context: Context): IAlbums {
-        val backend = Setting(context)[Keys.musicLibraryBackend].data
+        val backend = Settings(context)[Keys.musicLibraryBackend].data
         val impl: IAlbums = if (backend.useMediaStoreAlbums) MediaStoreAlbums else RoomAlbums
         return impl
     }

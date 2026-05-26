@@ -7,7 +7,7 @@ package player.phonograph.ui.modules.setting.dialog
 import player.phonograph.R
 import player.phonograph.model.pages.PagesConfig
 import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import player.phonograph.ui.adapter.SortableListAdapter
 import player.phonograph.ui.compose.components.ActionItem
 import player.phonograph.ui.resource.Texts
@@ -59,7 +59,7 @@ class HomeTabConfigDialog : AbsSettingsDialog() {
                     val view = LayoutInflater.from(context).inflate(R.layout.recycler_view_wrapped, null)
                     val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view)
 
-                    val config: PagesConfig = Setting(requireContext())[Keys.homeTabConfig].data
+                    val config: PagesConfig = Settings(requireContext())[Keys.homeTabConfig].data
                     val configAdapter = PageTabConfigAdapter(config).also { it.init() }
 
                     adapter = configAdapter
@@ -82,7 +82,7 @@ class HomeTabConfigDialog : AbsSettingsDialog() {
     private fun actionApply() {
         val pageConfig = adapter?.currentConfig
         if (pageConfig != null) {
-            Setting(requireContext())[Keys.homeTabConfig].data = pageConfig
+            Settings(requireContext())[Keys.homeTabConfig].data = pageConfig
             dismiss()
         } else {
             Toast.makeText(
@@ -94,7 +94,7 @@ class HomeTabConfigDialog : AbsSettingsDialog() {
     }
 
     private fun actionReset() {
-        Setting(requireContext())[Keys.homeTabConfig].data = PagesConfig.DEFAULT_CONFIG
+        Settings(requireContext())[Keys.homeTabConfig].data = PagesConfig.DEFAULT_CONFIG
         dismiss()
     }
 

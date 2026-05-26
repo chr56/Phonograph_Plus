@@ -15,7 +15,7 @@ import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.mediastore.MediaStorePlaylists
 import player.phonograph.repo.room.domain.RoomPlaylists
 import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import player.phonograph.util.sort
 import android.content.Context
 
@@ -64,7 +64,7 @@ object Playlists : IPlaylists {
         RoomPlaylists.searchByName(context, query) + MediaStorePlaylists.searchByName(context, query)
 
     private suspend fun sorted(context: Context, playlists: List<Playlist>): List<Playlist> {
-        val sortMode = Setting(context)[Keys.playlistSortMode].read()
+        val sortMode = Settings(context)[Keys.playlistSortMode].read()
         val revert = sortMode.revert
         return when (sortMode.sortRef) {
             SortRef.DISPLAY_NAME  -> playlists.sort(revert) { it.name }

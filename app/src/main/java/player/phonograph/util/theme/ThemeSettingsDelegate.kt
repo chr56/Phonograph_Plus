@@ -13,7 +13,7 @@ import player.phonograph.model.ui.GeneralTheme.Companion.THEME_DARK
 import player.phonograph.model.ui.GeneralTheme.Companion.THEME_LIGHT
 import player.phonograph.settings.Keys
 import player.phonograph.settings.PrimitiveKey
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import player.phonograph.util.ui.MonetColor
 import androidx.annotation.ColorInt
 import androidx.annotation.StyleRes
@@ -218,7 +218,7 @@ object ThemeSettingsDelegate {
         scope: CoroutineScope,
         collector: FlowCollector<T>,
     ) = scope.launch(Dispatchers.IO) {
-        Setting(context)[key].flow.distinctUntilChanged().collect(collector)
+        Settings(context)[key].flow.distinctUntilChanged().collect(collector)
     }
 
     private var jobs = mutableListOf<Job>()

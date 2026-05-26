@@ -10,7 +10,7 @@ import player.phonograph.model.repo.loader.IFavoriteTracks
 import player.phonograph.repo.mediastore.PlaylistFavoriteTracks
 import player.phonograph.repo.room.domain.RoomFavoriteTracks
 import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import android.content.Context
 
 /**
@@ -19,7 +19,7 @@ import android.content.Context
 object FavoriteTracks : IFavoriteTracks, Delegated<IFavoriteTracks>() {
 
     override fun onCreateDelegate(context: Context): IFavoriteTracks {
-        val preference = Setting(context)[Keys.useLegacyFavoritePlaylistImpl]
+        val preference = Settings(context)[Keys.useLegacyFavoritePlaylistImpl]
         val impl: IFavoriteTracks = if (preference.data) PlaylistFavoriteTracks() else RoomFavoriteTracks
         return impl
     }

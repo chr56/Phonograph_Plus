@@ -18,7 +18,7 @@ import player.phonograph.repo.loader.Artists
 import player.phonograph.repo.loader.Genres
 import player.phonograph.repo.loader.Songs
 import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import player.phonograph.ui.modules.explorer.PathSelectorRequester
 import player.phonograph.ui.modules.setting.components.BooleanPreference
 import player.phonograph.ui.modules.setting.components.DialogPreference
@@ -75,21 +75,21 @@ fun PreferenceScreenContent() {
                 dialog = TagSeparatorsEditorDialog.ArtistsSeparatorsEditor::class.java,
                 title = stringResource(R.string.pref_title_music_tags_artists_separators),
                 currentValueForHint = { context ->
-                    Setting(context)[Keys.tagSeparatorsArtists].read().joinToString(" ")
+                    Settings(context)[Keys.tagSeparatorsArtists].read().joinToString(" ")
                 }
             )
             DialogPreference(
                 dialog = TagSeparatorsEditorDialog.FeaturesArtistsAbbrEditor::class.java,
                 title = stringResource(R.string.pref_title_music_tags_featuring_artists_abbr),
                 currentValueForHint = { context ->
-                    Setting(context)[Keys.tagAbbrFeatureArtists].read().joinToString(" ")
+                    Settings(context)[Keys.tagAbbrFeatureArtists].read().joinToString(" ")
                 }
             )
             DialogPreference(
                 dialog = TagSeparatorsEditorDialog.GenreSeparatorsEditor::class.java,
                 title = stringResource(R.string.pref_title_music_tags_genres_separators),
                 currentValueForHint = { context ->
-                    Setting(context)[Keys.tagSeparatorsGenres].read().joinToString(" ")
+                    Settings(context)[Keys.tagSeparatorsGenres].read().joinToString(" ")
                 }
             )
             ListPreference(
@@ -141,12 +141,12 @@ fun PreferenceScreenContent() {
                 titleRes = R.string.pref_title_last_added_interval,
                 currentValueForHint = { context ->
                     val resources = context.resources
-                    val setting = Setting(context)
+                    val settings = Settings(context)
                     val calculationMode =
-                        setting[Keys._lastAddedCutOffMode].data
+                        settings[Keys._lastAddedCutOffMode].data
                             .let(TimeIntervalCalculationMode.Companion::from)
                     val duration =
-                        setting[Keys._lastAddedCutOffDuration].data
+                        settings[Keys._lastAddedCutOffDuration].data
                             .let(Duration.Companion::from)
                     if (calculationMode != null && duration != null)
                         Texts.duration(resources, duration, calculationMode)
@@ -169,7 +169,7 @@ fun PreferenceScreenContent() {
                 summaryRes = R.string.pref_summary_start_directory
             ) {
                 val contractTool = (context as? PathSelectorRequester)?.pathSelectorContractTool
-                val preference = Setting(context)[Keys.startDirectoryPath]
+                val preference = Settings(context)[Keys.startDirectoryPath]
                 contractTool?.launch(preference.data) { path ->
                     if (path != null) {
                         val file = File(path)

@@ -14,7 +14,7 @@ import player.phonograph.model.sort.SortRef
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.repo.mediastore.MediaStoreSongCollections
 import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import player.phonograph.ui.actions.ActionMenuProviders
 import player.phonograph.ui.actions.ClickActionProviders
 import player.phonograph.ui.actions.actionPlay
@@ -360,7 +360,7 @@ class FoldersPage : AbsPanelPage() {
             }
 
         private fun MutableList<SongCollection>.sort(context: Context): List<SongCollection> {
-            val mode = Setting(context)[Keys.collectionSortMode].data
+            val mode = Settings(context)[Keys.collectionSortMode].data
             sortBy {
                 when (mode.sortRef) {
                     SortRef.DISPLAY_NAME -> it.name

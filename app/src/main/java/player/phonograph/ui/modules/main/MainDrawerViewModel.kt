@@ -6,7 +6,7 @@ package player.phonograph.ui.modules.main
 
 import player.phonograph.model.pages.PagesConfig
 import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import player.phonograph.settings.SettingsObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModel
@@ -27,7 +27,7 @@ class MainDrawerViewModel : ViewModel() {
     fun switchPageTo(context: Context, page: Int) {
         _selectedPage.value = page
         viewModelScope.launch(Dispatchers.IO) {
-            Setting(context)[Keys.lastPage].edit { page }
+            Settings(context)[Keys.lastPage].edit { page }
         }
     }
 

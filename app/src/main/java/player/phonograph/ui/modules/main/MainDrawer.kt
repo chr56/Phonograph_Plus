@@ -21,7 +21,7 @@ import player.phonograph.model.ui.GeneralTheme.Companion.THEME_LIGHT
 import player.phonograph.repo.loader.Songs
 import player.phonograph.service.MusicService
 import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import player.phonograph.ui.actions.actionPlay
 import player.phonograph.ui.dialogs.DatabaseMaintenanceDialog
 import player.phonograph.ui.dialogs.ScanMediaDialog
@@ -87,7 +87,7 @@ fun setupDrawerMenu(
 
         // normal items
         val groupIds = intArrayOf(0, 1, 2, 3)
-        val theme = Setting(context)[Keys.theme].data
+        val theme = Settings(context)[Keys.theme].data
         if (theme != GeneralTheme.THEME_AUTO_LIGHTBLACK && theme != GeneralTheme.THEME_AUTO_LIGHTDARK) {
             menuItem {
                 groupId = groupIds[1]
@@ -220,7 +220,7 @@ fun setupDrawerMenu(
 }
 
 private suspend fun toggleTheme(context: Context): Boolean = withContext(Dispatchers.IO) {
-    val preference = Setting(context)[Keys.theme]
+    val preference = Settings(context)[Keys.theme]
     val oldTheme = preference.read()
     val newTheme = when (oldTheme) {
         THEME_DARK, THEME_BLACK -> THEME_LIGHT

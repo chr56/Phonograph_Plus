@@ -8,7 +8,7 @@ import player.phonograph.model.repo.sync.SyncExecutor
 import player.phonograph.repo.mediastore.MediaStoreSongs
 import player.phonograph.repo.room.MusicDatabase
 import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import android.content.Context
 
 object SyncExecutors {
@@ -17,7 +17,7 @@ object SyncExecutors {
      * Obtain the correct [SyncExecutor] based on Settings
      */
     suspend fun obtain(context: Context, musicDatabase: MusicDatabase): SyncExecutor {
-        val backend = Setting(context)[Keys.musicLibraryBackend].read()
+        val backend = Settings(context)[Keys.musicLibraryBackend].read()
         val syncExecutor = when {
             backend.syncBasicDatabase -> BasicSyncExecutor(musicDatabase)
             else                      -> RelationshipSyncExecutor(musicDatabase, backend.syncWithGenres)

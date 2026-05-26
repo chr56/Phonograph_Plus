@@ -6,7 +6,7 @@ package player.phonograph.ui.modules.setting
 
 import player.phonograph.R
 import player.phonograph.settings.PreferenceKey
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import player.phonograph.util.concurrent.lifecycleScopeOrNewOne
 import player.phonograph.util.theme.tintButtons
 import androidx.activity.compose.BackHandler
@@ -153,7 +153,7 @@ fun <T> dependOn(key: PreferenceKey<T>, predicate: (T) -> Boolean): Boolean {
         false
     } else {
         val context = LocalContext.current
-        val preference = remember { Setting(context)[key] }
+        val preference = remember { Settings(context)[key] }
         val state by preference.flow.collectAsState(preference.default)
         predicate(state)
     }
@@ -165,7 +165,7 @@ fun resetPreference(context: Context, @StringRes what: Int, vararg keys: Prefere
         .setTitle(context.getString(R.string.action_reset))
         .setMessage(context.getString(what))
         .setPositiveButton(android.R.string.ok) { _, _ ->
-            val targets = keys.map { Setting(context)[it] }
+            val targets = keys.map { Settings(context)[it] }
             context.lifecycleScopeOrNewOne().launch {
                 for (preference in targets) {
                     preference.reset()

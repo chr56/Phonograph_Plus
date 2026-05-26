@@ -24,7 +24,7 @@ import player.phonograph.repo.loader.Songs
 import player.phonograph.repo.mediastore.MediaStorePlaylists
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import androidx.annotation.DrawableRes
 import android.content.ContentResolver
 import android.content.Context
@@ -401,7 +401,7 @@ object MediaItemProviders {
     private object RecentAddedProvider : AbsMediaItemProvider() {
 
         private fun lastAddedCutoffTimeStamp(context: Context): Long =
-            Setting(context)[Keys.lastAddedCutoffTimeStamp].data / 1000
+            Settings(context)[Keys.lastAddedCutoffTimeStamp].data / 1000
 
         private suspend fun fetch(context: Context): List<Song> =
             Songs.since(context, lastAddedCutoffTimeStamp(context))

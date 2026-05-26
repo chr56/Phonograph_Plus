@@ -32,7 +32,7 @@ import player.phonograph.repo.room.domain.RoomPlaylistsActions
 import player.phonograph.service.queue.MusicPlaybackQueueStore
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.settings.PathFilterSetting
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import player.phonograph.settings.SettingsDataSerializer
 import player.phonograph.util.gitRevisionHash
 import androidx.datastore.preferences.core.edit
@@ -92,7 +92,7 @@ object SettingsDataBackupItemExecutor : JsonDataBackupItemExecutor() {
 
     override suspend fun export(context: Context): Buffer? =
         try {
-            val preferences = Setting(context).dataStore.data.first().asMap()
+            val preferences = Settings(context).dataStore.data.first().asMap()
             val content = SettingsDataSerializer(context).serialize(preferences)
             val exported = ExportedSetting(
                 formatVersion = ExportedSetting.VERSION,
@@ -124,16 +124,16 @@ object SettingsDataBackupItemExecutor : JsonDataBackupItemExecutor() {
         val content = try {
             SettingsDataSerializer(context).deserialize(json)
         } catch (e: SerializationException) {
-            warning(context, TAG, "Failed to deserialize setting.", e)
+            warning(context, TAG, "Failed to deserialize settings.", e)
             emptyArray()
         }
-        Setting(context).dataStore.edit { preferences ->
+        Settings(context).dataStore.edit { preferences ->
             preferences.putAll(*content)
         }
 
         true
     } catch (e: Exception) {
-        warning(context, TAG, "Failed to import Setting", e)
+        warning(context, TAG, "Failed to import Settings", e)
         false
     }
 

@@ -28,7 +28,7 @@ import player.phonograph.model.service.ShuffleMode
 import player.phonograph.repo.loader.Songs
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import player.phonograph.ui.NavigationUtil
 import player.phonograph.util.testBit
 import androidx.core.util.Pair
@@ -56,9 +56,9 @@ object ClickActionProviders {
             context: Context,
             imageView: ImageView?,
         ): Boolean {
-            val setting = Setting(context)
-            val base = setting[Keys.songItemClickMode].data
-            val extra = setting[Keys.songItemClickExtraFlag].data
+            val settings = Settings(context)
+            val base = settings[Keys.songItemClickMode].data
+            val extra = settings[Keys.songItemClickExtraFlag].data
             return songClick(context, list, position, base, extra)
         }
 
@@ -104,7 +104,7 @@ object ClickActionProviders {
                 )
 
                 else  /* invalided */     -> {
-                    Setting(context)[Keys.songItemClickMode].data = SONG_PLAY_NOW // reset base mode
+                    Settings(context)[Keys.songItemClickMode].data = SONG_PLAY_NOW // reset base mode
                     return false
                 }
             }
@@ -188,9 +188,9 @@ object ClickActionProviders {
             context: Context,
             imageView: ImageView?,
         ): Boolean {
-            val setting = Setting(context)
-            val base = setting[Keys.songItemClickMode].data
-            val extra = setting[Keys.songItemClickExtraFlag].data
+            val settings = Settings(context)
+            val base = settings[Keys.songItemClickMode].data
+            val extra = settings[Keys.songItemClickExtraFlag].data
             return runBlocking { fileClick(context, list, position, base, extra) }
         }
 
@@ -268,7 +268,7 @@ object ClickActionProviders {
                 }
 
                 else  /* invalided */ -> {
-                    Setting(context)[Keys.songItemClickMode].data = SONG_PLAY_NOW // reset base mode
+                    Settings(context)[Keys.songItemClickMode].data = SONG_PLAY_NOW // reset base mode
                     return false
                 }
             }

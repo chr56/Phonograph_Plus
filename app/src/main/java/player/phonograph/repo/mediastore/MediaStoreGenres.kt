@@ -16,7 +16,7 @@ import player.phonograph.model.Song
 import player.phonograph.model.repo.loader.IGenres
 import player.phonograph.model.sort.SortMode
 import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import player.phonograph.util.sort
 import android.content.Context
 import android.provider.MediaStore.Audio.Genres
@@ -49,7 +49,7 @@ object MediaStoreGenres : IGenres {
         )?.intoGenres(context) ?: emptyList()
 
     private fun List<Genre>.sortAll(context: Context): List<Genre> =
-        sortAll(Setting(context)[Keys.genreSortMode].data)
+        sortAll(Settings(context)[Keys.genreSortMode].data)
 
     private fun List<Genre>.sortAll(sortMode: SortMode): List<Genre> {
         return this.sort(sortMode.revert, mediastoreGenreSortRefKey(sortMode.sortRef))

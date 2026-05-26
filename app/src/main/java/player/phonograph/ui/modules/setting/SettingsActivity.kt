@@ -14,7 +14,7 @@ import lib.storage.launcher.OpenFileStorageAccessDelegate
 import player.phonograph.R
 import player.phonograph.foundation.Reboot
 import player.phonograph.mechanism.backup.Backup
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import player.phonograph.ui.basis.ComposeActivity
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.DropDownMenuContent
@@ -152,7 +152,7 @@ class SettingsActivity : ComposeActivity(),
                 .setPositiveButton(R.string.action_clear_all_preference) { dialog, _ ->
                     dialog.dismiss()
                     runBlocking {
-                        if (Setting(context).clearAll()) {
+                        if (Settings(context).clearAll()) {
                             Toast.makeText(context, R.string.success, Toast.LENGTH_SHORT).show()
                             Reboot.reboot(context)
                         } else {

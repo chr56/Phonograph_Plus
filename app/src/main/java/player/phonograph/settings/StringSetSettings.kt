@@ -151,7 +151,7 @@ class PathFilterSetting(private var excludeMode: Boolean) : AbsStringSetSetting(
     }
 
     override fun preference(context: Context): Preference<Set<String>> =
-        Setting(context)[if (excludeMode) Keys.pathFilterExcludePaths else Keys.pathFilterIncludePaths]
+        Settings(context)[if (excludeMode) Keys.pathFilterExcludePaths else Keys.pathFilterIncludePaths]
 
     override fun onChanged(context: Context, content: Set<String>) {
         EventHub.sendEvent(context.applicationContext, EventHub.EVENT_MUSIC_LIBRARY_CHANGED)
@@ -172,7 +172,7 @@ class TagSeparatorsSetting(private var target: Char) : AbsStringSetSetting() {
     }
 
     override fun preference(context: Context): Preference<Set<String>> =
-        Setting(context)[
+        Settings(context)[
             when (target) {
                 TARGET_ABBR_FEATURES_ARTISTS -> Keys.tagAbbrFeatureArtists
                 TARGET_SEPARATORS_ARTISTS    -> Keys.tagSeparatorsArtists

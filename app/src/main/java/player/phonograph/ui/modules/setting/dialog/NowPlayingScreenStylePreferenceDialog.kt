@@ -8,7 +8,7 @@ import player.phonograph.R
 import player.phonograph.model.ui.NowPlayingScreenStyle
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Preference
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import player.phonograph.ui.compose.components.ActionItem
 import player.phonograph.ui.modules.setting.elements.NowPlayingScreenStyleSettings
 import androidx.compose.foundation.layout.padding
@@ -35,7 +35,7 @@ class NowPlayingScreenStylePreferenceDialog : AbsSettingsDialog() {
     override fun Content() {
         val context = LocalContext.current
 
-        val preference: Preference<NowPlayingScreenStyle> = remember { Setting(context)[Keys.nowPlayingScreenStyle] }
+        val preference: Preference<NowPlayingScreenStyle> = remember { Settings(context)[Keys.nowPlayingScreenStyle] }
         val state: MutableStateFlow<NowPlayingScreenStyle> = remember { MutableStateFlow(preference.default) }
         LaunchedEffect(preference) { preference.flow.collect { state.emit(it) } }
 

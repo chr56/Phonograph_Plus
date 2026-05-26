@@ -6,7 +6,7 @@ package player.phonograph.ui.modules.setting.dialog
 
 import player.phonograph.R
 import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.ActionItem
@@ -48,13 +48,13 @@ class MonetColorPickerDialog : ComposeViewDialogFragment() {
         }
 
     private fun read(): MonetColor.MonetColorPalette {
-        val value = Setting(requireContext())[settingKey].data
+        val value = Settings(requireContext())[settingKey].data
         return MonetColor.MonetColorPalette(value)
     }
 
     private fun save(palette: MonetColor.MonetColorPalette) {
         lifecycleScope.launch {
-            Setting(requireContext())[settingKey].edit { palette.value }
+            Settings(requireContext())[settingKey].edit { palette.value }
         }
     }
 

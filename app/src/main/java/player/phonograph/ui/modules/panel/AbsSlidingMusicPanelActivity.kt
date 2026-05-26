@@ -9,7 +9,7 @@ import player.phonograph.databinding.SlidingMusicPanelLayoutBinding
 import player.phonograph.model.ui.NowPlayingScreenStyle
 import player.phonograph.model.ui.UnarySlidingUpPanelProvider
 import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import player.phonograph.ui.modules.player.AbsPlayerFragment
 import player.phonograph.ui.modules.player.MiniPlayerFragment
 import player.phonograph.ui.modules.player.style.buildPlayerFragment
@@ -107,7 +107,7 @@ abstract class AbsSlidingMusicPanelActivity :
         }
 
         // add fragment
-        val nowPlayingScreenStyle = Setting(this)[Keys.nowPlayingScreenStyle].flow
+        val nowPlayingScreenStyle = Settings(this)[Keys.nowPlayingScreenStyle].flow
         observe(nowPlayingScreenStyle, state = Lifecycle.State.STARTED, distinctive = true) { screen ->
             // todo
             setupPlayerFragment(screen)

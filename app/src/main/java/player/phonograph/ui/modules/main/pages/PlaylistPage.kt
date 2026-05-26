@@ -15,7 +15,7 @@ import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.repo.loader.PinedPlaylists
 import player.phonograph.repo.loader.Playlists
 import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayPresenter
 import player.phonograph.ui.adapter.PlaylistBasicDisplayPresenter
@@ -54,7 +54,7 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
                 DynamicPlaylists.history(resources),
                 DynamicPlaylists.myTopTrack(resources),
             ).also {
-                if (!Setting(context)[Keys.useLegacyFavoritePlaylistImpl].data) {
+                if (!Settings(context)[Keys.useLegacyFavoritePlaylistImpl].data) {
                     it.add(DynamicPlaylists.favorites(resources))
                 }
             }.also { playlists ->

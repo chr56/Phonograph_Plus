@@ -10,7 +10,7 @@ import player.phonograph.R
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.util.SleepTimer
 import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import player.phonograph.ui.views.AccentColorCheckBox
 import player.phonograph.util.text.readableDuration
 import player.phonograph.util.theme.ThemeSettingsDelegate.accentColor
@@ -75,7 +75,7 @@ class SleepTimerDialog : DialogFragment() {
         }
 
         val minutesToQuit = progress.toLong()
-        val shouldFinishLastSong = Setting(service)[Keys.sleepTimerFinishMusic].data
+        val shouldFinishLastSong = Settings(service)[Keys.sleepTimerFinishMusic].data
         if (SleepTimer.setTimer(service, minutesToQuit, shouldFinishLastSong)) {
             Toast.makeText(
                 service,
@@ -146,7 +146,7 @@ class SleepTimerDialog : DialogFragment() {
 
                 override fun onStartTrackingTouch(seekArc: SeekArc) {}
                 override fun onStopTrackingTouch(seekArc: SeekArc) {
-                    Setting(App.instance)[Keys.lastSleepTimerValue].data = seekArc.progress
+                    Settings(App.instance)[Keys.lastSleepTimerValue].data = seekArc.progress
                 }
             })
 
@@ -154,15 +154,15 @@ class SleepTimerDialog : DialogFragment() {
         alertDialog
             .findViewById<AccentColorCheckBox>(R.id.should_finish_last_song)!!// To remember settings last use sleep-timer
             .apply {
-                isChecked = Setting(context)[Keys.sleepTimerFinishMusic].data
+                isChecked = Settings(context)[Keys.sleepTimerFinishMusic].data
                 setOnCheckedChangeListener { _, isChecked ->
-                    Setting(context)[Keys.sleepTimerFinishMusic].data = isChecked
+                    Settings(context)[Keys.sleepTimerFinishMusic].data = isChecked
                 }
             }
 
         // init views : set remaining time for timeDisplay
         timeDisplay.text =
-            getString(R.string.tips_minutes, Setting(requireContext())[Keys.lastSleepTimerValue].data)
+            getString(R.string.tips_minutes, Settings(requireContext())[Keys.lastSleepTimerValue].data)
     }
 
     override fun onDismiss(dialog: DialogInterface) {

@@ -6,7 +6,7 @@ package player.phonograph.ui.modules.setting.dialog
 
 import player.phonograph.R
 import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import player.phonograph.ui.compose.components.ActionItem
 import player.phonograph.ui.modules.setting.elements.ExternalPlayRequestSettings
 import androidx.compose.foundation.layout.padding
@@ -28,37 +28,37 @@ class ExternalPlayRequestSettingDialog : AbsSettingsDialog() {
     override fun Content() {
         val context = LocalContext.current
         var showPrompt by remember {
-            mutableStateOf(Setting(context)[Keys.externalPlayRequestShowPrompt].data)
+            mutableStateOf(Settings(context)[Keys.externalPlayRequestShowPrompt].data)
         }
         val flipUseDefault = {
             val newValue = !showPrompt
             showPrompt = newValue
-            Setting(context)[Keys.externalPlayRequestShowPrompt].data = newValue
+            Settings(context)[Keys.externalPlayRequestShowPrompt].data = newValue
         }
 
         var silence by remember {
-            mutableStateOf(Setting(context)[Keys.externalPlayRequestSilence].data)
+            mutableStateOf(Settings(context)[Keys.externalPlayRequestSilence].data)
         }
         val flipSilence = {
             val newValue = !silence
             silence = newValue
-            Setting(context)[Keys.externalPlayRequestSilence].data = newValue
+            Settings(context)[Keys.externalPlayRequestSilence].data = newValue
         }
 
         var currentModeSingle by remember {
-            mutableIntStateOf(Setting(context)[Keys.externalPlayRequestSingleMode].data)
+            mutableIntStateOf(Settings(context)[Keys.externalPlayRequestSingleMode].data)
         }
         val setCurrentModeSingle = { new: Int ->
             currentModeSingle = new
-            Setting(context)[Keys.externalPlayRequestSingleMode].data = new
+            Settings(context)[Keys.externalPlayRequestSingleMode].data = new
         }
 
         var currentModeMultiple by remember {
-            mutableIntStateOf(Setting(context)[Keys.externalPlayRequestMultipleMode].data)
+            mutableIntStateOf(Settings(context)[Keys.externalPlayRequestMultipleMode].data)
         }
         val setCurrentModeMultiple = { new: Int ->
             currentModeMultiple = new
-            Setting(context)[Keys.externalPlayRequestMultipleMode].data = new
+            Settings(context)[Keys.externalPlayRequestMultipleMode].data = new
         }
         SettingsDialog(
             modifier = Modifier,

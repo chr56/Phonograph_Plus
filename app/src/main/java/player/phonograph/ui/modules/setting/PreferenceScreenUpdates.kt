@@ -7,7 +7,7 @@ package player.phonograph.ui.modules.setting
 import player.phonograph.R
 import player.phonograph.model.time.TimeIntervalCalculationMode
 import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import player.phonograph.ui.modules.setting.components.BooleanPreference
 import player.phonograph.ui.modules.setting.components.DialogPreference
 import player.phonograph.ui.modules.setting.components.SettingsGroup
@@ -43,7 +43,7 @@ fun PreferenceScreenUpdates() {
                 },
                 currentValueForHint = {
                     val resources = it.resources
-                    val preference = Setting(it)[Keys.checkUpdateInterval]
+                    val preference = Settings(it)[Keys.checkUpdateInterval]
                     val duration = preference.data
                     Texts.duration(resources, duration, TimeIntervalCalculationMode.EVERY)
                 }

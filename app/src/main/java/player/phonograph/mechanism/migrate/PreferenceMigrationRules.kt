@@ -6,7 +6,7 @@ package player.phonograph.mechanism.migrate
 
 import player.phonograph.foundation.error.warning
 import player.phonograph.model.migration.VersionMigrationRule
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
@@ -64,7 +64,7 @@ sealed class PreferenceMigrationRule(introduced: Int) : VersionMigrationRule(int
     protected fun removeSettingItem(context: Context, key: String) {
         try {
             CoroutineScope(SupervisorJob()).launch {
-                Setting(context).dataStore.edit { preference ->
+                Settings(context).dataStore.edit { preference ->
                     val booleanKey = booleanPreferencesKey(key)
                     val stringKey = stringPreferencesKey(key)
                     val stringSetKey = stringSetPreferencesKey(key)

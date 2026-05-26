@@ -9,7 +9,7 @@ import player.phonograph.databinding.ItemRightCheckboxBinding
 import player.phonograph.model.notification.NotificationAction
 import player.phonograph.model.notification.NotificationActionsConfig
 import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import player.phonograph.ui.adapter.SortableListAdapter
 import player.phonograph.ui.compose.components.ActionItem
 import player.phonograph.ui.resource.Texts
@@ -70,7 +70,7 @@ class NotificationActionsConfigDialog : AbsSettingsDialog() {
                         val view = LayoutInflater.from(context).inflate(R.layout.recycler_view_wrapped, null)
                         val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view)
 
-                        val config: NotificationActionsConfig = Setting(context)[Keys.notificationActions].data
+                        val config: NotificationActionsConfig = Settings(context)[Keys.notificationActions].data
                         val configAdapter = ActionConfigAdapter(config).also { it.init() }
 
                         adapter = configAdapter
@@ -94,7 +94,7 @@ class NotificationActionsConfigDialog : AbsSettingsDialog() {
     private fun actionApply() {
         val config = adapter?.currentConfig
         if (config != null) {
-            Setting(requireContext())[Keys.notificationActions].data = config
+            Settings(requireContext())[Keys.notificationActions].data = config
             dismiss()
         } else {
             Toast.makeText(
@@ -106,7 +106,7 @@ class NotificationActionsConfigDialog : AbsSettingsDialog() {
     }
 
     private fun actionReset() {
-        Setting(requireContext())[Keys.notificationActions].data = NotificationActionsConfig.DEFAULT
+        Settings(requireContext())[Keys.notificationActions].data = NotificationActionsConfig.DEFAULT
         dismiss()
     }
 

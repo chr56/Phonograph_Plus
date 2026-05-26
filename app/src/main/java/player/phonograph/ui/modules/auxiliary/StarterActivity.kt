@@ -26,7 +26,7 @@ import player.phonograph.service.MusicService
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.service.queue.executePlayRequest
 import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import player.phonograph.ui.dialogs.OpenWithDialog
 import player.phonograph.ui.modules.main.MainActivity
 import player.phonograph.util.debug
@@ -78,8 +78,8 @@ class StarterActivity : AppCompatActivity() {
             Toast.makeText(this, R.string.msg_empty, Toast.LENGTH_SHORT).show()
             finish()
         } else {
-            val showPrompt: Boolean = Setting(this.applicationContext)[Keys.externalPlayRequestShowPrompt].data
-            val silence: Boolean = Setting(this.applicationContext)[Keys.externalPlayRequestSilence].data
+            val showPrompt: Boolean = Settings(this.applicationContext)[Keys.externalPlayRequestShowPrompt].data
+            val silence: Boolean = Settings(this.applicationContext)[Keys.externalPlayRequestSilence].data
             if (showPrompt) {
                 val openWithDialog = OpenWithDialog.create(playRequest, gotoMainActivity = !silence)
                 openWithDialog?.show(supportFragmentManager, null)
@@ -96,7 +96,7 @@ class StarterActivity : AppCompatActivity() {
             is SongsRequest -> Keys.externalPlayRequestMultipleMode
             else -> return
         }
-        val mode = Setting(this.applicationContext)[key].data
+        val mode = Settings(this.applicationContext)[key].data
         executePlayRequest(queueManager, playRequest, mode)
         if (!silence) gotoMainActivity() else finish()
     }

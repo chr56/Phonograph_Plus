@@ -8,7 +8,7 @@ import player.phonograph.foundation.Reboot
 import player.phonograph.model.CrashReport
 import player.phonograph.model.CrashReport.Constant.CRASH_TYPE_CORRUPTED_DATA
 import player.phonograph.model.CrashReport.Constant.CRASH_TYPE_INTERNAL_ERROR
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import player.phonograph.ui.basis.ToolbarActivity
 import player.phonograph.ui.modules.setting.SettingsActivity
 import player.phonograph.util.text.currentDate
@@ -171,7 +171,7 @@ class CrashActivity : ToolbarActivity() {
                         positiveButton(R.string.action_clear_all_preference) { dialog ->
                             dialog.dismiss()
                             runBlocking {
-                                if (Setting(context).clearAll()) {
+                                if (Settings(context).clearAll()) {
                                     Toast.makeText(context, R.string.success, Toast.LENGTH_SHORT).show()
                                     Reboot.reboot(context)
                                 } else {

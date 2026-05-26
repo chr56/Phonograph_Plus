@@ -17,7 +17,7 @@ import player.phonograph.model.lyrics.LyricsInfo
 import player.phonograph.model.lyrics.TextLyrics
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import player.phonograph.ui.modules.player.LyricsViewModel
 import player.phonograph.ui.resource.Texts
 import player.phonograph.util.component.MusicProgressUpdateDelegate
@@ -433,8 +433,8 @@ private class LyricsAdapter(
     ) {
         companion object {
             fun read(context: Context): DisplaySettings {
-                val enableTimestamp = Setting(context)[Keys.displaySynchronizedLyricsTimeAxis].data
-                val fontSize = Setting(context)[Keys.dialogLyricsSize].data
+                val enableTimestamp = Settings(context)[Keys.displaySynchronizedLyricsTimeAxis].data
+                val fontSize = Settings(context)[Keys.dialogLyricsSize].data
                 return DisplaySettings(
                     enableTimestamp,
                     fontSize

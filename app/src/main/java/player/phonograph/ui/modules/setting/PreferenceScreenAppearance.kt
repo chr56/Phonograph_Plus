@@ -10,7 +10,7 @@ import player.phonograph.foundation.localization.LocalizationStore
 import player.phonograph.mechanism.PhonographShortcutManager
 import player.phonograph.model.ui.GeneralTheme
 import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import player.phonograph.ui.modules.setting.components.BooleanPreference
 import player.phonograph.ui.modules.setting.components.ColorPreference
 import player.phonograph.ui.modules.setting.components.DialogPreference
@@ -169,10 +169,10 @@ private fun ColorPreference(
 ) {
     val context = LocalContext.current
 
-    val enableNightColorsPreference = remember { Setting(context)[Keys.enableColorSchemeForNight] }
+    val enableNightColorsPreference = remember { Settings(context)[Keys.enableColorSchemeForNight] }
     val enableNightColors by enableNightColorsPreference.flow.collectAsState(enableNightColorsPreference.default)
 
-    val enableMonetPreference = remember { Setting(context)[Keys.enableMonet] }
+    val enableMonetPreference = remember { Settings(context)[Keys.enableMonet] }
     val enableMonet by enableMonetPreference.flow.collectAsState(enableMonetPreference.default)
 
     val source = remember(enableMonet, variant) {
@@ -199,7 +199,7 @@ private fun ColorPreference(
     val hidden = nightVariants && !enableNightColors
 
     if (!hidden) ColorPreference(titleRes, summaryRes, Color(color)) {
-        if (SDK_INT >= S && Setting(context)[Keys.enableMonet].data) {
+        if (SDK_INT >= S && Settings(context)[Keys.enableMonet].data) {
             MonetColorPickerDialog.showColorChooserDialog(context, variant)
         } else {
             MaterialColorPickerDialog.showColorChooserDialog(context, color, variant)

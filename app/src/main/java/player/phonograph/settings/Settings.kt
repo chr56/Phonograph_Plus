@@ -11,7 +11,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import android.content.Context
 
 
-class Setting(context: Context) {
+class Settings(context: Context) {
 
     val dataStore = context.applicationContext.settingsDatastore
 

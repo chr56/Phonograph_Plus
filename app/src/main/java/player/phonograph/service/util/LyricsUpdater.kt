@@ -11,7 +11,7 @@ import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.service.MusicService
 import player.phonograph.service.ServiceComponent
 import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import player.phonograph.util.permissions.StoragePermissionChecker
 import android.content.Context
 import kotlin.math.max
@@ -27,7 +27,7 @@ class LyricsUpdater : ServiceComponent {
 
     suspend fun updateViaSong(context: Context, song: Song?) {
         if (song == null) return
-        val enableLyrics = Setting(context)[Keys.enableLyrics].read()
+        val enableLyrics = Settings(context)[Keys.enableLyrics].read()
         if (!enableLyrics) return
         val file = File(song.data)
         lyrics =

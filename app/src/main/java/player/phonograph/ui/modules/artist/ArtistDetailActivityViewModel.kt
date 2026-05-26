@@ -15,7 +15,7 @@ import player.phonograph.repo.loader.Albums
 import player.phonograph.repo.loader.Artists
 import player.phonograph.repo.loader.Songs
 import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import player.phonograph.util.theme.ThemeSettingsDelegate.primaryColor
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -71,7 +71,7 @@ class ArtistDetailActivityViewModel(var artistId: Long) : ViewModel() {
     }
 
     private var _usePaletteColor: MutableStateFlow<Boolean> =
-        MutableStateFlow(Setting(App.instance)[Keys.albumArtistColoredFooters].data)
+        MutableStateFlow(Settings(App.instance)[Keys.albumArtistColoredFooters].data)
     val usePaletteColor = _usePaletteColor.asStateFlow()
     fun updateUsePaletteColor(newValue: Boolean) {
         _usePaletteColor.value = newValue

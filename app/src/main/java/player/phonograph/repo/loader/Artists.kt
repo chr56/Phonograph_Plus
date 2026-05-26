@@ -10,7 +10,7 @@ import player.phonograph.model.repo.loader.IArtists
 import player.phonograph.repo.mediastore.MediaStoreArtists
 import player.phonograph.repo.room.domain.RoomArtists
 import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import android.content.Context
 
 /**
@@ -18,7 +18,7 @@ import android.content.Context
  */
 object Artists : IArtists, Delegated<IArtists>() {
     override fun onCreateDelegate(context: Context): IArtists {
-        val backend = Setting(context)[Keys.musicLibraryBackend].data
+        val backend = Settings(context)[Keys.musicLibraryBackend].data
         val impl: IArtists = if (backend.useMediaStoreArtists) MediaStoreArtists else RoomArtists
         return impl
     }

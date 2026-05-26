@@ -8,7 +8,7 @@ import player.phonograph.settings.CompositeKey
 import player.phonograph.settings.Preference
 import player.phonograph.settings.PreferenceKey
 import player.phonograph.settings.PrimitiveKey
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
@@ -35,7 +35,7 @@ fun <T> rememberInMemorySettingPreference(key: PreferenceKey<T>): Preference<T> 
 @Composable
 fun <T> rememberDataStoreSettingPreference(key: PreferenceKey<T>): Preference<T> {
     val context = LocalContext.current
-    return remember { Setting(context)[key] }
+    return remember { Settings(context)[key] }
 }
 
 /**

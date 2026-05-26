@@ -10,7 +10,7 @@ import player.phonograph.model.repo.DEFAULT_TAG_ABBR_FEATURES_ARTISTS
 import player.phonograph.model.repo.DEFAULT_TAG_SEPARATORS_ARTISTS
 import player.phonograph.model.repo.DEFAULT_TAG_SEPARATORS_GENRES
 import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import android.content.Context
 
 class RelationshipResolver private constructor(
@@ -23,8 +23,8 @@ class RelationshipResolver private constructor(
         fun default(): RelationshipResolver = RelationshipResolver()
 
         suspend fun fromSettings(context: Context): RelationshipResolver {
-            val artistSeparators = Setting(context)[Keys.tagSeparatorsArtists].read()
-            val abbrFeatureArtists = Setting(context)[Keys.tagAbbrFeatureArtists].read()
+            val artistSeparators = Settings(context)[Keys.tagSeparatorsArtists].read()
+            val abbrFeatureArtists = Settings(context)[Keys.tagAbbrFeatureArtists].read()
             return RelationshipResolver(
                 enableFeatureArtistsExtraction = true,
                 artistSeparators = artistSeparators.toTypedArray(),

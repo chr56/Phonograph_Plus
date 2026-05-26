@@ -10,7 +10,7 @@ import player.phonograph.foundation.error.warning
 import player.phonograph.mechanism.UpdateChecker
 import player.phonograph.model.version.VersionCatalog
 import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import player.phonograph.ui.basis.ToolbarActivity
 import player.phonograph.ui.dialogs.ChangelogDialog
 import player.phonograph.ui.dialogs.DebugDialog
@@ -188,7 +188,7 @@ class AboutActivity : ToolbarActivity() {
             UpdateChecker.checkUpdate { versionCatalog: VersionCatalog, upgradable: Boolean ->
                 if (upgradable) {
                     UpgradeInfoDialog.create(versionCatalog).show(supportFragmentManager, "UPGRADE")
-                    val ignored = Setting(App.instance)[Keys.ignoreUpgradeDate].data
+                    val ignored = Settings(App.instance)[Keys.ignoreUpgradeDate].data
                     val current = versionCatalog.latest(currentReleaseChannel)?.date ?: 0
                     if (ignored >= current) {
                         lifecycleScope.launch(Dispatchers.Main) {

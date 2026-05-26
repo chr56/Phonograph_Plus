@@ -8,7 +8,7 @@ import player.phonograph.model.PlayRequest
 import player.phonograph.repo.loader.Songs
 import player.phonograph.repo.mediastore.MediaStoreSongs
 import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import androidx.media.MediaBrowserServiceCompat.BrowserRoot
 import android.app.SearchManager
 import android.content.Context
@@ -91,5 +91,5 @@ object MediaBrowserDelegate {
     }
 
     private fun lastAddedCutoffTimeStamp(context: Context): Long =
-        Setting(context)[Keys.lastAddedCutoffTimeStamp].data / 1000
+        Settings(context)[Keys.lastAddedCutoffTimeStamp].data / 1000
 }

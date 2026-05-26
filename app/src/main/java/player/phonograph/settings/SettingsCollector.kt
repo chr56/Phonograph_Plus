@@ -23,7 +23,7 @@ class SettingsCollector<T>(val preferenceKey: () -> PreferenceKey<T>) {
 
     private suspend fun init(context: Context): T {
         val key = preferenceKey()
-        val flow = Setting(context)[key].flow
+        val flow = Settings(context)[key].flow
         if (job == null) {
             job = coroutineScope(context).launch {
                 flow.collect { current = it }

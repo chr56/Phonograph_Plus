@@ -27,7 +27,7 @@ import player.phonograph.model.sort.SortMode
 import player.phonograph.repo.loader.PinedPlaylists
 import player.phonograph.repo.mediastore.internal.withPathFilter
 import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import player.phonograph.util.sort
 import android.content.Context
 import android.database.Cursor
@@ -147,7 +147,7 @@ object MediaStorePlaylists : IPlaylists {
     }
 
     private fun List<Playlist>.sortAll(context: Context): List<Playlist> =
-        sortAll(Setting(context)[Keys.playlistSortMode].data)
+        sortAll(Settings(context)[Keys.playlistSortMode].data)
 
     private fun List<Playlist>.sortAll(sortMode: SortMode): List<Playlist> =
         this.sort(sortMode.revert, mediastorePlaylistSortRefKey(sortMode.sortRef))

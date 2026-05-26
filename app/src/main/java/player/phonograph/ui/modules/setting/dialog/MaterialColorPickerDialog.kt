@@ -7,7 +7,7 @@ package player.phonograph.ui.modules.setting.dialog
 import player.phonograph.R
 import player.phonograph.mechanism.PhonographShortcutManager
 import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.ActionItem
@@ -138,7 +138,7 @@ class MaterialColorPickerDialog : ComposeViewDialogFragment() {
             ColorPalette.Variant.PrimaryForNight -> Keys.selectedPrimaryColorForNight
             ColorPalette.Variant.AccentForNight  -> Keys.selectedAccentColorForNight
         }
-        Setting(context)[key].data = color
+        Settings(context)[key].data = color
         if (SDK_INT >= VERSION_CODES.N_MR1) {
             PhonographShortcutManager.updateDynamicShortcuts(context)
         }

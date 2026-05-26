@@ -6,7 +6,7 @@ package player.phonograph.repo.mediastore.internal
 
 import player.phonograph.settings.Keys
 import player.phonograph.settings.PathFilterSetting
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import android.content.Context
 import android.database.Cursor
 import android.provider.MediaStore
@@ -27,7 +27,7 @@ internal suspend inline fun withPathFilter(
 
     if (escape) return block(selection, selectionValues)
 
-    val includeMode = !Setting(context)[Keys.pathFilterExcludeMode].read()
+    val includeMode = !Settings(context)[Keys.pathFilterExcludeMode].read()
 
     val paths = PathFilterSetting(!includeMode).read(context).map { "$it%" }
 

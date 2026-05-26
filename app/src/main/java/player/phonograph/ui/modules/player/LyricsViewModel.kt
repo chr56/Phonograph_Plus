@@ -10,7 +10,7 @@ import player.phonograph.model.lyrics.AbsLyrics
 import player.phonograph.model.lyrics.LYRICS_ALIGN_CENTER
 import player.phonograph.model.lyrics.LyricsInfo
 import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import player.phonograph.util.permissions.StoragePermissionChecker
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -64,7 +64,7 @@ class LyricsViewModel : ViewModel() {
         loadLyricsJob?.cancel()
         // load new lyrics
         loadLyricsJob = viewModelScope.launch {
-            val enableLyrics = Setting(context)[Keys.enableLyrics].read()
+            val enableLyrics = Settings(context)[Keys.enableLyrics].read()
             if (enableLyrics) {
                 if (StoragePermissionChecker.hasStorageReadPermission(context)) {
                     replace(LyricsLoader.search(File(song.data), song.title))
@@ -116,17 +116,17 @@ class LyricsViewModel : ViewModel() {
         watchJob = viewModelScope.launch {
             val applicationContext = context.applicationContext
             viewModelScope.launch(Dispatchers.IO) {
-                Setting(applicationContext)[Keys.synchronizedLyricsShow].flow.collect {
+                Settings(applicationContext)[Keys.synchronizedLyricsShow].flow.collect {
                     _showSynchronizedLyrics.value = it
                 }
             }
             viewModelScope.launch(Dispatchers.IO) {
-                Setting(applicationContext)[Keys.coverLyricsSize].flow.collect {
+                Settings(applicationContext)[Keys.coverLyricsSize].flow.collect {
                     _coverLyricsSize.value = it
                 }
             }
             viewModelScope.launch(Dispatchers.IO) {
-                Setting(applicationContext)[Keys.coverLyricsAlign].flow.collect {
+                Settings(applicationContext)[Keys.coverLyricsAlign].flow.collect {
                     _coverLyricsAlign.value = it
                 }
             }

@@ -11,7 +11,7 @@ import player.phonograph.model.Song
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import player.phonograph.util.sort
 import android.content.Context
 import android.util.ArrayMap
@@ -56,7 +56,7 @@ suspend fun generateArtistAlbums(context: Context, songs: List<Song>): List<Albu
     catalogAlbums(context, songs, SortMode(SortRef.YEAR, false)).await()
 
 suspend fun generateAlbums(context: Context, songs: List<Song>): List<Album> =
-    catalogAlbums(context, songs, Setting(context)[Keys.albumSortMode].read()).await()
+    catalogAlbums(context, songs, Settings(context)[Keys.albumSortMode].read()).await()
 
 private suspend fun catalogAlbums(
     context: Context,

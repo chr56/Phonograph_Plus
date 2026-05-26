@@ -7,7 +7,7 @@ package player.phonograph.mechanism
 import player.phonograph.R
 import player.phonograph.model.ui.AppShortcutType
 import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import player.phonograph.ui.modules.auxiliary.StarterActivity
 import player.phonograph.util.theme.ThemeSettingsDelegate.primaryColor
 import player.phonograph.util.theme.getTintedDrawable
@@ -60,7 +60,7 @@ object PhonographShortcutManager {
     )
 
     fun defaultShortcuts(context: Context): List<ShortcutInfo> {
-        val colored = Setting(context)[Keys.coloredAppShortcuts].data
+        val colored = Settings(context)[Keys.coloredAppShortcuts].data
         return defaultShortcutTypes().map { type -> shortcutInfo(context, type, colored) }
     }
 

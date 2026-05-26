@@ -6,7 +6,7 @@ package player.phonograph.ui.modules.setting.dialog
 
 import player.phonograph.R
 import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import player.phonograph.ui.compose.components.ActionItem
 import player.phonograph.ui.modules.setting.elements.CheckUpdateIntervalSettings
 import androidx.compose.foundation.layout.padding
@@ -28,7 +28,7 @@ class CheckUpdateIntervalDialog : AbsSettingsDialog() {
     override fun Content() {
         val context = LocalContext.current
         val key = remember { Keys.checkUpdateInterval }
-        val preference = remember { Setting(context)[key] }
+        val preference = remember { Settings(context)[key] }
         var duration by remember { mutableStateOf(preference.data) }
         SettingsDialog(
             modifier = Modifier,

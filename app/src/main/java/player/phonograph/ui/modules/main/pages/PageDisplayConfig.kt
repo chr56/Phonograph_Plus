@@ -9,7 +9,7 @@ import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import player.phonograph.util.ui.isLandscape
 import android.content.Context
 import android.content.res.Resources
@@ -34,7 +34,7 @@ sealed class PageDisplayConfig(context: Context) {
     open val allowColoredFooter: Boolean = true
     open val allowRevertSort: Boolean = true
 
-    protected val setting = Setting(context)
+    protected val settings = Settings(context)
 }
 
 sealed class ImagePageDisplayConfig(context: Context) : PageDisplayConfig(context) {
@@ -69,27 +69,27 @@ class SongPageDisplayConfig(context: Context) : ImagePageDisplayConfig(context) 
         )
 
     override var layout: ItemLayoutStyle
-        get() = if (isLandscape) setting[Keys.songItemLayoutLand].data else setting[Keys.songItemLayout].data
+        get() = if (isLandscape) settings[Keys.songItemLayoutLand].data else settings[Keys.songItemLayout].data
         set(value) {
-            if (isLandscape) setting[Keys.songItemLayoutLand].data = value
-            else setting[Keys.songItemLayout].data = value
+            if (isLandscape) settings[Keys.songItemLayoutLand].data = value
+            else settings[Keys.songItemLayout].data = value
         }
     override var gridSize: Int
-        get() = if (isLandscape) setting[Keys.songGridSizeLand].data else setting[Keys.songGridSize].data
+        get() = if (isLandscape) settings[Keys.songGridSizeLand].data else settings[Keys.songGridSize].data
         set(value) {
             if (value <= 0) return
-            if (isLandscape) setting[Keys.songGridSizeLand].data = value
-            else setting[Keys.songGridSize].data = value
+            if (isLandscape) settings[Keys.songGridSizeLand].data = value
+            else settings[Keys.songGridSize].data = value
         }
     override var sortMode: SortMode
-        get() = setting[Keys.songSortMode].data
+        get() = settings[Keys.songSortMode].data
         set(value) {
-            setting[Keys.songSortMode].data = value
+            settings[Keys.songSortMode].data = value
         }
     override var colorFooter: Boolean
-        get() = setting[Keys.songColoredFooters].data
+        get() = settings[Keys.songColoredFooters].data
         set(value) {
-            setting[Keys.songColoredFooters].data = value
+            settings[Keys.songColoredFooters].data = value
         }
 
 }
@@ -105,27 +105,27 @@ class AlbumPageDisplayConfig(context: Context) : ImagePageDisplayConfig(context)
         )
 
     override var layout: ItemLayoutStyle
-        get() = if (isLandscape) setting[Keys.albumItemLayoutLand].data else setting[Keys.albumItemLayout].data
+        get() = if (isLandscape) settings[Keys.albumItemLayoutLand].data else settings[Keys.albumItemLayout].data
         set(value) {
-            if (isLandscape) setting[Keys.albumItemLayoutLand].data = value
-            else setting[Keys.albumItemLayout].data = value
+            if (isLandscape) settings[Keys.albumItemLayoutLand].data = value
+            else settings[Keys.albumItemLayout].data = value
         }
     override var gridSize: Int
-        get() = if (isLandscape) setting[Keys.albumGridSizeLand].data else setting[Keys.albumGridSize].data
+        get() = if (isLandscape) settings[Keys.albumGridSizeLand].data else settings[Keys.albumGridSize].data
         set(value) {
             if (value <= 0) return
-            if (isLandscape) setting[Keys.albumGridSizeLand].data = value
-            else setting[Keys.albumGridSize].data = value
+            if (isLandscape) settings[Keys.albumGridSizeLand].data = value
+            else settings[Keys.albumGridSize].data = value
         }
     override var sortMode: SortMode
-        get() = setting[Keys.albumSortMode].data
+        get() = settings[Keys.albumSortMode].data
         set(value) {
-            setting[Keys.albumSortMode].data = value
+            settings[Keys.albumSortMode].data = value
         }
     override var colorFooter: Boolean
-        get() = setting[Keys.albumColoredFooters].data
+        get() = settings[Keys.albumColoredFooters].data
         set(value) {
-            setting[Keys.albumColoredFooters].data = value
+            settings[Keys.albumColoredFooters].data = value
         }
 
 }
@@ -140,27 +140,27 @@ class ArtistPageDisplayConfig(context: Context) : ImagePageDisplayConfig(context
         )
 
     override var layout: ItemLayoutStyle
-        get() = if (isLandscape) setting[Keys.artistItemLayoutLand].data else setting[Keys.artistItemLayout].data
+        get() = if (isLandscape) settings[Keys.artistItemLayoutLand].data else settings[Keys.artistItemLayout].data
         set(value) {
-            if (isLandscape) setting[Keys.artistItemLayoutLand].data = value
-            else setting[Keys.artistItemLayout].data = value
+            if (isLandscape) settings[Keys.artistItemLayoutLand].data = value
+            else settings[Keys.artistItemLayout].data = value
         }
     override var gridSize: Int
-        get() = if (isLandscape) setting[Keys.artistGridSizeLand].data else setting[Keys.artistGridSize].data
+        get() = if (isLandscape) settings[Keys.artistGridSizeLand].data else settings[Keys.artistGridSize].data
         set(value) {
             if (value <= 0) return
-            if (isLandscape) setting[Keys.artistGridSizeLand].data = value
-            else setting[Keys.artistGridSize].data = value
+            if (isLandscape) settings[Keys.artistGridSizeLand].data = value
+            else settings[Keys.artistGridSize].data = value
         }
     override var sortMode: SortMode
-        get() = setting[Keys.artistSortMode].data
+        get() = settings[Keys.artistSortMode].data
         set(value) {
-            setting[Keys.artistSortMode].data = value
+            settings[Keys.artistSortMode].data = value
         }
     override var colorFooter: Boolean
-        get() = setting[Keys.artistColoredFooters].data
+        get() = settings[Keys.artistColoredFooters].data
         set(value) {
-            setting[Keys.artistColoredFooters].data = value
+            settings[Keys.artistColoredFooters].data = value
         }
 
 }
@@ -181,16 +181,16 @@ class PlaylistPageDisplayConfig(context: Context) : PageDisplayConfig(context) {
     override val maxGridSize: Int get() = if (isLandscape) 4 else 2
 
     override var gridSize: Int
-        get() = if (isLandscape) setting[Keys.playlistGridSizeLand].data else setting[Keys.playlistGridSize].data
+        get() = if (isLandscape) settings[Keys.playlistGridSizeLand].data else settings[Keys.playlistGridSize].data
         set(value) {
             if (value <= 0) return
-            if (isLandscape) setting[Keys.playlistGridSizeLand].data = value
-            else setting[Keys.playlistGridSize].data = value
+            if (isLandscape) settings[Keys.playlistGridSizeLand].data = value
+            else settings[Keys.playlistGridSize].data = value
         }
     override var sortMode: SortMode
-        get() = setting[Keys.playlistSortMode].data
+        get() = settings[Keys.playlistSortMode].data
         set(value) {
-            setting[Keys.playlistSortMode].data = value
+            settings[Keys.playlistSortMode].data = value
         }
     override var colorFooter: Boolean = false
     override val allowColoredFooter: Boolean
@@ -211,16 +211,16 @@ class GenrePageDisplayConfig(context: Context) : PageDisplayConfig(context) {
     override val maxGridSize: Int get() = if (isLandscape) 6 else 4
 
     override var gridSize: Int
-        get() = if (isLandscape) setting[Keys.genreGridSizeLand].data else setting[Keys.genreGridSize].data
+        get() = if (isLandscape) settings[Keys.genreGridSizeLand].data else settings[Keys.genreGridSize].data
         set(value) {
             if (value <= 0) return
-            if (isLandscape) setting[Keys.genreGridSizeLand].data = value
-            else setting[Keys.genreGridSize].data = value
+            if (isLandscape) settings[Keys.genreGridSizeLand].data = value
+            else settings[Keys.genreGridSize].data = value
         }
     override var sortMode: SortMode
-        get() = setting[Keys.genreSortMode].data
+        get() = settings[Keys.genreSortMode].data
         set(value) {
-            setting[Keys.genreSortMode].data = value
+            settings[Keys.genreSortMode].data = value
         }
     override var colorFooter: Boolean = false
     override val allowColoredFooter: Boolean
@@ -240,31 +240,31 @@ class FolderPageDisplayConfig(context: Context) : PageDisplayConfig(context) {
     override var layout: ItemLayoutStyle
         get() =
             if (isLandscape) {
-                setting[Keys.folderItemLayoutLand].data
+                settings[Keys.folderItemLayoutLand].data
             } else {
-                setting[Keys.folderItemLayout].data
+                settings[Keys.folderItemLayout].data
             }
         set(value) {
             if (isLandscape) {
-                setting[Keys.folderItemLayoutLand].data = value
+                settings[Keys.folderItemLayoutLand].data = value
             } else {
-                setting[Keys.folderItemLayout].data = value
+                settings[Keys.folderItemLayout].data = value
             }
         }
 
     override val maxGridSize: Int get() = if (isLandscape) 4 else 2
     override var gridSize: Int
-        get() = if (isLandscape) setting[Keys.folderGridSizeLand].data else setting[Keys.folderGridSize].data
+        get() = if (isLandscape) settings[Keys.folderGridSizeLand].data else settings[Keys.folderGridSize].data
         set(value) {
             if (value <= 0) return
-            if (isLandscape) setting[Keys.folderGridSizeLand].data = value
-            else setting[Keys.folderGridSize].data = value
+            if (isLandscape) settings[Keys.folderGridSizeLand].data = value
+            else settings[Keys.folderGridSize].data = value
         }
 
     override var sortMode: SortMode
-        get() = setting[Keys.collectionSortMode].data
+        get() = settings[Keys.collectionSortMode].data
         set(value) {
-            setting[Keys.collectionSortMode].data = value
+            settings[Keys.collectionSortMode].data = value
         }
     override var colorFooter: Boolean = false
     override val allowColoredFooter: Boolean get() = false

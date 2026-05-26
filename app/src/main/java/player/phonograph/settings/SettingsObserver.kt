@@ -17,15 +17,15 @@ import kotlinx.coroutines.launch
 class SettingsObserver(
     context: Context,
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO),
-    private val setting: Setting = Setting(context),
+    private val settings: Settings = Settings(context),
 ) {
     fun <T> collect(
         key: PreferenceKey<T>,
         coroutineContext: CoroutineContext = SupervisorJob(),
         collector: FlowCollector<T>,
     ): Job = coroutineScope.launch(coroutineContext) {
-        setting[key].flow.distinctUntilChanged().collect(collector)
+        settings[key].flow.distinctUntilChanged().collect(collector)
     }
 
-    fun <T> blocking(key: PreferenceKey<T>): T = setting[key].data
+    fun <T> blocking(key: PreferenceKey<T>): T = settings[key].data
 }

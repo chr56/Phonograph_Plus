@@ -11,7 +11,7 @@ import player.phonograph.model.repo.loader.IGenres
 import player.phonograph.repo.mediastore.MediaStoreGenres
 import player.phonograph.repo.room.domain.RoomGenres
 import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import android.content.Context
 
 /**
@@ -19,7 +19,7 @@ import android.content.Context
  */
 object Genres : IGenres, Delegated<IGenres>() {
     override fun onCreateDelegate(context: Context): IGenres {
-        val backend = Setting(context)[Keys.musicLibraryBackend].data
+        val backend = Settings(context)[Keys.musicLibraryBackend].data
         val impl: IGenres = if (backend.useMediaStoreGenres) MediaStoreGenres else RoomGenres
         return impl
     }

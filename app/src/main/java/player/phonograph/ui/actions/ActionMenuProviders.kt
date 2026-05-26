@@ -23,7 +23,7 @@ import player.phonograph.repo.loader.PinedPlaylists
 import player.phonograph.repo.loader.Songs
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import player.phonograph.ui.modules.tag.TagBrowserActivity
 import player.phonograph.util.concurrent.lifecycleScopeOrNewOne
 import player.phonograph.util.fragmentActivity
@@ -415,7 +415,7 @@ object ActionMenuProviders {
 
         private fun setStartDirectory(context: Context, dir: FileItem): Boolean {
             val path = dir.path
-            Setting(context)[Keys.startDirectoryPath].data = path
+            Settings(context)[Keys.startDirectoryPath].data = path
             Toast.makeText(
                 context, String.format(context.getString(R.string.msg_new_start_directory), path), Toast.LENGTH_SHORT
             ).show()

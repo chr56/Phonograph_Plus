@@ -11,7 +11,7 @@ import player.phonograph.model.file.FileItem
 import player.phonograph.model.file.MediaPath
 import player.phonograph.repo.mediastore.internal.defaultSongQuerySortOrder
 import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import player.phonograph.util.file.audioFileFilter
 import android.content.Context
 import android.database.Cursor
@@ -43,7 +43,7 @@ object MediaStoreFileEntities {
                 do {
                     list.register(readFileItem(cursor, path, rootVolume))
                 } while (cursor.moveToNext())
-                val sortMode = Setting(context)[Keys.fileSortMode].read()
+                val sortMode = Settings(context)[Keys.fileSortMode].read()
                 list.sortedWith(FileItem.SortedComparator(sortMode))
             } else emptyList()
         }
@@ -123,7 +123,7 @@ object MediaStoreFileEntities {
         yield()
         val rootVolume = MediaPaths.volumeOf(context, path)
         val result = files.map { file -> parse(file, rootVolume) }
-        val sortMode = Setting(context)[Keys.fileSortMode].read()
+        val sortMode = Settings(context)[Keys.fileSortMode].read()
         return result.sortedWith(FileItem.SortedComparator(sortMode))
     }
 

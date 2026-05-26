@@ -15,7 +15,7 @@ import player.phonograph.mechanism.UpdateChecker.canAccessGitHub
 import player.phonograph.model.version.Version
 import player.phonograph.model.version.VersionCatalog
 import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.TempPopupContent
@@ -274,7 +274,7 @@ private fun VersionPopupContent(version: Version, dismissPopup: () -> Unit) {
 private fun actionIgnore(context: Context, versionCatalog: VersionCatalog) {
     val current = versionCatalog.latest(currentReleaseChannel)
     if (current != null) {
-        Setting(context)[Keys.ignoreUpgradeDate].data = current.date
+        Settings(context)[Keys.ignoreUpgradeDate].data = current.date
         Toast.makeText(context, R.string.msg_ignored_update, Toast.LENGTH_SHORT).show()
     }
 }

@@ -8,7 +8,7 @@ import lib.storage.extension.rootDirectory
 import player.phonograph.App
 import player.phonograph.model.file.MediaPath
 import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import androidx.core.content.getSystemService
 import android.content.Context
 import android.os.Environment
@@ -22,7 +22,7 @@ object MediaPaths {
     private const val TAG = "MediaPaths"
 
     fun startDirectory(context: Context): MediaPath {
-        val path = Setting(context.applicationContext)[Keys.startDirectoryPath].data
+        val path = Settings(context.applicationContext)[Keys.startDirectoryPath].data
         return from(path, context)
     }
 

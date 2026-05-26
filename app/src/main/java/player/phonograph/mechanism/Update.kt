@@ -11,7 +11,7 @@ import player.phonograph.BuildConfig
 import player.phonograph.foundation.notification.Notifications
 import player.phonograph.model.version.VersionCatalog
 import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import player.phonograph.util.NetworkUtil.invokeRequest
 import player.phonograph.util.currentReleaseChannel
 import player.phonograph.util.debug
@@ -173,7 +173,7 @@ object UpdateChecker {
         }
 
         // check if ignored
-        val ignoredDate = Setting(App.instance)[Keys.ignoreUpgradeDate].data
+        val ignoredDate = Settings(App.instance)[Keys.ignoreUpgradeDate].data
         if (ignoredDate >= latestVersion.date && !force) {
             Log.d(TAG, "ignore this upgrade: ${latestVersion.date}(${dateText(latestVersion.date)})")
             return false

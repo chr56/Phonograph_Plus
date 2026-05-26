@@ -19,7 +19,7 @@ import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.loader.Songs
 import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import player.phonograph.ui.actions.actionPlay
 import player.phonograph.ui.modules.explorer.FileExplorerViewModel
 import player.phonograph.ui.modules.explorer.FilesPageExplorerFragment
@@ -201,7 +201,7 @@ class FilesPage : AbsPage() {
 
     //region Popup
     private fun configPopup(popup: ListOptionsPopup) {
-        val currentSortMode = Setting(popup.contentView.context)[Keys.fileSortMode].data
+        val currentSortMode = Settings(popup.contentView.context)[Keys.fileSortMode].data
         popup.allowRevert = true
         popup.revert = currentSortMode.revert
 
@@ -216,28 +216,28 @@ class FilesPage : AbsPage() {
 
     private fun dismissPopup(popup: ListOptionsPopup) {
         val context = popup.contentView.context
-        Setting(context)[Keys.fileSortMode].data =
+        Settings(context)[Keys.fileSortMode].data =
             SortMode(popup.sortRef, popup.revert)
         useLegacyListFile = popup.useLegacyListFiles
         @SuppressLint("NotifyDataSetChanged")
         if (showFilesImages != popup.showFilesImages) {
             showFilesImages = popup.showFilesImages
-            Setting(context)[Keys.showFileImages].data = showFilesImages
+            Settings(context)[Keys.showFileImages].data = showFilesImages
         }
         model.refreshFiles(context)
     }
     //endregion
 
     var useLegacyListFile: Boolean
-        get() = Setting(App.instance)[Keys.useLegacyListFilesImpl].data
+        get() = Settings(App.instance)[Keys.useLegacyListFilesImpl].data
         set(value) {
-            Setting(App.instance)[Keys.useLegacyListFilesImpl].data = value
+            Settings(App.instance)[Keys.useLegacyListFilesImpl].data = value
         }
 
     var showFilesImages: Boolean
-        get() = Setting(App.instance)[Keys.showFileImages].data
+        get() = Settings(App.instance)[Keys.showFileImages].data
         set(value) {
-            Setting(App.instance)[Keys.showFileImages].data = value
+            Settings(App.instance)[Keys.showFileImages].data = value
         }
 
     //region MediaStore

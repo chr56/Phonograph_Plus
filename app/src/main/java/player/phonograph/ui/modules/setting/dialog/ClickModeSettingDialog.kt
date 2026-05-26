@@ -6,7 +6,7 @@ package player.phonograph.ui.modules.setting.dialog
 
 import player.phonograph.R
 import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import player.phonograph.ui.compose.components.ActionItem
 import player.phonograph.ui.modules.setting.elements.ClickModeSettings
 import player.phonograph.util.setBit
@@ -30,14 +30,14 @@ class ClickModeSettingDialog : AbsSettingsDialog() {
     override fun Content() {
         val context = LocalContext.current
         var currentMode by remember {
-            mutableIntStateOf(Setting(context)[Keys.songItemClickMode].data)
+            mutableIntStateOf(Settings(context)[Keys.songItemClickMode].data)
         }
         val setCurrentMode = { new: Int ->
             currentMode = new
-            Setting(context)[Keys.songItemClickMode].data = new
+            Settings(context)[Keys.songItemClickMode].data = new
         }
         var currentExtraFlag by remember {
-            mutableIntStateOf(Setting(context)[Keys.songItemClickExtraFlag].data)
+            mutableIntStateOf(Settings(context)[Keys.songItemClickExtraFlag].data)
         }
         val flipExtraFlagBit = { mask: Int ->
             val new = if (currentExtraFlag.testBit(mask)) {
@@ -46,7 +46,7 @@ class ClickModeSettingDialog : AbsSettingsDialog() {
                 currentExtraFlag.setBit(mask)
             }
             currentExtraFlag = new
-            Setting(context)[Keys.songItemClickExtraFlag].data = new
+            Settings(context)[Keys.songItemClickExtraFlag].data = new
         }
         SettingsDialog(
             modifier = Modifier,

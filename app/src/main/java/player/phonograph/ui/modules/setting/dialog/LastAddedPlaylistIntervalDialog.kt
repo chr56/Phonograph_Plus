@@ -8,7 +8,7 @@ import player.phonograph.R
 import player.phonograph.model.time.Duration
 import player.phonograph.model.time.TimeIntervalCalculationMode
 import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Settings
 import player.phonograph.ui.compose.components.ActionItem
 import player.phonograph.ui.modules.setting.elements.LastAddedPlaylistIntervalSettings
 import androidx.compose.foundation.layout.padding
@@ -29,13 +29,13 @@ class LastAddedPlaylistIntervalDialog : AbsSettingsDialog() {
     override fun Content() {
         val context = LocalContext.current
         var currentlySelectedMode: TimeIntervalCalculationMode by remember {
-            val preference = Setting(context)[Keys._lastAddedCutOffMode]
+            val preference = Settings(context)[Keys._lastAddedCutOffMode]
             val mode = (TimeIntervalCalculationMode.from(preference.data)
                 ?: TimeIntervalCalculationMode.from(Keys._lastAddedCutOffMode.defaultValue()))!!
             mutableStateOf(mode)
         }
         var currentlySelected: Duration by remember {
-            val preference = Setting(context)[Keys._lastAddedCutOffDuration]
+            val preference = Settings(context)[Keys._lastAddedCutOffDuration]
             val duration =
                 Duration.from(preference.data) ?: Duration.from(Keys._lastAddedCutOffDuration.defaultValue())!!
             mutableStateOf(duration)
@@ -48,8 +48,8 @@ class LastAddedPlaylistIntervalDialog : AbsSettingsDialog() {
                     Icons.Default.Check,
                     textRes = android.R.string.ok,
                     onClick = {
-                        Setting(context)[Keys._lastAddedCutOffMode].data = currentlySelectedMode.value
-                        Setting(context)[Keys._lastAddedCutOffDuration].data = currentlySelected.serialise()
+                        Settings(context)[Keys._lastAddedCutOffMode].data = currentlySelectedMode.value
+                        Settings(context)[Keys._lastAddedCutOffDuration].data = currentlySelected.serialise()
                     }
                 )
             ),
