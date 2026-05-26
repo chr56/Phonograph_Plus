@@ -11,7 +11,7 @@ import android.content.SharedPreferences
 /**
  * Settings that are not involved actual app logics and prerequisite to user, like version, intro, terms and condition
  */
-class PrerequisiteSetting(context: Context) {
+class PrerequisiteSettings(context: Context) {
 
     private val sharedPreferences: SharedPreferences =
         context.getSharedPreferences(PACKAGE_NAME, Context.MODE_PRIVATE)
@@ -39,9 +39,9 @@ class PrerequisiteSetting(context: Context) {
         const val PREVIOUS_VERSION = "previous_version"
         const val LAST_CHANGELOG_VERSION = "last_changelog_version"
         //region Singleton
-        private var singleton: PrerequisiteSetting? = null
-        fun instance(context: Context): PrerequisiteSetting {
-            if (singleton == null) singleton = PrerequisiteSetting(context.applicationContext)
+        private var singleton: PrerequisiteSettings? = null
+        fun instance(context: Context): PrerequisiteSettings {
+            if (singleton == null) singleton = PrerequisiteSettings(context.applicationContext)
             return singleton!!
         }
         //endregion

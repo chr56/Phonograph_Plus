@@ -21,7 +21,7 @@ import player.phonograph.databinding.FragmentIntroSlideSettingBinding
 import player.phonograph.databinding.ItemSimpleBinding
 import player.phonograph.mechanism.backup.Backup
 import player.phonograph.settings.Keys
-import player.phonograph.settings.PrerequisiteSetting
+import player.phonograph.settings.PrerequisiteSettings
 import player.phonograph.settings.Setting
 import player.phonograph.ui.dialogs.BackupImportDialog
 import player.phonograph.ui.modules.main.MainActivity
@@ -118,14 +118,14 @@ class PhonographIntroActivity : AppIntro(), IOpenFileStorageAccessible, IRequest
 
     override fun onSkipPressed(currentFragment: Fragment?) {
         super.onSkipPressed(currentFragment)
-        PrerequisiteSetting.instance(this).introShown = false
+        PrerequisiteSettings.instance(this).introShown = false
         finish()
     }
 
     override fun onDonePressed(currentFragment: Fragment?) {
         super.onDonePressed(currentFragment)
         startActivity(MainActivity.launchingIntent(this))
-        PrerequisiteSetting.instance(this).introShown = true
+        PrerequisiteSettings.instance(this).introShown = true
         finish()
     }
 

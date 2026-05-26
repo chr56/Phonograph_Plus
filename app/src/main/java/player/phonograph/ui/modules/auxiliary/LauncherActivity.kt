@@ -5,7 +5,7 @@
 package player.phonograph.ui.modules.auxiliary
 
 import player.phonograph.mechanism.migrate.MigrationManager
-import player.phonograph.settings.PrerequisiteSetting
+import player.phonograph.settings.PrerequisiteSettings
 import player.phonograph.ui.modules.main.MainActivity
 import android.app.Activity
 import android.content.Intent
@@ -30,7 +30,7 @@ class LauncherActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (!PrerequisiteSetting.instance(this).introShown) {
+        if (!PrerequisiteSettings.instance(this).introShown) {
             gotoIntro()
         } else {
             if (MigrationManager.shouldMigration(this)) {

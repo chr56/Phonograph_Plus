@@ -19,7 +19,7 @@ import player.phonograph.model.Song
 import player.phonograph.model.pages.PagesConfig
 import player.phonograph.model.version.VersionCatalog
 import player.phonograph.settings.Keys
-import player.phonograph.settings.PrerequisiteSetting
+import player.phonograph.settings.PrerequisiteSettings
 import player.phonograph.settings.Setting
 import player.phonograph.ui.dialogs.ChangelogDialog
 import player.phonograph.ui.dialogs.UpgradeInfoDialog
@@ -220,7 +220,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
     }
 
     private fun checkUpdate() {
-        if (!PrerequisiteSetting.instance(this).introShown) {
+        if (!PrerequisiteSettings.instance(this).introShown) {
             warning(
                 this,
                 TAG,
@@ -248,7 +248,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
 
     private fun checkChangelog() {
         val currentVersion = currentVersionCode(this)
-        val lastChangelogVersion = PrerequisiteSetting.instance(this).lastChangelogVersion
+        val lastChangelogVersion = PrerequisiteSettings.instance(this).lastChangelogVersion
 
         if (currentVersion > lastChangelogVersion) {
             ChangelogDialog.create().show(supportFragmentManager, "CHANGE_LOG_DIALOG")

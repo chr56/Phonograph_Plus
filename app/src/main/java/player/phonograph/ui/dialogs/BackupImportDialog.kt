@@ -8,7 +8,7 @@ import player.phonograph.R
 import player.phonograph.foundation.Reboot
 import player.phonograph.foundation.error.warning
 import player.phonograph.mechanism.backup.Backup
-import player.phonograph.settings.PrerequisiteSetting
+import player.phonograph.settings.PrerequisiteSettings
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.ActionItem
@@ -121,7 +121,7 @@ class BackupImportDialog : ComposeViewDialogFragment() {
             val result =
                 try {
                     Backup.Import.executeImport(host, sessionId, selected, onUpdateProgress)
-                    PrerequisiteSetting.instance(host).introShown = true // no more intro if imported
+                    PrerequisiteSettings.instance(host).introShown = true // no more intro if imported
                     true
                 } catch (e: Exception) {
                     warning(host, TAG, host.getString(R.string.failed), e)

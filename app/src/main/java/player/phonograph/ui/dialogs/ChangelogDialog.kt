@@ -4,7 +4,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import player.phonograph.R
 import player.phonograph.foundation.error.warning
 import player.phonograph.foundation.localization.LocalizationStore
-import player.phonograph.settings.PrerequisiteSetting
+import player.phonograph.settings.PrerequisiteSettings
 import player.phonograph.util.currentVersionCode
 import player.phonograph.util.text.changelogCSS
 import player.phonograph.util.text.changelogHTML
@@ -53,7 +53,7 @@ class ChangelogDialog : DialogFragment() {
             .setView(customView)
             .setPositiveButton(android.R.string.ok) { dialog, which ->
                 val context = requireContext()
-                PrerequisiteSetting.instance(context).lastChangelogVersion = currentVersionCode(context)
+                PrerequisiteSettings.instance(context).lastChangelogVersion = currentVersionCode(context)
             }
             .create()
             .tintButtons()
