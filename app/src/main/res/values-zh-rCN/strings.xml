@@ -7,6 +7,7 @@
     <string name="action_share">分享</string>
     <string name="action_settings">设置</string>
     <string name="action_grant">授予</string>
+    <string name="action_grant_all">全部授予</string>
     <string name="action_about">关于</string>
     <string name="action_add_to_favorites">添加到收藏</string>
     <string name="action_remove_from_favorites">从收藏中移除</string>
