@@ -341,8 +341,9 @@ private class RelationshipSyncExecutorSession(
         total: Int,
     ) {
         val relationshipResolver = RelationshipResolver.fromSettings(context)
+        val genresBySong = MediaStoreGenres.of(context, newOrUpdated.map { it.id })
         for ((index, song) in newOrUpdated.withIndex()) {
-            val genres = MediaStoreGenres.of(context, song.id)
+            val genres = genresBySong[song.id] ?: emptyList()
             val splitNamesForSong = mutableListOf<String>()
 
             for (genre in genres) {

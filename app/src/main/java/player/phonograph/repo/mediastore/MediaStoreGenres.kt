@@ -44,7 +44,7 @@ object MediaStoreGenres : IGenres {
 
         val result = songIds.associateWith { mutableListOf<Genre>() }.toMutableMap()
 
-        val all = queryGenre(context)?.intoGenres(context, withSongCount = false) ?: return result
+        val all = queryGenre(context)?.intoGenres(context, withSongCount) ?: return result
 
         for (genre in all) {
             val ids = queryGenreSongIds(context, genre.id)
