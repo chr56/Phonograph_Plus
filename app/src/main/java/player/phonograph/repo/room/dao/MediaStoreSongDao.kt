@@ -48,12 +48,17 @@ abstract class MediaStoreSongDao {
     private fun refOfDate(useModifiedDate: Boolean): String =
         if (useModifiedDate) Columns.DATE_MODIFIED else Columns.DATE_ADDED
 
+    @Query("SELECT ${Columns.MEDIASTORE_ID} from ${Tables.MEDIASTORE_SONGS}")
+    abstract suspend fun allIds(): List<Long>
+
+    @Query("SELECT * from ${Tables.MEDIASTORE_SONGS} where ${Columns.MEDIASTORE_ID} in (:ids)")
+    abstract suspend fun ids(ids: Collection<Long>): List<MediastoreSongEntity>
+
     @Query("SELECT * from ${Tables.MEDIASTORE_SONGS} order by ${Columns.DATE_MODIFIED} DESC limit 1")
     abstract suspend fun latest(): MediastoreSongEntity?
 
     @Query("SELECT COUNT(*) from ${Tables.MEDIASTORE_SONGS}")
     abstract suspend fun total(): Int
-
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun update(song: MediastoreSongEntity): Long

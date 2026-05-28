@@ -551,13 +551,20 @@ private class RelationshipSyncExecutorSession(
 
         onProcessUpdate(0, total, "Find deleted songs")
         // Firstly search missing
-        val allInDatabase = songDao.all(SortMode(SortRef.MODIFIED_DATE, true))
+        val allIdsInDatabase = songDao.allIds()
         process += 1
 
         val allInMediastore = MediaStoreSongs.ids(context)
         process += 1
 
-        val missingEntities = searchMissing(allInDatabase, allInMediastore, process, total)
+        val missingSongIds = mutableListOf<Long>()
+        for ((index, id) in allIdsInDatabase.withIndex()) {
+            if (id !in allInMediastore) {
+                missingSongIds.add(id)
+            }
+            if (index % PBI == 0) onProcessUpdate(process + index, total, "Find deleted songs")
+        }
+        val missingEntities = if (missingSongIds.isNotEmpty()) songDao.ids(missingSongIds) else emptyList()
         process += allSize
 
         onProcessUpdate(process, total, "Check relationships")
@@ -569,7 +576,6 @@ private class RelationshipSyncExecutorSession(
         val allGenreRelationships: MutableList<LinkageGenreAndSong> = mutableListOf()
         val allAffectedGenres: MutableSet<Long> = mutableSetOf()
 
-        val missingSongIds = missingEntities.map { it.mediastorId }
         if (missingSongIds.isNotEmpty()) {
             val artistRelationships = relationshipArtistSongDao.songs(missingSongIds)
             allArtistRelationships.addAll(artistRelationships)
@@ -657,24 +663,6 @@ private class RelationshipSyncExecutorSession(
         onProcessUpdate(total, total, "All done")
 
         return missingEntities.size
-    }
-
-    private fun searchMissing(
-        allInDatabase: List<MediastoreSongEntity>,
-        allInMediastore: Set<Long>,
-        process: Int,
-        total: Int,
-    ): List<MediastoreSongEntity> {
-        var subprocess = 0
-        val missing = mutableListOf<MediastoreSongEntity>()
-        for (song in allInDatabase) {
-            subprocess += 1
-            if (song.mediastorId !in allInMediastore) {
-                missing.add(song)
-            }
-            onProcessUpdate(process + subprocess, total, "Find deleted songs")
-        }
-        return missing.toList()
     }
 
 }
