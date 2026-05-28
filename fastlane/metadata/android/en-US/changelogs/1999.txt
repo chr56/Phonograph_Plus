@@ -1,0 +1,8 @@
+<b>2.0.0-rc1(1999) 2026.05.28</b>
+
+Since the version, we replaced our signing key. You need to uninstall first or use Intermediate variant; see related instructions to migrate or transit.
+We also raised minimal requirement to Android 8.
+
+- New: add dark mode support for widgets
+- Modify: Multiple artists and genres parsing is now enabled by default
+...(Visit project homepage to see full changelogs)
