@@ -6,7 +6,7 @@ _This document seeks to improve clarity and coherence._
 
 See also [Developer Guide](./Developer_Guide.md).
 
-_Last Updated at 2026.04.15_
+_Last Updated at 2026.05.28_
 
 ## Requirements
 
@@ -20,7 +20,7 @@ You would like to build the application from source instead of developing and co
 - Compatible desktop operating system [^PC]:
     - Windows 10/11 (tested)
     - Ubuntu 24.04 (tested)
-- JDK 21 (Android Gradle Plugin 9.1.0 along with Gradle 9.3.1 are used in this project)
+- JDK 21 (Android Gradle Plugin 9.2.1 along with Gradle 9.5.1 are used in this project)
 - Android SDK (automatically downloaded via AGP)
 - Internet connection 
 
@@ -30,7 +30,8 @@ You would like to build the application from source instead of developing and co
 
 If you would like to contribute:
 
-- Android Studio Panda 2 | 2025.3.2
+- Git
+- Android Studio Panda 4 | 2025.3.4 Patch 1
   (Note: JetBrain IDEA may not be compatible due to its limited support on latest Android Gradle Plugin) 
 
 ## Build Instructions

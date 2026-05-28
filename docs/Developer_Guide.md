@@ -4,7 +4,7 @@ This document describes the overview of this project for developers.
 
 See also [Build Instruction](./Build_Instructions.md).
 
-_Last Update: 2026.04.15_
+_Last Update: 2026.05.28_
 
 ## Toolchain & Dependencies
 
@@ -16,9 +16,9 @@ Please refer [libs.versions.toml](../gradle/libs.versions.toml) for all the libr
 
 **Toolchain**
 
-- Gradlew `9.3.1`, along with JDK `21`
-- `Android Gradle Plugin` `9.1.0`
-- Android SDK `36`
+- Gradlew `9.5.1`, along with JDK `21`
+- `Android Gradle Plugin` `9.2.1`
+- Android SDK `37`
 - kotlin for JVM(Android) `2.3.20`
 
 **Libraries**
@@ -63,7 +63,7 @@ We make this distinction mostly for bypassing _Scope Storage_ for Android 10.
 
 | Dimension `target` | Target SDK | Min SDK | Descriptions                                                                           |
 |:------------------:|:----------:|:-------:|----------------------------------------------------------------------------------------|
-|      `modern`      | _(Latest)_ |   24    | for mainstream android device users                                                    |
+|      `modern`      | _(Latest)_ |   26    | for mainstream android device users                                                    |
 |      `legacy`      |     28     |   24    | for legacy android device user <br/>(especially Android 10, to bypass _Scope Storage_) |
 
 ## Project Structure
@@ -92,5 +92,23 @@ Except files relative to gradle or building:
 
 #### Source Code Structure of Phonograph Plus
 
-TODO
+For main source set (`app/src/main`):
 
+```
+main/
+├── assets
+├── java/
+│   └── player.phonograph
+│       ├── foundation (foundamental infrastructures)
+│       ├── mechanism (core logics)
+│       ├── model (model and interface definations)
+│       ├── repo (library data source)
+│       ├── service (background music playback service)
+│       ├── settings (preference storages)
+│       ├── ui (user interface)
+│       ├── util (common utilities)
+│       ├── App.kt
+│       └── Constants.kt
+├── res
+└── AndroidManifest.xml
+```
