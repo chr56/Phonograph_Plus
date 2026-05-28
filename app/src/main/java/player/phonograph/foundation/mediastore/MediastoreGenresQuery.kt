@@ -45,6 +45,24 @@ fun queryGenreSongs(context: Context, genreId: Long): Cursor? =
     )
 
 /**
+ * Query member song IDs for a genre
+ */
+fun queryGenreSongIds(context: Context, genreId: Long): Set<Long> =
+    context.contentResolver.query(
+        mediastoreUriGenreMembersExternal(genreId),
+        arrayOf(BaseColumns._ID),
+        null,
+        null,
+        null
+    )?.use { cursor ->
+        val ids = HashSet<Long>(cursor.count)
+        while (cursor.moveToNext()) {
+            ids.add(cursor.getLong(0))
+        }
+        ids
+    } ?: emptySet()
+
+/**
  * query genre for a song via MediaStore
  */
 fun querySongGenre(context: Context, songId: Long): Cursor? =
@@ -65,15 +83,19 @@ fun querySongGenre(context: Context, songId: Long): Cursor? =
  * - [cursor] is **not empty**
  *
  */
-fun readGenre(context: Context, cursor: Cursor): Genre? {
+fun readGenre(context: Context, cursor: Cursor, withSongCount: Boolean = true): Genre? {
     val id = cursor.getLong(0)
     val name = cursor.getString(1)
-    val count = queryGenreSongCount(context, id)
-    if (count > 0) {
-        return Genre(id = id, name = name, songCount = count)
+    if (withSongCount) {
+        val count = queryGenreSongCount(context, id)
+        return if (count > 0) {
+            Genre(id = id, name = name, songCount = count)
+        } else {
+            removeEmptyGenre(context, id)
+            null
+        }
     } else {
-        removeEmptyGenre(context, id)
-        return null
+        return Genre(id = id, name = name, songCount = -1)
     }
 }
 
@@ -112,13 +134,12 @@ fun Cursor?.intoFirstGenre(context: Context): Genre? =
 /**
  * consume this cursor (read & close) and convert into a genre list
  */
-fun Cursor?.intoGenres(context: Context): List<Genre> {
+fun Cursor?.intoGenres(context: Context, withSongCount: Boolean = true): List<Genre> {
     return this?.use {
         val genres = mutableListOf<Genre>()
         if (moveToFirst()) {
             do {
-                val genre = readGenre(context, this)
-                if (genre != null) genres.add(genre)
+                genres.add(readGenre(context, this, withSongCount) ?: continue)
             } while (moveToNext())
         }
         genres
