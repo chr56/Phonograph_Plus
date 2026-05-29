@@ -8,6 +8,7 @@ import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import com.github.chr56.android.menu_dsl.submenu
 import player.phonograph.R
+import player.phonograph.foundation.concurrent.lifecycleScopeOrNewOne
 import player.phonograph.mechanism.event.EventHub
 import player.phonograph.mechanism.scanner.MediaStoreScanner
 import player.phonograph.model.Album
@@ -25,7 +26,6 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
 import player.phonograph.ui.modules.tag.TagBrowserActivity
-import player.phonograph.util.concurrent.lifecycleScopeOrNewOne
 import player.phonograph.util.fragmentActivity
 import androidx.lifecycle.lifecycleScope
 import android.content.Context

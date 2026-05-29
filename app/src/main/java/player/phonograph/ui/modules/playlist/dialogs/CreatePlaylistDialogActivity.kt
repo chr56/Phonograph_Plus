@@ -17,6 +17,7 @@ import lib.storage.textparser.DocumentUriPathParser.documentUriBasePath
 import player.phonograph.R
 import player.phonograph.databinding.DialogCreatePlaylistBinding
 import player.phonograph.foundation.compat.parcelableArrayListExtra
+import player.phonograph.foundation.concurrent.coroutineToast
 import player.phonograph.foundation.error.warning
 import player.phonograph.mechanism.playlist.PlaylistActions
 import player.phonograph.mechanism.playlist.PlaylistSongsActions.reader
@@ -25,7 +26,6 @@ import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.PlaylistCreator
 import player.phonograph.ui.basis.DialogActivity
 import player.phonograph.util.PLAYLIST_MIME_TYPE
-import player.phonograph.util.concurrent.coroutineToast
 import player.phonograph.util.observe
 import player.phonograph.util.text.currentDate
 import player.phonograph.util.text.dateTimeSuffix

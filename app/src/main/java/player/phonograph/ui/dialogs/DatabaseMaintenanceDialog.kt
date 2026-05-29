@@ -9,6 +9,7 @@ import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.vanpra.composematerialdialogs.title
 import player.phonograph.R
 import player.phonograph.foundation.Reboot
+import player.phonograph.foundation.concurrent.lifecycleScopeOrNewOne
 import player.phonograph.foundation.error.warning
 import player.phonograph.foundation.notification.ProgressNotificationConnection
 import player.phonograph.model.notification.NOTIFICATION_CHANNEL_ID_DATABASE_SYNC
@@ -16,7 +17,6 @@ import player.phonograph.repo.room.DatabaseActions
 import player.phonograph.repo.room.MusicDatabase
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
-import player.phonograph.util.concurrent.lifecycleScopeOrNewOne
 import player.phonograph.util.theme.accentColoredButtonStyle
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable

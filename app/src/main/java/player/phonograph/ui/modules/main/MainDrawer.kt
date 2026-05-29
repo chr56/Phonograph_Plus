@@ -10,6 +10,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import player.phonograph.ACTUAL_PACKAGE_NAME
 import player.phonograph.R
 import player.phonograph.foundation.Reboot
+import player.phonograph.foundation.concurrent.runOnMainHandler
 import player.phonograph.foundation.error.warning
 import player.phonograph.model.pages.PagesConfig
 import player.phonograph.model.service.ACTION_EXIT_OR_STOP
@@ -30,7 +31,6 @@ import player.phonograph.ui.modules.setting.SettingsActivity
 import player.phonograph.ui.modules.web.WebSearchLauncher
 import player.phonograph.ui.resource.Icons
 import player.phonograph.ui.resource.Texts
-import player.phonograph.util.concurrent.runOnMainHandler
 import player.phonograph.util.permissions.navigateToAppDetailSetting
 import player.phonograph.util.permissions.navigateToStorageSetting
 import player.phonograph.util.theme.getTintedDrawable

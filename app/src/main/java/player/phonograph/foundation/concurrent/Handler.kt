@@ -2,7 +2,7 @@
  *  Copyright (c) 2022~2025 chr_56
  */
 
-package player.phonograph.util.concurrent
+package player.phonograph.foundation.concurrent
 
 import android.os.Handler
 import android.os.Looper

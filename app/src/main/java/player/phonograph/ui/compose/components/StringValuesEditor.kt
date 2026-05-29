@@ -5,7 +5,7 @@
 package player.phonograph.ui.compose.components
 
 import player.phonograph.R
-import player.phonograph.util.concurrent.coroutineToast
+import player.phonograph.foundation.concurrent.coroutineToast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

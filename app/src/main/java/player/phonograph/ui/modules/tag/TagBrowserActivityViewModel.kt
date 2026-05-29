@@ -6,6 +6,7 @@ package player.phonograph.ui.modules.tag
 
 import lib.storage.launcher.ICreateFileStorageAccessible
 import player.phonograph.R
+import player.phonograph.foundation.concurrent.lifecycleScopeOrNewOne
 import player.phonograph.foundation.error.warning
 import player.phonograph.mechanism.metadata.edit.JAudioTaggerAudioMetadataEditor
 import player.phonograph.mechanism.metadata.read.MetadataExtractors
@@ -18,7 +19,6 @@ import player.phonograph.model.metadata.InteractiveAction.Edit
 import player.phonograph.model.metadata.InteractiveAction.ExtractArtwork
 import player.phonograph.model.metadata.InteractiveAction.Save
 import player.phonograph.ui.modules.tag.util.display
-import player.phonograph.util.concurrent.lifecycleScopeOrNewOne
 import player.phonograph.util.permissions.navigateToStorageSetting
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf

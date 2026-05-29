@@ -7,6 +7,7 @@ package player.phonograph.ui.actions
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import player.phonograph.R
+import player.phonograph.foundation.concurrent.lifecycleScopeOrNewOne
 import player.phonograph.mechanism.playlist.PlaylistSongsActions
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
@@ -22,7 +23,6 @@ import player.phonograph.repo.loader.Songs
 import player.phonograph.ui.adapter.MultiSelectionController
 import player.phonograph.ui.modules.tag.MultiTagBrowserActivity
 import player.phonograph.ui.modules.tag.TagBrowserActivity
-import player.phonograph.util.concurrent.lifecycleScopeOrNewOne
 import player.phonograph.util.theme.getTintedDrawable
 import android.content.Context
 import android.view.Menu

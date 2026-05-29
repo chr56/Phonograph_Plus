@@ -12,6 +12,7 @@ import coil.fetch.SourceResult
 import okio.buffer
 import okio.sink
 import okio.source
+import player.phonograph.foundation.concurrent.lifecycleScopeOrNewOne
 import player.phonograph.foundation.error.record
 import player.phonograph.foundation.file.createOrOverride
 import player.phonograph.mechanism.coil.model.AlbumImage
@@ -20,7 +21,6 @@ import player.phonograph.mechanism.coil.model.LoaderTarget
 import player.phonograph.mechanism.coil.model.SongImage
 import player.phonograph.repo.room.domain.RoomImageCache
 import player.phonograph.repo.room.entity.ImageCacheEntity
-import player.phonograph.util.concurrent.lifecycleScopeOrNewOne
 import androidx.core.graphics.drawable.toBitmapOrNull
 import android.content.Context
 import android.graphics.Bitmap
