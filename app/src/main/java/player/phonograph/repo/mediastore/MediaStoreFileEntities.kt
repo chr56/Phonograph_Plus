@@ -4,6 +4,7 @@
 
 package player.phonograph.repo.mediastore
 
+import player.phonograph.foundation.file.audioFileFilter
 import player.phonograph.foundation.mediastore.EXTENDED_SONG_PROJECTION
 import player.phonograph.foundation.mediastore.readSong
 import player.phonograph.mechanism.explorer.MediaPaths
@@ -12,7 +13,6 @@ import player.phonograph.model.file.MediaPath
 import player.phonograph.repo.mediastore.internal.defaultSongQuerySortOrder
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
-import player.phonograph.util.file.audioFileFilter
 import android.content.Context
 import android.database.Cursor
 import android.os.storage.StorageVolume

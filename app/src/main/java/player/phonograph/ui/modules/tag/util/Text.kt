@@ -6,21 +6,10 @@ package player.phonograph.ui.modules.tag.util
 
 import player.phonograph.R
 import player.phonograph.foundation.error.warning
-import player.phonograph.model.metadata.Metadata
-import player.phonograph.model.metadata.NOTATION_BINARY
-import player.phonograph.model.metadata.NOTATION_BIT_RATE
-import player.phonograph.model.metadata.NOTATION_COMPOSITE
-import player.phonograph.model.metadata.NOTATION_DATA_SIZE
-import player.phonograph.model.metadata.NOTATION_DURATION
-import player.phonograph.model.metadata.NOTATION_EMPTY
-import player.phonograph.model.metadata.NOTATION_NUMBER
-import player.phonograph.model.metadata.NOTATION_RAW_TEXT
-import player.phonograph.model.metadata.NOTATION_SAMPLING
-import player.phonograph.model.metadata.NOTATION_TEXT
-import player.phonograph.model.metadata.NOTATION_TIMESTAMP
+import player.phonograph.foundation.file.readableFileSizeInMB
+import player.phonograph.model.metadata.*
 import player.phonograph.util.text.dateTimeTextPrecise
 import player.phonograph.util.text.detailedDuration
-import player.phonograph.util.text.getFileSizeString
 import android.content.Context
 
 fun display(context: Context, field: Metadata.Field): String {
@@ -31,7 +20,7 @@ fun display(context: Context, field: Metadata.Field): String {
             NOTATION_NUMBER    -> (content as Long).toString()
             NOTATION_TIMESTAMP -> dateTimeTextPrecise(content as Long)
             NOTATION_DURATION  -> detailedDuration(content as Long)
-            NOTATION_DATA_SIZE -> getFileSizeString(content as Long)
+            NOTATION_DATA_SIZE -> readableFileSizeInMB(content as Long)
             NOTATION_BIT_RATE  -> readableBitrate(context, content as Long)
             NOTATION_SAMPLING  -> readableSampling(context, content as Long)
             NOTATION_RAW_TEXT  -> rawText(context, content as ByteArray)

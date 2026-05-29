@@ -6,6 +6,8 @@ package player.phonograph.ui.dialogs
 
 import player.phonograph.R
 import player.phonograph.foundation.error.warning
+import player.phonograph.foundation.file.audioFileFilter
+import player.phonograph.foundation.file.listPaths
 import player.phonograph.foundation.notification.ProgressNotificationConnection
 import player.phonograph.mechanism.scanner.MediaStoreScanner
 import player.phonograph.model.notification.NOTIFICATION_CHANNEL_ID_DATABASE_SYNC
@@ -18,7 +20,6 @@ import player.phonograph.ui.modules.explorer.PathSelectorContractTool
 import player.phonograph.ui.modules.explorer.PathSelectorRequester
 import player.phonograph.util.concurrent.coroutineToast
 import player.phonograph.util.concurrent.lifecycleScopeOrNewOne
-import player.phonograph.util.file.listPaths
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -145,7 +146,7 @@ class ScanMediaDialog : ComposeViewDialogFragment() {
                 fragmentActivity.lifecycleScope.launch {
                     val mediaStoreScanner = MediaStoreScanner(fragmentActivity)
                     try {
-                        val paths = listPaths(path)
+                        val paths = listPaths(path, filter = audioFileFilter)
                         if (paths.isNotEmpty()) {
                             coroutineToast(fragmentActivity.applicationContext, R.string.action_scan_media)
                             mediaStoreScanner.scan(paths)

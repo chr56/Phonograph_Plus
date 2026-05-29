@@ -1,11 +1,17 @@
 /*
- *  Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2026 chr_56
  */
 
-package player.phonograph.util.file
+package player.phonograph.foundation.file
 
 import android.webkit.MimeTypeMap
 import java.io.File
+import java.io.FileFilter
+
+val audioFileFilter: FileFilter
+    get() = FileFilter { file: File ->
+        !file.isHidden && (file.isDirectory || file.mimeTypeIs("audio/*") || file.mimeTypeIs("application/ogg"))
+    }
 
 fun File.mimeTypeIs(mimeType: String): Boolean {
     return if (mimeType.isEmpty() || mimeType == "*/*") {

@@ -10,11 +10,11 @@ import okio.buffer
 import okio.sink
 import okio.source
 import player.phonograph.foundation.error.warning
+import player.phonograph.foundation.file.createOrOverride
+import player.phonograph.foundation.file.moveFile
 import player.phonograph.mechanism.migrate.FavoritesMigrationRule
 import player.phonograph.mechanism.migrate.PathFilterMigrationRule
 import player.phonograph.model.backup.BackupItemExecutor
-import player.phonograph.util.file.createOrOverrideFile
-import player.phonograph.util.file.moveFile
 import player.phonograph.util.text.currentTimestamp
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
@@ -43,7 +43,7 @@ class RawDatabaseBackupItemExecutor(val databaseName: String) : BackupItemExecut
                 // make cache directory
                 if (cacheDir.exists()) cacheDir.delete() else cacheDir.mkdirs()
                 // make temporary file
-                val temp = File(cacheDir, databaseName).createOrOverrideFile()
+                val temp = File(cacheDir, databaseName).createOrOverride()
                 temp.sink().buffer().use { buffer -> buffer.writeAll(source) }
                 // move and replace
                 moveFile(from = temp, to = context.getDatabasePath(databaseName))
@@ -73,7 +73,7 @@ object LegacyPathFilterDatabaseBackupItemExecutor : BackupItemExecutor {
             "PathFilter.Backup_${currentTimestamp()}.db"
         )
         try {
-            file.createOrOverrideFile()
+            file.createOrOverride()
             file.sink().buffer().use { buffer -> buffer.writeAll(source) }
         } catch (e: IOException) {
             warning(context, "PathFilterDatabaseBackup", "Failed to create $file", e)
@@ -109,7 +109,7 @@ object LegacyFavoritesDatabaseBackupItemExecutor : BackupItemExecutor {
             "Favorite.Backup_${currentTimestamp()}.db"
         )
         try {
-            file.createOrOverrideFile()
+            file.createOrOverride()
             file.sink().buffer().use { buffer -> buffer.writeAll(source) }
         } catch (e: IOException) {
             warning(context, "FavoritesDatabaseBackup", "Failed to create $file", e)

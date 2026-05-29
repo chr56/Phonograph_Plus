@@ -8,12 +8,12 @@ import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.title
 import lib.storage.launcher.IOpenFileStorageAccessible
+import lib.storage.launcher.OpenDocumentContract
 import player.phonograph.R
 import player.phonograph.foundation.error.warning
 import player.phonograph.model.metadata.InteractiveAction
 import player.phonograph.model.metadata.InteractiveAction.Edit
 import player.phonograph.ui.modules.tag.AbsMetadataViewModel
-import player.phonograph.util.file.selectImage
 import player.phonograph.util.theme.accentColoredButtonStyle
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -21,13 +21,8 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.viewModelScope
 import android.content.Context
 import android.net.Uri
-import android.widget.Toast
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.File
 
 
@@ -47,26 +42,22 @@ fun <VM : AbsMetadataViewModel> ArtworkSection(
         onSave = { viewModel.submitEvent(context, InteractiveAction.ExtractArtwork) },
         onDelete = { viewModel.submitEvent(context, Edit.RemoveArtwork) },
         onUpdate = {
-            viewModel.viewModelScope.launch(Dispatchers.IO) {
-                select(context, cacheFileName, viewModel::submitEvent)
-            }
+            selectImage(context, cacheFileName, viewModel::submitEvent)
             viewModel.coverImageDetailDialogState.hide()
         },
         editMode = editMode
     )
 }
 
-private suspend fun select(
+private fun selectImage(
     context: Context, fileName: String,
     submitEvent: (context: Context, event: InteractiveAction) -> Unit,
 ) {
-    val uri = selectImage((context as IOpenFileStorageAccessible).openFileStorageAccessDelegate)
-    if (uri != null) {
-        val file = createCacheFile(context, uri, fileName)
-        submitEvent(context, Edit.UpdateArtwork(file.absolutePath))
-    } else {
-        withContext(Dispatchers.Main) {
-            Toast.makeText(context, android.R.string.cancel, Toast.LENGTH_SHORT).show()
+    val delegate = (context as IOpenFileStorageAccessible).openFileStorageAccessDelegate
+    delegate.launch(OpenDocumentContract.Config(mimeTypes = arrayOf("image/*"))) { uri: Uri? ->
+        if (uri != null) {
+            val file = createCacheFile(context, uri, fileName)
+            submitEvent(context, Edit.UpdateArtwork(file.absolutePath))
         }
     }
 }

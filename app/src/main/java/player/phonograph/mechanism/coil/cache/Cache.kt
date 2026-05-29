@@ -13,6 +13,7 @@ import okio.buffer
 import okio.sink
 import okio.source
 import player.phonograph.foundation.error.record
+import player.phonograph.foundation.file.createOrOverride
 import player.phonograph.mechanism.coil.model.AlbumImage
 import player.phonograph.mechanism.coil.model.ArtistImage
 import player.phonograph.mechanism.coil.model.LoaderTarget
@@ -20,7 +21,6 @@ import player.phonograph.mechanism.coil.model.SongImage
 import player.phonograph.repo.room.domain.RoomImageCache
 import player.phonograph.repo.room.entity.ImageCacheEntity
 import player.phonograph.util.concurrent.lifecycleScopeOrNewOne
-import player.phonograph.util.file.createOrOverrideFileRecursive
 import androidx.core.graphics.drawable.toBitmapOrNull
 import android.content.Context
 import android.graphics.Bitmap
@@ -67,7 +67,7 @@ class CacheStore(val context: Context) {
                 return
             }
 
-            val targetFile = rootCacheDir(context).resolve(uuid).createOrOverrideFileRecursive()
+            val targetFile = rootCacheDir(context).resolve(uuid).createOrOverride(recursive = true)
 
             try {
                 targetFile.sink().buffer().use { sink ->

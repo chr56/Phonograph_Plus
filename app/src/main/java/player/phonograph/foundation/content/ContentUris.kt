@@ -1,36 +1,23 @@
 /*
- *  Copyright (c) 2022~2024 chr_56
+ *  Copyright (c) 2022~2026 chr_56
  */
 
-package player.phonograph.util.file
+package player.phonograph.foundation.content
 
 import lib.storage.childDocumentUriWithinTree
 import lib.storage.documentProviderUriAbsolutePath
-import lib.storage.launcher.OpenDocumentContract
-import lib.storage.launcher.OpenFileStorageAccessDelegate
 import lib.storage.launcher.SAFActivityResultContracts.chooseDirViaSAF
 import lib.storage.launcher.SAFActivityResultContracts.chooseFileViaSAF
 import lib.storage.textparser.DocumentUriPathParser
 import lib.storage.textparser.ExternalFilePathParser
 import player.phonograph.R
 import player.phonograph.foundation.error.warning
-import player.phonograph.util.concurrent.coroutineToast
 import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
-import android.util.Log
-import kotlinx.coroutines.suspendCancellableCoroutine
 import java.io.File
 
-suspend fun selectImage(accessTool: OpenFileStorageAccessDelegate): Uri? {
-    val cfg = OpenDocumentContract.Config(mimeTypes = arrayOf("image/*"))
-    return suspendCancellableCoroutine {
-        accessTool.launch(cfg) { uri: Uri? ->
-            it.resume(uri) { _, _, _ -> }
-        }
-    }
-}
 
 /**
  * select document content Uri from [filePaths] via SAF
@@ -66,7 +53,6 @@ suspend fun selectDocumentTreeUri(
     if (filePaths.isEmpty()) return null
     val commonRoot = commonPathRoot(filePaths).ifEmpty { Environment.getExternalStorageDirectory().absolutePath }
     val treeUri = chooseDirViaSAF(context, commonRoot)
-    Log.v(TAG, "Select shared Document Tree Content Uri: $treeUri")
     return treeUri
 }
 
@@ -143,18 +129,17 @@ private suspend fun selectContentUriViaDocument(
     return documentUri
 }
 
-private suspend fun notifyErrorDocumentUri(context: Context, filePath: String, documentUri: Uri) {
+private fun notifyErrorDocumentUri(context: Context, filePath: String, documentUri: Uri) {
     val actualPath = documentProviderUriAbsolutePath(documentUri, context)
     val message = buildString {
         append(context.getString(R.string.err_file_incorrect)).append('\n')
         append("Target:$filePath\n")
         append("Actual:$actualPath\n")
     }
-    coroutineToast(context, context.getString(R.string.err_file_incorrect))
     warning(context, TAG, message)
 }
 
-private suspend fun notifyErrorChildDocumentUri(context: Context, childDocumentUri: Uri) {
+private fun notifyErrorChildDocumentUri(context: Context, childDocumentUri: Uri) {
     val message = buildString {
         append(context.getString(R.string.err_file_incorrect)).append('\n')
         val segments: List<String> = childDocumentUri.pathSegments
@@ -166,7 +151,6 @@ private suspend fun notifyErrorChildDocumentUri(context: Context, childDocumentU
             append("File is out of reach: $childDocumentUri\n")
         }
     }
-    coroutineToast(context, context.getString(R.string.err_file_incorrect))
     warning(context, TAG, message)
 }
 
@@ -194,4 +178,4 @@ private fun commonPathRoot(paths: Collection<String>): String {
     return result.fold("") { acc, s -> "$acc/$s" }
 }
 
-private const val TAG = "UriUtil"
+private const val TAG = "ContentUri"
