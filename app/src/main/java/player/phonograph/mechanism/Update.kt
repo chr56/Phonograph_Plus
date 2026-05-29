@@ -8,11 +8,11 @@ import okhttp3.Request
 import okhttp3.Response
 import player.phonograph.App
 import player.phonograph.BuildConfig
+import player.phonograph.foundation.network.invokeHttpRequest
 import player.phonograph.foundation.notification.Notifications
 import player.phonograph.model.version.VersionCatalog
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
-import player.phonograph.util.NetworkUtil.invokeRequest
 import player.phonograph.util.currentReleaseChannel
 import player.phonograph.util.debug
 import player.phonograph.util.text.dateText
@@ -124,13 +124,11 @@ object UpdateChecker {
         }
     }
 
-    private suspend fun sendRequest(source: Request): Response? {
-        return try {
-            invokeRequest(request = source)
-        } catch (e: IOException) {
-            Log.w(TAG, "Failed to connect ${source.url}!")
-            null
-        }
+    private suspend fun sendRequest(source: Request): Response? = try {
+        invokeHttpRequest(request = source)
+    } catch (e: IOException) {
+        Log.w(TAG, "Failed to connect ${source.url}: ${e.message}")
+        null
     }
 
     /**
