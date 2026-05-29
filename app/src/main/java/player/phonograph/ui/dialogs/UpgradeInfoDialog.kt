@@ -7,6 +7,8 @@ package player.phonograph.ui.dialogs
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.vanpra.composematerialdialogs.title
+import player.phonograph.CURRENT_RELEASE_CHANNEL
+import player.phonograph.CURRENT_TARGET_VARIANT
 import player.phonograph.R
 import player.phonograph.foundation.compat.parcelable
 import player.phonograph.mechanism.UpdateChecker.GITHUB_RELEASE_URL
@@ -19,8 +21,6 @@ import player.phonograph.settings.Settings
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.TempPopupContent
-import player.phonograph.util.currentReleaseChannel
-import player.phonograph.util.currentVariant
 import player.phonograph.util.text.dateText
 import player.phonograph.util.theme.accentColoredButtonStyle
 import player.phonograph.util.ui.alertDialog
@@ -126,10 +126,10 @@ private fun MainContent(versionCatalog: VersionCatalog, dismiss: () -> Unit) {
                     .padding(16.dp)
                     .verticalScroll(rememberScrollState())
             ) {
-                val currentChannel = remember { currentReleaseChannel }
+                val currentChannel = remember { CURRENT_RELEASE_CHANNEL }
                 for (version in versionCatalog.versions) {
                     Card(modifier = Modifier.padding(vertical = 8.dp), elevation = 2.dp) {
-                        Version(version, highlight = currentChannel == version.channel)
+                        Version(version, highlight = version.channel.equals(currentChannel, ignoreCase = true))
                     }
                 }
             }
@@ -249,10 +249,9 @@ private fun VersionPopupContent(version: Version, dismissPopup: () -> Unit) {
     val context = LocalContext.current
     TempPopupContent(dismissPopup = dismissPopup, onClick = dismissPopup) {
         Column {
-            val currentVariant = remember { currentVariant() }
             for (link in version.link) {
                 TextButton(onClick = { context.open(link.uri) }) {
-                    val highlight = link.name.contains(currentVariant, ignoreCase = true)
+                    val highlight = remember(link.name) { link.name.contains(CURRENT_TARGET_VARIANT, ignoreCase = true) }
                     Icon(
                         if (highlight) Icons.Default.Star else Icons.AutoMirrored.Filled.ArrowForward,
                         null,
@@ -272,7 +271,7 @@ private fun VersionPopupContent(version: Version, dismissPopup: () -> Unit) {
 }
 
 private fun actionIgnore(context: Context, versionCatalog: VersionCatalog) {
-    val current = versionCatalog.latest(currentReleaseChannel)
+    val current = versionCatalog.latest(CURRENT_RELEASE_CHANNEL.lowercase())
     if (current != null) {
         Settings(context)[Keys.ignoreUpgradeDate].data = current.date
         Toast.makeText(context, R.string.msg_ignored_update, Toast.LENGTH_SHORT).show()

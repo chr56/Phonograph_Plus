@@ -4,10 +4,10 @@
 
 package player.phonograph.mechanism.migrate
 
+import player.phonograph.foundation.content.PackageMetadata
 import player.phonograph.foundation.error.warning
 import player.phonograph.model.migration.VersionMigrationRule
 import player.phonograph.settings.PrerequisiteSettings
-import player.phonograph.util.currentVersionCode
 import player.phonograph.util.debug
 import android.content.Context
 import android.util.Log
@@ -21,7 +21,7 @@ object MigrationManager {
     const val CODE_UNKNOWN_ERROR = -1
 
     fun shouldMigration(context: Context): Boolean {
-        val currentVersion = currentVersionCode(context)
+        val currentVersion = PackageMetadata.versionCode(context)
         val previousVersion = PrerequisiteSettings.instance(context).previousVersion
         return if (previousVersion < 0) {
             // first installation
@@ -35,7 +35,7 @@ object MigrationManager {
     fun migrate(context: Context): Int {
 
         val from = PrerequisiteSettings.instance(context).previousVersion
-        val to = currentVersionCode(context)
+        val to = PackageMetadata.versionCode(context)
 
         var status = CODE_SUCCESSFUL
 

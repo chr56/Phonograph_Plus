@@ -15,9 +15,7 @@
 package player.phonograph.util.text
 
 import player.phonograph.BuildConfig
-import player.phonograph.util.currentVersionCode
-import player.phonograph.util.currentVersionName
-import player.phonograph.util.gitRevisionHash
+import player.phonograph.foundation.content.PackageMetadata
 import player.phonograph.util.permissions.StoragePermissionChecker
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -32,10 +30,10 @@ fun getDeviceInfo(context: Context): String {
 
     // App
 
-    val versionName: String = currentVersionName(context)
-    val versionCode: String = currentVersionCode(context).toString()
     val packageName: String = context.packageName
-    val gitCommitHash: String = gitRevisionHash(context)
+    val versionName: String = PackageMetadata.versionName(context) ?: NA
+    val versionCode: String = PackageMetadata.versionCode(context).toString()
+    val gitCommitHash: String = PackageMetadata.metadata(context, key = PackageMetadata.METADATA_KEY_GIT_COMMIT) ?: "N/A"
     val favor: String = BuildConfig.FLAVOR
     val storage: String = storagePermissionInfo(context)
 
@@ -118,3 +116,5 @@ private fun storagePermissionInfo(context: Context): String {
         }
     }
 }
+
+private const val NA = "Unknown"

@@ -5,7 +5,10 @@ import player.phonograph.App
 import player.phonograph.GITHUB_LINK
 import player.phonograph.R
 import player.phonograph.TRANSLATE_LINk
+import player.phonograph.CURRENT_RELEASE_CHANNEL
+import player.phonograph.CURRENT_TARGET_VARIANT
 import player.phonograph.databinding.ActivityAboutBinding
+import player.phonograph.foundation.content.PackageMetadata
 import player.phonograph.foundation.error.warning
 import player.phonograph.mechanism.UpdateChecker
 import player.phonograph.model.version.VersionCatalog
@@ -16,10 +19,6 @@ import player.phonograph.ui.dialogs.ChangelogDialog
 import player.phonograph.ui.dialogs.DebugDialog
 import player.phonograph.ui.dialogs.ReportIssueDialog
 import player.phonograph.ui.dialogs.UpgradeInfoDialog
-import player.phonograph.util.currentReleaseChannel
-import player.phonograph.util.currentVariant
-import player.phonograph.util.currentVersionName
-import player.phonograph.util.gitRevisionHash
 import player.phonograph.util.text.NoticesProcessor
 import player.phonograph.util.theme.ThemeSettingsDelegate.isNightTheme
 import player.phonograph.util.theme.ThemeSettingsDelegate.primaryColor
@@ -30,6 +29,7 @@ import util.theme.view.toolbar.setToolbarColor
 import androidx.annotation.Keep
 import androidx.lifecycle.lifecycleScope
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
@@ -74,11 +74,11 @@ class AboutActivity : ToolbarActivity() {
     private fun setUpAppVersion() {
         val appAboutLayout = binding.activityAboutMainContent.cardAboutAppLayout
 
-        appAboutLayout.appVersion.text = currentVersionName(this)
+        appAboutLayout.appVersion.text = PackageMetadata.versionName(this)
 
         val appVersionHash = appAboutLayout.appVersionHash
         try {
-            appVersionHash.text = gitRevisionHash(this).substring(0, 8)
+            appVersionHash.text = gitRevision(this) ?: ""
             appVersionHash.visibility = View.VISIBLE
         } catch (_: Exception) {
             appVersionHash.visibility = View.INVISIBLE
@@ -86,8 +86,7 @@ class AboutActivity : ToolbarActivity() {
 
         val appVariant = appAboutLayout.appVariant
         try {
-            val variant = currentVariant()
-            appVariant.text = "$variant Variant"
+            appVariant.text = "$CURRENT_TARGET_VARIANT Variant"
             appVariant.visibility = View.VISIBLE
         } catch (_: Exception) {
             appVariant.visibility = View.GONE
@@ -189,7 +188,7 @@ class AboutActivity : ToolbarActivity() {
                 if (upgradable) {
                     UpgradeInfoDialog.create(versionCatalog).show(supportFragmentManager, "UPGRADE")
                     val ignored = Settings(App.instance)[Keys.ignoreUpgradeDate].data
-                    val current = versionCatalog.latest(currentReleaseChannel)?.date ?: 0
+                    val current = versionCatalog.latest(CURRENT_RELEASE_CHANNEL.lowercase())?.date ?: 0
                     if (ignored >= current) {
                         lifecycleScope.launch(Dispatchers.Main) {
                             Toast.makeText(this@AboutActivity, R.string.msg_ignored_update, Toast.LENGTH_SHORT).show()
@@ -240,5 +239,8 @@ class AboutActivity : ToolbarActivity() {
         private const val EMAIL_CHOOSER_TITLE = "E-Mail"
         private const val EMAIL_SUBJECT = "Phonograph"
         private const val EMAIL_URI = "mailto:$EMAIL_ADDRESS"
+
+        private fun gitRevision(context: Context): String? =
+            PackageMetadata.metadata(context, key = PackageMetadata.METADATA_KEY_GIT_COMMIT)?.substring(0, 8)
     }
 }
