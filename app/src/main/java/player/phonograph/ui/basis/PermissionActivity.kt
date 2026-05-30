@@ -9,10 +9,9 @@ import lib.activityresultcontract.IRequestMultiplePermission
 import lib.activityresultcontract.RequestMultiplePermissionsDelegate
 import player.phonograph.R
 import player.phonograph.foundation.concurrent.runOnMainHandler
+import player.phonograph.ui.resource.Texts
 import player.phonograph.util.permissions.hasPermissions
 import player.phonograph.util.permissions.navigateToAppDetailSetting
-import player.phonograph.util.permissions.permissionDescription
-import player.phonograph.util.permissions.permissionName
 import player.phonograph.util.theme.ThemeSettingsDelegate.accentColor
 import android.os.Bundle
 
@@ -87,8 +86,8 @@ open class PermissionActivity : ThemeActivity(), IRequestMultiplePermission {
         var requireGotoSetting = false
         for (permission in missingPermissions) {
             message
-                .append(permissionName(this, permission)).append('\n')
-                .append(permissionDescription(this, permission)).append('\n')
+                .append(Texts.permissionName(this, permission)).append('\n')
+                .append(Texts.permissionDescription(this, permission)).append('\n')
             if (shouldShowRequestPermissionRationale(permission)) requireGotoSetting = true
         }
 

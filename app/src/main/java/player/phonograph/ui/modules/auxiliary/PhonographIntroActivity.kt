@@ -28,11 +28,10 @@ import player.phonograph.settings.PrerequisiteSettings
 import player.phonograph.settings.Settings
 import player.phonograph.ui.dialogs.BackupImportDialog
 import player.phonograph.ui.modules.main.MainActivity
+import player.phonograph.ui.resource.Texts
 import player.phonograph.util.permissions.PermissionDetail
 import player.phonograph.util.permissions.hasPermission
 import player.phonograph.util.permissions.necessaryPermissions
-import player.phonograph.util.permissions.permissionDescription
-import player.phonograph.util.permissions.permissionName
 import util.theme.materials.MaterialColor
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatButton
@@ -172,8 +171,8 @@ class PhonographIntroActivity : AppIntro(),
         private fun createPermissionViewBinding(detail: PermissionDetail): ItemSimpleBinding =
             ItemSimpleBinding.inflate(layoutInflater).also { itemBinding ->
                 val context = itemBinding.root.context
-                itemBinding.title.text = permissionName(context, detail.permission)
-                itemBinding.text.text = permissionDescription(context, detail.permission)
+                itemBinding.title.text = Texts.permissionName(context, detail.permission)
+                itemBinding.text.text = Texts.permissionDescription(context, detail.permission)
                 itemBinding.menu.visibility = GONE
                 updateItemBackgroundColor(itemBinding.root, detail.permission)
 

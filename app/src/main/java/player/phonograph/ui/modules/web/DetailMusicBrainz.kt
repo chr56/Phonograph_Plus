@@ -19,7 +19,6 @@ import player.phonograph.ui.compose.components.CascadeFlowRow
 import player.phonograph.ui.compose.components.CascadeVerticalItem
 import player.phonograph.ui.compose.components.Chip
 import player.phonograph.ui.compose.components.TextItem
-import player.phonograph.util.text.bracketedIfAny
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -327,11 +326,19 @@ private fun MusicBrainzGenres(genres: List<MusicBrainzGenre>?) {
     if (!genres.isNullOrEmpty()) {
         CascadeFlowRow(stringResource(R.string.label_genres)) {
             for (genre in genres) {
-                Chip("${genre.name} ${genre.disambiguation.bracketedIfAny()}")
+                Chip(properMusicBrainzGenresName(genre))
             }
         }
     }
 }
+
+private fun properMusicBrainzGenresName(genre: MusicBrainzGenre): String =
+    if (genre.disambiguation.isNullOrEmpty()) {
+        genre.name
+    } else {
+        "${genre.name} (${genre.disambiguation})"
+    }
+
 @Composable
 private fun MusicBrainzMultipleTypes(primaryType: String, secondaryTypes: List<String>?) {
     val text = if (!secondaryTypes.isNullOrEmpty()) {

@@ -55,6 +55,9 @@ import player.phonograph.model.playlist.VirtualPlaylistLocation
 import player.phonograph.model.time.Duration
 import player.phonograph.model.time.TimeIntervalCalculationMode
 import player.phonograph.model.time.TimeUnit
+import android.Manifest
+import android.content.Context
+import android.content.pm.PermissionInfo
 import android.content.res.Resources
 
 
@@ -210,6 +213,41 @@ object Texts {
         ConventionalMusicMetadataKey.TRACK_TOTAL  -> resources.getString(R.string.label_track_total)
         ConventionalMusicMetadataKey.YEAR         -> resources.getString(R.string.label_year)
         else                                      -> key.name
+    }
+
+    private fun permissionInfo(context: Context, permissionId: String): PermissionInfo =
+        context.packageManager.getPermissionInfo(permissionId, 0)
+
+    fun permissionName(context: Context, permissionId: String): CharSequence {
+        val stringRes = when (permissionId) {
+            Manifest.permission.POST_NOTIFICATIONS      -> R.string.permission_name_post_notifications
+            Manifest.permission.READ_MEDIA_AUDIO        -> R.string.permission_name_read_media_audio
+            Manifest.permission.READ_EXTERNAL_STORAGE   -> R.string.permission_name_read_external_storage
+            Manifest.permission.WRITE_EXTERNAL_STORAGE  -> R.string.permission_name_write_external_storage
+            Manifest.permission.MANAGE_EXTERNAL_STORAGE -> R.string.permission_name_manage_external_storage
+            else                                        -> 0
+        }
+        return if (stringRes > 0) {
+            context.getString(stringRes)
+        } else {
+            permissionInfo(context, permissionId).loadLabel(context.packageManager)
+        }
+    }
+
+    fun permissionDescription(context: Context, permissionId: String): CharSequence? {
+        val stringRes = when (permissionId) {
+            Manifest.permission.POST_NOTIFICATIONS      -> R.string.permission_desc_post_notifications
+            Manifest.permission.READ_MEDIA_AUDIO        -> R.string.permission_desc_read_media_audio
+            Manifest.permission.READ_EXTERNAL_STORAGE   -> R.string.permission_desc_read_external_storage
+            Manifest.permission.WRITE_EXTERNAL_STORAGE  -> R.string.permission_desc_write_external_storage
+            Manifest.permission.MANAGE_EXTERNAL_STORAGE -> R.string.permission_desc_manage_external_storage
+            else                                        -> 0
+        }
+        return if (stringRes > 0) {
+            context.getString(stringRes)
+        } else {
+            permissionInfo(context, permissionId).loadDescription(context.packageManager)
+        }
     }
 
 }
