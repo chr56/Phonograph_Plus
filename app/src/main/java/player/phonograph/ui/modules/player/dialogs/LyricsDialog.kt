@@ -19,8 +19,8 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
 import player.phonograph.ui.modules.player.LyricsViewModel
+import player.phonograph.ui.modules.player.MusicProgressUpdateDelegate
 import player.phonograph.ui.resource.Texts
-import player.phonograph.util.component.MusicProgressUpdateDelegate
 import player.phonograph.util.observe
 import player.phonograph.util.text.lyricsTimestamp
 import player.phonograph.util.theme.ThemeSettingsDelegate.primaryColor

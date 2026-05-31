@@ -6,7 +6,6 @@ import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.modules.panel.AbsMusicServiceFragment
 import player.phonograph.ui.views.PlayPauseDrawable
-import player.phonograph.util.component.MusicProgressUpdateDelegate
 import player.phonograph.util.observe
 import player.phonograph.util.theme.ThemeSettingsDelegate.accentColor
 import player.phonograph.util.theme.getTintedDrawable
