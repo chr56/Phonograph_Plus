@@ -24,9 +24,8 @@ import player.phonograph.service.MusicService
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
 import player.phonograph.ui.actions.actionPlay
-import player.phonograph.ui.dialogs.DatabaseMaintenanceDialog
-import player.phonograph.ui.dialogs.ScanMediaDialog
 import player.phonograph.ui.modules.auxiliary.AboutActivity
+import player.phonograph.ui.modules.auxiliary.DatabaseMaintenanceDialog
 import player.phonograph.ui.modules.setting.SettingsActivity
 import player.phonograph.ui.modules.web.WebSearchLauncher
 import player.phonograph.ui.resource.Icons

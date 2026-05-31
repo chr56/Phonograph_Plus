@@ -2,7 +2,7 @@
  * Copyright (c) 2022 chr_56
  */
 
-package player.phonograph.ui.dialogs
+package player.phonograph.ui.modules.auxiliary
 
 import player.phonograph.ISSUE_TRACKER_LINK
 import player.phonograph.R

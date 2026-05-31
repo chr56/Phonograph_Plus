@@ -27,7 +27,6 @@ import player.phonograph.service.queue.QueueManager
 import player.phonograph.service.queue.executePlayRequest
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
-import player.phonograph.ui.dialogs.OpenWithDialog
 import player.phonograph.ui.modules.main.MainActivity
 import player.phonograph.util.debug
 import androidx.appcompat.app.AppCompatActivity

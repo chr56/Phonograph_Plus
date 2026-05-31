@@ -11,7 +11,7 @@ import player.phonograph.model.service.ShuffleMode
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.ui.actions.actionPlay
-import player.phonograph.ui.dialogs.ScanMediaDialog
+import player.phonograph.ui.modules.main.ScanMediaDialog
 import player.phonograph.ui.modules.panel.PanelViewModel
 import player.phonograph.util.observe
 import player.phonograph.util.theme.ThemeSettingsDelegate.accentColor

@@ -26,7 +26,7 @@ import player.phonograph.model.ui.GeneralTheme.Companion.THEME_DARK
 import player.phonograph.settings.Keys
 import player.phonograph.settings.PrerequisiteSettings
 import player.phonograph.settings.Settings
-import player.phonograph.ui.dialogs.BackupImportDialog
+import player.phonograph.ui.modules.backup.BackupImportDialog
 import player.phonograph.ui.modules.main.MainActivity
 import player.phonograph.ui.resource.Texts
 import player.phonograph.util.permissions.PermissionDetail

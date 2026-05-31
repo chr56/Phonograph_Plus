@@ -1,4 +1,7 @@
-package player.phonograph.ui.dialogs
+/*
+ * Copyright (c) 2021~2026 chr_56 & Abou Zeid (kabouzeid) (original author)
+ */
+package player.phonograph.ui.modules.auxiliary
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import player.phonograph.R
@@ -27,9 +30,6 @@ import java.io.IOException
 import java.io.InputStream
 import java.util.Locale
 
-/**
- * @author Aidan Follestad (afollestad)
- */
 class ChangelogDialog : DialogFragment() {
     @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

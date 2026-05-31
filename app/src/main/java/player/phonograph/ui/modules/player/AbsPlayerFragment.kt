@@ -19,14 +19,14 @@ import player.phonograph.model.ui.UnarySlidingUpPanelProvider
 import player.phonograph.repo.loader.FavoriteTracks
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.NavigationUtil
-import player.phonograph.ui.dialogs.LyricsDialog
-import player.phonograph.ui.dialogs.SleepTimerDialog
-import player.phonograph.ui.dialogs.SpeedControlDialog
 import player.phonograph.ui.modules.panel.AbsMusicServiceFragment
 import player.phonograph.ui.modules.panel.PanelViewModel
 import player.phonograph.ui.modules.panel.QueueViewModel
 import player.phonograph.ui.modules.player.PlayerAlbumCoverFragment.Companion.VISIBILITY_ANIM_DURATION
 import player.phonograph.ui.modules.player.controller.PlayerControllerFragment
+import player.phonograph.ui.modules.player.dialogs.LyricsDialog
+import player.phonograph.ui.modules.player.dialogs.SleepTimerDialog
+import player.phonograph.ui.modules.player.dialogs.SpeedControlDialog
 import player.phonograph.ui.modules.setting.dialog.NowPlayingScreenStylePreferenceDialog
 import player.phonograph.util.observe
 import player.phonograph.util.theme.getTintedDrawable

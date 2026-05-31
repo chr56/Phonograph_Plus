@@ -2,11 +2,11 @@ package player.phonograph.ui.modules.auxiliary
 
 import de.psdev.licensesdialog.LicensesDialog
 import player.phonograph.App
+import player.phonograph.CURRENT_RELEASE_CHANNEL
+import player.phonograph.CURRENT_TARGET_VARIANT
 import player.phonograph.GITHUB_LINK
 import player.phonograph.R
 import player.phonograph.TRANSLATE_LINk
-import player.phonograph.CURRENT_RELEASE_CHANNEL
-import player.phonograph.CURRENT_TARGET_VARIANT
 import player.phonograph.databinding.ActivityAboutBinding
 import player.phonograph.foundation.content.PackageMetadata
 import player.phonograph.foundation.error.warning
@@ -15,10 +15,7 @@ import player.phonograph.model.version.VersionCatalog
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
 import player.phonograph.ui.basis.ToolbarActivity
-import player.phonograph.ui.dialogs.ChangelogDialog
-import player.phonograph.ui.dialogs.DebugDialog
-import player.phonograph.ui.dialogs.ReportIssueDialog
-import player.phonograph.ui.dialogs.UpgradeInfoDialog
+import player.phonograph.ui.modules.upgrade.UpgradeInfoDialog
 import player.phonograph.util.text.NoticesProcessor
 import player.phonograph.util.theme.ThemeSettingsDelegate.isNightTheme
 import player.phonograph.util.theme.ThemeSettingsDelegate.primaryColor

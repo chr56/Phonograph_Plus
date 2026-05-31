@@ -1,8 +1,8 @@
 /*
- * Copyright (c) 2021 chr_56 & Abou Zeid (kabouzeid) (original author)
+ *  Copyright (c) 2022~2026 chr_56
  */
 
-package player.phonograph.ui.dialogs
+package player.phonograph.ui.modules.upgrade
 
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState

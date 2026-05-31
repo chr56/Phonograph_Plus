@@ -19,9 +19,9 @@ import player.phonograph.ui.basis.ComposeActivity
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.DropDownMenuContent
 import player.phonograph.ui.compose.components.SystemBarsPadded
-import player.phonograph.ui.dialogs.BackupExportDialog
-import player.phonograph.ui.dialogs.BackupImportDialog
-import player.phonograph.ui.dialogs.DatabaseMaintenanceDialog
+import player.phonograph.ui.modules.auxiliary.DatabaseMaintenanceDialog
+import player.phonograph.ui.modules.backup.BackupExportDialog
+import player.phonograph.ui.modules.backup.BackupImportDialog
 import player.phonograph.ui.modules.explorer.PathSelectorContractTool
 import player.phonograph.ui.modules.explorer.PathSelectorRequester
 import util.theme.materials.MaterialColor

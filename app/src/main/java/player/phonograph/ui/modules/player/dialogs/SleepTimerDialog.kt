@@ -2,7 +2,7 @@
  *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.ui.dialogs
+package player.phonograph.ui.modules.player.dialogs
 
 import com.triggertrap.seekarc.SeekArc
 import player.phonograph.App

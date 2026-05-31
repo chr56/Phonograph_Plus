@@ -23,9 +23,9 @@ import player.phonograph.model.ui.UnarySlidingUpPanelProvider
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.ui.actions.ActionMenuProviders
-import player.phonograph.ui.dialogs.QueueSnapshotsDialog
 import player.phonograph.ui.modules.panel.AbsMusicServiceFragment
 import player.phonograph.ui.modules.panel.PanelViewModel
+import player.phonograph.ui.modules.player.dialogs.QueueSnapshotsDialog
 import player.phonograph.ui.modules.playlist.dialogs.CreatePlaylistDialogActivity
 import player.phonograph.util.observe
 import player.phonograph.util.text.buildInfoString

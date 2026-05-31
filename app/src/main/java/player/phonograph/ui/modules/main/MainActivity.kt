@@ -22,11 +22,11 @@ import player.phonograph.model.version.VersionCatalog
 import player.phonograph.settings.Keys
 import player.phonograph.settings.PrerequisiteSettings
 import player.phonograph.settings.Settings
-import player.phonograph.ui.dialogs.ChangelogDialog
-import player.phonograph.ui.dialogs.UpgradeInfoDialog
+import player.phonograph.ui.modules.auxiliary.ChangelogDialog
 import player.phonograph.ui.modules.explorer.PathSelectorContractTool
 import player.phonograph.ui.modules.explorer.PathSelectorRequester
 import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
+import player.phonograph.ui.modules.upgrade.UpgradeInfoDialog
 import player.phonograph.util.debug
 import player.phonograph.util.logMetrics
 import player.phonograph.util.observe

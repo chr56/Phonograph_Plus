@@ -2,7 +2,7 @@
  *  Copyright (c) 2022~2025 chr_56
  */
 
-package player.phonograph.ui.dialogs
+package player.phonograph.ui.modules.player.dialogs
 
 import com.google.android.material.chip.Chip
 import lib.storage.launcher.IOpenFileStorageAccessible
