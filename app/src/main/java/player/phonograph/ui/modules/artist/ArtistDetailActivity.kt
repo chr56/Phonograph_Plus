@@ -13,6 +13,8 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import player.phonograph.R
 import player.phonograph.databinding.ActivityArtistDetailBinding
+import player.phonograph.foundation.content.GetContentDelegate
+import player.phonograph.foundation.content.IGetContentRequester
 import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
@@ -29,8 +31,6 @@ import player.phonograph.ui.adapter.MultiSelectionController
 import player.phonograph.ui.adapter.SongBasicDisplayPresenter
 import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.resource.Layouts
-import player.phonograph.util.component.GetContentDelegate
-import player.phonograph.util.component.IGetContentRequester
 import player.phonograph.util.observe
 import player.phonograph.util.text.albumCountString
 import player.phonograph.util.text.buildInfoString

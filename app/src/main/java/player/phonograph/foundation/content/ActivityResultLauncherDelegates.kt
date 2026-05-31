@@ -2,7 +2,7 @@
  *  Copyright (c) 2022~2025 chr_56
  */
 
-package player.phonograph.util.component
+package player.phonograph.foundation.content
 
 import lib.activityresultcontract.ActivityResultLauncherDelegate
 import androidx.activity.result.contract.ActivityResultContract
