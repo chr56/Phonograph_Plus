@@ -20,7 +20,6 @@ import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.model.ui.PaletteColorProvider
 import player.phonograph.repo.loader.Songs
 import player.phonograph.ui.NavigationUtil.goToArtist
-import player.phonograph.ui.actions.DetailToolbarMenuProviders
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayPresenter
 import player.phonograph.ui.adapter.SongBasicDisplayPresenter
@@ -208,7 +207,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvider
 
     private fun setupMenu(menu: Menu) {
         val iconColor = textColorOn(this, panelViewModel.activityColor.value)
-        DetailToolbarMenuProviders.AlbumToolbarMenuProvider.inflateMenu(menu, this, viewModel.album.value, iconColor)
+        inflateAlbumDetailMenu(menu, this, viewModel.album.value, iconColor)
         tintToolbarMenuActionIcons(menu, iconColor)
         tintOverflowButtonColor(this, iconColor)
     }

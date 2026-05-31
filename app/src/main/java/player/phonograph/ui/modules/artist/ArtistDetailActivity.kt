@@ -22,7 +22,6 @@ import player.phonograph.model.sort.SortRef
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.model.ui.PaletteColorProvider
 import player.phonograph.repo.loader.Songs
-import player.phonograph.ui.actions.DetailToolbarMenuProviders
 import player.phonograph.ui.adapter.AlbumBasicDisplayPresenter
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayPresenter
@@ -193,9 +192,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvide
 
     private fun setupMenu(menu: Menu) {
         val iconColor = textColorOn(this, panelViewModel.activityColor.value)
-        DetailToolbarMenuProviders.ArtistToolbarMenuProvider.inflateMenu(
-            menu, this, viewModel.artist.value ?: Artist(), iconColor
-        )
+        inflateArtistDetailMenu(menu, this, viewModel.artist.value ?: Artist(), iconColor)
         attach(menu) {
             menuItem(title = getString(R.string.label_colored_footers)) {
                 checkable = true

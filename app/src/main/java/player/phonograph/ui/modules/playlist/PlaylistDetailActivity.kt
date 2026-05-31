@@ -336,7 +336,7 @@ class PlaylistDetailActivity :
 
     private fun setupMenu(menu: Menu) {
         val iconColor = textColorOn(this, panelViewModel.activityColor.value)
-        PlaylistToolbarMenuProvider(::execute).inflateMenu(menu, this, viewModel.playlist, iconColor)
+        inflatePlaylistDetailMenu(menu, this, viewModel.playlist, iconColor, ::execute)
         tintToolbarMenuActionIcons(menu, iconColor)
         tintOverflowButtonColor(this, iconColor)
     }
