@@ -14,7 +14,7 @@ import player.phonograph.foundation.error.warning
 import player.phonograph.model.metadata.InteractiveAction
 import player.phonograph.model.metadata.InteractiveAction.Edit
 import player.phonograph.ui.modules.tag.AbsMetadataViewModel
-import player.phonograph.util.theme.accentColoredButtonStyle
+import player.phonograph.ui.theme.accentColoredButtonStyle
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope

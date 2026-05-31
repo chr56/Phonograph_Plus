@@ -19,7 +19,7 @@ import player.phonograph.ui.actions.actionPlay
 import player.phonograph.ui.actions.actionPlayNext
 import player.phonograph.ui.modules.tag.MultiTagBrowserActivity
 import player.phonograph.ui.modules.web.LastFmDialog
-import player.phonograph.util.theme.getTintedDrawable
+import player.phonograph.ui.theme.getTintedDrawable
 import androidx.activity.ComponentActivity
 import androidx.annotation.ColorInt
 import androidx.fragment.app.FragmentActivity

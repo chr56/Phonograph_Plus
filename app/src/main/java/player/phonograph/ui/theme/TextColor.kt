@@ -2,7 +2,7 @@
  *  Copyright (c) 2022~2026 chr_56
  */
 
-package player.phonograph.util.theme
+package player.phonograph.ui.theme
 
 import player.phonograph.R
 import util.theme.color.isColorLight

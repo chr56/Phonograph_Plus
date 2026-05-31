@@ -15,11 +15,11 @@ import player.phonograph.ui.NavigationUtil
 import player.phonograph.ui.modules.auxiliary.DeletionDialog
 import player.phonograph.ui.modules.playlist.dialogs.AddToPlaylistDialogActivity
 import player.phonograph.ui.modules.tag.TagBrowserActivity
+import player.phonograph.ui.theme.tintButtons
 import player.phonograph.util.fragmentActivity
 import player.phonograph.util.permissions.checkModificationSystemSettingsPermission
 import player.phonograph.util.setRingtone
 import player.phonograph.util.shareFileIntent
-import player.phonograph.util.theme.tintButtons
 import androidx.appcompat.app.AlertDialog
 import androidx.core.util.Pair
 import androidx.fragment.app.FragmentActivity

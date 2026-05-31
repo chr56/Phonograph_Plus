@@ -13,9 +13,9 @@ import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.ui.actions.ActionMenuProviders
 import player.phonograph.ui.actions.ClickActionProviders
 import player.phonograph.ui.adapter.DisplayPresenter
+import player.phonograph.ui.theme.getTintedDrawable
+import player.phonograph.ui.theme.themeIconColor
 import player.phonograph.util.text.dateTimeText
-import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.theme.themeIconColor
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.drawable.Drawable

@@ -4,7 +4,7 @@
 
 package player.phonograph.ui.compose
 
-import player.phonograph.util.theme.ThemeSettingsDelegate
+import player.phonograph.ui.theme.ThemeSettingsDelegate
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState

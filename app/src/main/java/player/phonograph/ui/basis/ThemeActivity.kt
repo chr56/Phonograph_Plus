@@ -4,9 +4,9 @@
 
 package player.phonograph.ui.basis
 
-import player.phonograph.util.theme.ThemeSettingsDelegate
-import player.phonograph.util.theme.setupSystemBars
-import player.phonograph.util.theme.updateTaskDescriptionColor
+import player.phonograph.ui.theme.ThemeSettingsDelegate
+import player.phonograph.ui.theme.setupSystemBars
+import player.phonograph.ui.theme.updateTaskDescriptionColor
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle

@@ -13,7 +13,7 @@ import player.phonograph.settings.Settings
 import player.phonograph.ui.adapter.SortableListAdapter
 import player.phonograph.ui.compose.components.ActionItem
 import player.phonograph.ui.resource.Texts
-import player.phonograph.util.theme.textColorPrimary
+import player.phonograph.ui.theme.textColorPrimary
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding

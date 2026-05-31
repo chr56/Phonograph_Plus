@@ -3,7 +3,7 @@ package player.phonograph.ui.appwidgets
 import player.phonograph.R
 import player.phonograph.mechanism.coil.palette.PaletteColorTarget
 import player.phonograph.model.Song
-import player.phonograph.util.theme.secondaryTextColor
+import player.phonograph.ui.theme.secondaryTextColor
 import androidx.core.graphics.drawable.toBitmapOrNull
 import android.content.Context
 import android.graphics.Bitmap

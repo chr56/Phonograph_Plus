@@ -7,9 +7,9 @@ package player.phonograph.ui.modules.player.controller
 import player.phonograph.R
 import player.phonograph.databinding.FragmentPlaybackControlsFlatBinding
 import player.phonograph.ui.modules.player.PlayPauseButtonOnClickHandler
+import player.phonograph.ui.theme.getTintedDrawable
+import player.phonograph.ui.theme.themeIconColor
 import player.phonograph.ui.views.PlayPauseDrawable
-import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.theme.themeIconColor
 import android.animation.AnimatorSet
 import android.content.Context
 import android.graphics.PorterDuff

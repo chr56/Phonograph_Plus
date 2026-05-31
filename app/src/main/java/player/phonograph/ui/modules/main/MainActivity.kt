@@ -27,13 +27,13 @@ import player.phonograph.ui.modules.explorer.PathSelectorContractTool
 import player.phonograph.ui.modules.explorer.PathSelectorRequester
 import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.modules.upgrade.UpgradeInfoDialog
+import player.phonograph.ui.theme.ThemeSettingsDelegate.accentColor
+import player.phonograph.ui.theme.textColorPrimary
+import player.phonograph.ui.theme.themeIconColor
 import player.phonograph.util.debug
 import player.phonograph.util.logMetrics
 import player.phonograph.util.observe
 import player.phonograph.util.text.infoString
-import player.phonograph.util.theme.ThemeSettingsDelegate.accentColor
-import player.phonograph.util.theme.textColorPrimary
-import player.phonograph.util.theme.themeIconColor
 import util.theme.view.navigationview.setItemIconColors
 import util.theme.view.navigationview.setItemTextColors
 import androidx.activity.OnBackPressedCallback

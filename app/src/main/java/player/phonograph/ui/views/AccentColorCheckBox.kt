@@ -4,8 +4,8 @@
 
 package player.phonograph.ui.views
 
-import player.phonograph.util.theme.ThemeSettingsDelegate.accentColor
-import player.phonograph.util.theme.ThemeSettingsDelegate.isNightTheme
+import player.phonograph.ui.theme.ThemeSettingsDelegate.accentColor
+import player.phonograph.ui.theme.ThemeSettingsDelegate.isNightTheme
 import util.theme.view.checkbox.setTint
 import androidx.appcompat.widget.AppCompatCheckBox
 import android.content.Context

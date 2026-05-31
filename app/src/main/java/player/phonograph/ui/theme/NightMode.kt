@@ -1,8 +1,8 @@
 /*
- *  Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2026 chr_56
  */
 
-package player.phonograph.util.theme
+package player.phonograph.ui.theme
 
 import player.phonograph.util.debug
 import androidx.appcompat.app.AppCompatDelegate

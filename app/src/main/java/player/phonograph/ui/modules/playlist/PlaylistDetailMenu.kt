@@ -25,9 +25,9 @@ import player.phonograph.ui.actions.actionSavePlaylist
 import player.phonograph.ui.actions.actionShuffleAndPlay
 import player.phonograph.ui.modules.setting.dialog.LastAddedPlaylistIntervalDialog
 import player.phonograph.ui.modules.tag.MultiTagBrowserActivity
+import player.phonograph.ui.theme.getTintedDrawable
+import player.phonograph.ui.theme.tintButtons
 import player.phonograph.util.fragmentActivity
-import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.theme.tintButtons
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner

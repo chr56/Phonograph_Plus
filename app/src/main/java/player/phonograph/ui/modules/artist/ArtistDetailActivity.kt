@@ -31,6 +31,12 @@ import player.phonograph.ui.adapter.MultiSelectionController
 import player.phonograph.ui.adapter.SongBasicDisplayPresenter
 import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.resource.Layouts
+import player.phonograph.ui.theme.ThemeSettingsDelegate.primaryColor
+import player.phonograph.ui.theme.getTintedDrawable
+import player.phonograph.ui.theme.secondaryTextColorOn
+import player.phonograph.ui.theme.textColorOn
+import player.phonograph.ui.theme.themeFooterColor
+import player.phonograph.ui.theme.updateSystemBarsColor
 import player.phonograph.util.observe
 import player.phonograph.util.text.albumCountString
 import player.phonograph.util.text.buildInfoString
@@ -38,12 +44,6 @@ import player.phonograph.util.text.readableDuration
 import player.phonograph.util.text.readableYear
 import player.phonograph.util.text.songCountString
 import player.phonograph.util.text.totalDuration
-import player.phonograph.util.theme.ThemeSettingsDelegate.primaryColor
-import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.theme.secondaryTextColorOn
-import player.phonograph.util.theme.textColorOn
-import player.phonograph.util.theme.themeFooterColor
-import player.phonograph.util.theme.updateSystemBarsColor
 import player.phonograph.util.ui.BottomViewWindowInsetsController
 import player.phonograph.util.ui.applyControllableWindowInsetsAsBottomView
 import player.phonograph.util.ui.menuProvider

@@ -14,10 +14,10 @@ import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.ui.modules.popup.ListOptionsPopup
+import player.phonograph.ui.theme.getTintedDrawableOnBackground
+import player.phonograph.ui.theme.textColorPrimary
 import player.phonograph.util.debug
 import player.phonograph.util.logMetrics
-import player.phonograph.util.theme.getTintedDrawableOnBackground
-import player.phonograph.util.theme.textColorPrimary
 import player.phonograph.util.ui.isLandscape
 import player.phonograph.util.ui.isTablet
 import player.phonograph.util.ui.isWideScreen

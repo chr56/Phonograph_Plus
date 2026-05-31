@@ -8,8 +8,8 @@ import player.phonograph.R
 import player.phonograph.databinding.DialogSpeedControlBinding
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.MusicService
+import player.phonograph.ui.theme.tintButtons
 import player.phonograph.util.observe
-import player.phonograph.util.theme.tintButtons
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import android.app.Dialog

@@ -12,7 +12,7 @@ import player.phonograph.R
 import player.phonograph.model.metadata.InteractiveAction
 import player.phonograph.ui.compose.components.Title
 import player.phonograph.ui.modules.tag.components.MetadataDifferenceItem
-import player.phonograph.util.theme.accentColoredButtonStyle
+import player.phonograph.ui.theme.accentColoredButtonStyle
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope

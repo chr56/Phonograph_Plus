@@ -14,11 +14,11 @@ import player.phonograph.ui.actions.ActionMenuProviders
 import player.phonograph.ui.actions.ClickActionProviders
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayPresenter
+import player.phonograph.ui.theme.ThemeSettingsDelegate.accentColor
+import player.phonograph.ui.theme.getTintedDrawableOnBackground
+import player.phonograph.ui.theme.setUpFastScrollRecyclerViewColor
+import player.phonograph.ui.theme.tintButtons
 import player.phonograph.util.observe
-import player.phonograph.util.theme.ThemeSettingsDelegate.accentColor
-import player.phonograph.util.theme.getTintedDrawableOnBackground
-import player.phonograph.util.theme.tintButtons
-import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment

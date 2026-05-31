@@ -1,6 +1,6 @@
 package player.phonograph.ui.views
 
-import player.phonograph.util.theme.themeIconColor
+import player.phonograph.ui.theme.themeIconColor
 import androidx.appcompat.widget.AppCompatImageView
 import android.content.Context
 import android.graphics.PorterDuff

@@ -30,7 +30,7 @@ import player.phonograph.ui.actions.actionSavePlaylists
 import player.phonograph.ui.actions.songs
 import player.phonograph.ui.modules.tag.MultiTagBrowserActivity
 import player.phonograph.ui.modules.tag.TagBrowserActivity
-import player.phonograph.util.theme.getTintedDrawable
+import player.phonograph.ui.theme.getTintedDrawable
 import android.content.Context
 import android.view.Menu
 import android.view.MenuItem

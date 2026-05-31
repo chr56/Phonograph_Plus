@@ -11,11 +11,11 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.util.SleepTimer
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
+import player.phonograph.ui.theme.ThemeSettingsDelegate.accentColor
+import player.phonograph.ui.theme.tintAlertDialogButtons
+import player.phonograph.ui.theme.tintButtons
 import player.phonograph.ui.views.AccentColorCheckBox
 import player.phonograph.util.text.readableDuration
-import player.phonograph.util.theme.ThemeSettingsDelegate.accentColor
-import player.phonograph.util.theme.tintAlertDialogButtons
-import player.phonograph.util.theme.tintButtons
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import android.app.Dialog

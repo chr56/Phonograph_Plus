@@ -13,7 +13,7 @@ import player.phonograph.model.metadata.ConventionalMusicMetadataKey
 import player.phonograph.model.metadata.InteractiveAction
 import player.phonograph.model.metadata.Metadata
 import player.phonograph.model.metadata.MusicMetadata
-import player.phonograph.util.theme.themeFooterColor
+import player.phonograph.ui.theme.themeFooterColor
 import androidx.compose.ui.graphics.Color
 import android.content.Context
 import android.graphics.Bitmap

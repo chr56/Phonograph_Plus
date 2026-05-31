@@ -15,9 +15,9 @@ import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.ActionItem
 import player.phonograph.ui.compose.components.AdvancedDialogFrame
 import player.phonograph.ui.compose.components.LimitedDialog
+import player.phonograph.ui.theme.tintButtons
 import player.phonograph.util.text.currentDate
 import player.phonograph.util.text.dateTimeSuffixCompat
-import player.phonograph.util.theme.tintButtons
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons

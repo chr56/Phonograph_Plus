@@ -12,7 +12,7 @@ import player.phonograph.model.service.ShuffleMode
 import player.phonograph.repo.loader.Genres
 import player.phonograph.ui.actions.actionPlay
 import player.phonograph.ui.actions.actionPlayNext
-import player.phonograph.util.theme.getTintedDrawable
+import player.phonograph.ui.theme.getTintedDrawable
 import androidx.activity.ComponentActivity
 import androidx.annotation.ColorInt
 import androidx.lifecycle.lifecycleScope

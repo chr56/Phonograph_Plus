@@ -22,10 +22,10 @@ import player.phonograph.settings.SettingsObserver
 import player.phonograph.ui.modules.main.MainActivity
 import player.phonograph.ui.resource.Icons
 import player.phonograph.ui.resource.Texts
+import player.phonograph.ui.theme.getTintedDrawable
+import player.phonograph.ui.theme.secondaryTextColorOn
+import player.phonograph.ui.theme.textColorOn
 import player.phonograph.util.permissions.checkNotificationPermission
-import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.theme.secondaryTextColorOn
-import player.phonograph.util.theme.textColorOn
 import androidx.annotation.LayoutRes
 import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat

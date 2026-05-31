@@ -2,10 +2,10 @@
  *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.util.theme
+package player.phonograph.ui.theme
 
-import player.phonograph.util.theme.ThemeSettingsDelegate.accentColor
-import player.phonograph.util.theme.ThemeSettingsDelegate.primaryColor
+import player.phonograph.ui.theme.ThemeSettingsDelegate.accentColor
+import player.phonograph.ui.theme.ThemeSettingsDelegate.primaryColor
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.core.content.res.ResourcesCompat

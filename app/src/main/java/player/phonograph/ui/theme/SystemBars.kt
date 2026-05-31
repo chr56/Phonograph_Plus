@@ -4,11 +4,9 @@
 
 @file:SuppressLint("ObsoleteSdkInt")
 
-package player.phonograph.util.theme
+package player.phonograph.ui.theme
 
 import player.phonograph.R
-import player.phonograph.util.theme.ThemeSettingsDelegate.isNightTheme
-import player.phonograph.util.theme.ThemeSettingsDelegate.primaryColor
 import util.theme.activity.setTaskDescriptionColor
 import util.theme.color.darkenColor
 import util.theme.color.isColorLight
@@ -24,28 +22,6 @@ import android.view.View
 import android.view.Window
 import android.view.WindowManager
 
-private var Impl: SystemUIModifier? = null
-
-val systemUIModifier: SystemUIModifier
-    get() =
-        Impl ?: if (SDK_INT >= 35) {
-            SystemUIModifierApi35()
-        } else if (SDK_INT >= 30) {
-            SystemUIModifierApi30()
-        } else if (SDK_INT >= 29) {
-            SystemUIModifierApi29()
-        } else if (SDK_INT >= 28) {
-            SystemUIModifierApi28()
-        } else if (SDK_INT >= 26) {
-            SystemUIModifierApi26()
-        } else if (SDK_INT >= 23) {
-            SystemUIModifierApi23()
-        } else if (SDK_INT >= 21) {
-            SystemUIModifierApi21()
-        } else {
-            SystemUIModifierBase()
-        }.also { Impl = it }
-
 fun Activity.setupSystemBars() {
     systemUIModifier.setUp(window, window.decorView)
 }
@@ -56,13 +32,31 @@ fun Activity.updateSystemBarsColor(@ColorInt statusBarColor: Int, @ColorInt navi
         window.decorView,
         statusBarColor,
         navigationBarColor,
-        isNightTheme(resources)
+        ThemeSettingsDelegate.isNightTheme(resources)
     )
 }
 
-fun Activity.updateTaskDescriptionColor(color: Int = darkenColor(primaryColor())) = setTaskDescriptionColor(color)
+fun Activity.updateTaskDescriptionColor(color: Int = darkenColor(ThemeSettingsDelegate.primaryColor())) {
+    setTaskDescriptionColor(color)
+}
 
-interface SystemUIModifier {
+
+private var Impl: SystemUIModifier? = null
+
+private val systemUIModifier: SystemUIModifier
+    get() =
+        Impl ?: when {
+            SDK_INT >= 35 -> SystemUIModifierApi35()
+            SDK_INT >= 30 -> SystemUIModifierApi30()
+            SDK_INT >= 29 -> SystemUIModifierApi29()
+            SDK_INT >= 28 -> SystemUIModifierApi28()
+            SDK_INT >= 26 -> SystemUIModifierApi26()
+            SDK_INT >= 23 -> SystemUIModifierApi23()
+            SDK_INT >= 21 -> SystemUIModifierApi21()
+            else -> SystemUIModifierBase()
+        }.also { Impl = it }
+
+private interface SystemUIModifier {
     fun setUp(window: Window, view: View)
     fun updateSystemBars(
         window: Window, view: View,

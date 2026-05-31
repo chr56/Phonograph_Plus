@@ -10,7 +10,7 @@ import player.phonograph.foundation.localization.ContextLocaleDelegate
 import player.phonograph.foundation.localization.LocalizationStore
 import player.phonograph.foundation.localization.getAvailableLanguage
 import player.phonograph.foundation.localization.getAvailableLanguageNames
-import player.phonograph.util.theme.tintButtons
+import player.phonograph.ui.theme.tintButtons
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
 import androidx.fragment.app.DialogFragment

@@ -7,10 +7,10 @@ package player.phonograph.ui.modules.auxiliary
 import player.phonograph.ISSUE_TRACKER_LINK
 import player.phonograph.R
 import player.phonograph.databinding.DialogReportIssueBinding
+import player.phonograph.ui.theme.ThemeSettingsDelegate.isNightTheme
+import player.phonograph.ui.theme.ThemeSettingsDelegate.primaryColor
+import player.phonograph.ui.theme.getTintedDrawable
 import player.phonograph.util.text.getDeviceInfo
-import player.phonograph.util.theme.ThemeSettingsDelegate.isNightTheme
-import player.phonograph.util.theme.ThemeSettingsDelegate.primaryColor
-import player.phonograph.util.theme.getTintedDrawable
 import util.theme.view.tint
 import androidx.fragment.app.DialogFragment
 import android.content.ClipData

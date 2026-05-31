@@ -28,10 +28,10 @@ import player.phonograph.ui.modules.player.dialogs.LyricsDialog
 import player.phonograph.ui.modules.player.dialogs.SleepTimerDialog
 import player.phonograph.ui.modules.player.dialogs.SpeedControlDialog
 import player.phonograph.ui.modules.setting.dialog.NowPlayingScreenStylePreferenceDialog
+import player.phonograph.ui.theme.getTintedDrawable
+import player.phonograph.ui.theme.secondaryTextColorOn
+import player.phonograph.ui.theme.textColorOn
 import player.phonograph.util.observe
-import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.theme.secondaryTextColorOn
-import player.phonograph.util.theme.textColorOn
 import player.phonograph.util.ui.PHONOGRAPH_ANIM_TIME
 import player.phonograph.util.ui.backgroundColorTransitionAnimator
 import player.phonograph.util.ui.isLandscape

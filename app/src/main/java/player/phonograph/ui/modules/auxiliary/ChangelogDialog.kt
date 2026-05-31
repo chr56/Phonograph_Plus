@@ -9,12 +9,12 @@ import player.phonograph.foundation.content.PackageMetadata
 import player.phonograph.foundation.error.warning
 import player.phonograph.foundation.localization.LocalizationStore
 import player.phonograph.settings.PrerequisiteSettings
+import player.phonograph.ui.theme.ThemeSettingsDelegate.accentColor
+import player.phonograph.ui.theme.ThemeSettingsDelegate.isNightTheme
+import player.phonograph.ui.theme.themeCardBackgroundColor
+import player.phonograph.ui.theme.tintButtons
 import player.phonograph.util.text.changelogCSS
 import player.phonograph.util.text.changelogHTML
-import player.phonograph.util.theme.ThemeSettingsDelegate.accentColor
-import player.phonograph.util.theme.ThemeSettingsDelegate.isNightTheme
-import player.phonograph.util.theme.themeCardBackgroundColor
-import player.phonograph.util.theme.tintButtons
 import androidx.appcompat.app.AlertDialog
 import androidx.core.graphics.toColorInt
 import androidx.fragment.app.DialogFragment

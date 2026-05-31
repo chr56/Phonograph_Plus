@@ -33,13 +33,13 @@ import player.phonograph.ui.modules.main.pages.SongPage
 import player.phonograph.ui.modules.popup.ListOptionsPopup
 import player.phonograph.ui.modules.search.SearchActivity
 import player.phonograph.ui.resource.Texts
+import player.phonograph.ui.theme.ThemeSettingsDelegate.accentColor
+import player.phonograph.ui.theme.ThemeSettingsDelegate.primaryColor
+import player.phonograph.ui.theme.getTintedDrawable
+import player.phonograph.ui.theme.textColorOn
 import player.phonograph.util.debug
 import player.phonograph.util.logMetrics
 import player.phonograph.util.observe
-import player.phonograph.util.theme.ThemeSettingsDelegate.accentColor
-import player.phonograph.util.theme.ThemeSettingsDelegate.primaryColor
-import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.theme.textColorOn
 import player.phonograph.util.ui.menuProvider
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity

@@ -1,16 +1,16 @@
 /*
- *  Copyright (c) 2022~2025 chr_56
+ *  Copyright (c) 2022~2026 chr_56
  */
 
-package player.phonograph.util.theme
+package player.phonograph.ui.theme
 
 import player.phonograph.R
 import player.phonograph.model.ui.GeneralTheme
 import player.phonograph.model.ui.GeneralTheme.Companion.THEME_AUTO_LIGHTBLACK
 import player.phonograph.model.ui.GeneralTheme.Companion.THEME_AUTO_LIGHTDARK
+import player.phonograph.model.ui.GeneralTheme.Companion.THEME_LIGHT
 import player.phonograph.model.ui.GeneralTheme.Companion.THEME_BLACK
 import player.phonograph.model.ui.GeneralTheme.Companion.THEME_DARK
-import player.phonograph.model.ui.GeneralTheme.Companion.THEME_LIGHT
 import player.phonograph.settings.Keys
 import player.phonograph.settings.PrimitiveKey
 import player.phonograph.settings.Settings
@@ -33,7 +33,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.util.concurrent.CancellationException
-
 
 object ThemeSettingsDelegate {
 

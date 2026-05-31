@@ -16,9 +16,9 @@ import player.phonograph.service.queue.QueueHolder
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
+import player.phonograph.ui.theme.accentColoredButtonStyle
 import player.phonograph.util.text.songCountString
 import player.phonograph.util.text.timeText
-import player.phonograph.util.theme.accentColoredButtonStyle
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column

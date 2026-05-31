@@ -20,10 +20,10 @@ import player.phonograph.model.service.ACTION_TOGGLE_PAUSE
 import player.phonograph.service.MusicService
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.ui.modules.auxiliary.LauncherActivity
+import player.phonograph.ui.theme.getTintedDrawable
+import player.phonograph.ui.theme.secondaryTextColor
+import player.phonograph.ui.theme.systemNightMode
 import player.phonograph.util.text.infoString
-import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.theme.secondaryTextColor
-import player.phonograph.util.theme.systemNightMode
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes

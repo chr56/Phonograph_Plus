@@ -30,10 +30,10 @@ import player.phonograph.ui.modules.setting.SettingsActivity
 import player.phonograph.ui.modules.web.WebSearchLauncher
 import player.phonograph.ui.resource.Icons
 import player.phonograph.ui.resource.Texts
+import player.phonograph.ui.theme.getTintedDrawable
+import player.phonograph.ui.theme.textColorPrimary
 import player.phonograph.util.permissions.navigateToAppDetailSetting
 import player.phonograph.util.permissions.navigateToStorageSetting
-import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.theme.textColorPrimary
 import androidx.core.net.toUri
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope

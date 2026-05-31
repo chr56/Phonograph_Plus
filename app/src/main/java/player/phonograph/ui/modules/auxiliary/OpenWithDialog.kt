@@ -22,7 +22,7 @@ import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.ModeRadioBox
 import player.phonograph.ui.modules.main.MainActivity
 import player.phonograph.ui.resource.Texts
-import player.phonograph.util.theme.accentColoredButtonStyle
+import player.phonograph.ui.theme.accentColoredButtonStyle
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

@@ -19,8 +19,8 @@ import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.modules.panel.AbsMusicServiceFragment
 import player.phonograph.ui.modules.panel.PanelViewModel
+import player.phonograph.ui.theme.themeFooterColor
 import player.phonograph.util.observe
-import player.phonograph.util.theme.themeFooterColor
 import player.phonograph.util.ui.PHONOGRAPH_ANIM_TIME
 import player.phonograph.util.ui.SimpleAnimatorListener
 import androidx.annotation.MainThread
