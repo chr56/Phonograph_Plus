@@ -2,7 +2,7 @@
  *  Copyright (c) 2022~2024 chr_56
  */
 
-package player.phonograph.util.permissions
+package player.phonograph.foundation.permission
 
 import androidx.annotation.RequiresApi
 import android.Manifest

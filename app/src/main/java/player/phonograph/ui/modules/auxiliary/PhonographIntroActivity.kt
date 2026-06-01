@@ -21,6 +21,9 @@ import player.phonograph.R
 import player.phonograph.databinding.FragmentIntroBinding
 import player.phonograph.databinding.FragmentIntroSlideSettingBinding
 import player.phonograph.databinding.ItemSimpleBinding
+import player.phonograph.foundation.permission.PermissionDetail
+import player.phonograph.foundation.permission.hasPermission
+import player.phonograph.foundation.permission.necessaryPermissions
 import player.phonograph.mechanism.backup.Backup
 import player.phonograph.model.ui.GeneralTheme.Companion.THEME_DARK
 import player.phonograph.settings.Keys
@@ -29,9 +32,6 @@ import player.phonograph.settings.Settings
 import player.phonograph.ui.modules.backup.BackupImportDialog
 import player.phonograph.ui.modules.main.MainActivity
 import player.phonograph.ui.resource.Texts
-import player.phonograph.util.permissions.PermissionDetail
-import player.phonograph.util.permissions.hasPermission
-import player.phonograph.util.permissions.necessaryPermissions
 import util.theme.materials.MaterialColor
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatButton

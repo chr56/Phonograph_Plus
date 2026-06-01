@@ -6,6 +6,7 @@ package player.phonograph.service.notification
 
 import coil.request.Disposable
 import player.phonograph.R
+import player.phonograph.foundation.permission.checkNotificationPermission
 import player.phonograph.model.Song
 import player.phonograph.model.notification.NotificationAction
 import player.phonograph.model.notification.NotificationActionsConfig
@@ -25,7 +26,6 @@ import player.phonograph.ui.resource.Texts
 import player.phonograph.ui.theme.getTintedDrawable
 import player.phonograph.ui.theme.secondaryTextColorOn
 import player.phonograph.ui.theme.textColorOn
-import player.phonograph.util.permissions.checkNotificationPermission
 import androidx.annotation.LayoutRes
 import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat

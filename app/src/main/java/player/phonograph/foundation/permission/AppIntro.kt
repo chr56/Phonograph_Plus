@@ -1,8 +1,8 @@
 /*
- *  Copyright (c) 2022~2024 chr_56
+ *  Copyright (c) 2022~2026 chr_56
  */
 
-package player.phonograph.util.permissions
+package player.phonograph.foundation.permission
 
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES

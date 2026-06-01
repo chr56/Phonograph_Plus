@@ -9,10 +9,10 @@ import lib.activityresultcontract.IRequestMultiplePermission
 import lib.activityresultcontract.RequestMultiplePermissionsDelegate
 import player.phonograph.R
 import player.phonograph.foundation.concurrent.runOnMainHandler
+import player.phonograph.foundation.permission.hasPermissions
 import player.phonograph.ui.NavigationUtil.navigateToAppDetailSetting
 import player.phonograph.ui.resource.Texts
 import player.phonograph.ui.theme.ThemeSettingsDelegate.accentColor
-import player.phonograph.util.permissions.hasPermissions
 import android.os.Bundle
 
 /**

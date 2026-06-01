@@ -5,6 +5,7 @@
 package player.phonograph.ui.modules.panel
 
 import org.koin.android.ext.android.inject
+import player.phonograph.foundation.permission.StoragePermissionChecker
 import player.phonograph.mechanism.event.MediaStoreObservation
 import player.phonograph.model.service.MusicServiceConnection
 import player.phonograph.service.MusicPlayerRemote
@@ -12,7 +13,6 @@ import player.phonograph.service.MusicPlayerRemote.ServiceToken
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.ui.NavigationUtil.navigateToAppDetailSetting
 import player.phonograph.ui.basis.ToolbarActivity
-import player.phonograph.util.permissions.StoragePermissionChecker
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.withResumed

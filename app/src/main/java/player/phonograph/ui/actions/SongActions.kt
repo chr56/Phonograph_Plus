@@ -6,6 +6,7 @@ package player.phonograph.ui.actions
 
 import player.phonograph.R
 import player.phonograph.foundation.concurrent.lifecycleScopeOrNewOne
+import player.phonograph.foundation.permission.checkModificationSystemSettingsPermission
 import player.phonograph.model.Song
 import player.phonograph.model.service.ShuffleMode
 import player.phonograph.repo.loader.Playlists
@@ -17,7 +18,6 @@ import player.phonograph.ui.modules.playlist.dialogs.AddToPlaylistDialogActivity
 import player.phonograph.ui.modules.tag.TagBrowserActivity
 import player.phonograph.ui.theme.tintButtons
 import player.phonograph.util.fragmentActivity
-import player.phonograph.util.permissions.checkModificationSystemSettingsPermission
 import player.phonograph.util.setRingtone
 import player.phonograph.util.shareFileIntent
 import androidx.appcompat.app.AlertDialog

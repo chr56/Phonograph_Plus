@@ -12,6 +12,7 @@ import lib.storage.launcher.OpenDirStorageAccessDelegate
 import lib.storage.launcher.OpenFileStorageAccessDelegate
 import player.phonograph.R
 import player.phonograph.foundation.compat.parcelableArrayListExtra
+import player.phonograph.foundation.permission.StoragePermissionChecker
 import player.phonograph.mechanism.playlist.PlaylistActions
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.ui.basis.DialogActivity
@@ -23,7 +24,6 @@ import player.phonograph.ui.modules.playlist.dialogs.ClearPlaylistDialogActivity
 import player.phonograph.ui.modules.playlist.dialogs.ClearPlaylistDialogActivity.ClearPlaylistViewModel.State.PreparedToDelete
 import player.phonograph.ui.modules.playlist.dialogs.ClearPlaylistDialogActivity.ClearPlaylistViewModel.State.Success
 import player.phonograph.ui.resource.Texts
-import player.phonograph.util.permissions.StoragePermissionChecker
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi

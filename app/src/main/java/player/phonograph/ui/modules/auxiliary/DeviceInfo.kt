@@ -6,7 +6,7 @@ package player.phonograph.ui.modules.auxiliary
 
 import player.phonograph.BuildConfig
 import player.phonograph.foundation.content.PackageMetadata
-import player.phonograph.util.permissions.StoragePermissionChecker
+import player.phonograph.foundation.permission.StoragePermissionChecker
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ActivityManager
