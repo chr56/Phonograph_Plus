@@ -5,11 +5,11 @@
 package player.phonograph.ui.modules.tag.util
 
 import player.phonograph.R
+import player.phonograph.foundation.dateTimeTextPrecise
 import player.phonograph.foundation.error.warning
 import player.phonograph.foundation.file.readableFileSizeInMB
 import player.phonograph.model.metadata.*
-import player.phonograph.util.text.dateTimeTextPrecise
-import player.phonograph.util.text.detailedDuration
+import player.phonograph.ui.resource.Durations
 import android.content.Context
 
 fun display(context: Context, field: Metadata.Field): String {
@@ -19,7 +19,7 @@ fun display(context: Context, field: Metadata.Field): String {
             NOTATION_TEXT      -> limitedText(content as String)
             NOTATION_NUMBER    -> (content as Long).toString()
             NOTATION_TIMESTAMP -> dateTimeTextPrecise(content as Long)
-            NOTATION_DURATION  -> detailedDuration(content as Long)
+            NOTATION_DURATION  -> Durations.long(content as Long)
             NOTATION_DATA_SIZE -> readableFileSizeInMB(content as Long)
             NOTATION_BIT_RATE  -> readableBitrate(context, content as Long)
             NOTATION_SAMPLING  -> readableSampling(context, content as Long)

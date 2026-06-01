@@ -5,6 +5,7 @@
 package player.phonograph.ui.modules.tag
 
 import player.phonograph.R
+import player.phonograph.foundation.dateTimeTextPrecise
 import player.phonograph.foundation.file.readableFileSizeInMB
 import player.phonograph.mechanism.metadata.JAudioTaggerMetadata
 import player.phonograph.model.metadata.AudioMetadata
@@ -22,7 +23,6 @@ import player.phonograph.ui.modules.tag.components.ReadonlyTagItem
 import player.phonograph.ui.modules.tag.util.ErrorMessage
 import player.phonograph.ui.modules.tag.util.display
 import player.phonograph.ui.resource.Texts
-import player.phonograph.util.text.dateTimeTextPrecise
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column

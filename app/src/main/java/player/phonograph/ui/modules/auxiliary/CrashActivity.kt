@@ -5,6 +5,8 @@ import com.github.chr56.android.menu_dsl.menuItem
 import player.phonograph.R
 import player.phonograph.databinding.ActivityCrashBinding
 import player.phonograph.foundation.Reboot
+import player.phonograph.foundation.currentDate
+import player.phonograph.foundation.dateTimeSuffixCompat
 import player.phonograph.model.CrashReport
 import player.phonograph.model.CrashReport.Constant.CRASH_TYPE_CORRUPTED_DATA
 import player.phonograph.model.CrashReport.Constant.CRASH_TYPE_INTERNAL_ERROR
@@ -16,9 +18,6 @@ import player.phonograph.ui.theme.getTintedDrawable
 import player.phonograph.ui.theme.systemNightMode
 import player.phonograph.ui.theme.textColorOn
 import player.phonograph.ui.theme.updateSystemBarsColor
-import player.phonograph.util.text.currentDate
-import player.phonograph.util.text.dateTimeSuffixCompat
-import player.phonograph.util.text.getDeviceInfo
 import player.phonograph.util.ui.alertDialog
 import util.theme.materials.MaterialColor
 import util.theme.view.toolbar.setToolbarColor
@@ -79,7 +78,7 @@ class CrashActivity : ToolbarActivity() {
         setContentView(binding.root)
         setupTheme()
 
-        deviceInfoText = getDeviceInfo(this)
+        deviceInfoText = DeviceInfo.text(this)
         fullReportText = buildString {
             append("$reportHead:\n\n")
             append("$deviceInfoText\n")

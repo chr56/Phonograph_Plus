@@ -2,7 +2,7 @@
  *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.util.text
+package player.phonograph.foundation
 
 import java.text.SimpleDateFormat
 import java.util.Calendar

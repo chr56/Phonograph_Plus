@@ -11,11 +11,11 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.util.SleepTimer
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
+import player.phonograph.ui.resource.Durations
 import player.phonograph.ui.theme.ThemeSettingsDelegate.accentColor
 import player.phonograph.ui.theme.tintAlertDialogButtons
 import player.phonograph.ui.theme.tintButtons
 import player.phonograph.ui.views.AccentColorCheckBox
-import player.phonograph.util.text.readableDuration
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import android.app.Dialog
@@ -185,7 +185,7 @@ class SleepTimerDialog : DialogFragment() {
         private fun setNegativeButtonText(time: Long) {
             val text = requireContext().getString(R.string.action_cancel_current_timer).plus(
                 if (MusicPlayerRemote.isServiceConnected) {
-                    if (time > 0 && SleepTimer.hasTimer()) "(${readableDuration(time)})" else ""
+                    if (time > 0 && SleepTimer.hasTimer()) "(${Durations.short(time)})" else ""
                 } else {
                     requireContext().getString(R.string.tips_service_disconnected)
                 }

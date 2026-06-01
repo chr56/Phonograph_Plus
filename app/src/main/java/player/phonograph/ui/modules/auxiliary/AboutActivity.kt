@@ -19,7 +19,6 @@ import player.phonograph.ui.modules.upgrade.UpgradeInfoDialog
 import player.phonograph.ui.theme.ThemeSettingsDelegate.isNightTheme
 import player.phonograph.ui.theme.ThemeSettingsDelegate.primaryColor
 import player.phonograph.ui.theme.updateSystemBarsColor
-import player.phonograph.util.text.NoticesProcessor
 import player.phonograph.util.ui.applyWindowInsetsAsBottomView
 import util.theme.color.darkenColor
 import util.theme.view.toolbar.setToolbarColor
@@ -202,9 +201,9 @@ class AboutActivity : ToolbarActivity() {
 
     private fun showLicenseDialog() {
         val notices = try {
-            NoticesProcessor.readNotices(this)
+            LicenseNoticesProcessor.readNotices(this, LICENSES_FILE)
         } catch (e: Exception) {
-            warning(this, "NoticesProcessor", "Failed to read notices", e)
+            warning(this, "LicenseNoticesProcessor", "Failed to read notices", e)
             return
         }
         val nightMode = isNightTheme(resources)
@@ -220,6 +219,7 @@ class AboutActivity : ToolbarActivity() {
     }
 
     companion object {
+        private const val LICENSES_FILE = "notices.json"
         private const val CHR56_GITHUB = "https://github.com/chr56/"
         private const val KABOUZEID_TWITTER = "https://twitter.com/swiftkarim"
         private const val KABOUZEID_WEBSITE = "https://kabouzeid.com/"

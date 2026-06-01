@@ -2,9 +2,7 @@
  *  Copyright (c) 2022~2025 chr_56
  */
 
-@file:JvmName("MusicTextUtil")
-
-package player.phonograph.util.text
+package player.phonograph.ui.resource
 
 import player.phonograph.R
 import player.phonograph.model.Album

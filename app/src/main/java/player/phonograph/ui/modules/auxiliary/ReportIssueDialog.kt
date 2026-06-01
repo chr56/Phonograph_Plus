@@ -10,7 +10,6 @@ import player.phonograph.databinding.DialogReportIssueBinding
 import player.phonograph.ui.theme.ThemeSettingsDelegate.isNightTheme
 import player.phonograph.ui.theme.ThemeSettingsDelegate.primaryColor
 import player.phonograph.ui.theme.getTintedDrawable
-import player.phonograph.util.text.getDeviceInfo
 import util.theme.view.tint
 import androidx.fragment.app.DialogFragment
 import android.content.ClipData
@@ -30,7 +29,7 @@ class ReportIssueDialog : DialogFragment() {
     private var _binding: DialogReportIssueBinding? = null
     private val binding get() = _binding!!
 
-    private val deviceInfo by lazy { getDeviceInfo(requireContext()) }
+    private val deviceInfo by lazy { DeviceInfo.text(requireContext()) }
 
     override fun onCreateView(
         inflater: LayoutInflater,

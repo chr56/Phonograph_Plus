@@ -8,6 +8,7 @@ import okio.Path.Companion.toOkioPath
 import okio.buffer
 import okio.source
 import player.phonograph.BuildConfig
+import player.phonograph.foundation.currentTimestamp
 import player.phonograph.foundation.error.warning
 import player.phonograph.foundation.file.compressDirectory
 import player.phonograph.foundation.file.extractDirectory
@@ -20,7 +21,6 @@ import player.phonograph.repo.database.store.SongPlayCountStore.Companion.SONG_P
 import player.phonograph.repo.room.MusicDatabase
 import player.phonograph.service.queue.MusicPlaybackQueueStore.Companion.MUSIC_PLAYBACK_STATE_DB
 import player.phonograph.ui.resource.Texts
-import player.phonograph.util.text.currentTimestamp
 import android.content.Context
 import kotlinx.serialization.json.Json
 import java.io.File

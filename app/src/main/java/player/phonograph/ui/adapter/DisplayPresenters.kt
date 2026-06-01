@@ -9,6 +9,7 @@ import coil.target.Target
 import lib.storage.extension.rootDirectory
 import player.phonograph.App
 import player.phonograph.R
+import player.phonograph.foundation.dateTextShortText
 import player.phonograph.mechanism.coil.loadImage
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
@@ -22,14 +23,12 @@ import player.phonograph.model.sort.SortRef
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.ui.actions.ActionMenuProviders
 import player.phonograph.ui.actions.ClickActionProviders
+import player.phonograph.ui.resource.Durations
 import player.phonograph.ui.resource.Texts
-import player.phonograph.util.text.albumCountString
-import player.phonograph.util.text.dateTextShortText
-import player.phonograph.util.text.infoString
-import player.phonograph.util.text.makeSectionName
-import player.phonograph.util.text.readableDuration
-import player.phonograph.util.text.readableYear
-import player.phonograph.util.text.songCountString
+import player.phonograph.ui.resource.albumCountString
+import player.phonograph.ui.resource.infoString
+import player.phonograph.ui.resource.readableYear
+import player.phonograph.ui.resource.songCountString
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.getSystemService
 import android.content.Context
@@ -67,7 +66,7 @@ abstract class SongBasicDisplayPresenter(
             SortRef.ALBUM_ARTIST_NAME -> makeSectionName(item.albumArtistName)
             SortRef.COMPOSER          -> makeSectionName(item.composer)
             SortRef.YEAR              -> readableYear(item.year)
-            SortRef.DURATION          -> readableDuration(item.duration)
+            SortRef.DURATION          -> Durations.short(item.duration)
             SortRef.MODIFIED_DATE     -> dateTextShortText(item.dateModified)
             SortRef.ADDED_DATE        -> dateTextShortText(item.dateAdded)
             else                      -> ""
@@ -128,7 +127,6 @@ abstract class AlbumBasicDisplayPresenter(
         .into(target)
         .enqueue()
 }
-
 
 abstract class ArtistBasicDisplayPresenter(
     private val sortMode: SortMode,
@@ -203,7 +201,6 @@ abstract class GenreBasicDisplayPresenter(
         }
 }
 
-
 abstract class PlaylistBasicDisplayPresenter(
     private val sortMode: SortMode,
 ) : DisplayPresenter<Playlist> {
@@ -212,6 +209,7 @@ abstract class PlaylistBasicDisplayPresenter(
     override fun getDisplayTitle(context: Context, item: Playlist): CharSequence = item.name
     override fun getDescription(context: Context, item: Playlist): CharSequence =
         Texts.playlist(context.resources, item.location)
+
     override fun getSecondaryText(context: Context, item: Playlist): CharSequence =
         Texts.playlist(context.resources, item.location)
 
@@ -298,4 +296,16 @@ abstract class QueueSongBasicDisplayPresenter : DisplayPresenter<QueueSong> {
 
     override fun getNonSortOrderReference(item: QueueSong): String? = item.index.toString()
     override fun getRelativeOrdinalText(item: QueueSong): String? = item.index.toString()
+}
+
+
+private fun makeSectionName(reference: String?): String {
+    if (reference.isNullOrBlank()) return ""
+    var str = reference.trim { it <= ' ' }.lowercase()
+    str = when {
+        str.startsWith("the ") -> str.substring(4)
+        str.startsWith("a ") -> str.substring(2)
+        else -> str
+    }
+    return if (str.isEmpty()) "" else str[0].uppercase()
 }

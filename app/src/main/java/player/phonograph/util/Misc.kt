@@ -174,3 +174,5 @@ fun shareFileIntent(context: Context, song: Song): Intent {
 
 fun Song?.asList(): List<Song> = if (this != null) listOf(this) else emptyList()
 
+fun totalDuration(songs: List<Song>): Long =
+    songs.fold(0L) { acc: Long, song: Song -> acc + song.duration }

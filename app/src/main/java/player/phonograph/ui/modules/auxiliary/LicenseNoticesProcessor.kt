@@ -1,8 +1,8 @@
 /*
- *  Copyright (c) 2022~2025 chr_56
+ *  Copyright (c) 2022~2026 chr_56
  */
 
-package player.phonograph.util.text
+package player.phonograph.ui.modules.auxiliary
 
 import de.psdev.licensesdialog.LicenseResolver
 import de.psdev.licensesdialog.model.Notice
@@ -14,7 +14,7 @@ import kotlinx.serialization.json.Json
 
 
 @Serializable
-class NoticeText(
+private class NoticeText(
     @SerialName("name") var name: String? = null,
     @SerialName("url") var url: String? = null,
     @SerialName("copyright") var copyright: String? = null,
@@ -24,13 +24,22 @@ class NoticeText(
 }
 
 @Serializable
-class NoticesText(
+private class NoticesText(
     @SerialName("notices") val notices: List<NoticeText>,
 ) {
     fun toNotices(): Notices = Notices().also { n -> notices.forEach { n.addNotice(it.toNotice()) } }
 }
 
-object NoticesProcessor {
+object LicenseNoticesProcessor {
+
+    fun readNotices(context: Context, path: String): Notices {
+        val inputStream = context.assets.open(path)
+        val notices = inputStream.reader().use {
+            readFrom(it.readText())
+        }
+        return notices
+    }
+
     private val parser = Json {
         isLenient = true
         ignoreUnknownKeys = true
@@ -40,15 +49,5 @@ object NoticesProcessor {
         val model: NoticesText = parser.decodeFromString(NoticesText.serializer(), data)
         return model.toNotices()
     }
-
-    fun readNotices(context: Context): Notices {
-        val inputStream = context.assets.open(FILE_NAME)
-        val notices = inputStream.reader().use {
-            readFrom(it.readText())
-        }
-        return notices
-    }
-
-    const val FILE_NAME = "notices.json"
 }
 

@@ -27,6 +27,7 @@ import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.ui.UIMode
 import player.phonograph.repo.loader.Playlists
 import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
+import player.phonograph.ui.resource.Durations
 import player.phonograph.ui.resource.Texts
 import player.phonograph.ui.theme.ThemeSettingsDelegate.accentColor
 import player.phonograph.ui.theme.ThemeSettingsDelegate.primaryColor
@@ -35,7 +36,6 @@ import player.phonograph.ui.theme.secondaryTextColorOn
 import player.phonograph.ui.theme.setUpFastScrollRecyclerViewColor
 import player.phonograph.ui.theme.textColorOn
 import player.phonograph.util.observe
-import player.phonograph.util.text.readableDuration
 import player.phonograph.util.ui.BottomViewWindowInsetsController
 import player.phonograph.util.ui.applyControllableWindowInsetsAsBottomView
 import player.phonograph.util.ui.hideKeyboard
@@ -153,7 +153,7 @@ class PlaylistDetailActivity :
         }
         observe(viewModel.totalDuration) { duration ->
             with(binding) {
-                durationText.text = readableDuration(duration)
+                durationText.text = Durations.short(duration)
             }
         }
     }

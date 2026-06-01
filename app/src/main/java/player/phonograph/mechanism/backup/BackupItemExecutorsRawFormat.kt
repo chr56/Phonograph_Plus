@@ -9,13 +9,13 @@ import okio.Source
 import okio.buffer
 import okio.sink
 import okio.source
+import player.phonograph.foundation.currentTimestamp
 import player.phonograph.foundation.error.warning
 import player.phonograph.foundation.file.createOrOverride
 import player.phonograph.foundation.file.moveFile
 import player.phonograph.mechanism.migrate.FavoritesMigrationRule
 import player.phonograph.mechanism.migrate.PathFilterMigrationRule
 import player.phonograph.model.backup.BackupItemExecutor
-import player.phonograph.util.text.currentTimestamp
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteException

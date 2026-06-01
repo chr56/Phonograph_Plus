@@ -10,6 +10,7 @@ import lib.storage.launcher.OpenDocumentContract
 import player.phonograph.R
 import player.phonograph.databinding.DialogLyricsBinding
 import player.phonograph.foundation.error.warning
+import player.phonograph.foundation.lyricsTimestamp
 import player.phonograph.mechanism.lyrics.ActualTextLyrics
 import player.phonograph.model.lyrics.AbsLyrics
 import player.phonograph.model.lyrics.LrcLyrics
@@ -26,7 +27,6 @@ import player.phonograph.ui.theme.getTintedDrawable
 import player.phonograph.ui.theme.textColorOn
 import player.phonograph.ui.theme.themeFooterColor
 import player.phonograph.util.observe
-import player.phonograph.util.text.lyricsTimestamp
 import player.phonograph.util.ui.applyLargeDialog
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels

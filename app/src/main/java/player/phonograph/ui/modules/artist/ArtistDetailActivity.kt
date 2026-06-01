@@ -30,7 +30,12 @@ import player.phonograph.ui.adapter.DisplayPresenter
 import player.phonograph.ui.adapter.MultiSelectionController
 import player.phonograph.ui.adapter.SongBasicDisplayPresenter
 import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
+import player.phonograph.ui.resource.Durations
 import player.phonograph.ui.resource.Layouts
+import player.phonograph.ui.resource.albumCountString
+import player.phonograph.ui.resource.buildInfoString
+import player.phonograph.ui.resource.readableYear
+import player.phonograph.ui.resource.songCountString
 import player.phonograph.ui.theme.ThemeSettingsDelegate.primaryColor
 import player.phonograph.ui.theme.getTintedDrawable
 import player.phonograph.ui.theme.secondaryTextColorOn
@@ -38,12 +43,7 @@ import player.phonograph.ui.theme.textColorOn
 import player.phonograph.ui.theme.themeFooterColor
 import player.phonograph.ui.theme.updateSystemBarsColor
 import player.phonograph.util.observe
-import player.phonograph.util.text.albumCountString
-import player.phonograph.util.text.buildInfoString
-import player.phonograph.util.text.readableDuration
-import player.phonograph.util.text.readableYear
-import player.phonograph.util.text.songCountString
-import player.phonograph.util.text.totalDuration
+import player.phonograph.util.totalDuration
 import player.phonograph.util.ui.BottomViewWindowInsetsController
 import player.phonograph.util.ui.applyControllableWindowInsetsAsBottomView
 import player.phonograph.util.ui.menuProvider
@@ -224,7 +224,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvide
         val songs = withContext(Dispatchers.IO) {
             Songs.artist(this@ArtistDetailActivity, artist.id)
         }
-        viewBinding.durationText.text = readableDuration(totalDuration(songs))
+        viewBinding.durationText.text = Durations.short(totalDuration(songs))
     }
 
 

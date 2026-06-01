@@ -10,15 +10,15 @@ import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.vanpra.composematerialdialogs.title
 import org.koin.android.ext.android.inject
 import player.phonograph.R
+import player.phonograph.foundation.timeText
 import player.phonograph.model.service.RepeatMode
 import player.phonograph.model.service.ShuffleMode
 import player.phonograph.service.queue.QueueHolder
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
+import player.phonograph.ui.resource.songCountString
 import player.phonograph.ui.theme.accentColoredButtonStyle
-import player.phonograph.util.text.songCountString
-import player.phonograph.util.text.timeText
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column

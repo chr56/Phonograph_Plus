@@ -27,6 +27,9 @@ import player.phonograph.ui.modules.panel.AbsMusicServiceFragment
 import player.phonograph.ui.modules.panel.PanelViewModel
 import player.phonograph.ui.modules.player.dialogs.QueueSnapshotsDialog
 import player.phonograph.ui.modules.playlist.dialogs.CreatePlaylistDialogActivity
+import player.phonograph.ui.resource.Durations
+import player.phonograph.ui.resource.buildInfoString
+import player.phonograph.ui.resource.infoString
 import player.phonograph.ui.theme.ThemeSettingsDelegate.isNightTheme
 import player.phonograph.ui.theme.getTintedDrawable
 import player.phonograph.ui.theme.setUpFastScrollRecyclerViewColor
@@ -35,9 +38,6 @@ import player.phonograph.ui.theme.themeFooterColor
 import player.phonograph.ui.theme.themeIconColor
 import player.phonograph.ui.theme.tintButtons
 import player.phonograph.util.observe
-import player.phonograph.util.text.buildInfoString
-import player.phonograph.util.text.infoString
-import player.phonograph.util.text.readableDuration
 import player.phonograph.util.ui.PHONOGRAPH_ANIM_TIME
 import player.phonograph.util.ui.applyWindowInsetsAsBottomView
 import player.phonograph.util.ui.textColorTransitionAnimator
@@ -328,7 +328,7 @@ class PlayerQueueFragment : AbsMusicServiceFragment() {
         val duration = MusicPlayerRemote.getQueueDurationMillis(position)
         return buildInfoString(
             resources.getString(R.string.title_up_next),
-            readableDuration(duration)
+            Durations.short(duration)
         )
     }
 

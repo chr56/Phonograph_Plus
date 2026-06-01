@@ -9,13 +9,13 @@ import okhttp3.Response
 import player.phonograph.App
 import player.phonograph.BuildConfig
 import player.phonograph.CURRENT_RELEASE_CHANNEL
+import player.phonograph.foundation.dateText
 import player.phonograph.foundation.network.invokeHttpRequest
 import player.phonograph.foundation.notification.Notifications
 import player.phonograph.model.version.VersionCatalog
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
 import player.phonograph.util.debug
-import player.phonograph.util.text.dateText
 import android.content.Context
 import android.content.Intent
 import android.util.Log

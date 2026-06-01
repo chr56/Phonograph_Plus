@@ -11,6 +11,7 @@ import player.phonograph.CURRENT_RELEASE_CHANNEL
 import player.phonograph.CURRENT_TARGET_VARIANT
 import player.phonograph.R
 import player.phonograph.foundation.compat.parcelable
+import player.phonograph.foundation.dateText
 import player.phonograph.mechanism.UpdateChecker.GITHUB_RELEASE_URL
 import player.phonograph.mechanism.UpdateChecker.TG_CHANNEL
 import player.phonograph.mechanism.UpdateChecker.canAccessGitHub
@@ -22,7 +23,6 @@ import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.TempPopupContent
 import player.phonograph.ui.theme.accentColoredButtonStyle
-import player.phonograph.util.text.dateText
 import player.phonograph.util.ui.alertDialog
 import util.theme.materials.MaterialColor
 import androidx.compose.foundation.layout.Box
