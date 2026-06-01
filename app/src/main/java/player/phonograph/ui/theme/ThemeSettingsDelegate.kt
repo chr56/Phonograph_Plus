@@ -8,13 +8,13 @@ import player.phonograph.R
 import player.phonograph.model.ui.GeneralTheme
 import player.phonograph.model.ui.GeneralTheme.Companion.THEME_AUTO_LIGHTBLACK
 import player.phonograph.model.ui.GeneralTheme.Companion.THEME_AUTO_LIGHTDARK
-import player.phonograph.model.ui.GeneralTheme.Companion.THEME_LIGHT
 import player.phonograph.model.ui.GeneralTheme.Companion.THEME_BLACK
 import player.phonograph.model.ui.GeneralTheme.Companion.THEME_DARK
+import player.phonograph.model.ui.GeneralTheme.Companion.THEME_LIGHT
+import player.phonograph.model.ui.MonetColor
 import player.phonograph.settings.Keys
 import player.phonograph.settings.PrimitiveKey
 import player.phonograph.settings.Settings
-import player.phonograph.util.ui.MonetColor
 import androidx.annotation.ColorInt
 import androidx.annotation.StyleRes
 import android.content.Context

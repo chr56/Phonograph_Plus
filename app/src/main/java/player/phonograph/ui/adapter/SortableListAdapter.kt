@@ -5,8 +5,7 @@
 package player.phonograph.ui.adapter
 
 import player.phonograph.R
-import player.phonograph.util.ui.SwipeAndDragHelper
-import player.phonograph.util.ui.SwipeAndDragHelper.ActionCompletionContract
+import player.phonograph.ui.adapter.SwipeAndDragHelper.ActionCompletionContract
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater

@@ -15,7 +15,7 @@ import player.phonograph.ui.compose.components.AdvancedDialogFrame
 import player.phonograph.ui.compose.components.ColorPalettePicker
 import player.phonograph.ui.compose.components.ColorPicker
 import player.phonograph.ui.compose.components.LimitedDialog
-import player.phonograph.util.ui.ColorPalette
+import player.phonograph.ui.theme.ColorPalette
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check

@@ -2,7 +2,7 @@
  * Copyright (c) 2022~2025 chr_56 & Abou Zeid (kabouzeid) (original author)
  */
 
-package player.phonograph.util.ui
+package player.phonograph.ui.adapter
 
 
 import androidx.recyclerview.widget.ItemTouchHelper
