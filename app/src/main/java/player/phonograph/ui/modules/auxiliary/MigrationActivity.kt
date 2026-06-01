@@ -2,11 +2,11 @@ package player.phonograph.ui.modules.auxiliary
 
 import player.phonograph.R
 import player.phonograph.mechanism.migrate.MigrationManager
+import player.phonograph.ui.NavigationUtil.navigateToAppDetailSetting
 import player.phonograph.ui.basis.ComposeActivity
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.SystemBarsPadded
 import player.phonograph.ui.modules.main.MainActivity
-import player.phonograph.util.permissions.navigateToAppDetailSetting
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column

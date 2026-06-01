@@ -23,6 +23,8 @@ import player.phonograph.repo.loader.Songs
 import player.phonograph.service.MusicService
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
+import player.phonograph.ui.NavigationUtil.navigateToAppDetailSetting
+import player.phonograph.ui.NavigationUtil.navigateToStorageSetting
 import player.phonograph.ui.actions.actionPlay
 import player.phonograph.ui.modules.auxiliary.AboutActivity
 import player.phonograph.ui.modules.auxiliary.DatabaseMaintenanceDialog
@@ -32,8 +34,6 @@ import player.phonograph.ui.resource.Icons
 import player.phonograph.ui.resource.Texts
 import player.phonograph.ui.theme.getTintedDrawable
 import player.phonograph.ui.theme.textColorPrimary
-import player.phonograph.util.permissions.navigateToAppDetailSetting
-import player.phonograph.util.permissions.navigateToStorageSetting
 import androidx.core.net.toUri
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope

@@ -14,11 +14,11 @@ import player.phonograph.foundation.mediastore.mediaStoreUriSongExternal
 import player.phonograph.mechanism.lyrics.LyricsLoader
 import player.phonograph.model.Song
 import player.phonograph.repo.mediastore.MediaStoreSongsActions
+import player.phonograph.ui.NavigationUtil.navigateToStorageSetting
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.theme.accentColoredButtonStyle
 import player.phonograph.util.permissions.StoragePermissionChecker
-import player.phonograph.util.permissions.navigateToStorageSetting
 import player.phonograph.util.ui.alertDialog
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement

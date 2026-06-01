@@ -16,8 +16,8 @@ import player.phonograph.model.metadata.InteractiveAction.Edit
 import player.phonograph.model.metadata.InteractiveAction.ExtractArtwork
 import player.phonograph.model.metadata.InteractiveAction.Save
 import player.phonograph.model.metadata.Metadata
+import player.phonograph.ui.NavigationUtil.navigateToStorageSetting
 import player.phonograph.ui.modules.tag.util.display
-import player.phonograph.util.permissions.navigateToStorageSetting
 import androidx.lifecycle.viewModelScope
 import android.content.Context
 import android.widget.Toast

@@ -45,8 +45,10 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Build.VERSION.SDK_INT
 import android.text.TextUtils
+import android.util.Log
 import android.view.View
 import android.widget.RemoteViews
+import android.widget.Toast
 import kotlinx.coroutines.yield
 
 class PlayingNotificationManager : ServiceComponent {
@@ -159,7 +161,14 @@ class PlayingNotificationManager : ServiceComponent {
 
     @Synchronized
     private fun postNotification(notification: Notification) {
-        checkNotificationPermission(service)
+        if (checkNotificationPermission(service)) {
+            val message = service.getString(R.string.msg_notification_is_disabled)
+            Log.e("Phonograph", message)
+            try {
+                Toast.makeText(service, message, Toast.LENGTH_SHORT).show()
+            } catch (_: Exception) {
+            }
+        }
         when (persistent) {
             true  -> {
                 notificationManager.notify(NOTIFICATION_ID, notification)

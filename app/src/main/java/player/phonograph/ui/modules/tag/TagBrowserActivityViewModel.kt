@@ -18,8 +18,8 @@ import player.phonograph.model.metadata.InteractiveAction
 import player.phonograph.model.metadata.InteractiveAction.Edit
 import player.phonograph.model.metadata.InteractiveAction.ExtractArtwork
 import player.phonograph.model.metadata.InteractiveAction.Save
+import player.phonograph.ui.NavigationUtil.navigateToStorageSetting
 import player.phonograph.ui.modules.tag.util.display
-import player.phonograph.util.permissions.navigateToStorageSetting
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.lifecycle.viewModelScope
