@@ -4,11 +4,11 @@
 
 package player.phonograph.mechanism.metadata.read
 
+import player.phonograph.foundation.image.decodeBitmapWithRestrictions
+import player.phonograph.foundation.image.generatePalette
 import player.phonograph.model.Song
 import player.phonograph.model.metadata.AudioMetadata
 import player.phonograph.model.metadata.ExceptionCollector
-import player.phonograph.util.image.decodeBitmapWithRestrictions
-import player.phonograph.util.image.generatePalette
 import androidx.compose.ui.graphics.Color
 import android.content.Context
 import android.graphics.Bitmap

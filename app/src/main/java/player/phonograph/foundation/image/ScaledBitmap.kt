@@ -2,7 +2,7 @@
  *  Copyright (c) 2022~2023 chr_56, Karim Abou Zeid (kabouzeid)
  */
 
-package player.phonograph.util.image
+package player.phonograph.foundation.image
 
 import androidx.core.graphics.scale
 import android.graphics.Bitmap

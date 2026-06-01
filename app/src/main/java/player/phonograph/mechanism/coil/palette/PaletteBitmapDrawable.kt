@@ -4,7 +4,7 @@
 
 package player.phonograph.mechanism.coil.palette
 
-import player.phonograph.util.image.generatePalette
+import player.phonograph.foundation.image.generatePalette
 import androidx.palette.graphics.Palette
 import android.content.res.Resources
 import android.graphics.Bitmap
