@@ -4,7 +4,7 @@ package player.phonograph.ui.appwidgets
 import coil.target.Target
 import player.phonograph.R
 import player.phonograph.model.Song
-import player.phonograph.util.ui.getScreenSize
+import player.phonograph.ui.util.getScreenSize
 import androidx.core.graphics.drawable.toBitmapOrNull
 import android.content.Context
 import android.content.res.Resources

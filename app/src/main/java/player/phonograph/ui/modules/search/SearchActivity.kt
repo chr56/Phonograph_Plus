@@ -27,9 +27,9 @@ import player.phonograph.ui.theme.getTintedDrawable
 import player.phonograph.ui.theme.secondaryTextColorOn
 import player.phonograph.ui.theme.textColorOn
 import player.phonograph.ui.theme.updateSystemBarsColor
-import player.phonograph.util.observe
-import player.phonograph.util.ui.hideKeyboard
-import player.phonograph.util.ui.menuProvider
+import player.phonograph.ui.util.hideKeyboard
+import player.phonograph.ui.util.menuProvider
+import player.phonograph.ui.util.observe
 import util.theme.color.darkenColor
 import util.theme.view.searchview.setSearchViewContentColor
 import util.theme.view.toolbar.setToolbarColor

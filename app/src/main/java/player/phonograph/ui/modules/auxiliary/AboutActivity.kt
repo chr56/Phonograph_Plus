@@ -19,7 +19,7 @@ import player.phonograph.ui.modules.upgrade.UpgradeInfoDialog
 import player.phonograph.ui.theme.ThemeSettingsDelegate.isNightTheme
 import player.phonograph.ui.theme.ThemeSettingsDelegate.primaryColor
 import player.phonograph.ui.theme.updateSystemBarsColor
-import player.phonograph.util.ui.applyWindowInsetsAsBottomView
+import player.phonograph.ui.util.applyWindowInsetsAsBottomView
 import util.theme.color.darkenColor
 import util.theme.view.toolbar.setToolbarColor
 import androidx.annotation.Keep

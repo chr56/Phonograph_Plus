@@ -18,7 +18,7 @@ import player.phonograph.ui.theme.getTintedDrawable
 import player.phonograph.ui.theme.systemNightMode
 import player.phonograph.ui.theme.textColorOn
 import player.phonograph.ui.theme.updateSystemBarsColor
-import player.phonograph.util.ui.alertDialog
+import player.phonograph.ui.util.alertDialog
 import util.theme.materials.MaterialColor
 import util.theme.view.toolbar.setToolbarColor
 import androidx.core.content.IntentCompat

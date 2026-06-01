@@ -16,8 +16,8 @@ import player.phonograph.ui.modules.player.style.buildPlayerFragment
 import player.phonograph.ui.theme.ThemeSettingsDelegate.primaryColor
 import player.phonograph.ui.theme.themeFooterColor
 import player.phonograph.ui.theme.updateSystemBarsColor
-import player.phonograph.util.observe
-import player.phonograph.util.ui.isLandscape
+import player.phonograph.ui.util.isLandscape
+import player.phonograph.ui.util.observe
 import util.theme.color.darkenColor
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.ColorInt

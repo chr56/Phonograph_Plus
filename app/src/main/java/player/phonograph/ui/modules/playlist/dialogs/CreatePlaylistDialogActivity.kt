@@ -28,9 +28,9 @@ import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.PlaylistCreator
 import player.phonograph.ui.basis.DialogActivity
+import player.phonograph.ui.util.getScreenSize
+import player.phonograph.ui.util.observe
 import player.phonograph.util.PLAYLIST_MIME_TYPE
-import player.phonograph.util.observe
-import player.phonograph.util.ui.getScreenSize
 import androidx.activity.viewModels
 import androidx.appcompat.widget.AppCompatSpinner
 import androidx.core.widget.addTextChangedListener

@@ -11,7 +11,7 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange
 import com.h6ah4i.android.widget.advrecyclerview.draggable.annotation.DraggableItemStateFlags
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.ui.resource.Layouts
-import player.phonograph.util.ui.hitTest
+import player.phonograph.ui.util.hitTest
 import androidx.fragment.app.FragmentActivity
 import android.view.LayoutInflater
 import android.view.View

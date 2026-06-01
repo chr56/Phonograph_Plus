@@ -37,10 +37,10 @@ import player.phonograph.ui.theme.ThemeSettingsDelegate.accentColor
 import player.phonograph.ui.theme.ThemeSettingsDelegate.primaryColor
 import player.phonograph.ui.theme.getTintedDrawable
 import player.phonograph.ui.theme.textColorOn
+import player.phonograph.ui.util.menuProvider
+import player.phonograph.ui.util.observe
 import player.phonograph.util.debug
 import player.phonograph.util.logMetrics
-import player.phonograph.util.observe
-import player.phonograph.util.ui.menuProvider
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources

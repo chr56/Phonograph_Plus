@@ -14,8 +14,8 @@ import player.phonograph.ui.adapter.DraggableDisplayAdapter
 import player.phonograph.ui.adapter.MultiSelectionController
 import player.phonograph.ui.resource.Layouts
 import player.phonograph.ui.resource.infoString
+import player.phonograph.ui.util.hitTest
 import player.phonograph.util.produceSafeId
-import player.phonograph.util.ui.hitTest
 import androidx.fragment.app.FragmentActivity
 import android.annotation.SuppressLint
 import android.content.Context

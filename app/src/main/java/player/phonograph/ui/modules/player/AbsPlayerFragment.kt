@@ -31,11 +31,11 @@ import player.phonograph.ui.modules.setting.dialog.NowPlayingScreenStylePreferen
 import player.phonograph.ui.theme.getTintedDrawable
 import player.phonograph.ui.theme.secondaryTextColorOn
 import player.phonograph.ui.theme.textColorOn
-import player.phonograph.util.observe
-import player.phonograph.util.ui.PHONOGRAPH_ANIM_TIME
-import player.phonograph.util.ui.backgroundColorTransitionAnimator
-import player.phonograph.util.ui.isLandscape
-import player.phonograph.util.ui.setupValueAnimator
+import player.phonograph.ui.util.PHONOGRAPH_ANIM_TIME
+import player.phonograph.ui.util.backgroundColorTransitionAnimator
+import player.phonograph.ui.util.isLandscape
+import player.phonograph.ui.util.observe
+import player.phonograph.ui.util.setupValueAnimator
 import util.theme.view.menu.setMenuColor
 import util.theme.view.menu.tintOverflowButtonColor
 import util.theme.view.menu.tintToolbarMenuActionIcons

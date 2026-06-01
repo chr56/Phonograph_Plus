@@ -31,9 +31,9 @@ import player.phonograph.ui.resource.infoString
 import player.phonograph.ui.theme.ThemeSettingsDelegate.accentColor
 import player.phonograph.ui.theme.textColorPrimary
 import player.phonograph.ui.theme.themeIconColor
+import player.phonograph.ui.util.observe
 import player.phonograph.util.debug
 import player.phonograph.util.logMetrics
-import player.phonograph.util.observe
 import util.theme.view.navigationview.setItemIconColors
 import util.theme.view.navigationview.setItemTextColors
 import androidx.activity.OnBackPressedCallback

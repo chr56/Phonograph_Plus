@@ -26,9 +26,9 @@ import player.phonograph.ui.adapter.PlaylistBasicDisplayPresenter
 import player.phonograph.ui.adapter.QueueSongBasicDisplayPresenter
 import player.phonograph.ui.adapter.SongBasicDisplayPresenter
 import player.phonograph.ui.modules.panel.PanelViewModel
-import player.phonograph.util.observe
-import player.phonograph.util.ui.BottomViewWindowInsetsController
-import player.phonograph.util.ui.applyControllableWindowInsetsAsBottomView
+import player.phonograph.ui.util.BottomViewWindowInsetsController
+import player.phonograph.ui.util.applyControllableWindowInsetsAsBottomView
+import player.phonograph.ui.util.observe
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels

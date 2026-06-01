@@ -18,7 +18,7 @@ import player.phonograph.ui.theme.ThemeSettingsDelegate.accentColor
 import player.phonograph.ui.theme.getTintedDrawableOnBackground
 import player.phonograph.ui.theme.setUpFastScrollRecyclerViewColor
 import player.phonograph.ui.theme.tintButtons
-import player.phonograph.util.observe
+import player.phonograph.ui.util.observe
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment

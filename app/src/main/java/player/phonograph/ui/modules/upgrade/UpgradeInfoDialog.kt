@@ -23,7 +23,7 @@ import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.TempPopupContent
 import player.phonograph.ui.theme.accentColoredButtonStyle
-import player.phonograph.util.ui.alertDialog
+import player.phonograph.ui.util.alertDialog
 import util.theme.materials.MaterialColor
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column

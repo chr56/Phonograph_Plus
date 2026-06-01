@@ -4,7 +4,7 @@
 
 package player.phonograph.ui.compose
 
-import player.phonograph.util.ui.isTablet
+import player.phonograph.ui.util.isTablet
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.platform.WindowInfo

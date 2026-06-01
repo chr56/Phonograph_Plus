@@ -37,10 +37,10 @@ import player.phonograph.ui.theme.textColorPrimary
 import player.phonograph.ui.theme.themeFooterColor
 import player.phonograph.ui.theme.themeIconColor
 import player.phonograph.ui.theme.tintButtons
-import player.phonograph.util.observe
-import player.phonograph.util.ui.PHONOGRAPH_ANIM_TIME
-import player.phonograph.util.ui.applyWindowInsetsAsBottomView
-import player.phonograph.util.ui.textColorTransitionAnimator
+import player.phonograph.ui.util.PHONOGRAPH_ANIM_TIME
+import player.phonograph.ui.util.applyWindowInsetsAsBottomView
+import player.phonograph.ui.util.observe
+import player.phonograph.ui.util.textColorTransitionAnimator
 import util.theme.color.darkenColor
 import util.theme.color.lightenColor
 import util.theme.materials.MaterialColor

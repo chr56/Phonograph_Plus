@@ -26,8 +26,8 @@ import player.phonograph.ui.theme.ThemeSettingsDelegate.primaryColor
 import player.phonograph.ui.theme.getTintedDrawable
 import player.phonograph.ui.theme.textColorOn
 import player.phonograph.ui.theme.themeFooterColor
-import player.phonograph.util.observe
-import player.phonograph.util.ui.applyLargeDialog
+import player.phonograph.ui.util.applyLargeDialog
+import player.phonograph.ui.util.observe
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle

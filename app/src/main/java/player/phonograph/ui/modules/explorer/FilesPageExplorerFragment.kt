@@ -10,9 +10,9 @@ import player.phonograph.settings.SettingsObserver
 import player.phonograph.ui.actions.ActionMenuProviders
 import player.phonograph.ui.actions.ClickActionProviders
 import player.phonograph.ui.modules.panel.PanelViewModel
-import player.phonograph.util.observe
-import player.phonograph.util.ui.BottomViewWindowInsetsController
-import player.phonograph.util.ui.applyControllableWindowInsetsAsBottomView
+import player.phonograph.ui.util.BottomViewWindowInsetsController
+import player.phonograph.ui.util.applyControllableWindowInsetsAsBottomView
+import player.phonograph.ui.util.observe
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import android.annotation.SuppressLint

@@ -2,14 +2,27 @@
  *  Copyright (c) 2022~2025 chr_56
  */
 
-package player.phonograph.util.ui
+package player.phonograph.ui.util
 
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.DialogFragment
 import android.content.Context
 import android.content.DialogInterface
 import android.util.Log
+import android.view.Window
 
+
+fun DialogFragment.applyLargeDialog(ratio: Float = 0.9f) {
+    applyLargeDialog(requireDialog().window!!, requireActivity().window!!, ratio)
+}
+
+fun applyLargeDialog(dialogWindows: Window, activityWindows: Window, ratio: Float) {
+    dialogWindows.attributes = dialogWindows.attributes.apply {
+        width = (activityWindows.decorView.width * ratio).toInt()
+        height = (activityWindows.decorView.height * ratio).toInt()
+    }
+}
 
 inline fun alertDialog(context: Context, buildBlock: DialogContext.() -> Unit): AlertDialog {
     val builder = AlertDialog.Builder(context)

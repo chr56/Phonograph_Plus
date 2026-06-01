@@ -1,8 +1,8 @@
 /*
- *  Copyright (c) 2022~2025 chr_56
+ *  Copyright (c) 2022~2026 chr_56
  */
 
-package player.phonograph.util
+package player.phonograph.ui.util
 
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner

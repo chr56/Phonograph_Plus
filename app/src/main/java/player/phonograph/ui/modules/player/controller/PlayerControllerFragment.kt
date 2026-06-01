@@ -16,7 +16,7 @@ import player.phonograph.ui.modules.panel.PanelViewModel
 import player.phonograph.ui.modules.player.MusicProgressUpdateDelegate
 import player.phonograph.ui.theme.defaultTextColor
 import player.phonograph.ui.theme.secondaryTextColorOn
-import player.phonograph.util.observe
+import player.phonograph.ui.util.observe
 import androidx.lifecycle.Lifecycle
 import android.graphics.Point
 import android.os.Bundle

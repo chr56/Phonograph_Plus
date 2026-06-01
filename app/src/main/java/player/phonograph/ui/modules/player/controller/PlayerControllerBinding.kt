@@ -19,7 +19,7 @@ import player.phonograph.model.ui.PlayerControllerStyle.Companion.FUNCTION_SWITC
 import player.phonograph.model.ui.PlayerControllerStyle.Companion.FunctionType
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.resource.Durations
-import player.phonograph.util.ui.createScaleAnimator
+import player.phonograph.ui.util.createScaleAnimator
 import androidx.annotation.ColorInt
 import androidx.annotation.IntDef
 import androidx.core.graphics.BlendModeColorFilterCompat.createBlendModeColorFilterCompat
