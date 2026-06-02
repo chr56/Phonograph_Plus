@@ -595,4 +595,6 @@
     <string name="pref_summary_enable_night_color_scheme">为暗色模式或夜间主题使用另外一套配色方案</string>
     <string name="pref_title_enable_history">启用历史记录</string>
     <string name="pref_summary_enable_history">记录播放过的项目并进行统计</string>
+    <string name="pref_summary_service_stop_on_task_removed">从最近任务移除后，终止后台播放服务</string>
+    <string name="pref_title_service_stop_on_task_removed">划卡即停</string>
 </resources>

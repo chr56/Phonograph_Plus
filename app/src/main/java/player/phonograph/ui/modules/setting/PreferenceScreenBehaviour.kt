@@ -97,6 +97,11 @@ fun PreferenceScreenBehaviour() {
                 titleRes = R.string.pref_title_gapless_playback,
             )
             BooleanPreference(
+                key = Keys.stopOnTaskRemoved,
+                summaryRes = R.string.pref_summary_service_stop_on_task_removed,
+                titleRes = R.string.pref_title_service_stop_on_task_removed,
+            )
+            BooleanPreference(
                 key = Keys.broadcastCurrentPlayerState,
                 summaryRes = R.string.pref_summary_broadcast_current_player_state,
                 titleRes = R.string.pref_title_broadcast_current_player_state,
