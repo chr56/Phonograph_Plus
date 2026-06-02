@@ -4,12 +4,12 @@
 
 package player.phonograph.ui.modules.setting.elements
 
+import player.phonograph.foundation.time.TimeInterval
 import player.phonograph.model.time.Duration
 import player.phonograph.model.time.TimeIntervalCalculationMode
 import player.phonograph.model.time.TimeUnit
 import player.phonograph.ui.compose.components.WheelPicker
 import player.phonograph.ui.resource.Texts
-import player.phonograph.util.time.TimeInterval
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

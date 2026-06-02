@@ -2,34 +2,30 @@ package player.phonograph.ui.modules.auxiliary
 
 import de.psdev.licensesdialog.LicensesDialog
 import player.phonograph.App
+import player.phonograph.CURRENT_RELEASE_CHANNEL
+import player.phonograph.CURRENT_TARGET_VARIANT
 import player.phonograph.GITHUB_LINK
 import player.phonograph.R
 import player.phonograph.TRANSLATE_LINk
 import player.phonograph.databinding.ActivityAboutBinding
+import player.phonograph.foundation.content.PackageMetadata
 import player.phonograph.foundation.error.warning
 import player.phonograph.mechanism.UpdateChecker
 import player.phonograph.model.version.VersionCatalog
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
 import player.phonograph.ui.basis.ToolbarActivity
-import player.phonograph.ui.dialogs.ChangelogDialog
-import player.phonograph.ui.dialogs.DebugDialog
-import player.phonograph.ui.dialogs.ReportIssueDialog
-import player.phonograph.ui.dialogs.UpgradeInfoDialog
-import player.phonograph.util.currentReleaseChannel
-import player.phonograph.util.currentVariant
-import player.phonograph.util.currentVersionName
-import player.phonograph.util.gitRevisionHash
-import player.phonograph.util.text.NoticesProcessor
-import player.phonograph.util.theme.ThemeSettingsDelegate.isNightTheme
-import player.phonograph.util.theme.ThemeSettingsDelegate.primaryColor
-import player.phonograph.util.theme.updateSystemBarsColor
-import player.phonograph.util.ui.applyWindowInsetsAsBottomView
+import player.phonograph.ui.modules.upgrade.UpgradeInfoDialog
+import player.phonograph.ui.theme.ThemeSettingsDelegate.isNightTheme
+import player.phonograph.ui.theme.ThemeSettingsDelegate.primaryColor
+import player.phonograph.ui.theme.updateSystemBarsColor
+import player.phonograph.ui.util.applyWindowInsetsAsBottomView
 import util.theme.color.darkenColor
 import util.theme.view.toolbar.setToolbarColor
 import androidx.annotation.Keep
 import androidx.lifecycle.lifecycleScope
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
@@ -74,11 +70,11 @@ class AboutActivity : ToolbarActivity() {
     private fun setUpAppVersion() {
         val appAboutLayout = binding.activityAboutMainContent.cardAboutAppLayout
 
-        appAboutLayout.appVersion.text = currentVersionName(this)
+        appAboutLayout.appVersion.text = PackageMetadata.versionName(this)
 
         val appVersionHash = appAboutLayout.appVersionHash
         try {
-            appVersionHash.text = gitRevisionHash(this).substring(0, 8)
+            appVersionHash.text = gitRevision(this) ?: ""
             appVersionHash.visibility = View.VISIBLE
         } catch (_: Exception) {
             appVersionHash.visibility = View.INVISIBLE
@@ -86,8 +82,7 @@ class AboutActivity : ToolbarActivity() {
 
         val appVariant = appAboutLayout.appVariant
         try {
-            val variant = currentVariant()
-            appVariant.text = "$variant Variant"
+            appVariant.text = "$CURRENT_TARGET_VARIANT Variant"
             appVariant.visibility = View.VISIBLE
         } catch (_: Exception) {
             appVariant.visibility = View.GONE
@@ -189,7 +184,7 @@ class AboutActivity : ToolbarActivity() {
                 if (upgradable) {
                     UpgradeInfoDialog.create(versionCatalog).show(supportFragmentManager, "UPGRADE")
                     val ignored = Settings(App.instance)[Keys.ignoreUpgradeDate].data
-                    val current = versionCatalog.latest(currentReleaseChannel)?.date ?: 0
+                    val current = versionCatalog.latest(CURRENT_RELEASE_CHANNEL.lowercase())?.date ?: 0
                     if (ignored >= current) {
                         lifecycleScope.launch(Dispatchers.Main) {
                             Toast.makeText(this@AboutActivity, R.string.msg_ignored_update, Toast.LENGTH_SHORT).show()
@@ -206,9 +201,9 @@ class AboutActivity : ToolbarActivity() {
 
     private fun showLicenseDialog() {
         val notices = try {
-            NoticesProcessor.readNotices(this)
+            LicenseNoticesProcessor.readNotices(this, LICENSES_FILE)
         } catch (e: Exception) {
-            warning(this, "NoticesProcessor", "Failed to read notices", e)
+            warning(this, "LicenseNoticesProcessor", "Failed to read notices", e)
             return
         }
         val nightMode = isNightTheme(resources)
@@ -224,6 +219,7 @@ class AboutActivity : ToolbarActivity() {
     }
 
     companion object {
+        private const val LICENSES_FILE = "notices.json"
         private const val CHR56_GITHUB = "https://github.com/chr56/"
         private const val KABOUZEID_TWITTER = "https://twitter.com/swiftkarim"
         private const val KABOUZEID_WEBSITE = "https://kabouzeid.com/"
@@ -240,5 +236,8 @@ class AboutActivity : ToolbarActivity() {
         private const val EMAIL_CHOOSER_TITLE = "E-Mail"
         private const val EMAIL_SUBJECT = "Phonograph"
         private const val EMAIL_URI = "mailto:$EMAIL_ADDRESS"
+
+        private fun gitRevision(context: Context): String? =
+            PackageMetadata.metadata(context, key = PackageMetadata.METADATA_KEY_GIT_COMMIT)?.substring(0, 8)
     }
 }

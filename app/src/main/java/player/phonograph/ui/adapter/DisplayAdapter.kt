@@ -9,10 +9,10 @@ import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import player.phonograph.mechanism.coil.palette.PaletteColorViewTarget
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.ui.resource.Layouts
-import player.phonograph.util.theme.secondaryTextColorOn
-import player.phonograph.util.theme.textColorOn
-import player.phonograph.util.theme.themeFooterColor
-import player.phonograph.util.theme.themeIconColor
+import player.phonograph.ui.theme.secondaryTextColorOn
+import player.phonograph.ui.theme.textColorOn
+import player.phonograph.ui.theme.themeFooterColor
+import player.phonograph.ui.theme.themeIconColor
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import android.annotation.SuppressLint

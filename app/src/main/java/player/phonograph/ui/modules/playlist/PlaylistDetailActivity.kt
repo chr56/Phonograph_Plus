@@ -27,20 +27,20 @@ import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.ui.UIMode
 import player.phonograph.repo.loader.Playlists
 import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
+import player.phonograph.ui.resource.Durations
 import player.phonograph.ui.resource.Texts
-import player.phonograph.util.observe
-import player.phonograph.util.text.readableDuration
-import player.phonograph.util.theme.ThemeSettingsDelegate.accentColor
-import player.phonograph.util.theme.ThemeSettingsDelegate.primaryColor
-import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.theme.secondaryTextColorOn
-import player.phonograph.util.theme.textColorOn
-import player.phonograph.util.ui.BottomViewWindowInsetsController
-import player.phonograph.util.ui.applyControllableWindowInsetsAsBottomView
-import player.phonograph.util.ui.hideKeyboard
-import player.phonograph.util.ui.menuProvider
-import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
-import player.phonograph.util.ui.showKeyboard
+import player.phonograph.ui.theme.ThemeSettingsDelegate.accentColor
+import player.phonograph.ui.theme.ThemeSettingsDelegate.primaryColor
+import player.phonograph.ui.theme.getTintedDrawable
+import player.phonograph.ui.theme.secondaryTextColorOn
+import player.phonograph.ui.theme.setUpFastScrollRecyclerViewColor
+import player.phonograph.ui.theme.textColorOn
+import player.phonograph.ui.util.BottomViewWindowInsetsController
+import player.phonograph.ui.util.applyControllableWindowInsetsAsBottomView
+import player.phonograph.ui.util.hideKeyboard
+import player.phonograph.ui.util.menuProvider
+import player.phonograph.ui.util.observe
+import player.phonograph.ui.util.showKeyboard
 import util.theme.view.menu.tintOverflowButtonColor
 import util.theme.view.menu.tintToolbarMenuActionIcons
 import util.theme.view.setBackgroundTint
@@ -153,7 +153,7 @@ class PlaylistDetailActivity :
         }
         observe(viewModel.totalDuration) { duration ->
             with(binding) {
-                durationText.text = readableDuration(duration)
+                durationText.text = Durations.short(duration)
             }
         }
     }
@@ -336,7 +336,7 @@ class PlaylistDetailActivity :
 
     private fun setupMenu(menu: Menu) {
         val iconColor = textColorOn(this, panelViewModel.activityColor.value)
-        PlaylistToolbarMenuProvider(::execute).inflateMenu(menu, this, viewModel.playlist, iconColor)
+        inflatePlaylistDetailMenu(menu, this, viewModel.playlist, iconColor, ::execute)
         tintToolbarMenuActionIcons(menu, iconColor)
         tintOverflowButtonColor(this, iconColor)
     }

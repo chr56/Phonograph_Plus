@@ -5,6 +5,7 @@
 package player.phonograph.ui.modules.setting.dialog
 
 import player.phonograph.R
+import player.phonograph.model.ui.MonetColor
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
 import player.phonograph.ui.compose.ComposeViewDialogFragment
@@ -13,8 +14,7 @@ import player.phonograph.ui.compose.components.ActionItem
 import player.phonograph.ui.compose.components.AdvancedDialogFrame
 import player.phonograph.ui.compose.components.ColorPalettePicker
 import player.phonograph.ui.compose.components.LimitedDialog
-import player.phonograph.util.ui.ColorPalette
-import player.phonograph.util.ui.MonetColor
+import player.phonograph.ui.theme.ColorPalette
 import androidx.annotation.RequiresApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check

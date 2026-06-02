@@ -5,8 +5,8 @@
 package player.phonograph.repo.database.store
 
 import player.phonograph.App
+import player.phonograph.debug
 import player.phonograph.foundation.error.warning
-import player.phonograph.util.debug
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log
 

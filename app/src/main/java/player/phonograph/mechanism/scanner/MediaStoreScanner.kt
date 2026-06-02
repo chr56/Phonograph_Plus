@@ -5,8 +5,8 @@
 package player.phonograph.mechanism.scanner
 
 import player.phonograph.R
+import player.phonograph.debug
 import player.phonograph.foundation.notification.Notifications
-import player.phonograph.util.debug
 import android.content.Context
 import android.media.MediaScannerConnection
 import android.net.Uri

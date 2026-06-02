@@ -8,11 +8,11 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import player.phonograph.R
 import player.phonograph.databinding.FragmentPlaybackControlsClassicBinding
 import player.phonograph.ui.modules.player.PlayPauseButtonOnClickHandler
+import player.phonograph.ui.theme.ThemeSettingsDelegate.isNightTheme
+import player.phonograph.ui.theme.getTintedDrawable
+import player.phonograph.ui.theme.secondaryTextColorOn
+import player.phonograph.ui.theme.themeIconColor
 import player.phonograph.ui.views.PlayPauseDrawable
-import player.phonograph.util.theme.ThemeSettingsDelegate.isNightTheme
-import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.theme.secondaryTextColorOn
-import player.phonograph.util.theme.themeIconColor
 import util.theme.view.tint
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat

@@ -4,6 +4,7 @@
 
 package player.phonograph.ui.modules.player
 
+import player.phonograph.foundation.produceSafeId
 import player.phonograph.model.Song
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.service.MusicPlayerRemote
@@ -13,9 +14,8 @@ import player.phonograph.ui.adapter.DisplayPresenter
 import player.phonograph.ui.adapter.DraggableDisplayAdapter
 import player.phonograph.ui.adapter.MultiSelectionController
 import player.phonograph.ui.resource.Layouts
-import player.phonograph.util.produceSafeId
-import player.phonograph.util.text.infoString
-import player.phonograph.util.ui.hitTest
+import player.phonograph.ui.resource.infoString
+import player.phonograph.ui.util.hitTest
 import androidx.fragment.app.FragmentActivity
 import android.annotation.SuppressLint
 import android.content.Context

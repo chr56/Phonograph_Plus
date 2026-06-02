@@ -4,9 +4,12 @@
 
 package player.phonograph
 
-const val ACTUAL_PACKAGE_NAME = BuildConfig.APPLICATION_ID
+const val PACKAGE_NAME: String = "player.phonograph"
 
-const val PACKAGE_NAME = "player.phonograph"
+const val ACTUAL_PACKAGE_NAME: String = BuildConfig.APPLICATION_ID
+
+const val CURRENT_RELEASE_CHANNEL: String = BuildConfig.FLAVOR_channel
+const val CURRENT_TARGET_VARIANT: String = BuildConfig.FLAVOR_target
 
 const val USER_AGENT = "PhonographPlus/${BuildConfig.VERSION_NAME} (Android) ${okhttp3.internal.userAgent}"
 

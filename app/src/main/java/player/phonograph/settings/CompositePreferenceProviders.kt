@@ -4,6 +4,7 @@
 
 package player.phonograph.settings
 
+import player.phonograph.foundation.time.TimeInterval
 import player.phonograph.model.coil.ImageSourceConfig
 import player.phonograph.model.notification.NotificationActionsConfig
 import player.phonograph.model.pages.PagesConfig
@@ -17,7 +18,6 @@ import player.phonograph.model.time.Duration
 import player.phonograph.model.time.TimeIntervalCalculationMode
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.model.ui.NowPlayingScreenStyle
-import player.phonograph.util.time.TimeInterval
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit

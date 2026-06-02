@@ -5,7 +5,7 @@
 package player.phonograph.ui
 
 import player.phonograph.R
- import player.phonograph.mechanism.metadata.RelationshipResolver
+import player.phonograph.mechanism.metadata.RelationshipResolver
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Genre
@@ -17,7 +17,7 @@ import player.phonograph.ui.modules.album.AlbumDetailActivity
 import player.phonograph.ui.modules.artist.ArtistDetailActivity
 import player.phonograph.ui.modules.genre.GenreDetailActivity
 import player.phonograph.ui.modules.playlist.PlaylistDetailActivity
-import player.phonograph.util.theme.tintButtons
+import player.phonograph.ui.theme.tintButtons
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.util.Pair
@@ -27,6 +27,10 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.media.audiofx.AudioEffect
+import android.net.Uri
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES
+import android.provider.Settings
 import android.view.View
 import android.widget.Toast
 import kotlinx.coroutines.Dispatchers
@@ -142,5 +146,34 @@ object NavigationUtil {
                 ).show()
             }
         }
+    }
+
+    fun navigateToStorageSetting(context: Context) {
+        val uri = Uri.fromParts("package", context.packageName, null)
+        val intent = Intent()
+        intent.apply {
+            if (SDK_INT >= VERSION_CODES.R) {
+                action = Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION
+                data = uri
+            } else {
+                action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                data = uri
+            }
+        }
+        try {
+            context.startActivity(intent.apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK })
+        } catch (e: ActivityNotFoundException) {
+            Toast.makeText(context, "${e.message?.take(48)}", Toast.LENGTH_SHORT).show()
+            context.startActivity(Intent(Settings.ACTION_MANAGE_ALL_APPLICATIONS_SETTINGS))
+        }
+    }
+
+    fun navigateToAppDetailSetting(context: Context) {
+        context.startActivity(
+            Intent().apply {
+                action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                data = Uri.fromParts("package", context.packageName, null)
+            }
+        )
     }
 }

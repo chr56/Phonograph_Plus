@@ -28,7 +28,7 @@ import player.phonograph.model.Artist
 import player.phonograph.model.Song
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
-import player.phonograph.util.theme.accentColoredButtonStyle
+import player.phonograph.ui.theme.accentColoredButtonStyle
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column

@@ -5,13 +5,13 @@
 package player.phonograph.ui.modules.setting.dialog
 
 import player.phonograph.R
+import player.phonograph.foundation.setBit
+import player.phonograph.foundation.testBit
+import player.phonograph.foundation.unsetBit
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
 import player.phonograph.ui.compose.components.ActionItem
 import player.phonograph.ui.modules.setting.elements.ClickModeSettings
-import player.phonograph.util.setBit
-import player.phonograph.util.testBit
-import player.phonograph.util.unsetBit
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check

@@ -23,24 +23,24 @@ import player.phonograph.model.ui.UnarySlidingUpPanelProvider
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.ui.actions.ActionMenuProviders
-import player.phonograph.ui.dialogs.QueueSnapshotsDialog
 import player.phonograph.ui.modules.panel.AbsMusicServiceFragment
 import player.phonograph.ui.modules.panel.PanelViewModel
+import player.phonograph.ui.modules.player.dialogs.QueueSnapshotsDialog
 import player.phonograph.ui.modules.playlist.dialogs.CreatePlaylistDialogActivity
-import player.phonograph.util.observe
-import player.phonograph.util.text.buildInfoString
-import player.phonograph.util.text.infoString
-import player.phonograph.util.text.readableDuration
-import player.phonograph.util.theme.ThemeSettingsDelegate.isNightTheme
-import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.theme.textColorPrimary
-import player.phonograph.util.theme.themeFooterColor
-import player.phonograph.util.theme.themeIconColor
-import player.phonograph.util.theme.tintButtons
-import player.phonograph.util.ui.PHONOGRAPH_ANIM_TIME
-import player.phonograph.util.ui.applyWindowInsetsAsBottomView
-import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
-import player.phonograph.util.ui.textColorTransitionAnimator
+import player.phonograph.ui.resource.Durations
+import player.phonograph.ui.resource.buildInfoString
+import player.phonograph.ui.resource.infoString
+import player.phonograph.ui.theme.ThemeSettingsDelegate.isNightTheme
+import player.phonograph.ui.theme.getTintedDrawable
+import player.phonograph.ui.theme.setUpFastScrollRecyclerViewColor
+import player.phonograph.ui.theme.textColorPrimary
+import player.phonograph.ui.theme.themeFooterColor
+import player.phonograph.ui.theme.themeIconColor
+import player.phonograph.ui.theme.tintButtons
+import player.phonograph.ui.util.PHONOGRAPH_ANIM_TIME
+import player.phonograph.ui.util.applyWindowInsetsAsBottomView
+import player.phonograph.ui.util.observe
+import player.phonograph.ui.util.textColorTransitionAnimator
 import util.theme.color.darkenColor
 import util.theme.color.lightenColor
 import util.theme.materials.MaterialColor
@@ -328,7 +328,7 @@ class PlayerQueueFragment : AbsMusicServiceFragment() {
         val duration = MusicPlayerRemote.getQueueDurationMillis(position)
         return buildInfoString(
             resources.getString(R.string.title_up_next),
-            readableDuration(duration)
+            Durations.short(duration)
         )
     }
 

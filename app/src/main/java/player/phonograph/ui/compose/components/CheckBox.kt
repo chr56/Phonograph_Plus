@@ -4,7 +4,7 @@
 
 package player.phonograph.ui.compose.components
 
-import player.phonograph.util.testBit
+import player.phonograph.foundation.testBit
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth

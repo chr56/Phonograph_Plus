@@ -4,6 +4,7 @@
 
 package player.phonograph.service.util
 
+import player.phonograph.foundation.permission.StoragePermissionChecker
 import player.phonograph.mechanism.StatusBarLyric
 import player.phonograph.mechanism.lyrics.LyricsLoader
 import player.phonograph.model.Song
@@ -12,7 +13,6 @@ import player.phonograph.service.MusicService
 import player.phonograph.service.ServiceComponent
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
-import player.phonograph.util.permissions.StoragePermissionChecker
 import android.content.Context
 import kotlin.math.max
 import kotlinx.coroutines.SupervisorJob

@@ -4,6 +4,7 @@
 
 package player.phonograph.ui.modules.player
 
+import player.phonograph.foundation.permission.StoragePermissionChecker
 import player.phonograph.mechanism.lyrics.LyricsLoader
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.AbsLyrics
@@ -11,7 +12,6 @@ import player.phonograph.model.lyrics.LYRICS_ALIGN_CENTER
 import player.phonograph.model.lyrics.LyricsInfo
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
-import player.phonograph.util.permissions.StoragePermissionChecker
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context

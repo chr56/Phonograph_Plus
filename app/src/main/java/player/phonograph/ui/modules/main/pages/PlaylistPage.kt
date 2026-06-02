@@ -21,9 +21,9 @@ import player.phonograph.ui.adapter.DisplayPresenter
 import player.phonograph.ui.adapter.PlaylistBasicDisplayPresenter
 import player.phonograph.ui.modules.playlist.dialogs.CreatePlaylistDialogActivity
 import player.phonograph.ui.resource.Layouts
-import player.phonograph.util.theme.ThemeSettingsDelegate.accentColor
-import player.phonograph.util.theme.ThemeSettingsDelegate.primaryColor
-import player.phonograph.util.theme.themeCardBackgroundColor
+import player.phonograph.ui.theme.ThemeSettingsDelegate.accentColor
+import player.phonograph.ui.theme.ThemeSettingsDelegate.primaryColor
+import player.phonograph.ui.theme.themeCardBackgroundColor
 import util.theme.color.lightenColor
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat

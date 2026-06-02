@@ -6,12 +6,12 @@ package player.phonograph.repo.mediastore.internal
 
 import player.phonograph.foundation.error.warning
 import player.phonograph.foundation.mediastore.mediastoreArtistSortRefKey
+import player.phonograph.foundation.sort
 import player.phonograph.model.Artist
 import player.phonograph.model.Song
 import player.phonograph.model.sort.SortMode
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
-import player.phonograph.util.sort
 import android.content.Context
 import android.util.ArrayMap
 import kotlinx.coroutines.Deferred

@@ -16,7 +16,7 @@ import player.phonograph.repo.loader.Artists
 import player.phonograph.repo.loader.Songs
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
-import player.phonograph.util.theme.ThemeSettingsDelegate.primaryColor
+import player.phonograph.ui.theme.ThemeSettingsDelegate.primaryColor
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context

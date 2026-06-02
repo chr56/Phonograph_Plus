@@ -21,8 +21,8 @@ import player.phonograph.ui.modules.setting.dialog.LanguageSettingDialog
 import player.phonograph.ui.modules.setting.dialog.MaterialColorPickerDialog
 import player.phonograph.ui.modules.setting.dialog.MonetColorPickerDialog
 import player.phonograph.ui.modules.setting.dialog.NowPlayingScreenStylePreferenceDialog
-import player.phonograph.util.theme.ThemeSettingsDelegate
-import player.phonograph.util.ui.ColorPalette
+import player.phonograph.ui.theme.ColorPalette
+import player.phonograph.ui.theme.ThemeSettingsDelegate
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

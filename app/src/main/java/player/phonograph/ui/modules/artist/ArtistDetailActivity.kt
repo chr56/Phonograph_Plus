@@ -13,6 +13,8 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import player.phonograph.R
 import player.phonograph.databinding.ActivityArtistDetailBinding
+import player.phonograph.foundation.content.GetContentDelegate
+import player.phonograph.foundation.content.IGetContentRequester
 import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
@@ -22,32 +24,28 @@ import player.phonograph.model.sort.SortRef
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.model.ui.PaletteColorProvider
 import player.phonograph.repo.loader.Songs
-import player.phonograph.ui.actions.DetailToolbarMenuProviders
 import player.phonograph.ui.adapter.AlbumBasicDisplayPresenter
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayPresenter
 import player.phonograph.ui.adapter.MultiSelectionController
 import player.phonograph.ui.adapter.SongBasicDisplayPresenter
 import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
+import player.phonograph.ui.resource.Durations
 import player.phonograph.ui.resource.Layouts
-import player.phonograph.util.component.GetContentDelegate
-import player.phonograph.util.component.IGetContentRequester
-import player.phonograph.util.observe
-import player.phonograph.util.text.albumCountString
-import player.phonograph.util.text.buildInfoString
-import player.phonograph.util.text.readableDuration
-import player.phonograph.util.text.readableYear
-import player.phonograph.util.text.songCountString
-import player.phonograph.util.text.totalDuration
-import player.phonograph.util.theme.ThemeSettingsDelegate.primaryColor
-import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.theme.secondaryTextColorOn
-import player.phonograph.util.theme.textColorOn
-import player.phonograph.util.theme.themeFooterColor
-import player.phonograph.util.theme.updateSystemBarsColor
-import player.phonograph.util.ui.BottomViewWindowInsetsController
-import player.phonograph.util.ui.applyControllableWindowInsetsAsBottomView
-import player.phonograph.util.ui.menuProvider
+import player.phonograph.ui.resource.albumCountString
+import player.phonograph.ui.resource.buildInfoString
+import player.phonograph.ui.resource.readableYear
+import player.phonograph.ui.resource.songCountString
+import player.phonograph.ui.theme.ThemeSettingsDelegate.primaryColor
+import player.phonograph.ui.theme.getTintedDrawable
+import player.phonograph.ui.theme.secondaryTextColorOn
+import player.phonograph.ui.theme.textColorOn
+import player.phonograph.ui.theme.themeFooterColor
+import player.phonograph.ui.theme.updateSystemBarsColor
+import player.phonograph.ui.util.BottomViewWindowInsetsController
+import player.phonograph.ui.util.applyControllableWindowInsetsAsBottomView
+import player.phonograph.ui.util.menuProvider
+import player.phonograph.ui.util.observe
 import util.theme.view.menu.tintOverflowButtonColor
 import util.theme.view.menu.tintToolbarMenuActionIcons
 import util.theme.view.toolbar.setToolbarColor
@@ -193,9 +191,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvide
 
     private fun setupMenu(menu: Menu) {
         val iconColor = textColorOn(this, panelViewModel.activityColor.value)
-        DetailToolbarMenuProviders.ArtistToolbarMenuProvider.inflateMenu(
-            menu, this, viewModel.artist.value ?: Artist(), iconColor
-        )
+        inflateArtistDetailMenu(menu, this, viewModel.artist.value ?: Artist(), iconColor)
         attach(menu) {
             menuItem(title = getString(R.string.label_colored_footers)) {
                 checkable = true
@@ -227,7 +223,9 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvide
         val songs = withContext(Dispatchers.IO) {
             Songs.artist(this@ArtistDetailActivity, artist.id)
         }
-        viewBinding.durationText.text = readableDuration(totalDuration(songs))
+        viewBinding.durationText.text = Durations.short(
+            songs.fold(0L) { acc: Long, song: Song -> acc + song.duration }
+        )
     }
 
 

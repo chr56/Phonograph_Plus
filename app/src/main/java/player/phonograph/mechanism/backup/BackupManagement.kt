@@ -8,7 +8,10 @@ import okio.Path.Companion.toOkioPath
 import okio.buffer
 import okio.source
 import player.phonograph.BuildConfig
+import player.phonograph.foundation.currentTimestamp
 import player.phonograph.foundation.error.warning
+import player.phonograph.foundation.file.compressDirectory
+import player.phonograph.foundation.file.extractDirectory
 import player.phonograph.model.backup.BackupItem
 import player.phonograph.model.backup.BackupItemExecutor
 import player.phonograph.model.backup.BackupManifestFile
@@ -18,9 +21,6 @@ import player.phonograph.repo.database.store.SongPlayCountStore.Companion.SONG_P
 import player.phonograph.repo.room.MusicDatabase
 import player.phonograph.service.queue.MusicPlaybackQueueStore.Companion.MUSIC_PLAYBACK_STATE_DB
 import player.phonograph.ui.resource.Texts
-import player.phonograph.util.text.currentTimestamp
-import player.phonograph.util.zip.ZipUtil.extractDirectory
-import player.phonograph.util.zip.ZipUtil.zipDirectory
 import android.content.Context
 import kotlinx.serialization.json.Json
 import java.io.File
@@ -55,7 +55,9 @@ object Backup {
 
             exportBackupToDirectory(context, config, tmpDir)
 
-            zipDirectory(targetOutputStream, tmpDir)
+            compressDirectory(targetOutputStream, tmpDir).onError { message, errors ->
+                warning(context, TAG, message, errors.firstOrNull())
+            }
 
             SessionManger.terminateSession(session)
         }
@@ -119,7 +121,9 @@ object Backup {
         ): Long {
             val (session, tmpDir) = SessionManger.newSession(context)
 
-            extractDirectory(sourceInputStream, tmpDir)
+            extractDirectory(sourceInputStream, tmpDir).onError { message, errors ->
+                warning(context, TAG, message, errors.firstOrNull())
+            }
 
             return session
         }
@@ -143,7 +147,7 @@ object Backup {
             val tmpDir = SessionManger.sessionDirectory(session)
             val manifest = readManifest(context, session)
             require(manifest != null) { "No Manifest!" }
-             // check
+            // check
             require(manifest.phonographVersionCode >= 1082) {
                 "Could not import backups created before v1.8.2! [current ${manifest.phonographVersion}]"
             }

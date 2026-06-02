@@ -13,6 +13,8 @@ import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
 import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.foundation.Reboot
+import player.phonograph.foundation.concurrent.HandlerContainer
+import player.phonograph.foundation.concurrent.postDelayedOnceHandlerCallback
 import player.phonograph.foundation.error.crashActivity
 import player.phonograph.foundation.error.startCrashActivity
 import player.phonograph.foundation.localization.ContextLocaleDelegate
@@ -22,13 +24,9 @@ import player.phonograph.service.moduleQueue
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.ui.moduleViewModels
 import player.phonograph.ui.modules.auxiliary.CrashActivity
-import player.phonograph.util.HandlerContainer
-import player.phonograph.util.concurrent.postDelayedOnceHandlerCallback
-import player.phonograph.util.debug
-import player.phonograph.util.logMetrics
-import player.phonograph.util.theme.ThemeSettingsDelegate
-import player.phonograph.util.theme.changeGlobalNightMode
-import player.phonograph.util.theme.systemNightMode
+import player.phonograph.ui.theme.ThemeSettingsDelegate
+import player.phonograph.ui.theme.changeGlobalNightMode
+import player.phonograph.ui.theme.systemNightMode
 import androidx.appcompat.app.AppCompatDelegate
 import android.app.Application
 import android.content.Context

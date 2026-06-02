@@ -5,6 +5,8 @@
 package player.phonograph.ui.modules.tag
 
 import player.phonograph.R
+import player.phonograph.foundation.dateTimeTextPrecise
+import player.phonograph.foundation.file.readableFileSizeInMB
 import player.phonograph.mechanism.metadata.JAudioTaggerMetadata
 import player.phonograph.model.metadata.AudioMetadata
 import player.phonograph.model.metadata.ConventionalMusicMetadataKey
@@ -21,8 +23,6 @@ import player.phonograph.ui.modules.tag.components.ReadonlyTagItem
 import player.phonograph.ui.modules.tag.util.ErrorMessage
 import player.phonograph.ui.modules.tag.util.display
 import player.phonograph.ui.resource.Texts
-import player.phonograph.util.text.dateTimeTextPrecise
-import player.phonograph.util.text.getFileSizeString
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -94,7 +94,7 @@ private fun AudioProperties(metadata: AudioMetadata) {
     val audioProperties = remember(metadata) { metadata.audioProperties }
     ReadonlyTagItem(stringResource(R.string.label_file_name), fileProperties.fileName)
     ReadonlyTagItem(stringResource(R.string.label_file_path), fileProperties.filePath)
-    ReadonlyTagItem(stringResource(R.string.label_file_size), getFileSizeString(fileProperties.fileSize))
+    ReadonlyTagItem(stringResource(R.string.label_file_size), readableFileSizeInMB(fileProperties.fileSize))
     ReadonlyTagItem(stringResource(R.string.label_created_at), dateTimeTextPrecise(fileProperties.dateAdded))
     ReadonlyTagItem(stringResource(R.string.label_last_modified_at), dateTimeTextPrecise(fileProperties.dateModified))
     for (audioProperty in audioProperties.fields) {

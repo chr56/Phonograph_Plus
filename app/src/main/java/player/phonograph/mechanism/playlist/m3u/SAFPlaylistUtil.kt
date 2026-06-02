@@ -9,13 +9,12 @@ import lib.storage.launcher.IOpenFileStorageAccessible
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.foundation.compat.MediaStoreCompat.Audio.Playlists
+import player.phonograph.foundation.compat.openOutputStreamSafe
+import player.phonograph.foundation.concurrent.coroutineToast
+import player.phonograph.foundation.content.selectContentUri
 import player.phonograph.foundation.error.warning
 import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.Song
-import player.phonograph.util.PLAYLIST_MIME_TYPE
-import player.phonograph.util.concurrent.coroutineToast
-import player.phonograph.util.file.selectContentUri
-import player.phonograph.util.openOutputStreamSafe
 import android.content.Context
 import android.net.Uri
 import kotlinx.coroutines.Dispatchers
@@ -65,7 +64,7 @@ object SAFPlaylistUtil {
         //
         // select
         //
-        val mimeTypes = arrayOf(PLAYLIST_MIME_TYPE, Playlists.CONTENT_TYPE, Playlists.ENTRY_CONTENT_TYPE)
+        val mimeTypes = arrayOf("audio/x-mpegurl", Playlists.CONTENT_TYPE, Playlists.ENTRY_CONTENT_TYPE)
         val uri: Uri? = selectContentUri(context, playlistPath, mimeTypes)
         if (uri == null) {
             coroutineToast(context, context.getString(R.string.failed))

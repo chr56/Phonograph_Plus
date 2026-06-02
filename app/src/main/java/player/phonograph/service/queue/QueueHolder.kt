@@ -5,13 +5,12 @@
 package player.phonograph.service.queue
 
 import org.koin.core.context.GlobalContext
+import player.phonograph.foundation.currentTimestamp
 import player.phonograph.model.PlayRequest.SongsRequest
 import player.phonograph.model.Song
 import player.phonograph.model.service.RepeatMode
 import player.phonograph.model.service.ShuffleMode
 import player.phonograph.service.util.QueuePreferenceManager
-import player.phonograph.util.text.currentTimestamp
-import player.phonograph.util.text.totalDuration
 import android.content.Context
 import kotlinx.coroutines.runBlocking
 
@@ -91,7 +90,9 @@ class QueueHolder private constructor(
     val currentSong: Song? = getSongAt(currentSongPosition)
 
     fun getRestSongsDuration(position: Int): Long =
-        totalDuration(playingQueue.takeLast(getRestSongsCount(position)))
+        playingQueue
+            .takeLast(getRestSongsCount(position))
+            .fold(0L) { acc: Long, song: Song -> acc + song.duration }
 
     private fun getRestSongsCount(currentPosition: Int): Int =
         if (playingQueue.isEmpty() || playingQueue.size - currentPosition < 0) 0

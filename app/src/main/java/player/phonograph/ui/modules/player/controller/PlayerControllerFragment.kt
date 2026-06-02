@@ -13,10 +13,10 @@ import player.phonograph.model.ui.PlayerControllerStyle.Companion.FunctionType
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.modules.panel.AbsMusicServiceFragment
 import player.phonograph.ui.modules.panel.PanelViewModel
-import player.phonograph.util.component.MusicProgressUpdateDelegate
-import player.phonograph.util.observe
-import player.phonograph.util.theme.defaultTextColor
-import player.phonograph.util.theme.secondaryTextColorOn
+import player.phonograph.ui.modules.player.MusicProgressUpdateDelegate
+import player.phonograph.ui.theme.defaultTextColor
+import player.phonograph.ui.theme.secondaryTextColorOn
+import player.phonograph.ui.util.observe
 import androidx.lifecycle.Lifecycle
 import android.graphics.Point
 import android.os.Bundle

@@ -8,7 +8,6 @@ import lib.storage.documentProviderUriAbsolutePath
 import player.phonograph.foundation.error.warning
 import player.phonograph.model.Song
 import player.phonograph.repo.loader.Songs
-import player.phonograph.util.asList
 import androidx.core.provider.DocumentsContractCompat
 import android.content.ContentResolver
 import android.content.Context
@@ -71,6 +70,9 @@ private object ApplicationContentUriParser : IUriParser<Song> {
         return Songs.searchByPath(context, File(filePath).absolutePath, withoutPathFilter = true)
     }
 }
+
+
+private fun Song?.asList(): List<Song> = if (this != null) listOf(this) else emptyList()
 
 private const val AUTHORITY_MEDIA = "media"
 private const val AUTHORITY_MEDIA_PROVIDER = "com.android.providers.media.documents"

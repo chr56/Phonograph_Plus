@@ -5,27 +5,29 @@
 package player.phonograph.ui.actions
 
 import player.phonograph.R
+import player.phonograph.foundation.concurrent.lifecycleScopeOrNewOne
+import player.phonograph.foundation.error.warning
+import player.phonograph.foundation.fragmentActivity
+import player.phonograph.foundation.mediastore.mediaStoreUriSongExternal
+import player.phonograph.foundation.permission.checkModificationSystemSettingsPermission
 import player.phonograph.model.Song
 import player.phonograph.model.service.ShuffleMode
 import player.phonograph.repo.loader.Playlists
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.PathFilterSetting
 import player.phonograph.ui.NavigationUtil
-import player.phonograph.ui.dialogs.DeletionDialog
+import player.phonograph.ui.modules.auxiliary.DeletionDialog
 import player.phonograph.ui.modules.playlist.dialogs.AddToPlaylistDialogActivity
 import player.phonograph.ui.modules.tag.TagBrowserActivity
-import player.phonograph.util.concurrent.lifecycleScopeOrNewOne
-import player.phonograph.util.fragmentActivity
-import player.phonograph.util.permissions.checkModificationSystemSettingsPermission
-import player.phonograph.util.setRingtone
-import player.phonograph.util.shareFileIntent
-import player.phonograph.util.theme.tintButtons
+import player.phonograph.ui.theme.tintButtons
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.FileProvider
 import androidx.core.util.Pair
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import android.content.Context
 import android.content.Intent
+import android.media.RingtoneManager
 import android.net.Uri
 import android.provider.Settings
 import android.view.View
@@ -33,6 +35,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
 
 
 fun Song.actionPlay(): Boolean = actionPlayNow()
@@ -100,12 +103,17 @@ fun Song.actionShare(context: Context): Boolean {
     return true
 }
 
+
 fun Song.actionSetAsRingtone(context: Context): Boolean =
     if (checkModificationSystemSettingsPermission(context)) {
         showRingtoneDialog(context)
         true
     } else {
-        setRingtone(context, id)
+        RingtoneManager.setActualDefaultRingtoneUri(
+            context,
+            RingtoneManager.TYPE_ALARM,
+            mediaStoreUriSongExternal(id)
+        )
         true
     }
 
@@ -152,6 +160,21 @@ private fun showRingtoneDialog(context: Context): AlertDialog =
             )
         }
         .create().tintButtons()
+
+private fun shareFileIntent(context: Context, song: Song): Intent = try {
+    Intent()
+        .setAction(Intent.ACTION_SEND)
+        .putExtra(
+            Intent.EXTRA_STREAM,
+            FileProvider.getUriForFile(context, context.applicationContext.packageName, File(song.data))
+        )
+        .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        .setType("audio/*")
+} catch (e: IllegalArgumentException) {
+    // the path is most likely not like /storage/emulated/0/... but something like /storage/28C7-75B0/...
+    warning(context, "Share", "Physical external SD card is not fully support!", e)
+    Intent()
+}
 
 fun addToBlacklist(context: Context, path: String) {
     CoroutineScope(Dispatchers.IO).launch {

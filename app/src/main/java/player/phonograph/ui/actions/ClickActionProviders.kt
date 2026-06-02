@@ -5,6 +5,7 @@
 package player.phonograph.ui.actions
 
 import player.phonograph.R
+import player.phonograph.foundation.testBit
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Genre
@@ -30,7 +31,6 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
 import player.phonograph.ui.NavigationUtil
-import player.phonograph.util.testBit
 import androidx.core.util.Pair
 import android.content.Context
 import android.view.View

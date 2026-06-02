@@ -11,7 +11,7 @@ import player.phonograph.R
 import player.phonograph.model.QueueSong
 import player.phonograph.ui.actions.ActionMenuProviders.ActionMenuProvider
 import player.phonograph.ui.actions.actionGotoDetail
-import player.phonograph.ui.dialogs.DeletionDialog
+import player.phonograph.ui.modules.auxiliary.DeletionDialog
 import player.phonograph.ui.modules.tag.TagBrowserActivity
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope

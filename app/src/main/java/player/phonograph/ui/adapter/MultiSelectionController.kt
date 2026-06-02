@@ -5,12 +5,11 @@
 package player.phonograph.ui.adapter
 
 import player.phonograph.R
+import player.phonograph.debug
 import player.phonograph.foundation.error.warning
 import player.phonograph.model.ui.PaletteColorProvider
-import player.phonograph.ui.actions.MultiSelectionToolbarMenuProviders
-import player.phonograph.util.debug
-import player.phonograph.util.theme.ThemeSettingsDelegate.primaryColor
-import player.phonograph.util.theme.getTintedDrawable
+import player.phonograph.ui.theme.ThemeSettingsDelegate.primaryColor
+import player.phonograph.ui.theme.getTintedDrawable
 import util.theme.color.darkenColor
 import util.theme.color.isColorLight
 import util.theme.color.lightenColor
@@ -209,7 +208,7 @@ class MultiSelectionController<I>(
 
     private fun ToolbarCab.setupMenu() {
         menuHandler = {
-            MultiSelectionToolbarMenuProviders.inflate(it.menu, activity, this@MultiSelectionController)
+            inflateMultiSelectionToolbarMenu(it.menu, activity, this@MultiSelectionController)
         }
     }
 

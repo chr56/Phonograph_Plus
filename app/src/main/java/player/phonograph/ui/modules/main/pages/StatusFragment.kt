@@ -6,8 +6,8 @@ package player.phonograph.ui.modules.main.pages
 
 import player.phonograph.R
 import player.phonograph.databinding.FragmentDisplayPageStatusBinding
-import player.phonograph.util.theme.ThemeSettingsDelegate.primaryColor
-import player.phonograph.util.theme.getTintedDrawable
+import player.phonograph.ui.theme.ThemeSettingsDelegate.primaryColor
+import player.phonograph.ui.theme.getTintedDrawable
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.view.isVisible

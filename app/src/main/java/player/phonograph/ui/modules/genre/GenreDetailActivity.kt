@@ -16,19 +16,18 @@ import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.repo.loader.Genres
-import player.phonograph.ui.actions.DetailToolbarMenuProviders
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayPresenter
 import player.phonograph.ui.adapter.SongBasicDisplayPresenter
 import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
-import player.phonograph.util.observe
-import player.phonograph.util.theme.ThemeSettingsDelegate.accentColor
-import player.phonograph.util.theme.ThemeSettingsDelegate.primaryColor
-import player.phonograph.util.theme.textColorOn
-import player.phonograph.util.ui.BottomViewWindowInsetsController
-import player.phonograph.util.ui.applyControllableWindowInsetsAsBottomView
-import player.phonograph.util.ui.menuProvider
-import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
+import player.phonograph.ui.theme.ThemeSettingsDelegate.accentColor
+import player.phonograph.ui.theme.ThemeSettingsDelegate.primaryColor
+import player.phonograph.ui.theme.setUpFastScrollRecyclerViewColor
+import player.phonograph.ui.theme.textColorOn
+import player.phonograph.ui.util.BottomViewWindowInsetsController
+import player.phonograph.ui.util.applyControllableWindowInsetsAsBottomView
+import player.phonograph.ui.util.menuProvider
+import player.phonograph.ui.util.observe
 import util.theme.view.menu.tintOverflowButtonColor
 import util.theme.view.menu.tintToolbarMenuActionIcons
 import util.theme.view.toolbar.setToolbarColor
@@ -127,7 +126,7 @@ class GenreDetailActivity : AbsSlidingMusicPanelActivity(),
 
     private fun setupMenu(menu: Menu) {
         val iconColor = textColorOn(this, panelViewModel.activityColor.value)
-        DetailToolbarMenuProviders.GenreEntityToolbarMenuProvider.inflateMenu(menu, this, genre, iconColor)
+        inflateGenreDetailMenu(menu, this, genre, iconColor)
         tintToolbarMenuActionIcons(menu, iconColor)
         tintOverflowButtonColor(this, iconColor)
     }

@@ -18,8 +18,8 @@ import player.phonograph.model.ui.PlayerControllerStyle.Companion.FUNCTION_SEEK
 import player.phonograph.model.ui.PlayerControllerStyle.Companion.FUNCTION_SWITCH
 import player.phonograph.model.ui.PlayerControllerStyle.Companion.FunctionType
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.util.text.readableDuration
-import player.phonograph.util.ui.createScaleAnimator
+import player.phonograph.ui.resource.Durations
+import player.phonograph.ui.util.createScaleAnimator
 import androidx.annotation.ColorInt
 import androidx.annotation.IntDef
 import androidx.core.graphics.BlendModeColorFilterCompat.createBlendModeColorFilterCompat
@@ -211,8 +211,8 @@ abstract class PlayerControllerBinding {
     fun onUpdateProgressViews(progress: Int, total: Int) {
         progressSlider.max = total
         progressSlider.progress = progress
-        songTotalTime.text = readableDuration(total.toLong())
-        songCurrentProgress.text = readableDuration(progress.toLong())
+        songTotalTime.text = Durations.short(total.toLong())
+        songCurrentProgress.text = Durations.short(progress.toLong())
     }
 
     fun onUpdateRepeatModeIcon(repeatMode: RepeatMode) =

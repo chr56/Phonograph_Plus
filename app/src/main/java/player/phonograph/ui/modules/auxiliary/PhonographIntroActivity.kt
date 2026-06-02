@@ -21,18 +21,17 @@ import player.phonograph.R
 import player.phonograph.databinding.FragmentIntroBinding
 import player.phonograph.databinding.FragmentIntroSlideSettingBinding
 import player.phonograph.databinding.ItemSimpleBinding
+import player.phonograph.foundation.permission.PermissionDetail
+import player.phonograph.foundation.permission.hasPermission
+import player.phonograph.foundation.permission.necessaryPermissions
 import player.phonograph.mechanism.backup.Backup
 import player.phonograph.model.ui.GeneralTheme.Companion.THEME_DARK
 import player.phonograph.settings.Keys
 import player.phonograph.settings.PrerequisiteSettings
 import player.phonograph.settings.Settings
-import player.phonograph.ui.dialogs.BackupImportDialog
+import player.phonograph.ui.modules.backup.BackupImportDialog
 import player.phonograph.ui.modules.main.MainActivity
-import player.phonograph.util.permissions.PermissionDetail
-import player.phonograph.util.permissions.hasPermission
-import player.phonograph.util.permissions.necessaryPermissions
-import player.phonograph.util.permissions.permissionDescription
-import player.phonograph.util.permissions.permissionName
+import player.phonograph.ui.resource.Texts
 import util.theme.materials.MaterialColor
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatButton
@@ -172,8 +171,8 @@ class PhonographIntroActivity : AppIntro(),
         private fun createPermissionViewBinding(detail: PermissionDetail): ItemSimpleBinding =
             ItemSimpleBinding.inflate(layoutInflater).also { itemBinding ->
                 val context = itemBinding.root.context
-                itemBinding.title.text = permissionName(context, detail.permission)
-                itemBinding.text.text = permissionDescription(context, detail.permission)
+                itemBinding.title.text = Texts.permissionName(context, detail.permission)
+                itemBinding.text.text = Texts.permissionDescription(context, detail.permission)
                 itemBinding.menu.visibility = GONE
                 updateItemBackgroundColor(itemBinding.root, detail.permission)
 

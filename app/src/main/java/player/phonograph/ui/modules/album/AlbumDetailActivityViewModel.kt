@@ -11,7 +11,7 @@ import player.phonograph.model.Album
 import player.phonograph.model.Song
 import player.phonograph.repo.loader.Albums
 import player.phonograph.repo.loader.Songs
-import player.phonograph.util.theme.ThemeSettingsDelegate.primaryColor
+import player.phonograph.ui.theme.ThemeSettingsDelegate.primaryColor
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context

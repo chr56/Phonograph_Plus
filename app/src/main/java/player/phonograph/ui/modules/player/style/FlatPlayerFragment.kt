@@ -11,9 +11,9 @@ import player.phonograph.databinding.FragmentFlatPlayerBinding
 import player.phonograph.model.Song
 import player.phonograph.model.ui.UnarySlidingUpPanelProvider
 import player.phonograph.ui.modules.player.AbsPlayerFragment
-import player.phonograph.util.observe
-import player.phonograph.util.text.infoString
-import player.phonograph.util.ui.isLandscape
+import player.phonograph.ui.resource.infoString
+import player.phonograph.ui.util.isLandscape
+import player.phonograph.ui.util.observe
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat

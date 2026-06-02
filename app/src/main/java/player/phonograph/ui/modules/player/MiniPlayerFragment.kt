@@ -5,12 +5,11 @@ import player.phonograph.databinding.FragmentMiniPlayerBinding
 import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.modules.panel.AbsMusicServiceFragment
+import player.phonograph.ui.theme.ThemeSettingsDelegate.accentColor
+import player.phonograph.ui.theme.getTintedDrawable
+import player.phonograph.ui.theme.themeIconColor
+import player.phonograph.ui.util.observe
 import player.phonograph.ui.views.PlayPauseDrawable
-import player.phonograph.util.component.MusicProgressUpdateDelegate
-import player.phonograph.util.observe
-import player.phonograph.util.theme.ThemeSettingsDelegate.accentColor
-import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.theme.themeIconColor
 import androidx.lifecycle.Lifecycle
 import android.annotation.SuppressLint
 import android.content.Context

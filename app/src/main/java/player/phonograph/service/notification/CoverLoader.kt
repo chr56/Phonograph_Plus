@@ -13,7 +13,7 @@ import player.phonograph.R
 import player.phonograph.mechanism.coil.PARAMETERS_KEY_PALETTE
 import player.phonograph.mechanism.coil.palette.PaletteColorTarget
 import player.phonograph.model.Song
-import player.phonograph.util.theme.themeFooterColor
+import player.phonograph.ui.theme.themeFooterColor
 import androidx.annotation.ColorInt
 import androidx.core.graphics.drawable.toBitmapOrNull
 import android.content.Context

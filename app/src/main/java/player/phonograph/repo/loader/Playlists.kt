@@ -4,6 +4,7 @@
 
 package player.phonograph.repo.loader
 
+import player.phonograph.foundation.sort
 import player.phonograph.model.PlaylistSong
 import player.phonograph.model.playlist.DatabasePlaylistLocation
 import player.phonograph.model.playlist.FilePlaylistLocation
@@ -16,7 +17,6 @@ import player.phonograph.repo.mediastore.MediaStorePlaylists
 import player.phonograph.repo.room.domain.RoomPlaylists
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
-import player.phonograph.util.sort
 import android.content.Context
 
 /**

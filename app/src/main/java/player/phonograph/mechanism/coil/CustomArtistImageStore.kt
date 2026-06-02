@@ -9,9 +9,9 @@ import coil.request.ImageRequest
 import coil.target.Target
 import player.phonograph.foundation.compat.MEDIASTORE_VOLUME_EXTERNAL
 import player.phonograph.foundation.error.warning
+import player.phonograph.foundation.file.createOrOverride
+import player.phonograph.foundation.image.restraintBitmapSize
 import player.phonograph.foundation.mediastore.mediastoreUriArtists
-import player.phonograph.util.file.createOrOverrideFileRecursive
-import player.phonograph.util.image.restraintBitmapSize
 import androidx.core.graphics.drawable.toBitmap
 import android.content.Context
 import android.content.SharedPreferences
@@ -108,7 +108,7 @@ class CustomArtistImageStore private constructor(context: Context) {
     fun setCustomArtistImage(context: Context, artistId: Long, artistName: String, bitmap: Bitmap) {
         CoroutineScope(SupervisorJob())
             .launch(Dispatchers.IO) {
-                val file = File(storeDir, getArtistFileName(artistId, artistName)).createOrOverrideFileRecursive()
+                val file = File(storeDir, getArtistFileName(artistId, artistName)).createOrOverride(recursive = true)
                 val success = try {
                     BufferedOutputStream(FileOutputStream(file)).use { outputStream ->
                         bitmap.restraintBitmapSize(2048, true)

@@ -4,7 +4,7 @@
 
 package player.phonograph.ui.compose
 
-import player.phonograph.util.theme.defaultTextColor
+import player.phonograph.ui.theme.defaultTextColor
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import android.content.Context

@@ -9,9 +9,9 @@ import player.phonograph.model.ui.GeneralTheme.Companion.THEME_AUTO_LIGHTBLACK
 import player.phonograph.model.ui.GeneralTheme.Companion.THEME_BLACK
 import player.phonograph.model.ui.GeneralTheme.Companion.THEME_DARK
 import player.phonograph.model.ui.GeneralTheme.Companion.THEME_LIGHT
-import player.phonograph.util.theme.ThemeSettingsDelegate
-import player.phonograph.util.theme.setupSystemBars
-import player.phonograph.util.theme.updateSystemBarsColor
+import player.phonograph.ui.theme.ThemeSettingsDelegate
+import player.phonograph.ui.theme.setupSystemBars
+import player.phonograph.ui.theme.updateSystemBarsColor
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme

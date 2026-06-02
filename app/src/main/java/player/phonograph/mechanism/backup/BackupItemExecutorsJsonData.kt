@@ -9,6 +9,7 @@ import okio.Source
 import okio.buffer
 import org.koin.core.context.GlobalContext
 import player.phonograph.BuildConfig
+import player.phonograph.foundation.content.PackageMetadata
 import player.phonograph.foundation.error.warning
 import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.Song
@@ -34,7 +35,6 @@ import player.phonograph.service.queue.QueueManager
 import player.phonograph.settings.PathFilterSetting
 import player.phonograph.settings.Settings
 import player.phonograph.settings.SettingsDataSerializer
-import player.phonograph.util.gitRevisionHash
 import androidx.datastore.preferences.core.edit
 import android.content.Context
 import kotlinx.coroutines.flow.first
@@ -97,7 +97,7 @@ object SettingsDataBackupItemExecutor : JsonDataBackupItemExecutor() {
             val exported = ExportedSetting(
                 formatVersion = ExportedSetting.VERSION,
                 appVersion = BuildConfig.VERSION_CODE,
-                commitHash = gitRevisionHash(context),
+                commitHash = PackageMetadata.metadata(context, key = PackageMetadata.METADATA_KEY_GIT_COMMIT) ?: "0",
                 content = content
             )
             val serialized = format.encodeToString(exported)

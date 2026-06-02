@@ -7,7 +7,7 @@
 package player.phonograph.ui.adapter
 
 import player.phonograph.R
-import player.phonograph.util.theme.getTintedDrawable
+import player.phonograph.ui.theme.getTintedDrawable
 import androidx.annotation.ColorInt
 import androidx.annotation.IdRes
 import androidx.annotation.IntDef

@@ -4,13 +4,13 @@
 
 package player.phonograph.mechanism.lyrics
 
+import player.phonograph.debug
+import player.phonograph.foundation.file.stripExtension
 import player.phonograph.mechanism.metadata.read.JAudioTaggerExtractor
 import player.phonograph.model.lyrics.AbsLyrics
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.model.lyrics.LyricsInfo
 import player.phonograph.model.lyrics.LyricsSource
-import player.phonograph.util.debug
-import player.phonograph.util.file.stripExtension
 import android.content.ContentResolver
 import android.net.Uri
 import android.util.Log

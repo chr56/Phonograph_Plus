@@ -6,6 +6,7 @@ package player.phonograph.service.notification
 
 import coil.request.Disposable
 import player.phonograph.R
+import player.phonograph.foundation.permission.checkNotificationPermission
 import player.phonograph.model.Song
 import player.phonograph.model.notification.NotificationAction
 import player.phonograph.model.notification.NotificationActionsConfig
@@ -22,10 +23,9 @@ import player.phonograph.settings.SettingsObserver
 import player.phonograph.ui.modules.main.MainActivity
 import player.phonograph.ui.resource.Icons
 import player.phonograph.ui.resource.Texts
-import player.phonograph.util.permissions.checkNotificationPermission
-import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.theme.secondaryTextColorOn
-import player.phonograph.util.theme.textColorOn
+import player.phonograph.ui.theme.getTintedDrawable
+import player.phonograph.ui.theme.secondaryTextColorOn
+import player.phonograph.ui.theme.textColorOn
 import androidx.annotation.LayoutRes
 import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
@@ -45,8 +45,10 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Build.VERSION.SDK_INT
 import android.text.TextUtils
+import android.util.Log
 import android.view.View
 import android.widget.RemoteViews
+import android.widget.Toast
 import kotlinx.coroutines.yield
 
 class PlayingNotificationManager : ServiceComponent {
@@ -159,7 +161,14 @@ class PlayingNotificationManager : ServiceComponent {
 
     @Synchronized
     private fun postNotification(notification: Notification) {
-        checkNotificationPermission(service)
+        if (checkNotificationPermission(service)) {
+            val message = service.getString(R.string.msg_notification_is_disabled)
+            Log.e("Phonograph", message)
+            try {
+                Toast.makeText(service, message, Toast.LENGTH_SHORT).show()
+            } catch (_: Exception) {
+            }
+        }
         when (persistent) {
             true  -> {
                 notificationManager.notify(NOTIFICATION_ID, notification)

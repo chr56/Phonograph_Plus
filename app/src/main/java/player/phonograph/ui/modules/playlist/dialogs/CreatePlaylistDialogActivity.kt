@@ -17,6 +17,10 @@ import lib.storage.textparser.DocumentUriPathParser.documentUriBasePath
 import player.phonograph.R
 import player.phonograph.databinding.DialogCreatePlaylistBinding
 import player.phonograph.foundation.compat.parcelableArrayListExtra
+import player.phonograph.foundation.concurrent.coroutineToast
+import player.phonograph.foundation.currentDate
+import player.phonograph.foundation.dateTimeSuffix
+import player.phonograph.foundation.dateTimeSuffixCompat
 import player.phonograph.foundation.error.warning
 import player.phonograph.mechanism.playlist.PlaylistActions
 import player.phonograph.mechanism.playlist.PlaylistSongsActions.reader
@@ -24,13 +28,8 @@ import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.PlaylistCreator
 import player.phonograph.ui.basis.DialogActivity
-import player.phonograph.util.PLAYLIST_MIME_TYPE
-import player.phonograph.util.concurrent.coroutineToast
-import player.phonograph.util.observe
-import player.phonograph.util.text.currentDate
-import player.phonograph.util.text.dateTimeSuffix
-import player.phonograph.util.text.dateTimeSuffixCompat
-import player.phonograph.util.ui.getScreenSize
+import player.phonograph.ui.util.getScreenSize
+import player.phonograph.ui.util.observe
 import androidx.activity.viewModels
 import androidx.appcompat.widget.AppCompatSpinner
 import androidx.core.widget.addTextChangedListener
@@ -306,7 +305,7 @@ class CreatePlaylistDialogActivity : DialogActivity(),
             for (playlist in playlists) {
                 val childUri: Uri? = try {
                     DocumentsContract.createDocument(
-                        context.contentResolver, parentDocumentUri, PLAYLIST_MIME_TYPE,
+                        context.contentResolver, parentDocumentUri, "audio/x-mpegurl",
                         "${playlist.name}${dateTimeSuffix(currentDate())}"
                     )
                 } catch (e: Exception) {

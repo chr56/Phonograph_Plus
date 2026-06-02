@@ -10,7 +10,7 @@ import player.phonograph.foundation.compat.parcelableExtra
 import player.phonograph.mechanism.playlist.PlaylistSongsActions
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.ui.basis.DialogActivity
-import player.phonograph.util.ui.getScreenSize
+import player.phonograph.ui.util.getScreenSize
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle

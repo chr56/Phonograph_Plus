@@ -9,8 +9,8 @@ import player.phonograph.model.ui.AppShortcutType
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
 import player.phonograph.ui.modules.auxiliary.StarterActivity
-import player.phonograph.util.theme.ThemeSettingsDelegate.primaryColor
-import player.phonograph.util.theme.getTintedDrawable
+import player.phonograph.ui.theme.ThemeSettingsDelegate.primaryColor
+import player.phonograph.ui.theme.getTintedDrawable
 import util.theme.color.isColorLight
 import androidx.annotation.RequiresApi
 import androidx.core.graphics.drawable.IconCompat

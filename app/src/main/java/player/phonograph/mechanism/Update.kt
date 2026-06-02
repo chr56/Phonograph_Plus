@@ -8,14 +8,14 @@ import okhttp3.Request
 import okhttp3.Response
 import player.phonograph.App
 import player.phonograph.BuildConfig
+import player.phonograph.CURRENT_RELEASE_CHANNEL
+import player.phonograph.debug
+import player.phonograph.foundation.dateText
+import player.phonograph.foundation.network.invokeHttpRequest
 import player.phonograph.foundation.notification.Notifications
 import player.phonograph.model.version.VersionCatalog
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
-import player.phonograph.util.NetworkUtil.invokeRequest
-import player.phonograph.util.currentReleaseChannel
-import player.phonograph.util.debug
-import player.phonograph.util.text.dateText
 import android.content.Context
 import android.content.Intent
 import android.util.Log
@@ -54,7 +54,7 @@ object UpdateChecker {
         handlerIntent: Intent,
     ) {
         val version =
-            catalog.versions.filter { it.channel == currentReleaseChannel }.maxByOrNull { it.versionCode } ?: return
+            catalog.versions.filter { it.channel == CURRENT_RELEASE_CHANNEL.lowercase() }.maxByOrNull { it.versionCode } ?: return
 
         val title = version.versionName
         val note = version.releaseNote.parsed(context.resources)
@@ -124,13 +124,11 @@ object UpdateChecker {
         }
     }
 
-    private suspend fun sendRequest(source: Request): Response? {
-        return try {
-            invokeRequest(request = source)
-        } catch (e: IOException) {
-            Log.w(TAG, "Failed to connect ${source.url}!")
-            null
-        }
+    private suspend fun sendRequest(source: Request): Response? = try {
+        invokeHttpRequest(request = source)
+    } catch (e: IOException) {
+        Log.w(TAG, "Failed to connect ${source.url}: ${e.message}")
+        null
     }
 
     /**
@@ -166,7 +164,7 @@ object UpdateChecker {
         }
 
         // filter current channel & latest
-        val latestVersion = versionCatalog.latest(currentReleaseChannel) ?: versionCatalog.latest
+        val latestVersion = versionCatalog.latest(CURRENT_RELEASE_CHANNEL.lowercase()) ?: versionCatalog.latest
         if (latestVersion == null) {
             Log.e(TAG, "Empty VersionCatalog: $versionCatalog")
             return false

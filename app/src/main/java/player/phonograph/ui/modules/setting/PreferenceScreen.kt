@@ -5,10 +5,10 @@
 package player.phonograph.ui.modules.setting
 
 import player.phonograph.R
+import player.phonograph.foundation.concurrent.lifecycleScopeOrNewOne
 import player.phonograph.settings.PreferenceKey
 import player.phonograph.settings.Settings
-import player.phonograph.util.concurrent.lifecycleScopeOrNewOne
-import player.phonograph.util.theme.tintButtons
+import player.phonograph.ui.theme.tintButtons
 import androidx.activity.compose.BackHandler
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes

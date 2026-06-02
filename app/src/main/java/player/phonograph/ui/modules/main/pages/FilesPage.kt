@@ -11,6 +11,7 @@ import com.google.android.material.appbar.AppBarLayout
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.databinding.FragmentFilePageBinding
+import player.phonograph.foundation.concurrent.coroutineToast
 import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.Song
 import player.phonograph.model.file.FileItem
@@ -24,11 +25,9 @@ import player.phonograph.ui.actions.actionPlay
 import player.phonograph.ui.modules.explorer.FileExplorerViewModel
 import player.phonograph.ui.modules.explorer.FilesPageExplorerFragment
 import player.phonograph.ui.modules.popup.ListOptionsPopup
-import player.phonograph.util.asList
-import player.phonograph.util.concurrent.coroutineToast
-import player.phonograph.util.observe
-import player.phonograph.util.theme.getTintedDrawableOnBackground
-import player.phonograph.util.theme.textColorPrimary
+import player.phonograph.ui.theme.getTintedDrawableOnBackground
+import player.phonograph.ui.theme.textColorPrimary
+import player.phonograph.ui.util.observe
 import androidx.fragment.app.commitNow
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -190,7 +189,7 @@ class FilesPage : AbsPage() {
     suspend fun collectSongs(context: Context, files: List<FileItem>): List<Song> =
         files.flatMap { item ->
             if (item.content is FileItem.SongContent) {
-                item.content.song.asList()
+                listOf(item.content.song)
             } else {
                 Songs.searchByPath(context, item.path, false)
             }
