@@ -183,6 +183,8 @@ object Keys {
         get() = PrimitiveKey<Float>(floatPK("seek_jump_interval")) { 5f }
     val enableHistory
         get() = PrimitiveKey<Boolean>(booleanPK("enable_history")) { true }
+    val stopOnTaskRemoved
+        get() = PrimitiveKey<Boolean>(booleanPK("stop_on_task_removed")) { false }
     //</editor-fold>
 
     //</editor-fold>
