@@ -161,7 +161,7 @@ class PlayingNotificationManager : ServiceComponent {
 
     @Synchronized
     private fun postNotification(notification: Notification) {
-        if (checkNotificationPermission(service)) {
+        if (!checkNotificationPermission(service)) {
             val message = service.getString(R.string.msg_notification_is_disabled)
             Log.e("Phonograph", message)
             try {
