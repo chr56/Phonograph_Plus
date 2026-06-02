@@ -7,6 +7,7 @@ package player.phonograph.ui.modules.album
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import player.phonograph.R
+import player.phonograph.foundation.fragmentActivity
 import player.phonograph.model.Album
 import player.phonograph.model.service.ShuffleMode
 import player.phonograph.repo.loader.Songs
@@ -19,7 +20,6 @@ import player.phonograph.ui.actions.actionPlayNext
 import player.phonograph.ui.modules.tag.MultiTagBrowserActivity
 import player.phonograph.ui.modules.web.LastFmDialog
 import player.phonograph.ui.theme.getTintedDrawable
-import player.phonograph.util.fragmentActivity
 import androidx.activity.ComponentActivity
 import androidx.annotation.ColorInt
 import androidx.fragment.app.FragmentActivity

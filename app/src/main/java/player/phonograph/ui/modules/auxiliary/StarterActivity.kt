@@ -6,6 +6,7 @@ package player.phonograph.ui.modules.auxiliary
 
 import org.koin.android.ext.android.get
 import player.phonograph.R
+import player.phonograph.debug
 import player.phonograph.foundation.compat.MediaStoreCompat
 import player.phonograph.mechanism.PhonographShortcutManager
 import player.phonograph.mechanism.SongUriParsers
@@ -28,7 +29,6 @@ import player.phonograph.service.queue.executePlayRequest
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
 import player.phonograph.ui.modules.main.MainActivity
-import player.phonograph.util.debug
 import androidx.appcompat.app.AppCompatActivity
 import android.app.SearchManager
 import android.content.Intent

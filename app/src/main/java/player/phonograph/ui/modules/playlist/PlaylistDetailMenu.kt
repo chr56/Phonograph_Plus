@@ -8,6 +8,7 @@ import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import player.phonograph.R
+import player.phonograph.foundation.fragmentActivity
 import player.phonograph.mechanism.playlist.PlaylistSongsActions
 import player.phonograph.model.playlist.PLAYLIST_TYPE_FAVORITE
 import player.phonograph.model.playlist.PLAYLIST_TYPE_LAST_ADDED
@@ -27,7 +28,6 @@ import player.phonograph.ui.modules.setting.dialog.LastAddedPlaylistIntervalDial
 import player.phonograph.ui.modules.tag.MultiTagBrowserActivity
 import player.phonograph.ui.theme.getTintedDrawable
 import player.phonograph.ui.theme.tintButtons
-import player.phonograph.util.fragmentActivity
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner

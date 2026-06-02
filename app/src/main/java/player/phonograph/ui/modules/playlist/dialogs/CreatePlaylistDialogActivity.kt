@@ -30,7 +30,6 @@ import player.phonograph.model.playlist.PlaylistCreator
 import player.phonograph.ui.basis.DialogActivity
 import player.phonograph.ui.util.getScreenSize
 import player.phonograph.ui.util.observe
-import player.phonograph.util.PLAYLIST_MIME_TYPE
 import androidx.activity.viewModels
 import androidx.appcompat.widget.AppCompatSpinner
 import androidx.core.widget.addTextChangedListener
@@ -306,7 +305,7 @@ class CreatePlaylistDialogActivity : DialogActivity(),
             for (playlist in playlists) {
                 val childUri: Uri? = try {
                     DocumentsContract.createDocument(
-                        context.contentResolver, parentDocumentUri, PLAYLIST_MIME_TYPE,
+                        context.contentResolver, parentDocumentUri, "audio/x-mpegurl",
                         "${playlist.name}${dateTimeSuffix(currentDate())}"
                     )
                 } catch (e: Exception) {

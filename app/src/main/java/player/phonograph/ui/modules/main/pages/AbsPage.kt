@@ -4,9 +4,9 @@
 
 package player.phonograph.ui.modules.main.pages
 
+import player.phonograph.debug
+import player.phonograph.logMetrics
 import player.phonograph.ui.modules.main.MainFragment
-import player.phonograph.util.debug
-import player.phonograph.util.logMetrics
 import androidx.fragment.app.Fragment
 
 abstract class AbsPage : Fragment() {

@@ -46,7 +46,6 @@ import player.phonograph.ui.util.BottomViewWindowInsetsController
 import player.phonograph.ui.util.applyControllableWindowInsetsAsBottomView
 import player.phonograph.ui.util.menuProvider
 import player.phonograph.ui.util.observe
-import player.phonograph.util.totalDuration
 import util.theme.view.menu.tintOverflowButtonColor
 import util.theme.view.menu.tintToolbarMenuActionIcons
 import util.theme.view.toolbar.setToolbarColor
@@ -224,7 +223,9 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvide
         val songs = withContext(Dispatchers.IO) {
             Songs.artist(this@ArtistDetailActivity, artist.id)
         }
-        viewBinding.durationText.text = Durations.short(totalDuration(songs))
+        viewBinding.durationText.text = Durations.short(
+            songs.fold(0L) { acc: Long, song: Song -> acc + song.duration }
+        )
     }
 
 

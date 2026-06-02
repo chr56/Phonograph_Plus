@@ -12,13 +12,13 @@ import player.phonograph.foundation.mediastore.queryGenre
 import player.phonograph.foundation.mediastore.queryGenreSongIds
 import player.phonograph.foundation.mediastore.queryGenreSongs
 import player.phonograph.foundation.mediastore.querySongGenre
+import player.phonograph.foundation.sort
 import player.phonograph.model.Genre
 import player.phonograph.model.Song
 import player.phonograph.model.repo.loader.IGenres
 import player.phonograph.model.sort.SortMode
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
-import player.phonograph.util.sort
 import android.content.Context
 import android.provider.MediaStore.Audio.Genres
 

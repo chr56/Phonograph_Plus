@@ -10,9 +10,11 @@ import lib.storage.launcher.OpenFileStorageAccessDelegate
 import player.phonograph.R
 import player.phonograph.databinding.ActivityMainContentBinding
 import player.phonograph.databinding.ActivityMainDrawerBinding
+import player.phonograph.debug
 import player.phonograph.foundation.compat.parcelableExtra
 import player.phonograph.foundation.content.PackageMetadata
 import player.phonograph.foundation.error.warning
+import player.phonograph.logMetrics
 import player.phonograph.mechanism.PhonographShortcutManager
 import player.phonograph.mechanism.UpdateChecker
 import player.phonograph.mechanism.coil.loadImage
@@ -32,8 +34,6 @@ import player.phonograph.ui.theme.ThemeSettingsDelegate.accentColor
 import player.phonograph.ui.theme.textColorPrimary
 import player.phonograph.ui.theme.themeIconColor
 import player.phonograph.ui.util.observe
-import player.phonograph.util.debug
-import player.phonograph.util.logMetrics
 import util.theme.view.navigationview.setItemIconColors
 import util.theme.view.navigationview.setItemTextColors
 import androidx.activity.OnBackPressedCallback

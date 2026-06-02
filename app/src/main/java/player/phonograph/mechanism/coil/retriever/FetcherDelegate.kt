@@ -6,9 +6,9 @@ package player.phonograph.mechanism.coil.retriever
 
 import coil.fetch.FetchResult
 import coil.size.Size
+import player.phonograph.debug
 import player.phonograph.mechanism.coil.cache.CacheStore
 import player.phonograph.mechanism.coil.model.LoaderTarget
-import player.phonograph.util.debug
 import android.content.Context
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope

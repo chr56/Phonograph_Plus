@@ -4,11 +4,11 @@
 
 package player.phonograph.mechanism.migrate
 
+import player.phonograph.debug
 import player.phonograph.foundation.content.PackageMetadata
 import player.phonograph.foundation.error.warning
 import player.phonograph.model.migration.VersionMigrationRule
 import player.phonograph.settings.PrerequisiteSettings
-import player.phonograph.util.debug
 import android.content.Context
 import android.util.Log
 

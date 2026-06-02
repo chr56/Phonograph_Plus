@@ -13,6 +13,7 @@ import coil.fetch.SourceResult
 import coil.request.Options
 import coil.size.Size
 import okio.Path.Companion.toOkioPath
+import player.phonograph.debug
 import player.phonograph.mechanism.coil.CustomArtistImageStore
 import player.phonograph.mechanism.coil.cache
 import player.phonograph.mechanism.coil.model.ArtistImage
@@ -21,7 +22,6 @@ import player.phonograph.mechanism.coil.retriever.ArtistImageFetcherDelegate
 import player.phonograph.mechanism.coil.retriever.ImageRetriever
 import player.phonograph.mechanism.coil.retriever.ImageRetrievers
 import player.phonograph.mechanism.coil.retriever.retrievers
-import player.phonograph.util.debug
 import android.content.Context
 import android.util.Log
 

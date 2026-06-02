@@ -5,8 +5,34 @@
 package player.phonograph.foundation.concurrent
 
 import android.os.Handler
+import android.os.HandlerThread
 import android.os.Looper
 import android.os.Message
+
+/**
+ * Hold a Handler and a HandlerThread
+ */
+class HandlerContainer(val name: String) {
+    private var _handler: Handler? = null
+    val handler: Handler get() = _handler!!
+
+    private var _thread: HandlerThread? = null
+    val thread: HandlerThread get() = _thread!!
+
+    fun onCreate() {
+        _thread = HandlerThread(name)
+        thread.start()
+        _handler = Handler(thread.looper)
+    }
+
+    fun onDestroy() {
+        thread.quitSafely()
+        handler.looper.quitSafely()
+        _thread = null
+        _handler = null
+    }
+}
+
 
 /**
  * wrap with looper check

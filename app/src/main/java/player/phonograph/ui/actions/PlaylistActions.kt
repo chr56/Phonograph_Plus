@@ -4,6 +4,7 @@
 
 package player.phonograph.ui.actions
 
+import player.phonograph.foundation.fragmentActivity
 import player.phonograph.mechanism.playlist.PlaylistSongsActions
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist
@@ -14,7 +15,6 @@ import player.phonograph.ui.modules.playlist.dialogs.AddToPlaylistDialogActivity
 import player.phonograph.ui.modules.playlist.dialogs.ClearPlaylistDialogActivity
 import player.phonograph.ui.modules.playlist.dialogs.CreatePlaylistDialogActivity
 import player.phonograph.ui.modules.playlist.dialogs.RenamePlaylistDialogActivity
-import player.phonograph.util.fragmentActivity
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import android.content.Context

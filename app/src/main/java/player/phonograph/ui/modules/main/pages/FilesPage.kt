@@ -28,7 +28,6 @@ import player.phonograph.ui.modules.popup.ListOptionsPopup
 import player.phonograph.ui.theme.getTintedDrawableOnBackground
 import player.phonograph.ui.theme.textColorPrimary
 import player.phonograph.ui.util.observe
-import player.phonograph.util.asList
 import androidx.fragment.app.commitNow
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -190,7 +189,7 @@ class FilesPage : AbsPage() {
     suspend fun collectSongs(context: Context, files: List<FileItem>): List<Song> =
         files.flatMap { item ->
             if (item.content is FileItem.SongContent) {
-                item.content.song.asList()
+                listOf(item.content.song)
             } else {
                 Songs.searchByPath(context, item.path, false)
             }

@@ -11,7 +11,9 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import player.phonograph.R
 import player.phonograph.databinding.FragmentHomeBinding
+import player.phonograph.debug
 import player.phonograph.foundation.error.warning
+import player.phonograph.logMetrics
 import player.phonograph.model.pages.HomePage
 import player.phonograph.model.pages.PAGE_ALBUM
 import player.phonograph.model.pages.PAGE_ARTIST
@@ -39,8 +41,6 @@ import player.phonograph.ui.theme.getTintedDrawable
 import player.phonograph.ui.theme.textColorOn
 import player.phonograph.ui.util.menuProvider
 import player.phonograph.ui.util.observe
-import player.phonograph.util.debug
-import player.phonograph.util.logMetrics
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources

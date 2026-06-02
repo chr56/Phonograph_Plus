@@ -4,7 +4,6 @@
 
 package player.phonograph.ui.theme
 
-import player.phonograph.util.debug
 import androidx.appcompat.app.AppCompatDelegate
 import android.content.res.Configuration
 import android.util.Log

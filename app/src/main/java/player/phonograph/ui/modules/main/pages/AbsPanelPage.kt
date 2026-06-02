@@ -10,6 +10,8 @@ import com.github.chr56.android.menu_model.MenuContext
 import com.google.android.material.appbar.AppBarLayout
 import player.phonograph.R
 import player.phonograph.databinding.FragmentDisplayPageBinding
+import player.phonograph.debug
+import player.phonograph.logMetrics
 import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.ui.ItemLayoutStyle
@@ -19,8 +21,6 @@ import player.phonograph.ui.theme.textColorPrimary
 import player.phonograph.ui.util.isLandscape
 import player.phonograph.ui.util.isTablet
 import player.phonograph.ui.util.isWideScreen
-import player.phonograph.util.debug
-import player.phonograph.util.logMetrics
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.withResumed

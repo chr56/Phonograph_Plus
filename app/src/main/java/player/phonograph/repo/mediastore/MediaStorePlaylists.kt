@@ -18,6 +18,7 @@ import player.phonograph.foundation.mediastore.mediastoreUriPlaylistsExternal
 import player.phonograph.foundation.mediastore.queryMediastorePlaylistSongs
 import player.phonograph.foundation.mediastore.queryMediastorePlaylists
 import player.phonograph.foundation.mediastore.withBasePlaylistFilter
+import player.phonograph.foundation.sort
 import player.phonograph.model.PlaylistSong
 import player.phonograph.model.playlist.FilePlaylistLocation
 import player.phonograph.model.playlist.Playlist
@@ -28,7 +29,6 @@ import player.phonograph.repo.loader.PinedPlaylists
 import player.phonograph.repo.mediastore.internal.withPathFilter
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
-import player.phonograph.util.sort
 import android.content.Context
 import android.database.Cursor
 import android.provider.BaseColumns

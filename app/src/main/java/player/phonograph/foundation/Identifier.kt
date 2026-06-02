@@ -2,7 +2,7 @@
  *  Copyright (c) 2022~2024 chr_56
  */
 
-package player.phonograph.util
+package player.phonograph.foundation
 
 private const val ID_SHIFT: Int = 36 // 4 * 9
 private const val ID_EMBED_SIZE: Int = 20 // 4 * 5

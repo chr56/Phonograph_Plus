@@ -6,7 +6,11 @@
 
 package player.phonograph.foundation.compat
 
+import player.phonograph.foundation.error.warning
+import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.TIRAMISU
 import android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE
@@ -14,6 +18,7 @@ import android.os.Bundle
 import android.os.Parcel
 import android.os.Parcelable
 import android.util.SparseArray
+import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
@@ -77,3 +82,15 @@ fun InputStream.transferToOutputStream(outputStream: OutputStream): Long {
         transferred
     }
 }
+
+
+fun openOutputStreamSafe(context: Context, uri: Uri, mode: String): OutputStream? =
+    try {
+        @SuppressLint("Recycle")
+        val outputStream = context.contentResolver.openOutputStream(uri, mode)
+        if (outputStream == null) warning(context, "UriUtil", "Failed to open ${uri.path}")
+        outputStream
+    } catch (e: FileNotFoundException) {
+        warning(context, "UriUtil", "File Not found (${uri.path})", e)
+        null
+    }

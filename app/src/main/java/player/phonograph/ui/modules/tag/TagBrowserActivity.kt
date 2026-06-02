@@ -11,6 +11,7 @@ import lib.storage.launcher.IOpenFileStorageAccessible
 import lib.storage.launcher.OpenFileStorageAccessDelegate
 import mms.Source
 import player.phonograph.R
+import player.phonograph.debug
 import player.phonograph.model.Song
 import player.phonograph.repo.loader.Songs
 import player.phonograph.ui.basis.ComposeActivity
@@ -22,7 +23,6 @@ import player.phonograph.ui.modules.web.IWebSearchRequester
 import player.phonograph.ui.modules.web.LastFmDialog
 import player.phonograph.ui.modules.web.WebSearchLauncher
 import player.phonograph.ui.modules.web.WebSearchTool
-import player.phonograph.util.debug
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.addCallback
 import androidx.activity.compose.setContent
