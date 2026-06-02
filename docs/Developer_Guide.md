@@ -99,14 +99,13 @@ main/
 ├── assets
 ├── java/
 │   └── player.phonograph
-│       ├── foundation (foundamental infrastructures)
-│       ├── mechanism (core logics)
+│       ├── foundation (foundamental infrastructures, low-level utilities, compatibility)
+│       ├── mechanism (core or business logics that contribute the main features)
 │       ├── model (model and interface definations)
-│       ├── repo (library data source)
+│       ├── repo (music library data source, internal databases)
 │       ├── service (background music playback service)
 │       ├── settings (preference storages)
 │       ├── ui (user interface)
-│       ├── util (common utilities)
 │       ├── App.kt
 │       └── Constants.kt
 ├── res
