@@ -108,6 +108,9 @@ class MusicService : MediaBrowserServiceCompat(),
         settingsObserver.collect(Keys.enableHistory) { state ->
             enableHistory = state
         }
+        settingsObserver.collect(Keys.stopOnTaskRemoved) { state ->
+            stopOnTaskRemoved = state
+        }
         // misc
         AppWidgetUpdateReceiver.register(this)
         sendBroadcast(Intent("player.phonograph.PHONOGRAPH_MUSIC_SERVICE_CREATED"))
@@ -174,6 +177,15 @@ class MusicService : MediaBrowserServiceCompat(),
 
     var isDestroyed = false
         private set
+
+    private var stopOnTaskRemoved: Boolean = false
+
+    override fun onTaskRemoved(rootIntent: Intent?) {
+        if (stopOnTaskRemoved) {
+            exitOrStop()
+        }
+        super.onTaskRemoved(rootIntent)
+    }
 
     override fun onDestroy() {
         isDestroyed = true
