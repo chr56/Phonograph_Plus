@@ -24,7 +24,7 @@ fun startCrashActivity(context: Context, throwable: Throwable, crashActivity: Cl
         } else
             CrashReport(
                 type = CrashReport.CRASH_TYPE_CRASH,
-                note = "Application crashed and exited unexpectedly!",
+                note = "Application crashed and exited by ${throwable.toString()}",
                 stackTrace = Log.getStackTraceString(throwable),
             )
     context.startActivity(
