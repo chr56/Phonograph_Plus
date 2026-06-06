@@ -104,14 +104,14 @@ abstract class QueryDao {
     // Relationship
 
 
-    fun artistSongs(artistId: Long, sortMode: SortMode): ArtistWithSongs = rawArtistWithSongs(
+    fun artistSongs(artistId: Long, sortMode: SortMode): ArtistWithSongs? = rawArtistWithSongs(
         SimpleSQLiteQuery(
             "SELECT * from $ARTISTS where $ARTIST_ID = ? order by ${roomArtistQuerySortOrder(sortMode)}",
             arrayOf<Any>(artistId)
         )
     )
 
-    fun artistAlbums(artistId: Long, sortMode: SortMode): ArtistWithAlbums = rawArtistWithAlbums(
+    fun artistAlbums(artistId: Long, sortMode: SortMode): ArtistWithAlbums? = rawArtistWithAlbums(
         SimpleSQLiteQuery(
             "SELECT * from $ARTISTS where $ARTIST_ID = ? order by ${roomArtistQuerySortOrder(sortMode)}",
             arrayOf<Any>(artistId)
@@ -119,14 +119,14 @@ abstract class QueryDao {
     )
 
 
-    fun artistDetails(artistId: Long, sortMode: SortMode): ArtistWithAll = rawArtistWithAll(
+    fun artistDetails(artistId: Long, sortMode: SortMode): ArtistWithAll? = rawArtistWithAll(
         SimpleSQLiteQuery(
             "SELECT * from $ARTISTS where $ARTIST_ID = :? order by ${roomArtistQuerySortOrder(sortMode)}",
             arrayOf<Any>(artistId)
         )
     )
 
-    fun albumSongs(albumId: Long, sortMode: SortMode): AlbumWithSongs = rawAlbumWithSongs(
+    fun albumSongs(albumId: Long, sortMode: SortMode): AlbumWithSongs? = rawAlbumWithSongs(
         SimpleSQLiteQuery(
             "SELECT * from $ALBUMS where $ALBUM_ID = ? order by ${roomAlbumQuerySortOrder(sortMode)}",
             arrayOf<Any>(albumId)
@@ -134,7 +134,7 @@ abstract class QueryDao {
     )
 
 
-    fun artistsOfSong(songId: Long, sortMode: SortMode): SongWithArtists = rawSongWithArtists(
+    fun artistsOfSong(songId: Long, sortMode: SortMode): SongWithArtists? = rawSongWithArtists(
         SimpleSQLiteQuery(
             "SELECT * from $MEDIASTORE_SONGS where $MEDIASTORE_ID = ? order by ${roomSongQuerySortOrder(sortMode)}",
             arrayOf<Any>(songId)
@@ -189,19 +189,19 @@ abstract class QueryDao {
     // RawRelationship
     @Transaction
     @RawQuery
-    protected abstract fun rawAlbumWithSongs(query: SupportSQLiteQuery): AlbumWithSongs
+    protected abstract fun rawAlbumWithSongs(query: SupportSQLiteQuery): AlbumWithSongs?
     @Transaction
     @RawQuery
-    protected abstract fun rawArtistWithSongs(query: SupportSQLiteQuery): ArtistWithSongs
+    protected abstract fun rawArtistWithSongs(query: SupportSQLiteQuery): ArtistWithSongs?
     @Transaction
     @RawQuery
-    protected abstract fun rawArtistWithAlbums(query: SupportSQLiteQuery): ArtistWithAlbums
+    protected abstract fun rawArtistWithAlbums(query: SupportSQLiteQuery): ArtistWithAlbums?
     @Transaction
     @RawQuery
-    protected abstract fun rawArtistWithAll(query: SupportSQLiteQuery): ArtistWithAll
+    protected abstract fun rawArtistWithAll(query: SupportSQLiteQuery): ArtistWithAll?
     @Transaction
     @RawQuery
-    protected abstract fun rawSongWithArtists(query: SupportSQLiteQuery): SongWithArtists
+    protected abstract fun rawSongWithArtists(query: SupportSQLiteQuery): SongWithArtists?
     @Transaction
     @RawQuery
     protected abstract fun rawSongWithArtistsList(query: SupportSQLiteQuery): List<SongWithArtists>
