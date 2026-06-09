@@ -5,11 +5,13 @@ timestamp: 1781000000
 notes:
   en:
     items:
+      - "THIS IS A TECHNICAL RELEASE; PLEASE IGNORE"
       - "Fix: crash on entering some Artist or Album details (since v2.0.0-rc1)"
       - "New: support quiting on task removed from Recent Screen (thanks to @jpgjm)"
       - "Improve: optimize performance of database synchronization"
   zh:
     items:
+      - "技术性版本请忽略！"
       - "修复 进入某些艺术家或专辑详情时崩溃（自 v2.0.0-rc1）"
       - "新增 支持任务卡片被移除时停止服务（感谢 @jpgjm）"
       - "改进 优化数据库同步性能"
