@@ -18,6 +18,7 @@ jobs:
           ModernPreviewIntermediateRelease # variant with the rotated key
         ]
     env:
+      LEGACY_KEYSTORE_FILE: ${{ github.workspace }}/signing-key-legacy.jdk
       RELEASE_KEYSTORE_FILE: ${{ github.workspace }}/signing-key.jdk
       RELEASE_KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
       RELEASE_KEY_ALIAS: ${{ secrets.KEYSTORE_ALIAS }}
@@ -43,6 +44,9 @@ jobs:
           bash ${{ github.workspace }}/scripts/recover_signing_key.sh \
             --secrets-key "${{ secrets.KEYSTORE_FILE_BASE64 }}" \
             --keystore-file "${RELEASE_KEYSTORE_FILE}"
+          bash ${{ github.workspace }}/scripts/recover_signing_key.sh \
+            --secrets-key "${{ secrets.KEYSTORE_FILE_BASE64_LEGACY }}" \
+            --keystore-file "${LEGACY_KEYSTORE_FILE}"
 
       - name: Prepare Gradlew
         # just download gradle wrapper, start gradle daemon, make actual build logs clean
@@ -55,17 +59,8 @@ jobs:
           ./gradlew assemble${{ matrix.PRODUCT_VARIANT }} Publish${{ matrix.PRODUCT_VARIANT }} --stacktrace
           echo "Artifacts: $(tree -aF ./products)"
 
-      - name: Recover Legacy Signing Keystore
-        if: matrix.PRODUCT_VARIANT == 'ModernPreviewIntermediateRelease'
-        env:
-          LEGACY_KEYSTORE_FILE: ${{ github.workspace }}/signing-key-legacy.jdk
-        run: |
-          bash ${{ github.workspace }}/scripts/recover_signing_key.sh \
-            --secrets-key "${{ secrets.KEYSTORE_FILE_BASE64_LEGACY }}" \
-            --keystore-file "${LEGACY_KEYSTORE_FILE}"
-
       - name: Sign with Rotated Key for IntermediateRelease
-        if: matrix.PRODUCT_VARIANT == 'ModernPreviewIntermediateRelease'
+        if: matrix.PRODUCT_VARIANT == 'ModernPreviewIntermediateRelease' || matrix.PRODUCT_VARIANT == 'ModernPreviewRelease'
         env:
           KEYSTORE_FILE: ${{ github.workspace }}/signing-key.jdk
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
