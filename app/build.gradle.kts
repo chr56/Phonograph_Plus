@@ -209,7 +209,7 @@ androidPublish {
 
 tasks.whenTaskAdded {
     // disable due to reproducible build issues
-    if (name.contains("Fdroid") && name.contains("ArtProfile")) {
+    if (name.contains("ArtProfile")) {
         enabled = false
     }
 }
