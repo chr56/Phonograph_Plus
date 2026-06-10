@@ -151,6 +151,7 @@ if $ROTATE; then
         --v1-signing-enabled false \
         --v2-signing-enabled true \
         --v3-signing-enabled true \
+        --alignment-preserved \
         --min-sdk-version 28 \
         --ks "$OLD_KEYSTORE" \
         --ks-pass "env:OLD_KEYSTORE_PASSWORD" \
@@ -168,6 +169,7 @@ else
         --v1-signing-enabled false \
         --v2-signing-enabled true \
         --v3-signing-enabled false \
+        --alignment-preserved \
         --min-sdk-version 24 \
         --ks "$KEYSTORE" \
         --ks-pass "env:KEYSTORE_PASSWORD" \
