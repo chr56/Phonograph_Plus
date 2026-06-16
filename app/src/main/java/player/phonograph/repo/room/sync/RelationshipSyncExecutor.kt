@@ -37,6 +37,7 @@ import android.content.Context
 class RelationshipSyncExecutor(
     private val musicDatabase: MusicDatabase,
     private val withGenres: Boolean = true,
+    private val countComposerAsArtist: Boolean = true,
 ) : SyncExecutor {
 
     override suspend fun check(context: Context): Boolean = SyncExecutors.defaultCheck(context, musicDatabase) ||
@@ -46,7 +47,7 @@ class RelationshipSyncExecutor(
         context: Context,
         channel: ProgressConnection?,
     ): SyncReport {
-        val session = RelationshipSyncExecutorSession(context, musicDatabase, channel, withGenres)
+        val session = RelationshipSyncExecutorSession(context, musicDatabase, channel, withGenres, countComposerAsArtist)
         return session.execute()
     }
 
@@ -57,6 +58,7 @@ private class RelationshipSyncExecutorSession(
     private val musicDatabase: MusicDatabase,
     private val channel: ProgressConnection?,
     private val withGenres: Boolean,
+    private val countComposerAsArtist: Boolean,
 ) {
 
     private val songDao = musicDatabase.MediaStoreSongDao()
@@ -502,15 +504,17 @@ private class RelationshipSyncExecutorSession(
                     )
                 }
             )
-            linkageSongAndArtists.addAll(
-                relationship.composerArtists.map { name ->
-                    LinkageSongAndArtist(
-                        songId = relationship.song.id,
-                        artistId = artistNameToId[name] ?: 0,
-                        role = ROLE_COMPOSER,
-                    )
-                }
-            )
+            if (countComposerAsArtist) {
+                linkageSongAndArtists.addAll(
+                    relationship.composerArtists.map { name ->
+                        LinkageSongAndArtist(
+                            songId = relationship.song.id,
+                            artistId = artistNameToId[name] ?: 0,
+                            role = ROLE_COMPOSER,
+                        )
+                    }
+                )
+            }
             linkageSongAndArtists.addAll(
                 relationship.featureArtists.map { name ->
                     LinkageSongAndArtist(
