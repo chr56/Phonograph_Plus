@@ -20,7 +20,9 @@ object SyncExecutors {
         val backend = Settings(context)[Keys.musicLibraryBackend].read()
         val syncExecutor = when {
             backend.syncBasicDatabase -> BasicSyncExecutor(musicDatabase)
-            else                      -> RelationshipSyncExecutor(musicDatabase, backend.syncWithGenres)
+            else                      -> RelationshipSyncExecutor(
+                musicDatabase, withGenres = backend.syncWithGenres, countComposerAsArtist = backend.countComposerAsArtist
+            )
         }
         return syncExecutor
     }
