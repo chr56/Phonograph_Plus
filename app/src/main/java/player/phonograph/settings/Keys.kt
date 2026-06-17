@@ -111,6 +111,8 @@ object Keys {
         get() = PrimitiveKey<String>(stringPK("music_library_source")) { PROVIDER_INTERNAL_DATABASE }
     val musicLibrarySyncMode
         get() = PrimitiveKey<String>(stringPK("music_library_sync_mode")) { SYNC_MODE_STANDARD }
+    val musicLibrarySyncFlagCountComposerAsArtist
+        get() = PrimitiveKey<Boolean>(booleanPK("count_composer_as_artist")) { true }
     val tagSeparatorsGenres
         get() = PrimitiveKey<Set<String>>(stringSetPK("tag_separators_genres")) { DEFAULT_TAG_SEPARATORS_GENRES }
     val tagSeparatorsArtists

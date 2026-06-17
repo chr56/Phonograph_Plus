@@ -13,6 +13,8 @@ interface MusicLibraryBackendOptions {
 
     val syncBasicDatabase: Boolean
     val syncWithGenres: Boolean
+
+    val countComposerAsArtist: Boolean
 }
 
 const val PROVIDER_MEDIASTORE_DIRECT = "mediastore"

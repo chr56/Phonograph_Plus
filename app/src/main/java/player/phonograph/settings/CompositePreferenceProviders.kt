@@ -250,20 +250,23 @@ object MusicLibraryBackendPreferenceProvider : ReadOnlyPreferenceProvider<MusicL
             MusicLibraryBackendOptionsParser(
                 Keys.musicLibrarySource.defaultValue(),
                 Keys.musicLibrarySyncMode.defaultValue(),
+                Keys.musicLibrarySyncFlagCountComposerAsArtist.defaultValue(),
             )
         }
 
     override fun flow(dataStore: DataStore<Preferences>): Flow<MusicLibraryBackendOptions> {
         val musicLibrarySource = readPrimitiveKey(dataStore.data, Keys.musicLibrarySource)
         val musicLibrarySyncMode = readPrimitiveKey(dataStore.data, Keys.musicLibrarySyncMode)
-        return combine(musicLibrarySource, musicLibrarySyncMode) { source: String, syncMode: String ->
-            MusicLibraryBackendOptionsParser(source, syncMode)
+        val countComposerAsArtist = readPrimitiveKey(dataStore.data, Keys.musicLibrarySyncFlagCountComposerAsArtist)
+        return combine(musicLibrarySource, musicLibrarySyncMode, countComposerAsArtist) { source, syncMode, count ->
+            MusicLibraryBackendOptionsParser(source, syncMode, count)
         }
     }
 
     class MusicLibraryBackendOptionsParser(
         dataSource: String,
         syncMode: String,
+        override val countComposerAsArtist: Boolean,
     ) : MusicLibraryBackendOptions {
         override val useMediaStoreSongs: Boolean = dataSource == PROVIDER_MEDIASTORE_DIRECT
         override val useMediaStoreArtists: Boolean = dataSource == PROVIDER_MEDIASTORE_DIRECT
