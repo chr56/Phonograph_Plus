@@ -199,6 +199,7 @@ private open class SystemUIModifierApi35 : SystemUIModifierApi30() {
         nightMode: Boolean,
     ) {
         statusbar(view)?.setBackgroundColor(statusBarColor)
+        statusbarOverlay(view)?.setBackgroundColor(statusBarColor)
         navigationbar(view)?.setBackgroundColor(navigationBarColor)
 
         WindowInsetsControllerCompat(window, view).run {
@@ -208,5 +209,6 @@ private open class SystemUIModifierApi35 : SystemUIModifierApi30() {
     }
 
     private fun statusbar(view: View): View? = view.findViewById<View>(R.id.status_bar)
+    private fun statusbarOverlay(view: View): View? = view.findViewById<View>(R.id.status_bar_overlay)
     private fun navigationbar(view: View): View? = view.findViewById<View>(R.id.navigation_bar)
 }

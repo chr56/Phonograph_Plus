@@ -8,8 +8,8 @@
     android:orientation="vertical">
 
     <FrameLayout
-        android:id="@+id/status_bar"
-        android:layout_width="wrap_content"
+        android:id="@+id/status_bar_overlay"
+        android:layout_width="match_parent"
         android:layout_height="@dimen/status_bar_padding"
         android:background="@color/twenty_percent_black_overlay" />
 

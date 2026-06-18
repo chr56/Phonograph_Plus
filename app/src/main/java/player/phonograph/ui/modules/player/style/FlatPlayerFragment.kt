@@ -152,9 +152,9 @@ class FlatPlayerFragment : AbsPlayerFragment() {
 
         override fun applyWindowInsect() {
             with(fragment) {
-                val statusBar = viewBinding.statusBar
-                if (statusBar != null) {
-                    ViewCompat.setOnApplyWindowInsetsListener(statusBar) { view, windowInsets ->
+                val statusBarOverlay = viewBinding.statusBarOverlay
+                if (statusBarOverlay != null) {
+                    ViewCompat.setOnApplyWindowInsetsListener(statusBarOverlay) { view, windowInsets ->
                         val insets = windowInsets.getInsets(WindowInsetsCompat.Type.statusBars())
                         view.updateLayoutParams<MarginLayoutParams> {
                             height = insets.top
