@@ -1,24 +1,10 @@
 ## Gallery
 
-For reference only, actual app might be different
-
-### Players
+_Last updated: 2026.06.19_
 
 |                                            Card Player                                             |                                            Flat Player                                             |
 |:--------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------:|
 | ![Screenshots](../fastlane/metadata/android/en-US/images/phoneScreenshots/CardPlayer.jpg?raw=true) | ![Screenshots](../fastlane/metadata/android/en-US/images/phoneScreenshots/FlatPlayer.jpg?raw=true) |
-
-### Other
-
-|                                             Setting                                              |                                             About                                             |
-|:------------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------------:|
-| ![Screenshots](../fastlane/metadata/android/en-US/images/phoneScreenshots/Settings.jpg?raw=true) | ![Screenshots](../fastlane/metadata/android/en-US/images/phoneScreenshots/About.jpg?raw=true) |
-
-|                                             Drawer                                             |                                               Sort                                                |
-|:----------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------------:|
-| ![Screenshots](../fastlane/metadata/android/en-US/images/phoneScreenshots/Drawer.jpg?raw=true) | ![Screenshots](../fastlane/metadata/android/en-US/images/phoneScreenshots/SortOrder.jpg?raw=true) |
-
-### Pages
 
 |                                               Songs                                               |                                               Playlists                                               |
 |:-------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------:|
@@ -36,7 +22,13 @@ For reference only, actual app might be different
 |:--------------------------------------------------------------------------------------------------:|
 | ![Screenshots](../fastlane/metadata/android/en-US/images/phoneScreenshots/GenresPage.jpg?raw=true) |
 
-### Details
+|                                             Drawer                                             |                                               Sort                                                |
+|:----------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------------:|
+| ![Screenshots](../fastlane/metadata/android/en-US/images/phoneScreenshots/Drawer.jpg?raw=true) | ![Screenshots](../fastlane/metadata/android/en-US/images/phoneScreenshots/SortOrder.jpg?raw=true) |
+
+|                                             Setting                                              |                                             About                                             |
+|:------------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------------:|
+| ![Screenshots](../fastlane/metadata/android/en-US/images/phoneScreenshots/Settings.jpg?raw=true) | ![Screenshots](../fastlane/metadata/android/en-US/images/phoneScreenshots/About.jpg?raw=true) |
 
 |                                            Song Detail                                             |                                            Tag Editor                                             |
 |:--------------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------------:|
