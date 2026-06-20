@@ -1,18 +1,22 @@
 version: "2.0.0-rc2"
 channel: "STABLE"
 versionCode: 2000
-timestamp: 1781000000
+timestamp: 1782000000
 notes:
   en:
     items:
       - "Fix: crash on entering some Artist or Album details (since v2.0.0-rc1)"
+      - "Fix: statusbar color in Flat Player on Android 15 and higher"
       - "New: support quiting on task removed from Recent Screen (thanks to @jpgjm)"
       - "Improve: optimize performance of database synchronization"
+      - "Improve: make counting composers as artists opt-in"
   zh:
     items:
       - "修复 进入某些艺术家或专辑详情时崩溃（自 v2.0.0-rc1）"
+      - "修复 在 Android 15 及其以上版本上，扁平风格播放器状态栏颜色异常"
       - "新增 支持任务卡片被移除时停止服务（感谢 @jpgjm）"
       - "改进 优化数据库同步性能"
+      - "改进 允许将作曲人不计作艺术家"
 
 previousVersion: "2.0.0-rc1"
 previousChannel: "STABLE"
