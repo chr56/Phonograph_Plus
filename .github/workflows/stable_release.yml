@@ -61,7 +61,7 @@ jobs:
           echo "Artifacts: $(tree -aF ./products)"
 
       - name: Recover Legacy Signing Keystore
-        if: matrix.PRODUCT_VARIANT == 'ModernStableIntermediateRelease'
+        if: matrix.PRODUCT_VARIANT == 'ModernStableIntermediateRelease' || matrix.PRODUCT_VARIANT == 'ModernFdroidRelease'
         env:
           LEGACY_KEYSTORE_FILE: ${{ github.workspace }}/signing-key-legacy.jdk
         run: |
@@ -70,7 +70,7 @@ jobs:
             --keystore-file "${LEGACY_KEYSTORE_FILE}"
 
       - name: Sign with Rotated Key
-        if: matrix.PRODUCT_VARIANT == 'ModernStableIntermediateRelease'
+        if: matrix.PRODUCT_VARIANT == 'ModernStableIntermediateRelease' || matrix.PRODUCT_VARIANT == 'ModernFdroidRelease'
         env:
           KEYSTORE_FILE: ${{ github.workspace }}/signing-key.jdk
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
