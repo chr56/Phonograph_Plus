@@ -1,14 +1,14 @@
 version: "2.0.0-rc2"
 channel: "STABLE"
 versionCode: 2000
-timestamp: 1782000000
+timestamp: 1782135000
 notes:
   en:
     items:
       - "Fix: crash on entering some Artist or Album details (since v2.0.0-rc1)"
       - "Fix: statusbar color in Flat Player on Android 15 and higher"
-      - "New: support quiting on task removed from Recent Screen (thanks to @jpgjm)"
-      - "Improve: optimize performance of database synchronization"
+      - "New: quit app when removed from Recent Screen (optional, thanks to @jpgjm)"
+      - "Improve: internal database synchronization performance"
       - "Improve: make counting composers as artists opt-in"
   zh:
     items:
