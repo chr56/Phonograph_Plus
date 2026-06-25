@@ -35,8 +35,8 @@ object SyncExecutors {
         val songsCountMediastore = MediaStoreSongs.total(context)
         val latestMediastore = MediaStoreSongs.lastest(context)
 
-        val songsCountDatabase = musicDatabase.MediaStoreSongDao().total()
-        val latestDatabase = musicDatabase.MediaStoreSongDao().latest()
+        val songsCountDatabase = musicDatabase.SongQueryDao().total()
+        val latestDatabase = musicDatabase.SongQueryDao().latest()
 
         return if (songsCountMediastore != songsCountDatabase || latestDatabase == null || latestMediastore == null) {
             true

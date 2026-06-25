@@ -15,13 +15,13 @@ import android.util.Log
 object DatabaseActions {
 
     private suspend fun deleteTablesOfNonUserData(musicDatabase: MusicDatabase) {
-        musicDatabase.RelationshipGenreSongDao().deleteAll()
-        musicDatabase.RelationshipArtistAlbumDao().deleteAll()
-        musicDatabase.RelationshipArtistSongDao().deleteAll()
-        musicDatabase.AlbumDao().deleteAll()
-        musicDatabase.ArtistDao().deleteAll()
-        musicDatabase.MediaStoreSongDao().deleteAll()
-        musicDatabase.GenreDao().deleteAll()
+        musicDatabase.RelationshipManipulateDao().deleteAllGenreSongs()
+        musicDatabase.RelationshipManipulateDao().deleteAllAlbumArtists()
+        musicDatabase.RelationshipManipulateDao().deleteAllArtistSongs()
+        musicDatabase.AlbumManipulateDao().deleteAll()
+        musicDatabase.ArtistManipulateDao().deleteAll()
+        musicDatabase.SongManipulateDao().deleteAll()
+        musicDatabase.GenreManipulateDao().deleteAll()
     }
 
     /**

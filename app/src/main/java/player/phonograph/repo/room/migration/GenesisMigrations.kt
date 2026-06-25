@@ -48,7 +48,7 @@ object GenesisMigrations {
 
             // Migrate songs
             legacyDb.query(TABLE_NAME_FAVORITE_SONGS, projection, null, null, null, null, null).use { cursor ->
-                val songsDao = db.FavoritesSongsDao()
+                val songsDao = db.FavoriteSongManipulateDao()
                 while (cursor.moveToNext()) {
                     songsDao.add(
                         FavoriteSongEntity(
@@ -62,7 +62,7 @@ object GenesisMigrations {
             }
 
             legacyDb.query(TABLE_NAME_FAVORITE_PLAYLISTS, projection, null, null, null, null, null).use { cursor ->
-                val playlistsDao = db.PinedPlaylistsDao()
+                val playlistsDao = db.PinedPlaylistManipulateDao()
                 while (cursor.moveToNext()) {
                     val id = cursor.getLong(0)
                     val path = cursor.getString(1)

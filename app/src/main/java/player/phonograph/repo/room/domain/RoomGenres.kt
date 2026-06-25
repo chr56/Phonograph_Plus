@@ -8,23 +8,22 @@ import player.phonograph.model.Genre
 import player.phonograph.model.Song
 import player.phonograph.model.repo.loader.IGenres
 import player.phonograph.repo.room.converter.EntityConverter
-import player.phonograph.repo.room.dao.RoomSortOrder.defaultGenreSortMode
 import android.content.Context
 
 object RoomGenres : RoomLoader(), IGenres {
 
     override suspend fun all(context: Context): List<Genre> =
-        db.GenreDao().all(genreSortMode(context)).map(EntityConverter::toGenreModel)
+        db.GenreQueryDao().all(genreSortMode(context)).map(EntityConverter::toGenreModel)
 
     override suspend fun id(context: Context, id: Long): Genre? =
-        db.GenreDao().id(id)?.let(EntityConverter::toGenreModel)
-
-    override suspend fun songs(context: Context, genreId: Long): List<Song> =
-        db.RelationshipGenreSongDao().genre(genreId).mapNotNull { RoomSongs.id(context, it.songId) }
-
-    override suspend fun of(context: Context, songId: Long): List<Genre> =
-        db.RelationshipGenreSongDao().song(songId).mapNotNull { id(context, it.genreId) }
+        db.GenreQueryDao().id(id)?.let(EntityConverter::toGenreModel)
 
     override suspend fun searchByName(context: Context, query: String): List<Genre> =
-        db.QueryDao().genresWithName(query, defaultGenreSortMode).map(EntityConverter::toGenreModel)
+        db.GenreQueryDao().searchByName("%$query%").map(EntityConverter::toGenreModel)
+
+    override suspend fun songs(context: Context, genreId: Long): List<Song> =
+        db.RelationshipQueryDao().songsOfGenre(genreId).mapNotNull { RoomSongs.id(context, it.songId) }
+
+    override suspend fun of(context: Context, songId: Long): List<Genre> =
+        db.RelationshipQueryDao().genresOfSong(songId).mapNotNull { id(context, it.genreId) }
 }

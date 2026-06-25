@@ -5,20 +5,26 @@
 package player.phonograph.repo.room
 
 import org.koin.core.context.GlobalContext
-import player.phonograph.repo.room.dao.AlbumDao
-import player.phonograph.repo.room.dao.ArtistDao
-import player.phonograph.repo.room.dao.FavoritesSongsDao
+import player.phonograph.repo.room.dao.AlbumManipulateDao
+import player.phonograph.repo.room.dao.AlbumQueryDao
+import player.phonograph.repo.room.dao.ArtistManipulateDao
+import player.phonograph.repo.room.dao.ArtistQueryDao
+import player.phonograph.repo.room.dao.RelationshipManipulateDao
+import player.phonograph.repo.room.dao.RelationshipQueryDao
+import player.phonograph.repo.room.dao.FavoriteSongManipulateDao
+import player.phonograph.repo.room.dao.FavoriteSongQueryDao
+import player.phonograph.repo.room.dao.GenreManipulateDao
+import player.phonograph.repo.room.dao.GenreQueryDao
 import player.phonograph.repo.room.dao.ImageCacheDao
-import player.phonograph.repo.room.dao.GenreDao
-import player.phonograph.repo.room.dao.MediaStoreSongDao
 import player.phonograph.repo.room.dao.MetadataDao
-import player.phonograph.repo.room.dao.PinedPlaylistsDao
-import player.phonograph.repo.room.dao.PlaylistDao
-import player.phonograph.repo.room.dao.PlaylistSongDao
-import player.phonograph.repo.room.dao.QueryDao
-import player.phonograph.repo.room.dao.RelationshipArtistAlbumDao
-import player.phonograph.repo.room.dao.RelationshipArtistSongDao
-import player.phonograph.repo.room.dao.RelationshipGenreSongDao
+import player.phonograph.repo.room.dao.PinedPlaylistManipulateDao
+import player.phonograph.repo.room.dao.PinedPlaylistQueryDao
+import player.phonograph.repo.room.dao.PlaylistManipulateDao
+import player.phonograph.repo.room.dao.PlaylistQueryDao
+import player.phonograph.repo.room.dao.PlaylistSongManipulateDao
+import player.phonograph.repo.room.dao.PlaylistSongQueryDao
+import player.phonograph.repo.room.dao.SongManipulateDao
+import player.phonograph.repo.room.dao.SongQueryDao
 import player.phonograph.repo.room.entity.AlbumEntity
 import player.phonograph.repo.room.entity.ArtistEntity
 import player.phonograph.repo.room.entity.FavoriteSongEntity
@@ -65,18 +71,24 @@ import java.io.Closeable
 )
 abstract class MusicDatabase : RoomDatabase(), Closeable {
     abstract fun MetadataDao(): MetadataDao
-    abstract fun MediaStoreSongDao(): MediaStoreSongDao
-    abstract fun PlaylistDao(): PlaylistDao
-    abstract fun PlaylistSongDao(): PlaylistSongDao
-    abstract fun FavoritesSongsDao(): FavoritesSongsDao
-    abstract fun PinedPlaylistsDao(): PinedPlaylistsDao
-    abstract fun AlbumDao(): AlbumDao
-    abstract fun ArtistDao(): ArtistDao
-    abstract fun RelationshipArtistAlbumDao(): RelationshipArtistAlbumDao
-    abstract fun RelationshipArtistSongDao(): RelationshipArtistSongDao
-    abstract fun GenreDao(): GenreDao
-    abstract fun RelationshipGenreSongDao(): RelationshipGenreSongDao
-    abstract fun QueryDao(): QueryDao
+    abstract fun SongQueryDao(): SongQueryDao
+    abstract fun SongManipulateDao(): SongManipulateDao
+    abstract fun PlaylistQueryDao(): PlaylistQueryDao
+    abstract fun AlbumQueryDao(): AlbumQueryDao
+    abstract fun AlbumManipulateDao(): AlbumManipulateDao
+    abstract fun ArtistQueryDao(): ArtistQueryDao
+    abstract fun ArtistManipulateDao(): ArtistManipulateDao
+    abstract fun GenreQueryDao(): GenreQueryDao
+    abstract fun GenreManipulateDao(): GenreManipulateDao
+    abstract fun RelationshipQueryDao(): RelationshipQueryDao
+    abstract fun RelationshipManipulateDao(): RelationshipManipulateDao
+    abstract fun PlaylistManipulateDao(): PlaylistManipulateDao
+    abstract fun PlaylistSongQueryDao(): PlaylistSongQueryDao
+    abstract fun PlaylistSongManipulateDao(): PlaylistSongManipulateDao
+    abstract fun FavoriteSongQueryDao(): FavoriteSongQueryDao
+    abstract fun FavoriteSongManipulateDao(): FavoriteSongManipulateDao
+    abstract fun PinedPlaylistQueryDao(): PinedPlaylistQueryDao
+    abstract fun PinedPlaylistManipulateDao(): PinedPlaylistManipulateDao
     abstract fun ImageCacheDao(): ImageCacheDao
     override fun close() {
         super.close()

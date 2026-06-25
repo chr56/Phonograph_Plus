@@ -27,10 +27,10 @@ class BasicSyncExecutor(private val musicDatabase: MusicDatabase) : SyncExecutor
         val songsMediastore = MediaStoreSongs.all(context)
         val total = songsMediastore.size
         channel?.onProcessUpdate(0, total)
-        val songDao = musicDatabase.MediaStoreSongDao()
+        val songManipulateDao = musicDatabase.SongManipulateDao()
         musicDatabase.withTransaction {
-            songDao.deleteAll()
-            songDao.update(songsMediastore.map(EntityConverter::fromSongModel))
+            songManipulateDao.deleteAll()
+            songManipulateDao.update(songsMediastore.map(EntityConverter::fromSongModel))
         }
         channel?.onProcessUpdate(total, total)
         return SyncReport(success = true, modified = total)
