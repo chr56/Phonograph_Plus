@@ -241,7 +241,7 @@ themeUtil = [
 test-unit = [
     "junit",
     "mockito-core",
-    "mockito-android",
+    # "mockito-android",
     # "testng",
 ]
 
