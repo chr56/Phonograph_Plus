@@ -39,6 +39,8 @@ android {
         versionCode = 20002
         versionName = "2.0.2"
 
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
         proguardFiles(File("proguard-rules-base.pro"), File("proguard-rules-app.pro"))
 
         manifestPlaceholders["GIT_COMMIT_HASH"] = "-"
@@ -274,4 +276,9 @@ dependencies {
     implementation(libs.statusBarLyricsApi)
     implementation(libs.lyricsGetterAPi)
 
+
+    //region Test
+    testImplementation(libs.bundles.test.unit)
+    androidTestImplementation(libs.bundles.test.androidx.suite)
+    //endregion
 }
