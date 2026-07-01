@@ -28,10 +28,10 @@ object MediaStoreSongs : ISongs {
         querySongs(context).intoSongs()
 
     override suspend fun id(context: Context, id: Long): Song? =
-        querySongs(context, "${AudioColumns._ID} =? ", arrayOf(id.toString())).intoFirstSong()
+        querySongs(context, "${AudioColumns._ID} =?", arrayOf(id.toString())).intoFirstSong()
 
-    override suspend fun path(context: Context, path: String): Song? =
-        querySongs(context, "${AudioColumns.DATA} =? ", arrayOf(path)).intoFirstSong()
+    override suspend fun path(context: Context, path: String, withoutPathFilter: Boolean): Song? =
+        querySongs(context, "${AudioColumns.DATA} =?", arrayOf(path), withoutPathFilter = withoutPathFilter).intoFirstSong()
 
     override suspend fun artist(context: Context, artistId: Long): List<Song> =
         querySongs(context, "${AudioColumns.ARTIST_ID} =?", arrayOf(artistId.toString())).intoSongs()
@@ -48,7 +48,7 @@ object MediaStoreSongs : ISongs {
         querySongs(
             context,
             "${AudioColumns.DATA} LIKE ? ",
-            arrayOf(path),
+            arrayOf("%$path%"),
             withoutPathFilter = withoutPathFilter
         ).intoSongs()
 

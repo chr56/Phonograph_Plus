@@ -14,6 +14,6 @@ suspend fun FileItem.songs(context: Context): List<Song> =
     when (content) {
         is FileItem.SongContent     -> listOf(content.song)
         is FileItem.PlaylistContent -> Playlists.songs(context, content.playlist.location).map { it.song }
-        is FileItem.FolderContent   -> Songs.searchByPath(context, "%${path}%", false)
+        is FileItem.FolderContent   -> Songs.searchByPath(context, path, false)
         else                        -> emptyList()
     }

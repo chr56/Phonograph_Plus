@@ -258,7 +258,7 @@ private fun exportSong(song: Song): ExportedSong =
     ExportedSong(song.data, song.title, song.albumName, song.artistName)
 
 private suspend fun importSong(song: ExportedSong, context: Context): Song? =
-    Songs.searchByPath(context, song.path, withoutPathFilter = true).firstOrNull()
+    Songs.path(context, song.path, withoutPathFilter = true)
 
 private fun exportPlaylist(playlist: Playlist): ExportedPlaylist =
     ExportedPlaylist(playlist.path() ?: "-", playlist.name)

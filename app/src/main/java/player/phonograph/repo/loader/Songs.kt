@@ -30,8 +30,8 @@ object Songs : ISongs, Delegated<ISongs>() {
     override suspend fun id(context: Context, id: Long): Song? =
         delegate(context).id(context, id)
 
-    override suspend fun path(context: Context, path: String): Song? =
-        delegate(context).path(context, path)
+    override suspend fun path(context: Context, path: String, withoutPathFilter: Boolean): Song? =
+        delegate(context).path(context, path, withoutPathFilter)
 
     override suspend fun artist(context: Context, artistId: Long): List<Song> =
         delegate(context).artist(context, artistId)

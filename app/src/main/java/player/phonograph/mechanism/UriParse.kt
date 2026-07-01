@@ -57,7 +57,7 @@ private object DocumentsProviderUriParser : IUriParser<Song> {
 
     override suspend fun parse(context: Context, uri: Uri): Collection<Song> {
         val file = File(documentProviderUriAbsolutePath(uri, context) ?: return emptyList())
-        return Songs.searchByPath(context, file.absolutePath, withoutPathFilter = true)
+        return Songs.path(context, file.absolutePath, withoutPathFilter = true).asList()
     }
 }
 
@@ -67,7 +67,7 @@ private object ApplicationContentUriParser : IUriParser<Song> {
 
     override suspend fun parse(context: Context, uri: Uri): Collection<Song> {
         val filePath = queryFilePath(context, uri) ?: return emptyList()
-        return Songs.searchByPath(context, File(filePath).absolutePath, withoutPathFilter = true)
+        return Songs.path(context, File(filePath).absolutePath, withoutPathFilter = true).asList()
     }
 }
 

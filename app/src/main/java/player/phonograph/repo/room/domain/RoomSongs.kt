@@ -19,7 +19,7 @@ object RoomSongs : RoomLoader(), ISongs {
     override suspend fun id(context: Context, id: Long): Song? =
         db.SongQueryDao().id(id)?.let(EntityConverter::toSongModel)
 
-    override suspend fun path(context: Context, path: String): Song? =
+    override suspend fun path(context: Context, path: String, withoutPathFilter: Boolean): Song? =
         db.SongQueryDao().path(path)?.let(EntityConverter::toSongModel)
 
     override suspend fun artist(context: Context, artistId: Long): List<Song> =

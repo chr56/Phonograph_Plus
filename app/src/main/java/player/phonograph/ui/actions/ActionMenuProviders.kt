@@ -393,7 +393,7 @@ object ActionMenuProviders {
             } else if (file.mediaPath.mediastoreId > 0) {
                 Songs.id(context, file.mediaPath.mediastoreId)
             } else {
-                Songs.searchByPath(context, file.path, true).firstOrNull()
+                Songs.path(context, file.path, withoutPathFilter = true)
             }
 
         private inline fun action(
