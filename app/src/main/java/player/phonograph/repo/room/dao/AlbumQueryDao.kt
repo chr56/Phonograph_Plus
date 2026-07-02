@@ -43,12 +43,8 @@ abstract class AlbumQueryDao {
     @Query("SELECT COUNT(*) from $ALBUMS")
     abstract suspend fun count(): Int
 
-    suspend fun albumSongs(albumId: Long, sortMode: SortMode): AlbumWithSongs? = queryAlbumWithSongs(
-        SimpleSQLiteQuery(
-            "SELECT * from $ALBUMS where $ALBUM_ID = ? order by ${roomAlbumQuerySortOrder(sortMode)}",
-            arrayOf<Any>(albumId)
-        )
-    )
+    @Query("SELECT * from $ALBUMS where $ALBUM_ID = :albumId")
+    abstract suspend fun albumSongs(albumId: Long): AlbumWithSongs?
 
     @Query("SELECT COUNT(*) from $MEDIASTORE_SONGS where $ALBUM_ID = :albumId")
     abstract suspend fun albumSongCount(albumId: Long): Int

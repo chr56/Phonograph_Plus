@@ -48,32 +48,20 @@ abstract class ArtistQueryDao {
     @Query("SELECT COUNT(*) from $ARTISTS")
     abstract suspend fun count(): Int
 
-    suspend fun artistSongs(artistId: Long, sortMode: SortMode): ArtistWithSongs? = queryArtistWithSongs(
-        SimpleSQLiteQuery(
-            "SELECT * from $ARTISTS where $ARTIST_ID = ? order by ${roomArtistQuerySortOrder(sortMode)}",
-            arrayOf<Any>(artistId)
-        )
-    )
+    @Query("SELECT * from $ARTISTS where $ARTIST_ID = :artistId")
+    abstract suspend fun artistSongs(artistId: Long): ArtistWithSongs?
 
     @Query("SELECT COUNT(${MEDIASTORE_ID}) from $LINKAGE_ARTIST_SONG where $ARTIST_ID = :artistId")
     abstract suspend fun artistSongCount(artistId: Long): Int
 
-    suspend fun artistAlbums(artistId: Long, sortMode: SortMode): ArtistWithAlbums? = queryArtistWithAlbums(
-        SimpleSQLiteQuery(
-            "SELECT * from $ARTISTS where $ARTIST_ID = ? order by ${roomArtistQuerySortOrder(sortMode)}",
-            arrayOf<Any>(artistId)
-        )
-    )
+    @Query("SELECT * from $ARTISTS where $ARTIST_ID = :artistId")
+    abstract suspend fun artistAlbums(artistId: Long): ArtistWithAlbums?
 
     @Query("SELECT COUNT(${ALBUM_ID}) from $LINKAGE_ARTIST_ALBUM where $ARTIST_ID = :artistId")
     abstract suspend fun artistAlbumCount(artistId: Long): Int
 
-    suspend fun artistDetails(artistId: Long, sortMode: SortMode): ArtistWithAll? = queryArtistWithAll(
-        SimpleSQLiteQuery(
-            "SELECT * from $ARTISTS where $ARTIST_ID = ? order by ${roomArtistQuerySortOrder(sortMode)}",
-            arrayOf<Any>(artistId)
-        )
-    )
+    @Query("SELECT * from $ARTISTS where $ARTIST_ID = :artistId")
+    abstract suspend fun artistDetails(artistId: Long): ArtistWithAll?
 
     //region Raw
     @RawQuery

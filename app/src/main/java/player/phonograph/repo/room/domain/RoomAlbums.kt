@@ -22,6 +22,7 @@ object RoomAlbums : RoomLoader(), IAlbums {
         db.AlbumQueryDao().searchByName("%$query%").map(EntityConverter::toAlbumModel)
 
     override suspend fun artist(context: Context, artistId: Long): List<Album> =
-        db.ArtistQueryDao().artistAlbums(artistId, defaultArtistSortMode)?.albumEntities.orEmpty().map(EntityConverter::toAlbumModel)
+        db.ArtistQueryDao().artistAlbums(artistId)?.albumEntities.orEmpty()
+            .sortedByDescending { it.year }.map(EntityConverter::toAlbumModel)
 
 }
