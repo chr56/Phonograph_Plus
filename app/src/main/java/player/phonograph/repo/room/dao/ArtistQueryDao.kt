@@ -6,21 +6,24 @@ package player.phonograph.repo.room.dao
 
 import player.phonograph.model.sort.SortMode
 import player.phonograph.repo.room.dao.RoomSortOrder.roomArtistQuerySortOrder
+import player.phonograph.repo.room.entity.AlbumEntity
 import player.phonograph.repo.room.entity.ArtistEntity
+import player.phonograph.repo.room.entity.Columns.ALBUM
 import player.phonograph.repo.room.entity.Columns.ALBUM_ID
 import player.phonograph.repo.room.entity.Columns.ARTIST
 import player.phonograph.repo.room.entity.Columns.ARTIST_ID
 import player.phonograph.repo.room.entity.Columns.MEDIASTORE_ID
+import player.phonograph.repo.room.entity.Columns.TRACK
+import player.phonograph.repo.room.entity.Columns.YEAR
+import player.phonograph.repo.room.entity.MediastoreSongEntity
+import player.phonograph.repo.room.entity.Tables.ALBUMS
 import player.phonograph.repo.room.entity.Tables.ARTISTS
 import player.phonograph.repo.room.entity.Tables.LINKAGE_ARTIST_ALBUM
 import player.phonograph.repo.room.entity.Tables.LINKAGE_ARTIST_SONG
-import player.phonograph.repo.room.entity.derived.ArtistWithAlbums
-import player.phonograph.repo.room.entity.derived.ArtistWithAll
-import player.phonograph.repo.room.entity.derived.ArtistWithSongs
+import player.phonograph.repo.room.entity.Tables.MEDIASTORE_SONGS
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.RawQuery
-import androidx.room.Transaction
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 
@@ -48,35 +51,30 @@ abstract class ArtistQueryDao {
     @Query("SELECT COUNT(*) from $ARTISTS")
     abstract suspend fun count(): Int
 
-    @Query("SELECT * from $ARTISTS where $ARTIST_ID = :artistId")
-    abstract suspend fun artistSongs(artistId: Long): ArtistWithSongs?
+    @Query(
+        "SELECT $MEDIASTORE_SONGS.* from $LINKAGE_ARTIST_SONG inner join $MEDIASTORE_SONGS " +
+                "on $LINKAGE_ARTIST_SONG.$MEDIASTORE_ID = $MEDIASTORE_SONGS.$MEDIASTORE_ID " +
+                "where $LINKAGE_ARTIST_SONG.$ARTIST_ID = :artistId " +
+                "order by $ALBUM, $TRACK"
+    )
+    abstract suspend fun artistSongs(artistId: Long): List<MediastoreSongEntity>
 
     @Query("SELECT COUNT(${MEDIASTORE_ID}) from $LINKAGE_ARTIST_SONG where $ARTIST_ID = :artistId")
     abstract suspend fun artistSongCount(artistId: Long): Int
 
-    @Query("SELECT * from $ARTISTS where $ARTIST_ID = :artistId")
-    abstract suspend fun artistAlbums(artistId: Long): ArtistWithAlbums?
+    @Query(
+        "SELECT $ALBUMS.* from $LINKAGE_ARTIST_ALBUM inner join $ALBUMS " +
+                "on $LINKAGE_ARTIST_ALBUM.$ALBUM_ID = $ALBUMS.$ALBUM_ID " +
+                "where $LINKAGE_ARTIST_ALBUM.$ARTIST_ID = :artistId " +
+                "order by $YEAR desc, $ALBUM"
+    )
+    abstract suspend fun artistAlbums(artistId: Long): List<AlbumEntity>
 
     @Query("SELECT COUNT(${ALBUM_ID}) from $LINKAGE_ARTIST_ALBUM where $ARTIST_ID = :artistId")
     abstract suspend fun artistAlbumCount(artistId: Long): Int
 
-    @Query("SELECT * from $ARTISTS where $ARTIST_ID = :artistId")
-    abstract suspend fun artistDetails(artistId: Long): ArtistWithAll?
-
     //region Raw
     @RawQuery
     protected abstract suspend fun query(query: SupportSQLiteQuery): List<ArtistEntity>
-
-    @Transaction
-    @RawQuery
-    protected abstract suspend fun queryArtistWithSongs(query: SupportSQLiteQuery): ArtistWithSongs?
-
-    @Transaction
-    @RawQuery
-    protected abstract suspend fun queryArtistWithAlbums(query: SupportSQLiteQuery): ArtistWithAlbums?
-
-    @Transaction
-    @RawQuery
-    protected abstract suspend fun queryArtistWithAll(query: SupportSQLiteQuery): ArtistWithAll?
     //endregion
 }

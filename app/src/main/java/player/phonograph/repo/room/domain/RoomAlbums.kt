@@ -7,7 +7,6 @@ package player.phonograph.repo.room.domain
 import player.phonograph.model.Album
 import player.phonograph.model.repo.loader.IAlbums
 import player.phonograph.repo.room.converter.EntityConverter
-import player.phonograph.repo.room.dao.RoomSortOrder.defaultArtistSortMode
 import android.content.Context
 
 object RoomAlbums : RoomLoader(), IAlbums {
@@ -22,7 +21,6 @@ object RoomAlbums : RoomLoader(), IAlbums {
         db.AlbumQueryDao().searchByName("%$query%").map(EntityConverter::toAlbumModel)
 
     override suspend fun artist(context: Context, artistId: Long): List<Album> =
-        db.ArtistQueryDao().artistAlbums(artistId)?.albumEntities.orEmpty()
-            .sortedByDescending { it.year }.map(EntityConverter::toAlbumModel)
+        db.ArtistQueryDao().artistAlbums(artistId).map(EntityConverter::toAlbumModel)
 
 }

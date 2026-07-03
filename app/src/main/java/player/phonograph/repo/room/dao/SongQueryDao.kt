@@ -9,11 +9,9 @@ import player.phonograph.repo.room.dao.RoomSortOrder.roomSongQuerySortOrder
 import player.phonograph.repo.room.entity.Columns
 import player.phonograph.repo.room.entity.MediastoreSongEntity
 import player.phonograph.repo.room.entity.Tables
-import player.phonograph.repo.room.entity.derived.SongWithArtists
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.RawQuery
-import androidx.room.Transaction
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 
@@ -50,13 +48,6 @@ abstract class SongQueryDao {
     @Query("SELECT COUNT(*) from ${Tables.MEDIASTORE_SONGS}")
     abstract suspend fun total(): Int
 
-    suspend fun songArtists(songId: Long, sortMode: SortMode): SongWithArtists? = querySongWithArtists(
-        SimpleSQLiteQuery(
-            "SELECT * from ${Tables.MEDIASTORE_SONGS} where ${Columns.MEDIASTORE_ID} = ? order by ${roomSongQuerySortOrder(sortMode)}",
-            arrayOf<Any>(songId)
-        )
-    )
-
     @Query("SELECT * from ${Tables.MEDIASTORE_SONGS} order by ${Columns.DATE_MODIFIED} DESC limit 1")
     abstract suspend fun latest(): MediastoreSongEntity?
 
@@ -74,9 +65,5 @@ abstract class SongQueryDao {
     //region Raw
     @RawQuery
     protected abstract suspend fun query(query: SupportSQLiteQuery): List<MediastoreSongEntity>
-
-    @Transaction
-    @RawQuery
-    protected abstract suspend fun querySongWithArtists(query: SupportSQLiteQuery): SongWithArtists?
     //endregion
 }

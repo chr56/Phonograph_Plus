@@ -22,8 +22,8 @@ object RoomGenres : RoomLoader(), IGenres {
         db.GenreQueryDao().searchByName("%$query%").map(EntityConverter::toGenreModel)
 
     override suspend fun songs(context: Context, genreId: Long): List<Song> =
-        db.RelationshipQueryDao().songsOfGenre(genreId).mapNotNull { RoomSongs.id(context, it.songId) }
+        db.GenreQueryDao().genreSongs(genreId).map(EntityConverter::toSongModel)
 
     override suspend fun of(context: Context, songId: Long): List<Genre> =
-        db.RelationshipQueryDao().genresOfSong(songId).mapNotNull { id(context, it.genreId) }
+        db.GenreQueryDao().of(songId).map(EntityConverter::toGenreModel)
 }

@@ -9,13 +9,14 @@ import player.phonograph.repo.room.dao.RoomSortOrder.roomAlbumQuerySortOrder
 import player.phonograph.repo.room.entity.AlbumEntity
 import player.phonograph.repo.room.entity.Columns.ALBUM
 import player.phonograph.repo.room.entity.Columns.ALBUM_ID
+import player.phonograph.repo.room.entity.Columns.MEDIASTORE_PATH
+import player.phonograph.repo.room.entity.Columns.TRACK
+import player.phonograph.repo.room.entity.MediastoreSongEntity
 import player.phonograph.repo.room.entity.Tables.ALBUMS
 import player.phonograph.repo.room.entity.Tables.MEDIASTORE_SONGS
-import player.phonograph.repo.room.entity.derived.AlbumWithSongs
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.RawQuery
-import androidx.room.Transaction
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 
@@ -43,8 +44,8 @@ abstract class AlbumQueryDao {
     @Query("SELECT COUNT(*) from $ALBUMS")
     abstract suspend fun count(): Int
 
-    @Query("SELECT * from $ALBUMS where $ALBUM_ID = :albumId")
-    abstract suspend fun albumSongs(albumId: Long): AlbumWithSongs?
+    @Query("SELECT * from $MEDIASTORE_SONGS where $ALBUM_ID = :albumId order by $TRACK, $MEDIASTORE_PATH")
+    abstract suspend fun albumSongs(albumId: Long): List<MediastoreSongEntity>
 
     @Query("SELECT COUNT(*) from $MEDIASTORE_SONGS where $ALBUM_ID = :albumId")
     abstract suspend fun albumSongCount(albumId: Long): Int
@@ -52,9 +53,5 @@ abstract class AlbumQueryDao {
     //region Raw
     @RawQuery
     protected abstract suspend fun query(query: SupportSQLiteQuery): List<AlbumEntity>
-
-    @Transaction
-    @RawQuery
-    protected abstract suspend fun queryAlbumWithSongs(query: SupportSQLiteQuery): AlbumWithSongs?
     //endregion
 }

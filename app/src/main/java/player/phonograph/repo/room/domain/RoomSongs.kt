@@ -23,12 +23,10 @@ object RoomSongs : RoomLoader(), ISongs {
         db.SongQueryDao().path(path)?.let(EntityConverter::toSongModel)
 
     override suspend fun artist(context: Context, artistId: Long): List<Song> =
-        db.ArtistQueryDao().artistSongs(artistId)?.songEntities.orEmpty()
-            .sortedBy { it.year }.map(EntityConverter::toSongModel)
+        db.ArtistQueryDao().artistSongs(artistId).map(EntityConverter::toSongModel)
 
     override suspend fun album(context: Context, albumId: Long): List<Song> =
-        db.AlbumQueryDao().albumSongs(albumId)?.songEntities.orEmpty()
-            .sortedBy { it.track }.map(EntityConverter::toSongModel)
+        db.AlbumQueryDao().albumSongs(albumId).sortedBy { it.track }.map(EntityConverter::toSongModel)
 
     override suspend fun since(context: Context, timestamp: Long, useModifiedDate: Boolean): List<Song> =
         db.SongQueryDao().since(timestamp, useModifiedDate).map(EntityConverter::toSongModel)

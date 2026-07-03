@@ -9,8 +9,12 @@ import player.phonograph.repo.room.dao.RoomSortOrder.roomGenreQuerySortOrder
 import player.phonograph.repo.room.entity.Columns.GENRE
 import player.phonograph.repo.room.entity.Columns.GENRE_ID
 import player.phonograph.repo.room.entity.Columns.GENRE_ID_MEDIASTORE
+import player.phonograph.repo.room.entity.Columns.MEDIASTORE_ID
 import player.phonograph.repo.room.entity.GenreEntity
+import player.phonograph.repo.room.entity.MediastoreSongEntity
 import player.phonograph.repo.room.entity.Tables.GENRES
+import player.phonograph.repo.room.entity.Tables.LINKAGE_GENRE_SONG
+import player.phonograph.repo.room.entity.Tables.MEDIASTORE_SONGS
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.RawQuery
@@ -44,6 +48,20 @@ abstract class GenreQueryDao {
 
     @Query("SELECT $GENRE_ID_MEDIASTORE from $GENRES")
     abstract suspend fun allMediaStoreIds(): List<Long>
+
+    @Query(
+        "SELECT $MEDIASTORE_SONGS.* from $LINKAGE_GENRE_SONG inner join $MEDIASTORE_SONGS " +
+                "on $LINKAGE_GENRE_SONG.$MEDIASTORE_ID = $MEDIASTORE_SONGS.$MEDIASTORE_ID " +
+                "where $LINKAGE_GENRE_SONG.$GENRE_ID = :genreId"
+    )
+    abstract suspend fun genreSongs(genreId: Long): List<MediastoreSongEntity>
+
+    @Query(
+        "SELECT $GENRES.* from $LINKAGE_GENRE_SONG inner join $GENRES " +
+                "on $LINKAGE_GENRE_SONG.$GENRE_ID = $GENRES.$GENRE_ID " +
+                "where $LINKAGE_GENRE_SONG.$MEDIASTORE_ID = :songId"
+    )
+    abstract suspend fun of(songId: Long): List<GenreEntity>
 
     //region Raw
     @RawQuery
