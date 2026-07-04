@@ -9,6 +9,8 @@ import player.phonograph.model.Song
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.repo.loader.Songs
+import player.phonograph.settings.Keys
+import player.phonograph.settings.Settings
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayPresenter
 import player.phonograph.ui.adapter.SongBasicDisplayPresenter
@@ -25,7 +27,7 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>>() {
 
     class SongPageViewModel : AbsDisplayPageViewModel<Song>() {
         override suspend fun loadDataSetImpl(context: Context, scope: CoroutineScope): Collection<Song> {
-            return Songs.all(context)
+            return Songs.all(context, Settings(context)[Keys.songSortMode].read())
         }
 
         override suspend fun collectAllSongs(context: Context): List<Song> = dataset.value.toList()

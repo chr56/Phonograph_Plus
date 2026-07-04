@@ -5,11 +5,14 @@
 package player.phonograph.model.repo.loader
 
 import player.phonograph.model.Artist
+import player.phonograph.model.sort.SortMode
 import android.content.Context
 
 interface IArtists : Endpoint {
 
     suspend fun all(context: Context): List<Artist>
+
+    suspend fun all(context: Context, sortMode: SortMode): List<Artist>
 
     suspend fun id(context: Context, id: Long): Artist
 

@@ -6,15 +6,17 @@ package player.phonograph.repo.room.domain
 
 import player.phonograph.model.Song
 import player.phonograph.model.repo.loader.ISongs
+import player.phonograph.model.sort.SortMode
 import player.phonograph.repo.room.converter.EntityConverter
-import player.phonograph.repo.room.dao.RoomSortOrder.defaultAlbumSortMode
-import player.phonograph.repo.room.dao.RoomSortOrder.defaultArtistSortMode
 import android.content.Context
 
 object RoomSongs : RoomLoader(), ISongs {
 
     override suspend fun all(context: Context): List<Song> =
-        db.SongQueryDao().all(songSortMode(context)).map(EntityConverter::toSongModel)
+        db.SongQueryDao().all().map(EntityConverter::toSongModel)
+
+    override suspend fun all(context: Context, sortMode: SortMode): List<Song> =
+        db.SongQueryDao().all(sortMode).map(EntityConverter::toSongModel)
 
     override suspend fun id(context: Context, id: Long): Song? =
         db.SongQueryDao().id(id)?.let(EntityConverter::toSongModel)

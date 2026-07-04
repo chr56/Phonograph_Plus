@@ -7,13 +7,17 @@ package player.phonograph.repo.room.domain
 import player.phonograph.model.Genre
 import player.phonograph.model.Song
 import player.phonograph.model.repo.loader.IGenres
+import player.phonograph.model.sort.SortMode
 import player.phonograph.repo.room.converter.EntityConverter
 import android.content.Context
 
 object RoomGenres : RoomLoader(), IGenres {
 
     override suspend fun all(context: Context): List<Genre> =
-        db.GenreQueryDao().all(genreSortMode(context)).map(EntityConverter::toGenreModel)
+        db.GenreQueryDao().all().map(EntityConverter::toGenreModel)
+
+    override suspend fun all(context: Context, sortMode: SortMode): List<Genre> =
+        db.GenreQueryDao().all(sortMode).map(EntityConverter::toGenreModel)
 
     override suspend fun id(context: Context, id: Long): Genre? =
         db.GenreQueryDao().id(id)?.let(EntityConverter::toGenreModel)

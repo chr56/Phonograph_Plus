@@ -7,6 +7,7 @@ package player.phonograph.repo.loader
 import player.phonograph.model.Album
 import player.phonograph.model.repo.loader.Delegated
 import player.phonograph.model.repo.loader.IAlbums
+import player.phonograph.model.sort.SortMode
 import player.phonograph.repo.mediastore.MediaStoreAlbums
 import player.phonograph.repo.room.domain.RoomAlbums
 import player.phonograph.settings.Keys
@@ -25,6 +26,9 @@ object Albums : IAlbums, Delegated<IAlbums>() {
 
     override suspend fun all(context: Context): List<Album> =
         delegate(context).all(context)
+
+    override suspend fun all(context: Context, sortMode: SortMode): List<Album> =
+        delegate(context).all(context, sortMode)
 
     override suspend fun id(context: Context, id: Long): Album =
         delegate(context).id(context, id)

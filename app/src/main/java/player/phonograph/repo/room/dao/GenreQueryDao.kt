@@ -24,10 +24,12 @@ import androidx.sqlite.db.SupportSQLiteQuery
 @Dao
 abstract class GenreQueryDao {
 
+    suspend fun all(): List<GenreEntity> = query(
+        SimpleSQLiteQuery("SELECT * from $GENRES")
+    )
+
     suspend fun all(sortMode: SortMode): List<GenreEntity> = query(
-        SimpleSQLiteQuery(
-            "SELECT * from $GENRES order by ${roomGenreQuerySortOrder(sortMode)}"
-        )
+        SimpleSQLiteQuery("SELECT * from $GENRES order by ${roomGenreQuerySortOrder(sortMode)}")
     )
 
     @Query("SELECT * from $GENRES where $GENRE_ID = :id")

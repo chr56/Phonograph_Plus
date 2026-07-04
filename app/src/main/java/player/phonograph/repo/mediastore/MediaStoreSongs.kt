@@ -12,7 +12,9 @@ import player.phonograph.foundation.mediastore.queryMediastoreAudio
 import player.phonograph.foundation.mediastore.withBaseAudioFilter
 import player.phonograph.model.Song
 import player.phonograph.model.repo.loader.ISongs
+import player.phonograph.model.sort.SortMode
 import player.phonograph.repo.mediastore.internal.defaultSongQuerySortOrder
+import player.phonograph.repo.mediastore.internal.mediastoreSongQuerySortOrder
 import player.phonograph.repo.mediastore.internal.withPathFilter
 import android.content.Context
 import android.database.Cursor
@@ -26,6 +28,9 @@ object MediaStoreSongs : ISongs {
 
     override suspend fun all(context: Context): List<Song> =
         querySongs(context).intoSongs()
+
+    override suspend fun all(context: Context, sortMode: SortMode): List<Song> =
+        querySongs(context, sortOrder = mediastoreSongQuerySortOrder(sortMode)).intoSongs()
 
     override suspend fun id(context: Context, id: Long): Song? =
         querySongs(context, "${AudioColumns._ID} =?", arrayOf(id.toString())).intoFirstSong()

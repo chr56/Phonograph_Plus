@@ -10,9 +10,6 @@ import player.phonograph.foundation.sort
 import player.phonograph.model.Album
 import player.phonograph.model.Song
 import player.phonograph.model.sort.SortMode
-import player.phonograph.model.sort.SortRef
-import player.phonograph.settings.Keys
-import player.phonograph.settings.Settings
 import android.content.Context
 import android.util.ArrayMap
 import kotlinx.coroutines.Deferred
@@ -52,11 +49,11 @@ fun createAlbum(id: Long, songs: List<Song>): Album {
     }
 }
 
-suspend fun generateArtistAlbums(context: Context, songs: List<Song>): List<Album> =
-    catalogAlbums(context, songs, SortMode(SortRef.YEAR, false)).await()
+suspend fun generateArtistAlbums(context: Context, songs: List<Song>, sortMode: SortMode): List<Album> =
+    catalogAlbums(context, songs, sortMode).await()
 
-suspend fun generateAlbums(context: Context, songs: List<Song>): List<Album> =
-    catalogAlbums(context, songs, Settings(context)[Keys.albumSortMode].read()).await()
+suspend fun generateAlbums(context: Context, songs: List<Song>, sortMode: SortMode): List<Album> =
+    catalogAlbums(context, songs, sortMode).await()
 
 private suspend fun catalogAlbums(
     context: Context,

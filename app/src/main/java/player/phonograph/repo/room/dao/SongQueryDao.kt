@@ -18,6 +18,12 @@ import androidx.sqlite.db.SupportSQLiteQuery
 @Dao
 abstract class SongQueryDao {
 
+    suspend fun all(): List<MediastoreSongEntity> = query(
+        SimpleSQLiteQuery(
+            "SELECT * from ${Tables.MEDIASTORE_SONGS}",
+        )
+    )
+
     suspend fun all(sortMode: SortMode): List<MediastoreSongEntity> = query(
         SimpleSQLiteQuery(
             "SELECT * from ${Tables.MEDIASTORE_SONGS} order by ${roomSongQuerySortOrder(sortMode)}",

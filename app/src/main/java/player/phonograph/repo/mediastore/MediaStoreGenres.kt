@@ -25,9 +25,10 @@ import android.provider.MediaStore.Audio.Genres
 object MediaStoreGenres : IGenres {
 
     override suspend fun all(context: Context): List<Genre> =
-        queryGenre(
-            context
-        )?.intoGenres(context)?.sortAll(context) ?: emptyList()
+        queryGenre(context)?.intoGenres(context)?.sortAll(context) ?: emptyList()
+
+    override suspend fun all(context: Context, sortMode: SortMode): List<Genre> =
+        queryGenre(context)?.intoGenres(context)?.sortAll(sortMode) ?: emptyList()
 
     override suspend fun id(context: Context, id: Long): Genre? =
         queryGenre(

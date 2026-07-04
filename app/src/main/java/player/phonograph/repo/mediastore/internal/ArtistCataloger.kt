@@ -10,8 +10,6 @@ import player.phonograph.foundation.sort
 import player.phonograph.model.Artist
 import player.phonograph.model.Song
 import player.phonograph.model.sort.SortMode
-import player.phonograph.settings.Keys
-import player.phonograph.settings.Settings
 import android.content.Context
 import android.util.ArrayMap
 import kotlinx.coroutines.Deferred
@@ -26,8 +24,8 @@ import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.yield
 
-suspend fun generateArtists(context: Context, songs: List<Song>): List<Artist> =
-    catalogArtists(context, songs, Settings(context)[Keys.artistSortMode].read()).await()
+suspend fun generateArtists(context: Context, songs: List<Song>, sortMode: SortMode): List<Artist> =
+    catalogArtists(context, songs, sortMode).await()
 
 private suspend fun catalogArtists(
     context: Context,

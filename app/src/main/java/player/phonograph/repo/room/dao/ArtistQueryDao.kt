@@ -30,10 +30,12 @@ import androidx.sqlite.db.SupportSQLiteQuery
 @Dao
 abstract class ArtistQueryDao {
 
+    suspend fun all(): List<ArtistEntity> = query(
+        SimpleSQLiteQuery("SELECT * from $ARTISTS")
+    )
+
     suspend fun all(sortMode: SortMode): List<ArtistEntity> = query(
-        SimpleSQLiteQuery(
-            "SELECT * from $ARTISTS order by ${roomArtistQuerySortOrder(sortMode)}"
-        )
+        SimpleSQLiteQuery("SELECT * from $ARTISTS order by ${roomArtistQuerySortOrder(sortMode)}")
     )
 
     @Query("SELECT * from $ARTISTS where $ARTIST_ID = :id")

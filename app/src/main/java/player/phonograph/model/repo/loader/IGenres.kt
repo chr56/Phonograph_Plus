@@ -6,11 +6,14 @@ package player.phonograph.model.repo.loader
 
 import player.phonograph.model.Genre
 import player.phonograph.model.Song
+import player.phonograph.model.sort.SortMode
 import android.content.Context
 
 interface IGenres : Endpoint {
 
     suspend fun all(context: Context): List<Genre>
+
+    suspend fun all(context: Context, sortMode: SortMode): List<Genre>
 
     suspend fun id(context: Context, id: Long): Genre?
 

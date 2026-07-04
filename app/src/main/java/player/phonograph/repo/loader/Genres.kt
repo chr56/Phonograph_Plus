@@ -8,6 +8,7 @@ import player.phonograph.model.Genre
 import player.phonograph.model.Song
 import player.phonograph.model.repo.loader.Delegated
 import player.phonograph.model.repo.loader.IGenres
+import player.phonograph.model.sort.SortMode
 import player.phonograph.repo.mediastore.MediaStoreGenres
 import player.phonograph.repo.room.domain.RoomGenres
 import player.phonograph.settings.Keys
@@ -26,6 +27,9 @@ object Genres : IGenres, Delegated<IGenres>() {
 
     override suspend fun all(context: Context): List<Genre> =
         delegate(context).all(context)
+
+    override suspend fun all(context: Context, sortMode: SortMode): List<Genre> =
+        delegate(context).all(context, sortMode)
 
     override suspend fun id(context: Context, id: Long): Genre? =
         delegate(context).id(context, id)

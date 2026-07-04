@@ -5,12 +5,16 @@
 package player.phonograph.model.repo.loader
 
 import player.phonograph.model.Song
+import player.phonograph.model.sort.SortMode
 import android.content.Context
 
 interface ISongs : Endpoint {
 
-    /** All songs. */
+    /** All songs with default order. */
     suspend fun all(context: Context): List<Song>
+
+    /** All songs but with given [sortMode]. */
+    suspend fun all(context: Context, sortMode: SortMode): List<Song>
 
     /** Look up a song by its ID. */
     suspend fun id(context: Context, id: Long): Song?

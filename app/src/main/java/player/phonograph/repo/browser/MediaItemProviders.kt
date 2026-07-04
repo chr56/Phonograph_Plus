@@ -15,6 +15,7 @@ import player.phonograph.model.PlayRequest
 import player.phonograph.model.QueueSong
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist
+import player.phonograph.model.sort.SortMode
 import player.phonograph.repo.database.domain.DynamicTracks
 import player.phonograph.repo.loader.Albums
 import player.phonograph.repo.loader.Artists
@@ -296,10 +297,12 @@ object MediaItemProviders {
 
     private object SongsProvider : AbsMediaItemProvider() {
         override suspend fun browser(context: Context): List<MediaItem> =
-            Songs.all(context).map { it.toMediaItem() }
+            Songs.all(context, sortMode(context)).map { it.toMediaItem() }
 
         override suspend fun play(context: Context): PlayRequest =
-            PlayRequest.SongsRequest(Songs.all(context), 0)
+            PlayRequest.SongsRequest(Songs.all(context, sortMode(context)), 0)
+
+        private suspend fun sortMode(context: Context): SortMode = Settings(context)[Keys.songSortMode].read()
     }
 
     private class SongProvider(val songId: Long) : AbsMediaItemProvider() {
@@ -311,7 +314,7 @@ object MediaItemProviders {
 
     private object AlbumsProvider : AbsMediaItemProvider() {
         override suspend fun browser(context: Context): List<MediaItem> =
-            Albums.all(context).map { it.toMediaItem() }
+            Albums.all(context, Settings(context)[Keys.albumSortMode].read()).map { it.toMediaItem() }
     }
 
     private class AlbumProvider(val albumId: Long) : AbsMediaItemProvider() {
@@ -331,7 +334,7 @@ object MediaItemProviders {
 
     private object ArtistsProvider : AbsMediaItemProvider() {
         override suspend fun browser(context: Context): List<MediaItem> =
-            Artists.all(context).map { it.toMediaItem() }
+            Artists.all(context, Settings(context)[Keys.artistSortMode].read()).map { it.toMediaItem() }
     }
 
     private class ArtistProvider(val artistId: Long) : AbsMediaItemProvider() {
@@ -436,7 +439,7 @@ object MediaItemProviders {
 
     private object GenresProvider : AbsMediaItemProvider() {
         override suspend fun browser(context: Context): List<MediaItem> =
-            Genres.all(context).map { it.toMediaItem() }
+            Genres.all(context, Settings(context)[Keys.genreSortMode].read()).map { it.toMediaItem() }
     }
 
     private class GenreProvider(val genreId: Long) : AbsMediaItemProvider() {

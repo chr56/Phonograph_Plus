@@ -45,7 +45,7 @@ object MediaBrowserDelegate {
 
     suspend fun playFromSearch(context: Context, query: String?, extras: Bundle?): PlayRequest.SongsRequest =
         if (query.isNullOrEmpty()) {
-            PlayRequest.SongsRequest(Songs.all(context), 0)
+            PlayRequest.SongsRequest(Songs.all(context, Settings(context)[Keys.songSortMode].read()), 0)
         } else {
             if (extras != null) {
                 val query = extras.getString(SearchManager.QUERY)
@@ -90,6 +90,4 @@ object MediaBrowserDelegate {
         return true
     }
 
-    private fun lastAddedCutoffTimeStamp(context: Context): Long =
-        Settings(context)[Keys.lastAddedCutoffTimeStamp].data / 1000
 }
