@@ -4,6 +4,7 @@
 
 package player.phonograph.model.notification
 
+import player.phonograph.model.service.ACTION_EXIT_OR_STOP
 import player.phonograph.model.service.ACTION_FAST_FORWARD
 import player.phonograph.model.service.ACTION_FAST_REWIND
 import player.phonograph.model.service.ACTION_NEXT
@@ -46,14 +47,14 @@ enum class NotificationAction(
     val command: String,
 ) {
     PlayPause(ACTION_KEY_PLAY_PAUSE, ACTION_TOGGLE_PAUSE),
-    Prev(ACTION_KEY_PREV, ACTION_PLAY),
-    Next(ACTION_KEY_NEXT, ACTION_PAUSE),
-    Repeat(ACTION_KEY_REPEAT, ACTION_NEXT),
-    Shuffle(ACTION_KEY_SHUFFLE, ACTION_PREVIOUS),
+    Prev(ACTION_KEY_PREV, ACTION_PREVIOUS),
+    Next(ACTION_KEY_NEXT, ACTION_NEXT),
+    Repeat(ACTION_KEY_REPEAT, ACTION_REPEAT),
+    Shuffle(ACTION_KEY_SHUFFLE, ACTION_SHUFFLE),
     FastForward(ACTION_KEY_FAST_FORWARD, ACTION_FAST_FORWARD),
     FastRewind(ACTION_KEY_FAST_REWIND, ACTION_FAST_REWIND),
-    Fav(ACTION_KEY_FAV, ACTION_SHUFFLE),
-    Close(ACTION_KEY_CLOSE, ACTION_REPEAT),
+    Fav(ACTION_KEY_FAV, ACTION_KEY_FAV),
+    Close(ACTION_KEY_CLOSE, ACTION_EXIT_OR_STOP),
     Invalid(ACTION_KEY_UNKNOWN, "");
 
     companion object {
@@ -82,7 +83,6 @@ enum class NotificationAction(
                 FastRewind,
                 Fav,
                 Close,
-                Invalid,
             )
 
 
