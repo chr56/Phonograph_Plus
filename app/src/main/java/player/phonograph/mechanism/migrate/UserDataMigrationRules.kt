@@ -6,6 +6,7 @@ package player.phonograph.mechanism.migrate
 
 import player.phonograph.foundation.error.warning
 import player.phonograph.model.migration.VersionMigrationRule
+import player.phonograph.model.repo.sync.ProgressConnection
 import player.phonograph.repo.room.MusicDatabase
 import player.phonograph.repo.room.migration.GenesisMigrations
 import player.phonograph.settings.PathFilterSetting
@@ -22,7 +23,7 @@ import java.io.IOException
 
 class PathFilterMigrationRule : UserDataMigrationRule(introduced = 1104) {
 
-    override fun execute(context: Context) {
+    override fun execute(context: Context, connection: ProgressConnection?) {
         withDatabase(context, DATABASE_NAME_PATH_FILTER, ::import)
     }
 
@@ -91,7 +92,7 @@ class PathFilterMigrationRule : UserDataMigrationRule(introduced = 1104) {
 
 class FavoritesMigrationRule : UserDataMigrationRule(introduced = 1104) {
 
-    override fun execute(context: Context) {
+    override fun execute(context: Context, connection: ProgressConnection?) {
         CoroutineScope(Dispatchers.IO).launch {
             migrate(context, path = null)
         }
@@ -122,7 +123,7 @@ class FavoritesMigrationRule : UserDataMigrationRule(introduced = 1104) {
 }
 
 class ImageCacheMigrationRule : UserDataMigrationRule(1122) {
-    override fun execute(context: Context) {
+    override fun execute(context: Context, connection: ProgressConnection?) {
         removeDatabase(context, DATABASE_NAME_IMAGE_CACHE, true)
     }
 

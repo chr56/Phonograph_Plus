@@ -8,6 +8,7 @@ import player.phonograph.debug
 import player.phonograph.foundation.content.PackageMetadata
 import player.phonograph.foundation.error.warning
 import player.phonograph.model.migration.VersionMigrationRule
+import player.phonograph.model.repo.sync.ProgressConnection
 import player.phonograph.settings.PrerequisiteSettings
 import android.content.Context
 import android.util.Log
@@ -32,7 +33,7 @@ object MigrationManager {
         }
     }
 
-    fun migrate(context: Context): Int {
+    fun migrate(context: Context, connection: ProgressConnection? = null): Int {
 
         val from = PrerequisiteSettings.instance(context).previousVersion
         val to = PackageMetadata.versionCode(context)
@@ -59,7 +60,8 @@ object MigrationManager {
         Log.i(TAG, "Start Migration: $from -> $to")
 
         try {
-            MigrateExecutor(context, from, to).apply {
+            connection?.onStart()
+            MigrateExecutor(context, from, to, connection).apply {
                 migrate(PlaylistFilesOperationBehaviourMigrationRule())
                 migrate(ColoredSystemBarsMigrationRule())
                 migrate(PreloadImagesMigrationRule())
@@ -77,6 +79,8 @@ object MigrationManager {
         } catch (e: Exception) {
             warning(context, TAG, "Failed to migrate", e)
             return CODE_UNKNOWN_ERROR
+        } finally {
+            connection?.onCompleted()
         }
 
         return status
@@ -86,11 +90,12 @@ object MigrationManager {
         private val context: Context,
         private val from: Int,
         private val to: Int,
+        private val connection: ProgressConnection? = null,
     ) {
         fun migrate(migration: VersionMigrationRule) {
             if (migration.check(context, from, to)) {
                 Log.i(TAG, "Migrating ${migration.javaClass.simpleName} ...")
-                migration.execute(context)
+                migration.execute(context, connection)
             }
         }
     }
