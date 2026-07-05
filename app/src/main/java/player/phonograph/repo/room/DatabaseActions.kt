@@ -4,8 +4,8 @@
 
 package player.phonograph.repo.room
 
-import player.phonograph.foundation.notification.ProgressNotificationConnection
 import player.phonograph.mechanism.event.EventHub
+import player.phonograph.model.repo.sync.ProgressConnection
 import player.phonograph.model.repo.sync.SyncReport
 import player.phonograph.repo.room.sync.SyncExecutors
 import androidx.room.withTransaction
@@ -42,12 +42,14 @@ object DatabaseActions {
 
     /**
      * Sync database:
-     * check MediaStore, refresh database if have changes
+     * check MediaStore, refresh database if it has changes
+     * @param progress message callback
+     * @param force refresh without check
      */
     suspend fun sync(
         context: Context,
         musicDatabase: MusicDatabase,
-        progress: ProgressNotificationConnection? = null,
+        progress: ProgressConnection? = null,
         force: Boolean = false,
     ): SyncReport? {
         val syncExecutor = SyncExecutors.obtain(context, musicDatabase)
@@ -75,7 +77,7 @@ object DatabaseActions {
     suspend fun wipe(
         context: Context,
         musicDatabase: MusicDatabase,
-        progress: ProgressNotificationConnection? = null,
+        progress: ProgressConnection? = null,
         includeUserData: Boolean = false,
     ): Boolean {
         return try {
@@ -105,7 +107,7 @@ object DatabaseActions {
     suspend fun rebuild(
         context: Context,
         musicDatabase: MusicDatabase,
-        progress: ProgressNotificationConnection? = null,
+        progress: ProgressConnection? = null,
     ): SyncReport? {
         progress?.onStart(7328453)
         val wipeResult = wipe(context, musicDatabase, progress, includeUserData = false)
