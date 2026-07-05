@@ -16,6 +16,6 @@ sealed interface MigrationRule {
      * execute this migration rule
      * @param connection Callback connect to report current status
      */
-    fun execute(context: Context, connection: ProgressConnection?)
+    suspend fun execute(context: Context, connection: ProgressConnection?)
 
 }

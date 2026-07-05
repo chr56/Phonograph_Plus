@@ -33,7 +33,7 @@ object MigrationManager {
         }
     }
 
-    fun migrate(context: Context, connection: ProgressConnection? = null): Int {
+    suspend fun migrate(context: Context, connection: ProgressConnection? = null): Int {
 
         val from = PrerequisiteSettings.instance(context).previousVersion
         val to = PackageMetadata.versionCode(context)
@@ -92,7 +92,7 @@ object MigrationManager {
         private val to: Int,
         private val connection: ProgressConnection? = null,
     ) {
-        fun migrate(migration: VersionMigrationRule) {
+        suspend fun migrate(migration: VersionMigrationRule) {
             if (migration.check(context, from, to)) {
                 Log.i(TAG, "Migrating ${migration.javaClass.simpleName} ...")
                 migration.execute(context, connection)

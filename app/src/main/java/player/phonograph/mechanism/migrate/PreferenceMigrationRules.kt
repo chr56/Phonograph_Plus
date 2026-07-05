@@ -25,7 +25,7 @@ import java.io.File
 //region Migration Rules
 
 class PlaylistFilesOperationBehaviourMigrationRule : PreferenceMigrationRule(introduced = 1085) {
-    override fun execute(context: Context, connection: ProgressConnection?) {
+    override suspend fun execute(context: Context, connection: ProgressConnection?) {
         removeSettingItem(
             context,
             DeprecatedPreference.PLAYLIST_FILES_OPERATION_BEHAVIOUR
@@ -34,26 +34,26 @@ class PlaylistFilesOperationBehaviourMigrationRule : PreferenceMigrationRule(int
 }
 
 class ColoredSystemBarsMigrationRule : PreferenceMigrationRule(introduced = 1086) {
-    override fun execute(context: Context, connection: ProgressConnection?) {
+    override suspend fun execute(context: Context, connection: ProgressConnection?) {
         removeSettingItem(context, DeprecatedPreference.COLORED_NAVIGATION_BAR)
         removeSettingItem(context, DeprecatedPreference.COLORED_STATUSBAR)
     }
 }
 
 class PreloadImagesMigrationRule : PreferenceMigrationRule(introduced = 1100) {
-    override fun execute(context: Context, connection: ProgressConnection?) {
+    override suspend fun execute(context: Context, connection: ProgressConnection?) {
         removeSettingItem(context, DeprecatedPreference.PRELOAD_IMAGES)
     }
 }
 
 class NowPlayingScreenMigrationRule : PreferenceMigrationRule(introduced = 1100) {
-    override fun execute(context: Context, connection: ProgressConnection?) {
+    override suspend fun execute(context: Context, connection: ProgressConnection?) {
         removeSettingItem(context, DeprecatedPreference.NOW_PLAYING_SCREEN_ID)
     }
 }
 
 class MusicLibraryBackendMigrationRule : PreferenceMigrationRule(introduced = 1122) {
-    override fun execute(context: Context, connection: ProgressConnection?) {
+    override suspend fun execute(context: Context, connection: ProgressConnection?) {
         removeSettingItem(context, DeprecatedPreference.MUSIC_LIBRARY_BACKEND)
     }
 }
