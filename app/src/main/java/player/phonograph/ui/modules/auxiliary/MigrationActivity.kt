@@ -2,6 +2,7 @@ package player.phonograph.ui.modules.auxiliary
 
 import player.phonograph.R
 import player.phonograph.mechanism.migrate.MigrationManager
+import player.phonograph.model.repo.sync.ProgressConnection
 import player.phonograph.ui.navigateToAppDetailSetting
 import player.phonograph.ui.basis.ComposeActivity
 import player.phonograph.ui.compose.PhonographTheme
@@ -40,9 +41,11 @@ import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.lifecycleScope
 import android.content.res.Resources
 import android.os.Bundle
+import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -53,6 +56,7 @@ import kotlinx.coroutines.withContext
 class MigrationActivity : ComposeActivity() {
 
     private val migrationResultFlow = MutableStateFlow<Int?>(null)
+    private val migrationProgressHint = MutableStateFlow<String?>(null)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -165,7 +169,7 @@ class MigrationActivity : ComposeActivity() {
         }
         LaunchedEffect(content) {
             if (content.autoJumpCountdown > -1) {
-                delay(content.autoJumpCountdown)
+                delay(content.autoJumpCountdown.milliseconds)
                 gotoMainActivity()
             }
         }
@@ -185,6 +189,18 @@ class MigrationActivity : ComposeActivity() {
                 .align(Alignment.CenterHorizontally),
             textAlign = TextAlign.Center
         )
+        val progress by migrationProgressHint.collectAsState()
+        progress?.let { message ->
+            Text(
+                message,
+                Modifier
+                    .fillMaxWidth()
+                    .padding(24.dp)
+                    .align(Alignment.CenterHorizontally),
+                textAlign = TextAlign.Center,
+                fontSize = 12.sp,
+            )
+        }
     }
 
     @Composable
@@ -199,10 +215,36 @@ class MigrationActivity : ComposeActivity() {
         )
     }
 
+    val connection = object : ProgressConnection {
+        override fun onStart() {}
+
+        override fun onStart(notificationId: Int) {}
+
+        override fun onProcessUpdate(message: String?) {
+            migrationProgressHint.value = message
+        }
+
+        override fun onProcessUpdate(current: Int, total: Int) {
+            migrationProgressHint.value = "$current/$total"
+        }
+
+        override fun onProcessUpdate(current: Int, total: Int, message: String?) {
+            migrationProgressHint.value = "$current/$total \n$message"
+        }
+
+        override fun onCompleted() {
+            migrationProgressHint.value = null
+        }
+
+        override fun onReset() {
+            onCompleted()
+        }
+    }
+
 
     private fun executeMigration() {
         lifecycleScope.launch {
-            delay(500)
+            delay(240.milliseconds)
             withContext(Dispatchers.IO) {
                 migrationResultFlow.value = MigrationManager.migrate(this@MigrationActivity)
             }
