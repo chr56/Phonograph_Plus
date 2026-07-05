@@ -7,6 +7,7 @@ package player.phonograph.mechanism.migrate
 import player.phonograph.foundation.error.warning
 import player.phonograph.model.migration.VersionMigrationRule
 import player.phonograph.model.repo.sync.ProgressConnection
+import player.phonograph.repo.room.DatabaseActions
 import player.phonograph.repo.room.MusicDatabase
 import player.phonograph.repo.room.migration.GenesisMigrations
 import player.phonograph.settings.PathFilterSetting
@@ -17,6 +18,7 @@ import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.io.File
 import java.io.IOException
 
@@ -129,6 +131,27 @@ class ImageCacheMigrationRule : UserDataMigrationRule(1122) {
 
     companion object {
         const val DATABASE_NAME_IMAGE_CACHE = "_image_cache.db"
+    }
+}
+
+class RelationshipDatabaseUpgradeRule : UserDataMigrationRule(2000) {
+
+    private val database get() = MusicDatabase.koinInstance
+
+    override fun check(context: Context, from: Int, to: Int): Boolean {
+        return if (from in 1..<1999) {
+            runBlocking {
+                database.AlbumQueryDao().count() <= 0 || database.ArtistQueryDao().count() <= 0
+            }
+        } else {
+            false
+        }
+    }
+
+    override suspend fun execute(context: Context, connection: ProgressConnection?) {
+        connection?.onProcessUpdate("Upgrading database...")
+        DatabaseActions.sync(context, database, progress = connection, force = true)
+        connection?.onProcessUpdate(null)
     }
 }
 

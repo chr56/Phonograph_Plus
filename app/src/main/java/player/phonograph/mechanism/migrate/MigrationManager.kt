@@ -70,6 +70,7 @@ object MigrationManager {
                 migrate(PathFilterMigrationRule())
                 migrate(FavoritesMigrationRule())
                 migrate(ImageCacheMigrationRule())
+                migrate(RelationshipDatabaseUpgradeRule())
             }
 
             Log.i(TAG, "End Migration")
