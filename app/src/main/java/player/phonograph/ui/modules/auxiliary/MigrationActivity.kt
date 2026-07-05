@@ -3,11 +3,11 @@ package player.phonograph.ui.modules.auxiliary
 import player.phonograph.R
 import player.phonograph.mechanism.migrate.MigrationManager
 import player.phonograph.model.repo.sync.ProgressConnection
-import player.phonograph.ui.navigateToAppDetailSetting
 import player.phonograph.ui.basis.ComposeActivity
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.SystemBarsPadded
 import player.phonograph.ui.modules.main.MainActivity
+import player.phonograph.ui.navigateToAppDetailSetting
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
@@ -28,7 +28,6 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -80,12 +79,13 @@ class MigrationActivity : ComposeActivity() {
                                 OngoingScreen()
                             }
                         }
-                        SideEffect {
-                            executeMigration()
-                        }
                     }
                 }
             }
+        }
+        if (savedInstanceState == null) lifecycleScope.launch(Dispatchers.Default) {
+            delay(240.milliseconds)
+            executeMigration()
         }
     }
 
@@ -242,12 +242,9 @@ class MigrationActivity : ComposeActivity() {
     }
 
 
-    private fun executeMigration() {
-        lifecycleScope.launch {
-            delay(240.milliseconds)
-            withContext(Dispatchers.IO) {
-                migrationResultFlow.value = MigrationManager.migrate(this@MigrationActivity)
-            }
+    private suspend fun executeMigration() {
+        withContext(Dispatchers.IO) {
+            migrationResultFlow.value = MigrationManager.migrate(this@MigrationActivity, connection)
         }
     }
 
