@@ -2,7 +2,7 @@ package player.phonograph.ui.modules.auxiliary
 
 import player.phonograph.R
 import player.phonograph.mechanism.migrate.MigrationManager
-import player.phonograph.ui.NavigationUtil.navigateToAppDetailSetting
+import player.phonograph.ui.navigateToAppDetailSetting
 import player.phonograph.ui.basis.ComposeActivity
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.SystemBarsPadded

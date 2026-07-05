@@ -15,7 +15,7 @@ import player.phonograph.foundation.permission.StoragePermissionChecker
 import player.phonograph.mechanism.lyrics.LyricsLoader
 import player.phonograph.model.Song
 import player.phonograph.repo.mediastore.MediaStoreSongsActions
-import player.phonograph.ui.NavigationUtil.navigateToStorageSetting
+import player.phonograph.ui.navigateToStorageSetting
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.theme.accentColoredButtonStyle

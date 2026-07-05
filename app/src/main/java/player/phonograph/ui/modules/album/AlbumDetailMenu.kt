@@ -11,12 +11,12 @@ import player.phonograph.foundation.fragmentActivity
 import player.phonograph.model.Album
 import player.phonograph.model.service.ShuffleMode
 import player.phonograph.repo.loader.Songs
-import player.phonograph.ui.NavigationUtil
 import player.phonograph.ui.actions.actionAddToPlaylist
 import player.phonograph.ui.actions.actionDelete
 import player.phonograph.ui.actions.actionEnqueue
 import player.phonograph.ui.actions.actionPlay
 import player.phonograph.ui.actions.actionPlayNext
+import player.phonograph.ui.goToArtistDetail
 import player.phonograph.ui.modules.tag.MultiTagBrowserActivity
 import player.phonograph.ui.modules.web.LastFmDialog
 import player.phonograph.ui.theme.getTintedDrawable
@@ -104,7 +104,7 @@ fun inflateAlbumDetailMenu(
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                 onClick {
                     lifecycleScope.launch {
-                        NavigationUtil.goToArtist(context, item, null)
+                        goToArtistDetail(context, item)
                     }
                     true
                 }

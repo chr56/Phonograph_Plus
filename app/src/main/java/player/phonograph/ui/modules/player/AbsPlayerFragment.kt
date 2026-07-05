@@ -8,6 +8,7 @@ import lib.storage.launcher.IOpenFileStorageAccessible
 import lib.storage.launcher.OpenDocumentContract
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import player.phonograph.R
+import player.phonograph.foundation.compat.openEqualizer
 import player.phonograph.foundation.compat.parcelable
 import player.phonograph.foundation.error.warning
 import player.phonograph.mechanism.event.EventHub
@@ -18,7 +19,6 @@ import player.phonograph.model.ui.PlayerControllerStyle
 import player.phonograph.model.ui.UnarySlidingUpPanelProvider
 import player.phonograph.repo.loader.FavoriteTracks
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.ui.NavigationUtil
 import player.phonograph.ui.modules.panel.AbsMusicServiceFragment
 import player.phonograph.ui.modules.panel.PanelViewModel
 import player.phonograph.ui.modules.panel.QueueViewModel
@@ -67,6 +67,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewAnimationUtils.createCircularReveal
 import android.view.ViewGroup
+import android.widget.Toast
 import kotlin.math.max
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -475,7 +476,21 @@ private fun buildPlayerToolbar(
             title = activity.getString(R.string.label_equalizer)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
             onClick {
-                NavigationUtil.openEqualizer(activity)
+                val audioSessionId = MusicPlayerRemote.audioSessionId
+                if (audioSessionId <= 0) {
+                    Toast.makeText(
+                        activity,
+                        activity.resources.getString(R.string.err_no_audio_ID),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+                if (!openEqualizer(activity, audioSessionId)) {
+                    Toast.makeText(
+                        activity,
+                        activity.resources.getString(R.string.err_no_equalizer),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
                 true
             }
         }

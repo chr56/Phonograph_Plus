@@ -29,7 +29,7 @@
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.modules.panel.** { protected <methods>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.modules.player.** { protected <methods>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.modules.** extends androidx.lifecycle.ViewModel {public <methods>;}
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.NavigationUtil { public <methods>; }
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.NavigationKt { public <methods>; }
 
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.service.MusicService { public <methods>;public <fields>; }
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.service.notification.** { public <methods>;public <fields>; }

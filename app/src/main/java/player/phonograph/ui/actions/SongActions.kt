@@ -15,7 +15,8 @@ import player.phonograph.model.service.ShuffleMode
 import player.phonograph.repo.loader.Playlists
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.PathFilterSetting
-import player.phonograph.ui.NavigationUtil
+import player.phonograph.ui.goToAlbumDetail
+import player.phonograph.ui.goToArtistDetail
 import player.phonograph.ui.modules.auxiliary.DeletionDialog
 import player.phonograph.ui.modules.playlist.dialogs.AddToPlaylistDialogActivity
 import player.phonograph.ui.modules.tag.TagBrowserActivity
@@ -73,14 +74,14 @@ fun Song.actionGotoDetail(activity: FragmentActivity): Boolean {
 
 fun Song.actionGotoAlbum(context: Context, transitionView: View?): Boolean =
     if (transitionView != null) {
-        NavigationUtil.goToAlbum(
+        goToAlbumDetail(
             context,
             albumId,
-            Pair(transitionView, context.resources.getString(R.string.transition_album_art))
+            arrayOf(Pair(transitionView, context.resources.getString(R.string.transition_album_art)))
         )
         true
     } else {
-        NavigationUtil.goToAlbum(context, albumId)
+        goToAlbumDetail(context, albumId)
         true
     }
 
@@ -89,7 +90,7 @@ fun Song.actionGotoArtist(context: Context, transitionView: View?): Boolean {
     val sharedElements: Array<Pair<View, String>>? =
         transitionView?.let { arrayOf(Pair(it, context.resources.getString(R.string.transition_artist_image))) }
     context.lifecycleScopeOrNewOne().launch {
-        NavigationUtil.goToArtist(context, this@actionGotoArtist, sharedElements)
+        goToArtistDetail(context, this@actionGotoArtist, sharedElements)
     }
     return true
 }

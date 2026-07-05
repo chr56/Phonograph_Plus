@@ -23,8 +23,8 @@ import player.phonograph.repo.loader.Songs
 import player.phonograph.service.MusicService
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
-import player.phonograph.ui.NavigationUtil.navigateToAppDetailSetting
-import player.phonograph.ui.NavigationUtil.navigateToStorageSetting
+import player.phonograph.ui.navigateToAppDetailSetting
+import player.phonograph.ui.navigateToStorageSetting
 import player.phonograph.ui.actions.actionPlay
 import player.phonograph.ui.modules.auxiliary.AboutActivity
 import player.phonograph.ui.modules.auxiliary.DatabaseMaintenanceDialog

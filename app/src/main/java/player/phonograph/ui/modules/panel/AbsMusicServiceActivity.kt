@@ -11,7 +11,7 @@ import player.phonograph.model.service.MusicServiceConnection
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.MusicPlayerRemote.ServiceToken
 import player.phonograph.service.queue.QueueManager
-import player.phonograph.ui.NavigationUtil.navigateToAppDetailSetting
+import player.phonograph.ui.navigateToAppDetailSetting
 import player.phonograph.ui.basis.ToolbarActivity
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope

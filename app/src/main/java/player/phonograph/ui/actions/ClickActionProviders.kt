@@ -30,7 +30,10 @@ import player.phonograph.repo.loader.Songs
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
-import player.phonograph.ui.NavigationUtil
+import player.phonograph.ui.goToAlbumDetail
+import player.phonograph.ui.goToArtistDetail
+import player.phonograph.ui.goToGenreDetail
+import player.phonograph.ui.goToPlaylistDetail
 import androidx.core.util.Pair
 import android.content.Context
 import android.view.View
@@ -121,16 +124,16 @@ object ClickActionProviders {
             imageView: ImageView?,
         ): Boolean {
             if (imageView != null) {
-                NavigationUtil.goToAlbum(
+                goToAlbumDetail(
                     context,
                     list[position].id,
-                    Pair(
+                    arrayOf(Pair(
                         imageView,
                         imageView.resources.getString(R.string.transition_album_art)
-                    )
+                    ))
                 )
             } else {
-                NavigationUtil.goToAlbum(
+                goToAlbumDetail(
                     context,
                     list[position].id
                 )
@@ -150,7 +153,7 @@ object ClickActionProviders {
             val artist = list[position]
             val sharedElements: Array<Pair<View, String>>? =
                 imageView?.let { arrayOf(Pair(it, context.resources.getString(R.string.transition_artist_image))) }
-            NavigationUtil.goToArtist(context, artist.id, sharedElements)
+            goToArtistDetail(context, artist.id, sharedElements)
             return true
         }
 
@@ -163,7 +166,7 @@ object ClickActionProviders {
             context: Context,
             imageView: ImageView?,
         ): Boolean {
-            NavigationUtil.goToPlaylist(context, list[position])
+            goToPlaylistDetail(context, list[position])
             return true
         }
     }
@@ -175,7 +178,7 @@ object ClickActionProviders {
             context: Context,
             imageView: ImageView?,
         ): Boolean {
-            NavigationUtil.goToGenre(context, list[position])
+            goToGenreDetail(context, list[position])
             return true
         }
 

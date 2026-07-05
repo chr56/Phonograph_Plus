@@ -19,7 +19,7 @@ import player.phonograph.model.sort.SortRef
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.model.ui.PaletteColorProvider
 import player.phonograph.repo.loader.Songs
-import player.phonograph.ui.NavigationUtil.goToArtist
+import player.phonograph.ui.goToArtistDetail
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayPresenter
 import player.phonograph.ui.adapter.SongBasicDisplayPresenter
@@ -140,7 +140,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvider
         viewBinding.artistText.setOnClickListener {
             val album = viewModel.album.value
             lifecycleScope.launch {
-                goToArtist(this@AlbumDetailActivity, album, null)
+                goToArtistDetail(this@AlbumDetailActivity, album)
             }
         }
         // AppBar

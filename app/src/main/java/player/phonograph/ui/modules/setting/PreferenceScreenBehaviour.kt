@@ -5,8 +5,9 @@
 package player.phonograph.ui.modules.setting
 
 import player.phonograph.R
+import player.phonograph.foundation.compat.checkEqualizer
+import player.phonograph.foundation.compat.openEqualizer
 import player.phonograph.settings.Keys
-import player.phonograph.ui.NavigationUtil
 import player.phonograph.ui.modules.setting.components.BooleanPreference
 import player.phonograph.ui.modules.setting.components.DialogPreference
 import player.phonograph.ui.modules.setting.components.ExternalPreference
@@ -30,11 +31,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalInspectionMode
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.media.audiofx.AudioEffect
-import android.os.Build.VERSION.SDK_INT
-import android.os.Build.VERSION_CODES.TIRAMISU
+import android.widget.Toast
 
 
 @Composable
@@ -135,18 +132,7 @@ private fun EqualizerSetting() {
     if (!LocalInspectionMode.current) {
         LaunchedEffect(activity) {
             val packageManager = activity?.packageManager
-            val intent = Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL).apply {
-                putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
-            }
-            val resolveInfo = if (packageManager != null) {
-                if (SDK_INT > TIRAMISU) {
-                    packageManager.resolveActivity(intent, PackageManager.ResolveInfoFlags.of(0))
-                } else {
-                    @Suppress("DEPRECATION")
-                    packageManager.resolveActivity(intent, 0)
-                }
-            } else null
-
+            val resolveInfo = if (packageManager != null) checkEqualizer(packageManager) else null
             hasEqualizer = resolveInfo != null
         }
     }
@@ -156,7 +142,13 @@ private fun EqualizerSetting() {
         summaryRes = if (hasEqualizer) R.string.err_no_equalizer else 0
     ) {
         if (activity != null) {
-            NavigationUtil.openEqualizer(activity)
+            if (!openEqualizer(activity)) {
+                Toast.makeText(
+                    activity,
+                    activity.resources.getString(R.string.err_no_equalizer),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
     }
 }
