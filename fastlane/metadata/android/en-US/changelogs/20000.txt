@@ -1,0 +1,9 @@
+<b>2.0.0(20000) 2026.07.06</b>
+Since the version, we have replaced our signing key.
+We provide key rotation version; see related instructions to migrate.
+We also raised minimal requirement to Android 8.
+
+- New: add dark mode support for widgets
+- Fix: statusbar color in Flat Player on Android 15 and higher
+- Modify: Multiple artists and genres parsing is now enabled by default
+...(Visit project homepage to see full changelogs)
