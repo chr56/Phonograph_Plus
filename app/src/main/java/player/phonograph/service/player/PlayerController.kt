@@ -190,7 +190,14 @@ class PlayerController : ServiceComponent, Controller {
         }
 
 
-    interface ControllerInternal : Controller, ServiceComponent
+    interface ControllerInternal : Controller, ServiceComponent {
+        fun prepareAt(position: Int, positionMs: Long, playWhenReady: Boolean)
+    }
+
+    /** Execute a session operation on the audio controller's thread. */
+    internal fun executeSessionCommand(command: ControllerInternal.() -> Unit) {
+        impl.command()
+    }
 
     class VanillaAudioPlayerControllerImpl(val controller: PlayerController) : ControllerInternal, Playback.PlaybackCallbacks {
 
@@ -233,6 +240,7 @@ class PlayerController : ServiceComponent, Controller {
                 if (prepareCurrentPlayer(currentSong)) {
                     val restored = QueuePreferenceManager(musicService).currentMillisecond
                     if (restored > 0) seekTo(restored.toLong())
+                    service.requireRefreshMediaSessionState()
                 }
             }
         }
@@ -292,6 +300,22 @@ class PlayerController : ServiceComponent, Controller {
 
                     log("prepareSongs:After", dumpState(position))
                 }
+            }
+        }
+
+        override fun prepareAt(position: Int, positionMs: Long, playWhenReady: Boolean) {
+            if (position !in queueManager.playingQueue.indices) return
+            if (prepareSongs(position)) {
+                if (positionMs > 0) seekTo(positionMs.coerceAtMost(songDurationMillis.toLong().coerceAtLeast(0)))
+                if (playWhenReady) {
+                    play()
+                } else {
+                    pauseReason = PauseReason.PAUSE_BY_MANUAL_ACTION
+                    controller.playerState = PlayerState.PAUSED
+                    controller.releaseTakenResources()
+                }
+            } else {
+                controller.playerState = PlayerState.STOPPED
             }
         }
 
@@ -433,9 +457,8 @@ class PlayerController : ServiceComponent, Controller {
         override val playerSpeed: Float get() = audioPlayer.speed
 
         override fun setPlayerSpeed(speed: Float) {
-            handler.request {
-                audioPlayer.speed = speed
-            }
+            audioPlayer.speed = speed
+            service.requireRefreshMediaSessionState()
         }
 
         override fun setVolume(vol: Float) {
@@ -626,6 +649,7 @@ class PlayerController : ServiceComponent, Controller {
      */
     override fun seekTo(position: Long) = handler.request {
         impl.seekTo(position)
+        service.requireRefreshMediaSessionState()
     }
 
     override fun stop() = handler.request {

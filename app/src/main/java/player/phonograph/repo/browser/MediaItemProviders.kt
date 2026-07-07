@@ -7,6 +7,7 @@ package player.phonograph.repo.browser
 import org.koin.core.context.GlobalContext
 import player.phonograph.R
 import player.phonograph.foundation.mediastore.mediaStoreUriAlbumArt
+import player.phonograph.foundation.mediastore.mediaStoreUriSongExternal
 import player.phonograph.mechanism.playlist.PlaylistSongsActions
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
@@ -27,14 +28,12 @@ import player.phonograph.service.queue.QueueManager
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
 import androidx.annotation.DrawableRes
+import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
 import android.content.ContentResolver
 import android.content.Context
 import android.content.res.Resources
 import android.net.Uri
-import android.support.v4.media.MediaBrowserCompat.MediaItem
-import android.support.v4.media.MediaBrowserCompat.MediaItem.FLAG_BROWSABLE
-import android.support.v4.media.MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
-import android.support.v4.media.MediaDescriptionCompat
 
 object MediaItemProviders {
 
@@ -47,7 +46,11 @@ object MediaItemProviders {
     }
 
 
-    fun of(path: String): MediaItemProvider = parse(path)
+    fun of(path: String): MediaItemProvider = try {
+        parse(path)
+    } catch (_: NumberFormatException) {
+        EmptyProvider
+    }
 
 
     abstract class AbsMediaItemProvider : MediaItemProvider {
@@ -69,17 +72,23 @@ object MediaItemProviders {
          * @param path path of "all songs"
          */
         private fun allItem(resources: Resources, path: String): MediaItem =
-            mediaItem(FLAG_PLAYABLE) {
+            mediaItem(false, path) {
                 setTitle(resources.getString(R.string.action_play_all))
-                setIconUri(iconRes(resources, R.drawable.ic_play_arrow_white_24dp))
-                setMediaId(path)
+                setArtworkUri(iconRes(resources, R.drawable.ic_play_arrow_white_24dp))
             }
 
         /**
          * create a MediaItem
          */
-        protected fun mediaItem(flag: Int, block: MediaDescriptionCompat.Builder.() -> Unit): MediaItem =
-            MediaItem(MediaDescriptionCompat.Builder().apply(block).build(), flag)
+        protected fun mediaItem(browsable: Boolean, mediaId: String, block: MediaMetadata.Builder.() -> Unit): MediaItem =
+            MediaItem.Builder().setMediaId(mediaId)
+                .setMediaMetadata(
+                    MediaMetadata.Builder()
+                        .setIsBrowsable(browsable)
+                        .setIsPlayable(!browsable)
+                        .apply { if (browsable) setMediaType(MediaMetadata.MEDIA_TYPE_FOLDER_MIXED) }
+                        .apply(block).build()
+                ).build()
 
         protected fun iconRes(res: Resources, @DrawableRes resourceId: Int): Uri =
             Uri.Builder().scheme(ContentResolver.SCHEME_ANDROID_RESOURCE)
@@ -88,49 +97,35 @@ object MediaItemProviders {
                 .appendPath(res.getResourceEntryName(resourceId))
                 .build()
 
-        protected fun Song.toMediaItem(): MediaItem =
-            mediaItem(FLAG_PLAYABLE) {
-                setTitle(title)
-                setSubtitle(albumName)
-                setDescription(artistName)
-                setIconUri(mediaStoreUriAlbumArt(albumId))
-                setMediaId(MediaItemPath.song(id).mediaId)
-            }
-
         protected fun QueueSong.toMediaItem(): MediaItem =
-            mediaItem(FLAG_PLAYABLE) {
+            mediaItem(false, MediaItemPath.queueSong(index).mediaId) {
                 setTitle(song.title)
                 setSubtitle(song.albumName)
                 setDescription(song.artistName)
-                setMediaId(MediaItemPath.queueSong(index).mediaId)
             }
 
         protected fun Album.toMediaItem(): MediaItem =
-            mediaItem(FLAG_BROWSABLE) {
+            mediaItem(true, MediaItemPath.album(id).mediaId) {
                 setTitle(title)
                 setSubtitle(artistName)
                 setDescription(artistName)
-                setIconUri(mediaStoreUriAlbumArt(id))
-                setMediaId(MediaItemPath.album(id).mediaId)
+                setArtworkUri(mediaStoreUriAlbumArt(id))
             }
 
         protected fun Artist.toMediaItem(): MediaItem =
-            mediaItem(FLAG_BROWSABLE) {
+            mediaItem(true, MediaItemPath.artist(id).mediaId) {
                 setTitle(name)
-                setMediaId(MediaItemPath.artist(id).mediaId)
             }
 
         protected fun Playlist.toMediaItem(): MediaItem =
-            mediaItem(FLAG_BROWSABLE) {
+            mediaItem(true, MediaItemPath.playlist(mediaStoreId()!!).mediaId) {
                 setTitle(name)
-                setMediaId(MediaItemPath.playlist(mediaStoreId()!!).mediaId)
             }
 
         protected fun Genre.toMediaItem(): MediaItem =
-            mediaItem(FLAG_BROWSABLE) {
+            mediaItem(true, MediaItemPath.genre(id).mediaId) {
                 setTitle(name)
                 setSubtitle(songCount.toString())
-                setMediaId(MediaItemPath.genre(id).mediaId)
             }
     }
 
@@ -225,55 +220,45 @@ object MediaItemProviders {
         override suspend fun browser(context: Context): List<MediaItem> = run {
             val res = context.resources
             listOf(
-                mediaItem(FLAG_BROWSABLE) {
+                mediaItem(true, MediaItemPath.pageSongs.mediaId) {
                     setTitle(res.getString(R.string.label_songs))
-                    setIconUri(iconRes(res, R.drawable.ic_music_note_white_24dp))
-                    setMediaId(MediaItemPath.pageSongs.mediaId)
+                    setArtworkUri(iconRes(res, R.drawable.ic_music_note_white_24dp))
                 },
-                mediaItem(FLAG_BROWSABLE) {
+                mediaItem(true, MediaItemPath.pageAlbums.mediaId) {
                     setTitle(res.getString(R.string.label_albums))
-                    setIconUri(iconRes(res, R.drawable.ic_album_white_24dp))
-                    setMediaId(MediaItemPath.pageAlbums.mediaId)
+                    setArtworkUri(iconRes(res, R.drawable.ic_album_white_24dp))
                 },
-                mediaItem(FLAG_BROWSABLE) {
+                mediaItem(true, MediaItemPath.pageArtist.mediaId) {
                     setTitle(res.getString(R.string.label_artists))
-                    setIconUri(iconRes(res, R.drawable.ic_person_white_24dp))
-                    setMediaId(MediaItemPath.pageArtist.mediaId)
+                    setArtworkUri(iconRes(res, R.drawable.ic_person_white_24dp))
                 },
-                mediaItem(FLAG_BROWSABLE) {
+                mediaItem(true, MediaItemPath.pageQueue.mediaId) {
                     setTitle(res.getString(R.string.label_playing_queue))
-                    setIconUri(iconRes(res, R.drawable.ic_queue_music_white_24dp))
-                    setMediaId(MediaItemPath.pageQueue.mediaId)
+                    setArtworkUri(iconRes(res, R.drawable.ic_queue_music_white_24dp))
                 },
-                mediaItem(FLAG_BROWSABLE) {
+                mediaItem(true, MediaItemPath.pagePlaylists.mediaId) {
                     setTitle(res.getString(R.string.label_playlists))
-                    setIconUri(iconRes(res, R.drawable.ic_description_white_24dp))
-                    setMediaId(MediaItemPath.pagePlaylists.mediaId)
+                    setArtworkUri(iconRes(res, R.drawable.ic_description_white_24dp))
                 },
-                mediaItem(FLAG_BROWSABLE) {
+                mediaItem(true, MediaItemPath.pageFavorites.mediaId) {
                     setTitle(res.getString(R.string.playlist_favorites))
-                    setIconUri(iconRes(res, R.drawable.ic_favorite_white_24dp))
-                    setMediaId(MediaItemPath.pageFavorites.mediaId)
+                    setArtworkUri(iconRes(res, R.drawable.ic_favorite_white_24dp))
                 },
-                mediaItem(FLAG_BROWSABLE) {
+                mediaItem(true, MediaItemPath.pageTopTracks.mediaId) {
                     setTitle(res.getString(R.string.playlist_my_top_tracks))
-                    setIconUri(iconRes(res, R.drawable.ic_trending_up_white_24dp))
-                    setMediaId(MediaItemPath.pageTopTracks.mediaId)
+                    setArtworkUri(iconRes(res, R.drawable.ic_trending_up_white_24dp))
                 },
-                mediaItem(FLAG_BROWSABLE) {
+                mediaItem(true, MediaItemPath.pageLastAdded.mediaId) {
                     setTitle(res.getString(R.string.playlist_last_added))
-                    setIconUri(iconRes(res, R.drawable.ic_library_add_white_24dp))
-                    setMediaId(MediaItemPath.pageLastAdded.mediaId)
+                    setArtworkUri(iconRes(res, R.drawable.ic_library_add_white_24dp))
                 },
-                mediaItem(FLAG_BROWSABLE) {
+                mediaItem(true, MediaItemPath.pageHistory.mediaId) {
                     setTitle(res.getString(R.string.playlist_history))
-                    setIconUri(iconRes(res, R.drawable.ic_access_time_white_24dp))
-                    setMediaId(MediaItemPath.pageHistory.mediaId)
+                    setArtworkUri(iconRes(res, R.drawable.ic_access_time_white_24dp))
                 },
-                mediaItem(FLAG_BROWSABLE) {
+                mediaItem(true, MediaItemPath.pageGenres.mediaId) {
                     setTitle(res.getString(R.string.label_genres))
-                    setIconUri(iconRes(res, R.drawable.ic_bookmark_music_white_24dp))
-                    setMediaId(MediaItemPath.pageGenres.mediaId)
+                    setArtworkUri(iconRes(res, R.drawable.ic_bookmark_music_white_24dp))
                 }
             )
         }
@@ -464,10 +449,31 @@ object MediaItemProviders {
      * a MediaItem presenting errors
      */
     fun error(context: Context): MediaItem =
-        MediaItem(
-            MediaDescriptionCompat.Builder()
-                .setTitle(context.getString(R.string.title_internal_error))
-                .setMediaId(MediaItemPath.ROOT_PATH)
-                .build(), FLAG_BROWSABLE
-        )
+        MediaItem.Builder().setMediaId(MediaItemPath.ROOT_PATH)
+            .setMediaMetadata(
+                MediaMetadata.Builder()
+                    .setTitle(context.getString(R.string.title_internal_error))
+                    .setIsBrowsable(true).setIsPlayable(false)
+                    .setMediaType(MediaMetadata.MEDIA_TYPE_FOLDER_MIXED)
+                    .build()
+            ).build()
 }
+
+fun Song.toMediaMetadata(): MediaMetadata = MediaMetadata.Builder()
+    .setTitle(title)
+    .setArtist(artistName)
+    .setAlbumTitle(albumName)
+    .setAlbumArtist(artistName)
+    .setRecordingYear(year.takeIf { it > 0 })
+    .setDurationMs(duration.coerceAtLeast(0))
+    .setArtworkUri(mediaStoreUriAlbumArt(albumId))
+    .setIsBrowsable(false).setIsPlayable(true)
+    .setMediaType(MediaMetadata.MEDIA_TYPE_MUSIC)
+    .build()
+
+fun Song.toMediaItem(): MediaItem = MediaItem.Builder()
+    .setMediaId(MediaItemPath.song(id).mediaId)
+    .setUri(mediaStoreUriSongExternal(id))
+    .setTag(this)
+    .setMediaMetadata(toMediaMetadata())
+    .build()

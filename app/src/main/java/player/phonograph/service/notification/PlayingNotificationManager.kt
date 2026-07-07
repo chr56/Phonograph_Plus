@@ -27,12 +27,15 @@ import player.phonograph.ui.theme.getTintedDrawable
 import player.phonograph.ui.theme.secondaryTextColorOn
 import player.phonograph.ui.theme.textColorOn
 import androidx.annotation.LayoutRes
+import androidx.annotation.OptIn
 import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.Action
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
-import androidx.media.app.NotificationCompat.MediaStyle
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.session.MediaStyleNotificationHelper.MediaStyle
 import android.app.Notification
 import android.app.PendingIntent
 import android.app.Service.STOP_FOREGROUND_DETACH
@@ -44,15 +47,22 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Build
 import android.os.Build.VERSION.SDK_INT
+import android.os.Handler
+import android.os.Looper
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import android.widget.RemoteViews
 import android.widget.Toast
-import kotlinx.coroutines.yield
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 
+@OptIn(UnstableApi::class)
 class PlayingNotificationManager : ServiceComponent {
     override var created: Boolean = false
+
+    private val mainHandler = Handler(Looper.getMainLooper())
+    private val jobs = mutableListOf<Job>()
 
     private var _service: MusicService? = null
     private val service: MusicService get() = _service!!
@@ -95,33 +105,36 @@ class PlayingNotificationManager : ServiceComponent {
 
         settingsObserver = SettingsObserver(service, service.coroutineScope)
 
-        settingsObserver.collect(Keys.classicNotification) { value ->
-            classicNotification = value
-            implementation = if (value) ClassicNotification() else MediaStyleNotification()
-        }
-        settingsObserver.collect(Keys.coloredNotification) { value ->
-            coloredNotification = value
-        }
-        settingsObserver.collect(Keys.notificationActions) { config ->
-            actionsConfig = config
-        }
-        settingsObserver.collect(Keys.persistentPlaybackNotification) { value ->
-            persistent = value
-            while (implementation == null) yield()
-            if (value) { //todo
-                updateNotification(service.queueManager.currentSong, service.statusForNotification)
-            }
-        }
-
         implementation = if (classicNotification) ClassicNotification() else MediaStyleNotification()
-
         created = true
+
+        jobs += settingsObserver.collect(Keys.classicNotification, Dispatchers.Main) { value ->
+            classicNotification = value
+            request?.dispose()
+            implementation = if (value) ClassicNotification() else MediaStyleNotification()
+            refreshNotification()
+        }
+        jobs += settingsObserver.collect(Keys.coloredNotification, Dispatchers.Main) { value ->
+            coloredNotification = value
+            refreshNotification()
+        }
+        jobs += settingsObserver.collect(Keys.notificationActions, Dispatchers.Main) { config ->
+            actionsConfig = config
+            refreshNotification()
+        }
+        jobs += settingsObserver.collect(Keys.persistentPlaybackNotification, Dispatchers.Main) { value ->
+            persistent = value
+            refreshNotification()
+        }
     }
 
     override fun onDestroy(musicService: MusicService) {
+        created = false
+        jobs.forEach { it.cancel() }
+        jobs.clear()
+        mainHandler.removeCallbacksAndMessages(null)
         request?.dispose()
         removeNotification()
-        created = false
         implementation = null
         _service = null
     }
@@ -140,7 +153,18 @@ class PlayingNotificationManager : ServiceComponent {
     private var lastSong: Song? = null
     private var lastServiceStatus: MusicServiceStatus? = null
 
+    private fun refreshNotification() {
+        if (!created) return
+        lastServiceStatus = null
+        updateNotification(service.queueManager.currentSong, service.statusForNotification)
+    }
+
     fun updateNotification(song: Song?, status: MusicServiceStatus) {
+        if (Looper.myLooper() != mainHandler.looper) {
+            mainHandler.post { updateNotification(song, status) }
+            return
+        }
+        if (!created) return
         if (song != null) {
             if (song != lastSong || status != lastServiceStatus) {
                 val actions = actionsConfig ?: settingsObserver.blocking(Keys.notificationActions)
@@ -161,6 +185,10 @@ class PlayingNotificationManager : ServiceComponent {
 
     @Synchronized
     private fun postNotification(notification: Notification) {
+        if (!created || service.isDestroyed) return
+        if (service.isPlaying) {
+            ContextCompat.startForegroundService(service, Intent(service, MusicService::class.java))
+        }
         if (!checkNotificationPermission(service)) {
             val message = service.getString(R.string.msg_notification_is_disabled)
             Log.e("Phonograph", message)
@@ -191,7 +219,11 @@ class PlayingNotificationManager : ServiceComponent {
     }
 
     fun cancelNotification() {
-        if (!persistent) removeNotification()
+        if (Looper.myLooper() != mainHandler.looper) {
+            mainHandler.post { cancelNotification() }
+            return
+        }
+        if (created && !persistent) removeNotification()
     }
 
     @Synchronized
@@ -216,7 +248,7 @@ class PlayingNotificationManager : ServiceComponent {
     inner class MediaStyleNotification : Implementation {
 
         private fun mediaStyle(): MediaStyle =
-            MediaStyle().setMediaSession(service.mediaSession.sessionToken)
+            MediaStyle(service.mediaSession)
 
         private var cachedSong: Song? = null
         private var cachedBitmap: Bitmap? = null
@@ -241,6 +273,7 @@ class PlayingNotificationManager : ServiceComponent {
             request?.dispose()
             if (SDK_INT < VERSION_SET_COVER_USING_METADATA && cachedSong != song) {
                 request = service.coverLoader.load(song) { bitmap: Bitmap?, paletteColor: Int ->
+                    if (!created || lastSong != song || lastServiceStatus != status) return@load
                     if (bitmap != null) {
                         prepareNotificationImages(notificationBuilder, bitmap, paletteColor)
                         postNotification(notificationBuilder.build())
@@ -279,7 +312,7 @@ class PlayingNotificationManager : ServiceComponent {
             val positions =
                 config.actions.mapIndexed { index, item ->
                     if (item.displayInCompat) index else -1
-                }.filter { it > 0 }.toIntArray()
+                }.filter { it >= 0 }.take(3).toIntArray()
 
             return base
                 .apply {
@@ -398,6 +431,7 @@ class PlayingNotificationManager : ServiceComponent {
             request?.dispose()
             if (song != null && cachedSong != song) {
                 request = service.coverLoader.load(song) { bitmap: Bitmap?, color: Int ->
+                    if (!created || lastSong != song || lastServiceStatus != status) return@load
                     if (bitmap != null) {
                         layoutCompat.updateNotificationImages(bitmap, color, status, config, true)
                         layoutExpanded.updateNotificationImages(bitmap, color, status, config, false)

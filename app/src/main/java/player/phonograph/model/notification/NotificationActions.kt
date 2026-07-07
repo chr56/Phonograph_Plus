@@ -4,6 +4,7 @@
 
 package player.phonograph.model.notification
 
+import player.phonograph.model.service.ACTION_FAV
 import player.phonograph.model.service.ACTION_FAST_FORWARD
 import player.phonograph.model.service.ACTION_FAST_REWIND
 import player.phonograph.model.service.ACTION_NEXT
@@ -51,7 +52,7 @@ enum class NotificationAction(
     Shuffle(ACTION_KEY_SHUFFLE, ACTION_SHUFFLE),
     FastForward(ACTION_KEY_FAST_FORWARD, ACTION_FAST_FORWARD),
     FastRewind(ACTION_KEY_FAST_REWIND, ACTION_FAST_REWIND),
-    Fav(ACTION_KEY_FAV, ACTION_KEY_FAV),
+    Fav(ACTION_KEY_FAV, ACTION_FAV),
     Close(ACTION_KEY_CLOSE, ACTION_QUIT_BY_USER_ACTION),
     Invalid(ACTION_KEY_UNKNOWN, "");
 
