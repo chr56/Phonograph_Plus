@@ -97,7 +97,6 @@ jobs:
           name: "LTS Release ${{ github.ref_name }}"
           files: |
             products/PhonographPlus_*.apk
-            products/PhonographPlus_*.apk.sha1
             products/PhonographPlus_*.apk.sha256
             products/PhonographPlus*.txt.gz
           prerelease: false
