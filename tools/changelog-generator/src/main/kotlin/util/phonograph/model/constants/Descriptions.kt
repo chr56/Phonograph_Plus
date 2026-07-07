@@ -6,8 +6,8 @@ package util.phonograph.model.constants
 
 const val OVERFLOWED_MESSAGE = "...(Visit project homepage to see full changelogs)"
 
-const val SIGNING_KEY_WARNING_EN = "We have changed the signing key since this version. You have to _uninstall first_ before upgrading. \nHowever, if your device runs Android 9 and higher, you can install `IntermediaRelease` variants to transit smoothly without uninstalling first."
-const val SIGNING_KEY_WARNING_ZH = "自该版本起，我们使用了新的签名密钥；更新前需要先卸载再安装；\n但是，若设备运行 Android 9 及其以上，可安装带有 `IntermediaRelease` 的安装包，则可无需卸载即可迁到新签名密钥！"
+const val SIGNING_KEY_WARNING_EN = "We have changed the signing key since v2.0.0. You have to _uninstall first_ before upgrading. \nHowever, if your device runs Android 9 and higher, you can install `IntermediaRelease` variants to transit smoothly without uninstalling first."
+const val SIGNING_KEY_WARNING_ZH = "自 2.0.0 版本起，我们使用了新的签名密钥；更新前需要先卸载再安装；\n但是，若设备运行 Android 9 及其以上，可安装带有 `IntermediaRelease` 的安装包，则可无需卸载即可迁到新签名密钥！"
 
 const val PREVIEW_WARNING_EN =
     "This is a _Preview Channel_ Release (identified by `preview` suffix in the package name), stability and quality are not guaranteed."
