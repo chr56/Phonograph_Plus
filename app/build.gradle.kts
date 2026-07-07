@@ -235,6 +235,7 @@ dependencies {
     implementation(libs.androidx.media)
     implementation(libs.androidx.cardview)
     implementation(libs.androidx.palette)
+    implementation(libs.bundles.androidx.media3)
     implementation(libs.bundles.androidx.room)
     implementation(libs.bundles.androidx.datastore)
     ksp(libs.androidx.room.compiler)
