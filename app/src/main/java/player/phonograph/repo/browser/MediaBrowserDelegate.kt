@@ -1,66 +1,47 @@
 /*
- *  Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2026 chr_56
  */
 
 package player.phonograph.repo.browser
 
-import player.phonograph.model.PlayRequest
-import player.phonograph.repo.loader.Songs
-import player.phonograph.repo.mediastore.MediaStoreSongs
-import player.phonograph.settings.Keys
-import player.phonograph.settings.Settings
-import androidx.media.MediaBrowserServiceCompat.BrowserRoot
-import android.app.SearchManager
+import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
+import androidx.media3.session.MediaLibraryService.LibraryParams
 import android.content.Context
-import android.os.Bundle
 import android.os.Process
-import android.provider.MediaStore
-import android.support.v4.media.MediaBrowserCompat
 import android.util.Log
 
 object MediaBrowserDelegate {
     private const val TAG = "MediaBrowser"
 
-    fun onGetRoot(context: Context, clientPackageName: String, clientUid: Int, rootHints: Bundle?): BrowserRoot? =
+    fun root(context: Context, clientPackageName: String, clientUid: Int, params: LibraryParams?): MediaItem? =
         if (validate(context, clientPackageName, clientUid)) {
-            val root = if (rootHints == null) {
+            val id = if (params == null) {
                 MediaItemPath.ROOT_PATH
             } else {
                 when {
-                    rootHints.getBoolean(BrowserRoot.EXTRA_RECENT)    -> MediaItemPath.pageLastAdded.mediaId
-                    rootHints.getBoolean(BrowserRoot.EXTRA_SUGGESTED) -> MediaItemPath.pageTopTracks.mediaId
-                    else                                              -> MediaItemPath.ROOT_PATH
+                    params.isRecent    -> MediaItemPath.pageLastAdded.mediaId
+                    params.isSuggested -> MediaItemPath.pageTopTracks.mediaId
+                    else               -> MediaItemPath.ROOT_PATH
                 }
             }
-            BrowserRoot(root, null)
+            MediaItem.Builder()
+                .setMediaId(id)
+                .setMediaMetadata(
+                    MediaMetadata.Builder()
+                        .setIsBrowsable(true)
+                        .setIsPlayable(false)
+                        .build()
+                )
+                .build()
         } else {
             null
         }
 
-    suspend fun listChildren(path: String, context: Context): List<MediaBrowserCompat.MediaItem> =
+    suspend fun listChildren(path: String, context: Context): List<MediaItem> =
         MediaItemProviders.of(path).browser(context)
 
-    suspend fun playFromMediaId(context: Context, mediaId: String, @Suppress("UNUSED_PARAMETER") extras: Bundle?): PlayRequest =
-        MediaItemProviders.of(mediaId).play(context)
-
-    suspend fun playFromSearch(context: Context, query: String?, extras: Bundle?): PlayRequest.SongsRequest =
-        if (query.isNullOrEmpty()) {
-            PlayRequest.SongsRequest(Songs.all(context, Settings(context)[Keys.songSortMode].read()), 0)
-        } else {
-            if (extras != null) {
-                val query = extras.getString(SearchManager.QUERY)
-                val title = extras.getString(MediaStore.EXTRA_MEDIA_TITLE)
-                val album = extras.getString(MediaStore.EXTRA_MEDIA_ALBUM)
-                val artist = extras.getString(MediaStore.EXTRA_MEDIA_ARTIST)
-                val songs = MediaStoreSongs.search(context, query, title, album, artist)
-                PlayRequest.SongsRequest(songs, 0)
-            } else {
-                val songs = Songs.searchByTitle(context, query)
-                PlayRequest.SongsRequest(songs, 0)
-            }
-        }
-
-    fun error(context: Context): List<MediaBrowserCompat.MediaItem> = listOf(MediaItemProviders.error(context))
+    fun error(context: Context): List<MediaItem> = listOf(MediaItemProviders.error(context))
 
     // todo: validate package names & signatures
     private fun validate(context: Context, clientPackageName: String, clientUid: Int): Boolean {

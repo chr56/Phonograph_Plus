@@ -7,13 +7,11 @@ package player.phonograph.service
 import org.koin.android.ext.android.get
 import player.phonograph.ACTUAL_PACKAGE_NAME
 import player.phonograph.BuildConfig
-import player.phonograph.foundation.error.record
 import player.phonograph.foundation.error.warning
 import player.phonograph.foundation.localization.ContextLocaleDelegate
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.model.service.*
-import player.phonograph.repo.browser.MediaBrowserDelegate
 import player.phonograph.repo.database.domain.DynamicTracks
 import player.phonograph.repo.loader.FavoriteTracks
 import player.phonograph.service.notification.CoverLoader
@@ -30,17 +28,16 @@ import player.phonograph.service.util.MusicServiceUtil
 import player.phonograph.service.util.SongPlayCountHelper
 import player.phonograph.settings.Keys
 import player.phonograph.settings.SettingsObserver
-import androidx.media.MediaBrowserServiceCompat
+import androidx.media3.session.MediaLibraryService
+import androidx.media3.session.MediaSession
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.media.audiofx.AudioEffect
 import android.os.Binder
 import android.os.Build.VERSION.SDK_INT
-import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
-import android.support.v4.media.MediaBrowserCompat
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -51,7 +48,7 @@ import kotlinx.coroutines.runBlocking
 /**
  * @author Karim Abou Zeid (kabouzeid), Andrew Neal
  */
-class MusicService : MediaBrowserServiceCompat(),
+class MusicService : MediaLibraryService(),
                      QueueObserver, PlayerStateObserver {
 
     val queueManager: QueueManager = get()
@@ -87,9 +84,6 @@ class MusicService : MediaBrowserServiceCompat(),
         coverLoader = CoverLoader(this)
         mediaSessionController.onCreate(this)
         playNotificationManager.onCreate(this)
-        sessionToken = mediaSessionController.mediaSession.sessionToken // MediaBrowserService
-
-        mediaSessionController.mediaSession.isActive = true
 
         // process updater
         throttledTimer = ThrottledTimer(controller.handler)
@@ -120,7 +114,7 @@ class MusicService : MediaBrowserServiceCompat(),
         if (intent != null) {
             if (intent.action != null) processCommand(intent.action)
         }
-        return START_NOT_STICKY
+        return super.onStartCommand(intent, flags, startId)
     }
 
     fun processCommand(action: String?) {
@@ -189,7 +183,6 @@ class MusicService : MediaBrowserServiceCompat(),
 
     override fun onDestroy() {
         isDestroyed = true
-        mediaSessionController.mediaSession.isActive = false
         closeAudioEffectSession()
         playNotificationManager.onDestroy(this)
         mediaSessionController.onDestroy(this)
@@ -438,30 +431,7 @@ class MusicService : MediaBrowserServiceCompat(),
         mediaSessionController.updatePlaybackState(statusForNotification)
     }
 
-    override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?): BrowserRoot? {
-        log("onGetRoot() clientPackageName: $clientPackageName, clientUid: $clientUid", false)
-        log("onGetRoot() rootHints: ${rootHints?.toString()}", false)
-        return try {
-            MediaBrowserDelegate.onGetRoot(this, clientPackageName, clientUid, rootHints)
-        } catch (e: Throwable) {
-            record(this, e, javaClass.name)
-            null
-        }
-    }
-
-    override fun onLoadChildren(parentId: String, result: Result<MutableList<MediaBrowserCompat.MediaItem>>) {
-        log("onLoadChildren(): parentId $parentId", false)
-        runBlocking {
-            val context = this@MusicService
-            val mediaItems = try {
-                MediaBrowserDelegate.listChildren(parentId, context)
-            } catch (e: Throwable) {
-                record(context, e, javaClass.name)
-                MediaBrowserDelegate.error(context)
-            }
-            result.sendResult(ArrayList(mediaItems))
-        }
-    }
+    override fun onGetSession(controllerInfo: MediaSession.ControllerInfo) = mediaSessionController.mediaSession
 
 
     override fun attachBaseContext(base: Context?) {
@@ -480,6 +450,7 @@ class MusicService : MediaBrowserServiceCompat(),
 
     companion object {
         private const val THROTTLE: Long = 500
+        private const val LEGACY_BROWSER_SERVICE_INTERFACE = "android.media.browse.MediaBrowserService"
 
         fun log(msg: String, force: Boolean) {
             if (force || BuildConfig.DEBUG) Log.i("MusicServiceDebug", msg)
@@ -488,10 +459,11 @@ class MusicService : MediaBrowserServiceCompat(),
     }
 
     private var serviceUsedInForeground: Int = 0
-    override fun onBind(intent: Intent): IBinder {
+    override fun onBind(intent: Intent?): IBinder? {
         serviceUsedInForeground++
-        return if (SERVICE_INTERFACE == intent.action) {
-            log("onBind(): bind to $SERVICE_INTERFACE", true)
+        val intentAction = intent?.action
+        return if (SERVICE_INTERFACE == intentAction || LEGACY_BROWSER_SERVICE_INTERFACE == intentAction) {
+            log("onBind(): bind to ${intent.action}", true)
             super.onBind(intent) ?: musicBind
         } else {
             log("onBind(): bind to common MusicBinder", true)

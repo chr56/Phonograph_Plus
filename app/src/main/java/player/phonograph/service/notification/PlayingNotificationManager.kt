@@ -27,12 +27,14 @@ import player.phonograph.ui.theme.getTintedDrawable
 import player.phonograph.ui.theme.secondaryTextColorOn
 import player.phonograph.ui.theme.textColorOn
 import androidx.annotation.LayoutRes
+import androidx.annotation.OptIn
 import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.Action
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.graphics.drawable.toBitmap
-import androidx.media.app.NotificationCompat.MediaStyle
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.session.MediaStyleNotificationHelper.MediaStyle
 import android.app.Notification
 import android.app.PendingIntent
 import android.app.Service.STOP_FOREGROUND_DETACH
@@ -215,15 +217,12 @@ class PlayingNotificationManager : ServiceComponent {
      */
     inner class MediaStyleNotification : Implementation {
 
-        private fun mediaStyle(): MediaStyle =
-            MediaStyle().setMediaSession(service.mediaSession.sessionToken)
-
         private var cachedSong: Song? = null
         private var cachedBitmap: Bitmap? = null
         private var cachedPaletteColor: Int = -1
 
         override fun update(song: Song, status: MusicServiceStatus, config: NotificationActionsConfig) {
-            val notificationBuilder = prepareNotification(
+            val notificationBuilder = prepareNotificationBuilder(
                 builder = notificationBuilder(service),
                 title = song.title,
                 content = song.artistName,
@@ -256,7 +255,7 @@ class PlayingNotificationManager : ServiceComponent {
         /**
          * prepare notification
          */
-        private fun prepareNotification(
+        private fun prepareNotificationBuilder(
             builder: NotificationCompat.Builder,
             title: String,
             content: String?,
@@ -281,11 +280,20 @@ class PlayingNotificationManager : ServiceComponent {
                     if (item.displayInCompat) index else -1
                 }.filter { it > 0 }.toIntArray()
 
-            return base
-                .apply {
-                    for (action in actions) addAction(action)
-                }
-                .setStyle(mediaStyle().setShowActionsInCompactView(*positions))
+            return base.withMediaStyle(actions, positions)
+        }
+
+        /**
+         * Decorate as Media Style Notification
+         */
+        @OptIn(UnstableApi::class)
+        private fun NotificationCompat.Builder.withMediaStyle(
+            actions: List<Action>,
+            positions: IntArray,
+        ): NotificationCompat.Builder {
+            for (action in actions) this.addAction(action)
+            val mediaStyle = MediaStyle(service.mediaSession).setShowActionsInCompactView(*positions)
+            return this.setStyle(mediaStyle)
         }
 
         private fun processActions(action: NotificationAction?, status: MusicServiceStatus): Action {
@@ -322,7 +330,7 @@ class PlayingNotificationManager : ServiceComponent {
             status: MusicServiceStatus,
             config: NotificationActionsConfig,
         ): NotificationCompat.Builder =
-            prepareNotification(
+            prepareNotificationBuilder(
                 builder = notificationBuilder(service),
                 title = service.getString(R.string.msg_empty),
                 content = null,

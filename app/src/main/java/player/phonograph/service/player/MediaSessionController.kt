@@ -1,91 +1,77 @@
 /*
- *  Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2026 chr_56
  */
 
 package player.phonograph.service.player
 
 import coil.request.Disposable
-import player.phonograph.ACTUAL_PACKAGE_NAME
-import player.phonograph.model.PlayRequest
+import com.google.common.collect.ImmutableList
+import com.google.common.util.concurrent.Futures
+import com.google.common.util.concurrent.ListenableFuture
+import player.phonograph.foundation.error.record
 import player.phonograph.model.Song
 import player.phonograph.model.notification.NotificationAction
 import player.phonograph.model.notification.NotificationActionsConfig
 import player.phonograph.model.service.MusicServiceStatus
+import player.phonograph.model.service.PlayerState
 import player.phonograph.model.service.RepeatMode
 import player.phonograph.model.service.ShuffleMode
 import player.phonograph.repo.browser.MediaBrowserDelegate
+import player.phonograph.repo.browser.MediaBrowserTree
+import player.phonograph.repo.browser.MediaItemPath
 import player.phonograph.service.MusicService
 import player.phonograph.service.ServiceComponent
-import player.phonograph.service.queue.QueueManager
-import player.phonograph.service.util.MediaButtonIntentReceiver
 import player.phonograph.settings.Keys
 import player.phonograph.settings.SettingsObserver
 import player.phonograph.ui.resource.Icons
 import player.phonograph.ui.resource.Texts
-import android.app.PendingIntent
-import android.content.ComponentName
-import android.content.Intent
+import androidx.annotation.OptIn
+import androidx.media3.common.C
+import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
+import androidx.media3.common.PlaybackParameters
+import androidx.media3.common.Player
+import androidx.media3.common.SimpleBasePlayer
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.session.CommandButton
+import androidx.media3.session.LibraryResult
+import androidx.media3.session.MediaLibraryService.LibraryParams
+import androidx.media3.session.MediaLibraryService.MediaLibrarySession
+import androidx.media3.session.MediaSession
+import androidx.media3.session.SessionCommand
+import androidx.media3.session.SessionCommands
+import androidx.media3.session.SessionError
+import androidx.media3.session.SessionResult
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.support.v4.media.MediaMetadataCompat
-import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM
-import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM_ART
-import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM_ARTIST
-import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ARTIST
-import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_DURATION
-import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_NUM_TRACKS
-import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_TITLE
-import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER
-import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_YEAR
-import android.support.v4.media.session.MediaSessionCompat
-import android.support.v4.media.session.PlaybackStateCompat
-import android.support.v4.media.session.PlaybackStateCompat.STATE_PAUSED
-import android.support.v4.media.session.PlaybackStateCompat.STATE_PLAYING
-import kotlinx.coroutines.launch
+import android.os.Looper
 
+@OptIn(UnstableApi::class)
 class MediaSessionController : ServiceComponent {
     override var created: Boolean = false
 
     private var _service: MusicService? = null
     private val service: MusicService get() = _service!!
 
+    private var _player: DummyPlayer? = null
+    private val player: DummyPlayer get() = _player!!
 
-    private var _mediaSession: MediaSessionCompat? = null
-    val mediaSession: MediaSessionCompat get() = _mediaSession!!
+    private var _mediaSession: MediaLibrarySession? = null
+    val mediaSession: MediaLibrarySession get() = _mediaSession!!
 
     override fun onCreate(musicService: MusicService) {
         _service = musicService
-
-        val mediaButtonReceiverComponentName = ComponentName(
-            musicService.applicationContext,
-            MediaButtonIntentReceiver::class.java
-        )
-        val mediaButtonReceiverPendingIntent =
-            PendingIntent.getBroadcast(
-                musicService.applicationContext,
-                0,
-                Intent(Intent.ACTION_MEDIA_BUTTON).apply {
-                    component = mediaButtonReceiverComponentName
-                },
-                PendingIntent.FLAG_IMMUTABLE
-            )
-
-        _mediaSession =
-            MediaSessionCompat(
-                musicService,
-                ACTUAL_PACKAGE_NAME,
-                mediaButtonReceiverComponentName,
-                mediaButtonReceiverPendingIntent
-            )
-        mediaSession.setMediaButtonReceiver(mediaButtonReceiverPendingIntent)
-
-        mediaSession.setCallback(mediaSessionCallback)
+        _player = DummyPlayer(musicService, Looper.getMainLooper())
+        _mediaSession = MediaLibrarySession.Builder(musicService, player, mediaLibrarySessionCallback)
+            .setMediaButtonPreferences(commandButtons(musicService.statusForNotification))
+            .build()
 
         created = true
 
         val settingsObserver = SettingsObserver(musicService, musicService.coroutineScope)
         settingsObserver.collect(Keys.notificationActions) { config ->
             updateCustomActions(config)
+            mediaSession.setMediaButtonPreferences(commandButtons(musicService.statusForNotification))
         }
 
     }
@@ -94,139 +80,15 @@ class MediaSessionController : ServiceComponent {
         created = false
         disposable?.dispose()
         mediaSession.release()
+        player.release()
         _mediaSession = null
+        _player = null
         _service = null
     }
 
-
-    private val sessionPlaybackStateBuilder
-        get() = PlaybackStateCompat.Builder().setActions(
-            PlaybackStateCompat.ACTION_PLAY or
-                    PlaybackStateCompat.ACTION_PAUSE or
-                    PlaybackStateCompat.ACTION_PLAY_PAUSE or
-                    PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
-                    PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or
-                    PlaybackStateCompat.ACTION_STOP or
-                    PlaybackStateCompat.ACTION_SET_REPEAT_MODE or
-                    PlaybackStateCompat.ACTION_SET_SHUFFLE_MODE or
-                    PlaybackStateCompat.ACTION_SET_PLAYBACK_SPEED or
-                    PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID or
-                    PlaybackStateCompat.ACTION_PLAY_FROM_SEARCH or
-                    PlaybackStateCompat.ACTION_SEEK_TO
-        )
-
-    private val mediaSessionCallback: MediaSessionCompat.Callback =
-        object : MediaSessionCompat.Callback() {
-            override fun onPlay() {
-                service.play()
-            }
-
-            override fun onPause() {
-                service.pause()
-            }
-
-            override fun onSkipToNext() {
-                service.playNextSong(true)
-            }
-
-            override fun onSkipToPrevious() {
-                service.back(true)
-            }
-
-            override fun onStop() {
-                service.stopSelf()
-            }
-
-            override fun onSeekTo(pos: Long) {
-                service.seek(pos.toInt())
-            }
-
-            val queueManager: QueueManager get() = service.queueManager
-
-            override fun onSetShuffleMode(shuffleMode: Int) {
-                when (shuffleMode) {
-                    PlaybackStateCompat.SHUFFLE_MODE_INVALID -> {}
-                    PlaybackStateCompat.SHUFFLE_MODE_NONE    -> queueManager.modifyShuffleMode(ShuffleMode.NONE)
-                    PlaybackStateCompat.SHUFFLE_MODE_ALL     -> queueManager.modifyShuffleMode(ShuffleMode.SHUFFLE)
-                    PlaybackStateCompat.SHUFFLE_MODE_GROUP   -> queueManager.modifyShuffleMode(ShuffleMode.SHUFFLE)
-                }
-            }
-
-            override fun onSetRepeatMode(repeatMode: Int) {
-                when (repeatMode) {
-                    PlaybackStateCompat.REPEAT_MODE_INVALID -> {}
-                    PlaybackStateCompat.REPEAT_MODE_ALL     -> queueManager.modifyRepeatMode(RepeatMode.REPEAT_QUEUE)
-                    PlaybackStateCompat.REPEAT_MODE_GROUP   -> queueManager.modifyRepeatMode(RepeatMode.REPEAT_QUEUE)
-                    PlaybackStateCompat.REPEAT_MODE_NONE    -> queueManager.modifyRepeatMode(RepeatMode.NONE)
-                    PlaybackStateCompat.REPEAT_MODE_ONE     -> queueManager.modifyRepeatMode(RepeatMode.REPEAT_SINGLE_SONG)
-                }
-            }
-
-            override fun onSetPlaybackSpeed(speed: Float) {
-                service.speed = speed
-            }
-
-            override fun onMediaButtonEvent(mediaButtonEvent: Intent): Boolean {
-                return MediaButtonIntentReceiver.handleIntent(service, mediaButtonEvent)
-            }
-
-            override fun onCustomAction(action: String?, extras: Bundle?) {
-                service.processCommand(action)
-            }
-
-            override fun onPlayFromMediaId(mediaId: String, extras: Bundle?) {
-                service.coroutineScope.launch {
-                    val request = MediaBrowserDelegate.playFromMediaId(service, mediaId, extras)
-                    processRequest(request)
-                }
-            }
-
-            override fun onPlayFromSearch(query: String?, extras: Bundle?) {
-                service.coroutineScope.launch {
-                    val request = MediaBrowserDelegate.playFromSearch(service, query, extras)
-                    processRequest(request)
-                }
-            }
-
-            private fun processRequest(request: PlayRequest) {
-                when (request) {
-                    PlayRequest.EmptyRequest     -> {}
-                    is PlayRequest.PlayAtRequest -> service.playSongAt(request.position)
-                    is PlayRequest.SongRequest   -> {
-                        queueManager.addSong(request.song, queueManager.currentSongPosition, false)
-                        service.playSongAt(queueManager.currentSongPosition)
-                    }
-
-                    is PlayRequest.SongsRequest  -> {
-                        queueManager.swapQueue(request.songs, request.position, false)
-                        service.playSongAt(0)
-                    }
-                }
-            }
-        }
-
     fun updatePlaybackState(status: MusicServiceStatus) {
-        mediaSession.setPlaybackState(
-            sessionPlaybackStateBuilder.setCustomActions(service, status)
-                .setState(
-                    if (status.isPlaying) STATE_PLAYING else STATE_PAUSED,
-                    service.songProgressMillis.toLong(),
-                    service.speed
-                )
-                .build()
-        )
-    }
-
-    private fun PlaybackStateCompat.Builder.setCustomActions(musicService: MusicService, status: MusicServiceStatus):
-            PlaybackStateCompat.Builder {
-        for (action in customActions) {
-            addCustomAction(
-                action.command,
-                Texts.notificationAction(musicService.resources, action),
-                Icons.notificationAction(action, status)
-            )
-        }
-        return this
+        player.refresh()
+        mediaSession.setMediaButtonPreferences(commandButtons(status))
     }
 
     private var customActions: List<NotificationAction> = emptyList()
@@ -235,46 +97,287 @@ class MediaSessionController : ServiceComponent {
             .filterNot { it in NotificationAction.COMMON }
     }
 
-    @Suppress("SameParameterValue")
-    private fun fillMetadata(song: Song, pos: Long, total: Long, bitmap: Bitmap?) =
-        MediaMetadataCompat.Builder().apply {
-            putString(METADATA_KEY_TITLE, song.title)
-            putLong(METADATA_KEY_DURATION, song.duration)
-            putString(METADATA_KEY_ALBUM, song.albumName)
-            putString(METADATA_KEY_ARTIST, song.artistName)
-            putString(METADATA_KEY_ALBUM_ARTIST, song.artistName)
-            putLong(METADATA_KEY_YEAR, song.year.toLong())
-            putBitmap(METADATA_KEY_ALBUM_ART, bitmap)
-            putLong(METADATA_KEY_TRACK_NUMBER, pos)
-            putLong(METADATA_KEY_NUM_TRACKS, total)
+    private fun commandButtons(status: MusicServiceStatus): List<CommandButton> {
+        return customActions.map { action ->
+            CommandButton.Builder(CommandButton.ICON_UNDEFINED)
+                .setCustomIconResId(Icons.notificationAction(action, status))
+                .setDisplayName(Texts.notificationAction(service.resources, action))
+                .setSessionCommand(SessionCommand(action.command, Bundle.EMPTY))
+                .build()
+        }
+    }
+
+    private val mediaLibrarySessionCallback = object : MediaLibrarySession.Callback {
+        override fun onConnect(
+            session: MediaSession,
+            controller: MediaSession.ControllerInfo,
+        ): MediaSession.ConnectionResult {
+            val sessionCommands = SessionCommands.Builder()
+                .add(SessionCommand.COMMAND_CODE_LIBRARY_GET_LIBRARY_ROOT)
+                .add(SessionCommand.COMMAND_CODE_LIBRARY_GET_CHILDREN)
+                .add(SessionCommand.COMMAND_CODE_LIBRARY_GET_ITEM)
+                .add(SessionCommand.COMMAND_CODE_LIBRARY_SUBSCRIBE)
+                .add(SessionCommand.COMMAND_CODE_LIBRARY_UNSUBSCRIBE)
+                .add(SessionCommand.COMMAND_CODE_LIBRARY_SEARCH)
+                .add(SessionCommand.COMMAND_CODE_LIBRARY_GET_SEARCH_RESULT)
+                .apply {
+                    for (action in NotificationAction.ALL) {
+                        add(SessionCommand(action.command, Bundle.EMPTY))
+                    }
+                }
+                .build()
+            return MediaSession.ConnectionResult.AcceptedResultBuilder(session)
+                .setAvailableSessionCommands(sessionCommands)
+                .build()
         }
 
-    private var disposable: Disposable? = null
-    private var cachedBitmap: Bitmap? = null
-    private var cachedSong: Song? = null
-    fun updateMetaData(song: Song?, pos: Long, total: Long, loadCover: Boolean) {
-        if (song == null) {
-            mediaSession.setMetadata(null)
-        } else {
+        override fun onCustomCommand(
+            session: MediaSession,
+            controller: MediaSession.ControllerInfo,
+            customCommand: SessionCommand,
+            args: Bundle,
+        ): ListenableFuture<SessionResult> {
+            service.processCommand(customCommand.customAction)
+            return Futures.immediateFuture(SessionResult(SessionResult.RESULT_SUCCESS))
+        }
 
-            val metadata = fillMetadata(song, pos, total, null)
-            if (loadCover && cachedSong == song && cachedBitmap != null) {
-                metadata.putBitmap(METADATA_KEY_ALBUM_ART, cachedBitmap)
-            }
+        override fun onGetLibraryRoot(
+            session: MediaLibrarySession,
+            browser: MediaSession.ControllerInfo,
+            params: LibraryParams?,
+        ): ListenableFuture<LibraryResult<MediaItem>> {
+            val root = MediaBrowserDelegate.root(
+                service,
+                browser.packageName,
+                browser.uid,
+                params
+            ) ?: return Futures.immediateFuture(LibraryResult.ofError(SessionError.ERROR_BAD_VALUE))
+            return Futures.immediateFuture(LibraryResult.ofItem(root, params))
+        }
 
-            mediaSession.setMetadata(metadata.build())
-
-            disposable?.dispose()
-            if (loadCover && cachedSong != song) {
-                disposable = service.coverLoader.load(song) { bitmap, _ ->
-                    metadata.putBitmap(METADATA_KEY_ALBUM_ART, bitmap)
-                    mediaSession.setMetadata(metadata.build())
-                    this.cachedBitmap = bitmap
-                    this.cachedSong = song
+        override fun onGetChildren(
+            session: MediaLibrarySession,
+            browser: MediaSession.ControllerInfo,
+            parentId: String,
+            page: Int,
+            pageSize: Int,
+            params: LibraryParams?,
+        ): ListenableFuture<LibraryResult<ImmutableList<MediaItem>>> {
+            val mediaItems = runCatching {
+                kotlinx.coroutines.runBlocking {
+                    MediaBrowserDelegate.listChildren(parentId, service)
                 }
+            }.getOrElse { error ->
+                record(service, error, javaClass.name)
+                MediaBrowserDelegate.error(service)
+            }
+            return Futures.immediateFuture(LibraryResult.ofItemList(mediaItems, params))
+        }
+
+        override fun onGetItem(
+            session: MediaLibrarySession,
+            browser: MediaSession.ControllerInfo,
+            mediaId: String,
+        ): ListenableFuture<LibraryResult<MediaItem>> {
+            val mediaItemPath = MediaBrowserTree.resolve(mediaId)
+            val segments = mediaItemPath?.segments.orEmpty()
+            val playable = when {
+                segments.getOrNull(1) == MediaItemPath.PLAY_ALL                          -> true
+                segments.firstOrNull() == MediaItemPath.SONGS && segments.size > 1       -> true
+                segments.firstOrNull() == MediaItemPath.SONGS_QUEUE && segments.size > 1 -> true
+                else                                                                     -> false
+            }
+            val browsable = !playable
+            val item = MediaItem.Builder()
+                .setMediaId(mediaId)
+                .setMediaMetadata(
+                    MediaMetadata.Builder()
+                        .setIsBrowsable(browsable)
+                        .setIsPlayable(playable)
+                        .build()
+                )
+                .build()
+            return Futures.immediateFuture(LibraryResult.ofItem(item, null))
+        }
+    }
+
+    fun updateMetaData(song: Song?, pos: Long, total: Long, loadCover: Boolean) {
+        player.refresh()
+        if (song == null) return
+
+        val metadata = song.toMediaMetadata(pos, total, null)
+        player.currentMetadata = metadata
+        player.refresh()
+
+        disposable?.dispose()
+        if (loadCover && cachedSong == song && cachedBitmap != null) {
+            player.currentMetadata = song.toMediaMetadata(pos, total, cachedBitmap)
+            player.refresh()
+        } else if (loadCover && cachedSong != song) {
+            disposable = service.coverLoader.load(song) { bitmap, _ ->
+                cachedBitmap = bitmap
+                cachedSong = song
+                player.currentMetadata = song.toMediaMetadata(pos, total, bitmap)
+                player.refresh()
             }
         }
     }
 
-    companion object
+    private var disposable: Disposable? = null
+    private var cachedBitmap: Bitmap? = null
+    private var cachedSong: Song? = null
+
+    private fun Song.toMediaMetadata(pos: Long, total: Long, bitmap: Bitmap?): MediaMetadata =
+        MediaMetadata.Builder()
+            .setTitle(title)
+            .setDurationMs(duration)
+            .setAlbumTitle(albumName)
+            .setArtist(artistName)
+            .setAlbumArtist(artistName)
+            .setTrackNumber(pos.toInt())
+            .setTotalTrackCount(total.toInt())
+            .setArtworkData(bitmap?.toByteArray(), MediaMetadata.PICTURE_TYPE_FRONT_COVER)
+            .setIsBrowsable(false)
+            .setIsPlayable(true)
+            .build()
+
+    private fun Bitmap.toByteArray(): ByteArray {
+        val stream = java.io.ByteArrayOutputStream()
+        compress(Bitmap.CompressFormat.PNG, 100, stream)
+        return stream.toByteArray()
+    }
+
+    /**
+     * A dummy player used for Media3
+     */
+    @OptIn(UnstableApi::class)
+    private inner class DummyPlayer(private val musicService: MusicService, looper: Looper) :
+            SimpleBasePlayer(looper) {
+
+        var currentMetadata: MediaMetadata = MediaMetadata.EMPTY
+
+        fun refresh() = invalidateState()
+
+        override fun getState(): State {
+            val queueManager = musicService.queueManager
+            val queue = queueManager.playingQueue
+            val currentIndex = queueManager.currentSongPosition.coerceAtLeast(0)
+            val playlist = buildPlaylist(queue, currentIndex)
+            return State.Builder()
+                .setAvailableCommands(availableCommands)
+                .setPlaybackState(currentPlaybackState)
+                .setPlayWhenReady(musicService.isPlaying, PLAY_WHEN_READY_CHANGE_REASON_USER_REQUEST)
+                .setPlaybackParameters(PlaybackParameters(musicService.speed))
+                .setRepeatMode(queueManager.repeatMode.toPlayerRepeatMode())
+                .setShuffleModeEnabled(queueManager.shuffleMode == ShuffleMode.SHUFFLE)
+                .setPlaylist(playlist)
+                .setCurrentMediaItemIndex(if (playlist.isEmpty()) C.INDEX_UNSET else currentIndex.coerceAtMost(playlist.lastIndex))
+                .setContentPositionMs(musicService.songProgressMillis.toLong())
+                .setContentBufferedPositionMs(PositionSupplier.getConstant(musicService.songProgressMillis.toLong()))
+                .setTotalBufferedDurationMs(PositionSupplier.ZERO)
+                .build()
+        }
+
+        private fun buildPlaylist(
+            queue: List<Song>, current: Int,
+        ): List<MediaItemData> = queue.mapIndexed { index, song ->
+            val metadata = if (index == current) currentMetadata else song.toMediaMetadata(0, queue.size.toLong(), null)
+            val mediaItem = MediaItem.Builder()
+                .setMediaId(MediaItemPath.song(song.id).mediaId)
+                .setMediaMetadata(metadata)
+                .build()
+            MediaItemData.Builder(song.id)
+                .setMediaItem(mediaItem)
+                .setMediaMetadata(metadata)
+                .setDurationUs(song.duration * 1000)
+                .setIsSeekable(true)
+                .build()
+        }
+
+        override fun handleSetPlayWhenReady(playWhenReady: Boolean): ListenableFuture<*> {
+            if (playWhenReady) musicService.play() else musicService.pause()
+            return Futures.immediateVoidFuture()
+        }
+
+        override fun handleSeek(mediaItemIndex: Int, positionMs: Long, seekCommand: Int): ListenableFuture<*> {
+            when (seekCommand) {
+                COMMAND_SEEK_FORWARD                -> musicService.fastForward()
+                COMMAND_SEEK_BACK                   -> musicService.fastRewind()
+                COMMAND_SEEK_TO_PREVIOUS            -> musicService.back(true)
+                COMMAND_SEEK_TO_PREVIOUS_MEDIA_ITEM -> musicService.back(false)
+                COMMAND_SEEK_TO_NEXT                -> musicService.playNextSong(true)
+                COMMAND_SEEK_TO_NEXT_MEDIA_ITEM     -> musicService.playNextSong(false)
+                COMMAND_SEEK_TO_MEDIA_ITEM          -> musicService.playSongAt(mediaItemIndex)
+                COMMAND_SEEK_IN_CURRENT_MEDIA_ITEM  -> musicService.seek(positionMs.toInt())
+                else                                -> musicService.seek(positionMs.toInt())
+            }
+            return Futures.immediateVoidFuture()
+        }
+
+        override fun handleSetPlaybackParameters(playbackParameters: PlaybackParameters): ListenableFuture<*> {
+            musicService.speed = playbackParameters.speed
+            return Futures.immediateVoidFuture()
+        }
+
+        override fun handleSetRepeatMode(repeatMode: Int): ListenableFuture<*> {
+            musicService.queueManager.modifyRepeatMode(repeatMode.toRepeatMode())
+            return Futures.immediateVoidFuture()
+        }
+
+        override fun handleSetShuffleModeEnabled(shuffleModeEnabled: Boolean): ListenableFuture<*> {
+            musicService.queueManager.modifyShuffleMode(if (shuffleModeEnabled) ShuffleMode.SHUFFLE else ShuffleMode.NONE)
+            return Futures.immediateVoidFuture()
+        }
+
+        override fun handleStop(): ListenableFuture<*> {
+            musicService.stopSelf()
+            return Futures.immediateVoidFuture()
+        }
+
+        override fun handleRelease(): ListenableFuture<*> = Futures.immediateVoidFuture()
+
+        private val currentPlaybackState: Int
+            get() = when (musicService.playerState) {
+                PlayerState.PLAYING -> STATE_READY
+                PlayerState.PAUSED  -> STATE_READY
+                PlayerState.STOPPED -> STATE_IDLE
+                else                -> STATE_BUFFERING
+            }
+
+        private val availableCommands: Player.Commands =
+            Player.Commands.Builder()
+                .add(COMMAND_PLAY_PAUSE)
+                .add(COMMAND_STOP)
+                .add(COMMAND_SEEK_IN_CURRENT_MEDIA_ITEM)
+                .add(COMMAND_SEEK_TO_NEXT)
+                .add(COMMAND_SEEK_TO_NEXT_MEDIA_ITEM)
+                .add(COMMAND_SEEK_TO_PREVIOUS)
+                .add(COMMAND_SEEK_TO_PREVIOUS_MEDIA_ITEM)
+                .add(COMMAND_SEEK_FORWARD)
+                .add(COMMAND_SEEK_BACK)
+                .add(COMMAND_SEEK_TO_MEDIA_ITEM)
+                .add(COMMAND_SET_SPEED_AND_PITCH)
+                .add(COMMAND_SET_REPEAT_MODE)
+                .add(COMMAND_SET_SHUFFLE_MODE)
+                .add(COMMAND_GET_CURRENT_MEDIA_ITEM)
+                .add(COMMAND_GET_TIMELINE)
+                .add(COMMAND_GET_METADATA)
+                .build()
+
+
+        private fun RepeatMode.toPlayerRepeatMode(): Int =
+            when (this) {
+                RepeatMode.NONE               -> REPEAT_MODE_OFF
+                RepeatMode.REPEAT_SINGLE_SONG -> REPEAT_MODE_ONE
+                RepeatMode.REPEAT_QUEUE       -> REPEAT_MODE_ALL
+            }
+
+        private fun Int.toRepeatMode(): RepeatMode =
+            when (this) {
+                REPEAT_MODE_ONE -> RepeatMode.REPEAT_SINGLE_SONG
+                REPEAT_MODE_ALL -> RepeatMode.REPEAT_QUEUE
+                else            -> RepeatMode.NONE
+            }
+
+    }
 }
