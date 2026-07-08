@@ -33,7 +33,7 @@ import player.phonograph.ui.theme.secondaryTextColorOn
 import player.phonograph.ui.theme.textColorOn
 import player.phonograph.ui.util.PHONOGRAPH_ANIM_TIME
 import player.phonograph.ui.util.backgroundColorTransitionAnimator
-import player.phonograph.ui.util.isLandscape
+import player.phonograph.ui.util.isNotPortrait
 import player.phonograph.ui.util.observe
 import player.phonograph.ui.util.setupValueAnimator
 import util.theme.view.menu.setMenuColor
@@ -59,6 +59,7 @@ import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ValueAnimator
 import android.content.Context
+import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Point
 import android.os.Bundle
@@ -122,7 +123,7 @@ abstract class AbsPlayerFragment :
         val queue = PlayerQueueFragment.newInstance(
             withShadow = argumentStyle?.baseStyle == PlayerBaseStyle.FLAT, // todo
             withActionButtons = argumentStyle?.options?.showModeButtonsForQueue == true,
-            displayCurrentSong = !isLandscape(resources)
+            displayCurrentSong = !isNotPortrait(resources)
         )
         childFragmentManager.commit {
             replace(R.id.playback_controls_fragment, controller)
@@ -136,6 +137,7 @@ abstract class AbsPlayerFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        lastScreenIsNotPortrait = !isNotPortrait(resources) // force trigger on first layout
         slidingUpPanel?.addPanelSlideListener(this)
         initToolbar()
         observeState()
@@ -164,6 +166,22 @@ abstract class AbsPlayerFragment :
     ) {
         onLayoutChangedEffect.update { it + 1 }
     }
+
+    //region Configuration Change
+    private var lastScreenIsNotPortrait: Boolean = false
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        val nowNotPortrait = isNotPortrait(resources)
+        if (nowNotPortrait != lastScreenIsNotPortrait) {
+            lastScreenIsNotPortrait = nowNotPortrait
+            parentFragmentManager.commit {
+                detach(this@AbsPlayerFragment)
+                attach(this@AbsPlayerFragment)
+            }
+        }
+    }
+    //endregion
 
     //region Toolbar
     private var lyricsMenuItem: MenuItem? = null

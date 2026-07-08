@@ -7,16 +7,18 @@ package player.phonograph.ui.modules.player.style
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
 import player.phonograph.R
-import player.phonograph.databinding.FragmentCardPlayerBinding
+import player.phonograph.databinding.FragmentPlayerCardLandBinding
+import player.phonograph.databinding.FragmentPlayerCardPortraitBinding
 import player.phonograph.model.Song
 import player.phonograph.model.ui.UnarySlidingUpPanelProvider
 import player.phonograph.ui.modules.player.AbsPlayerFragment
 import player.phonograph.ui.modules.player.controller.PlayerControllerFragment
 import player.phonograph.ui.resource.infoString
 import player.phonograph.ui.theme.themeCardBackgroundColor
-import player.phonograph.ui.util.isLandscape
+import player.phonograph.ui.util.isNotPortrait
 import player.phonograph.ui.util.observe
 import androidx.appcompat.widget.Toolbar
+import androidx.cardview.widget.CardView
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
@@ -33,17 +35,25 @@ import kotlinx.coroutines.launch
 
 class CardPlayerFragment : AbsPlayerFragment() {
 
-    private var _viewBinding: FragmentCardPlayerBinding? = null
-    private val viewBinding: FragmentCardPlayerBinding get() = _viewBinding!!
+    override fun requireToolBarContainer(): View? = impl.toolbarContainer
+    override fun requireToolbar(): Toolbar = impl.toolbar
 
-    override fun requireToolBarContainer(): View? = viewBinding.toolbarContainer
-    override fun requireToolbar(): Toolbar = viewBinding.playerToolbar
+    override val slidingUpPanel: SlidingUpPanelLayout get() = impl.slidingUpPanel
 
-    override val slidingUpPanel: SlidingUpPanelLayout get() = viewBinding.playerSlidingLayout
-
-    private lateinit var impl: CardImpl
+    private var _impl: CardImpl? = null
+    private val impl: CardImpl get() = _impl!!
 
     private interface CardImpl {
+        val root: View
+        val toolbar: Toolbar
+        val toolbarContainer: View?
+        val slidingUpPanel: SlidingUpPanelLayout
+        val playbackControlsContainer: View
+        val colorBackground: View
+        val colorBackgroundOverlay: View
+        val playingQueueCard: CardView
+        val playerPanel: View
+        val coloredToolbar: Boolean
         fun init()
         fun adjustHeight()
         fun applyWindowInsect()
@@ -51,14 +61,17 @@ class CardPlayerFragment : AbsPlayerFragment() {
 
     override val controllerPosition: Point
         get() = Point(
-            viewBinding.playbackControlsFragment.left,
-            viewBinding.playbackControlsFragment.top
+            impl.playbackControlsContainer.left,
+            impl.playbackControlsContainer.top
         )
 
     override fun inflateView(inflater: LayoutInflater): View {
-        impl = (if (isLandscape(resources)) LandscapeImpl(this) else PortraitImpl(this))
-        _viewBinding = FragmentCardPlayerBinding.inflate(inflater)
-        return viewBinding.root
+        _impl = if (isNotPortrait(resources)) {
+            CardLandImpl(FragmentPlayerCardLandBinding.inflate(inflater), this)
+        } else {
+            CardPortraitImpl(FragmentPlayerCardPortraitBinding.inflate(inflater))
+        }
+        return impl.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -67,7 +80,8 @@ class CardPlayerFragment : AbsPlayerFragment() {
 
         lifecycleScope.launch {
             onLayoutChangedEffect.collect { count ->
-                if (count >= 0 && _viewBinding != null) {
+                val impl = _impl
+                if (count >= 0 && impl != null) {
                     if (count == 0) {
                         impl.applyWindowInsect()
                         fixPanelNestedScrolling()
@@ -79,40 +93,40 @@ class CardPlayerFragment : AbsPlayerFragment() {
         }
 
         // for some reason the xml attribute doesn't get applied here.
-        viewBinding.playingQueueCard.setCardBackgroundColor(themeCardBackgroundColor(requireContext()))
+        impl.playingQueueCard.setCardBackgroundColor(themeCardBackgroundColor(requireContext()))
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        viewBinding.playerSlidingLayout.removePanelSlideListener(this)
-        _viewBinding = null
+        _impl?.slidingUpPanel?.removePanelSlideListener(this)
+        _impl = null
     }
 
     private fun fixPanelNestedScrolling() {
-        viewBinding.playerSlidingLayout.setScrollableView(queueFragment.scrollableArea)
+        impl.slidingUpPanel.setScrollableView(queueFragment.scrollableArea)
 
         val fragmentActivity = activity
         if (fragmentActivity is UnarySlidingUpPanelProvider) {
-            fragmentActivity.requestToSetAntiDragView(viewBinding.playerPanel)
+            fragmentActivity.requestToSetAntiDragView(impl.playerPanel)
         }
     }
 
     override fun requestToCollapse(): Boolean {
-        with(viewBinding.playerSlidingLayout) {
+        with(impl.slidingUpPanel) {
             if (panelState != PanelState.COLLAPSED) panelState = PanelState.COLLAPSED
         }
         return true
     }
 
     override fun requestToExpand(): Boolean {
-        with(viewBinding.playerSlidingLayout) {
+        with(impl.slidingUpPanel) {
             if (panelState != PanelState.EXPANDED) panelState = PanelState.EXPANDED
         }
         return true
     }
 
     override fun requestToSwitchState() {
-        with(viewBinding.playerSlidingLayout) {
+        with(impl.slidingUpPanel) {
             if (panelState == PanelState.EXPANDED) {
                 panelState = PanelState.COLLAPSED
             } else if (panelState == PanelState.COLLAPSED) {
@@ -122,14 +136,12 @@ class CardPlayerFragment : AbsPlayerFragment() {
     }
 
     override fun requestToSetAntiDragView(view: View?): Boolean {
-        val slidingLayout = viewBinding.playerSlidingLayout
-        slidingLayout.setAntiDragView(view)
+        impl.slidingUpPanel.setAntiDragView(view)
         return true
     }
 
     override fun requestToSetScrollableView(view: View?): Boolean {
-        val slidingLayout = viewBinding.playerSlidingLayout
-        slidingLayout.setScrollableView(view)
+        impl.slidingUpPanel.setScrollableView(view)
         return true
     }
 
@@ -142,7 +154,7 @@ class CardPlayerFragment : AbsPlayerFragment() {
 
         val cardElevation = (6 * slide + 2) * density
         if (!isValidElevation(cardElevation)) return // we have received some crash reports in setCardElevation()
-        viewBinding.playingQueueCard.cardElevation = cardElevation
+        impl.playingQueueCard.cardElevation = cardElevation
 
         val buttonElevation = (2 * max(0f, 1 - slide * 16) + 2) * density
         if (!isValidElevation(buttonElevation)) return
@@ -155,52 +167,70 @@ class CardPlayerFragment : AbsPlayerFragment() {
 
     override val useTransparentStatusbar: Boolean = true
 
-    override val playerColoredBackground: View get() = viewBinding.colorBackground
-    override val playerColoredBackgroundOverlay: View get() = viewBinding.colorBackgroundOverlay
-    override val coloredToolbar: Boolean get() = impl is LandscapeImpl
+    override val playerColoredBackground: View get() = impl.colorBackground
+    override val playerColoredBackgroundOverlay: View get() = impl.colorBackgroundOverlay
+    override val coloredToolbar: Boolean get() = impl.coloredToolbar
 
     override fun collapseToNormal() {
-        viewBinding.playerSlidingLayout.panelState = PanelState.COLLAPSED
+        impl.slidingUpPanel.panelState = PanelState.COLLAPSED
     }
 
-    private class PortraitImpl(val fragment: CardPlayerFragment) : CardImpl {
+    private class CardPortraitImpl(private val binding: FragmentPlayerCardPortraitBinding) : CardImpl {
+        override val root get() = binding.root
+        override val toolbar get() = binding.playerToolbar
+        override val toolbarContainer get() = binding.toolbarContainer
+        override val slidingUpPanel get() = binding.playerSlidingLayout
+        override val playbackControlsContainer get() = binding.playbackControlsFragment
+        override val colorBackground get() = binding.colorBackground
+        override val colorBackgroundOverlay get() = binding.colorBackgroundOverlay
+        override val playingQueueCard get() = binding.playingQueueCard
+        override val playerPanel get() = binding.playerPanel
+        override val coloredToolbar = false
+
         private lateinit var panelHeightAdjuster: QueuePanelHeightAdjuster
         override fun init() {
-            panelHeightAdjuster = QueuePanelHeightAdjuster(fragment.resources)
+            panelHeightAdjuster = QueuePanelHeightAdjuster(binding.root.resources)
         }
 
         override fun applyWindowInsect() {
-            with(fragment) {
-                val statusBar = viewBinding.statusBarPadding
-                if (statusBar != null) {
-                    ViewCompat.setOnApplyWindowInsetsListener(statusBar) { view, windowInsets ->
-                        val insets = windowInsets.getInsets(WindowInsetsCompat.Type.statusBars())
-                        view.updateLayoutParams<MarginLayoutParams> {
-                            height = insets.top
-                        }
-                        WindowInsetsCompat.CONSUMED
-                    }
+            ViewCompat.setOnApplyWindowInsetsListener(binding.statusBarPadding) { view, windowInsets ->
+                val insets = windowInsets.getInsets(WindowInsetsCompat.Type.statusBars())
+                view.updateLayoutParams<MarginLayoutParams> {
+                    height = insets.top
                 }
+                WindowInsetsCompat.CONSUMED
             }
         }
 
         override fun adjustHeight() {
-            with(fragment) {
-                panelHeightAdjuster.adjust(
-                    basicPlayer = viewBinding.coverContainer,
-                    queuePanel = viewBinding.playerSlidingLayout,
-                    albumCoverContainer = viewBinding.playerAlbumCoverFragment,
-                )
-            }
+            panelHeightAdjuster.adjust(
+                basicPlayer = binding.coverContainer,
+                queuePanel = binding.playerSlidingLayout,
+                albumCoverContainer = binding.playerAlbumCoverFragment,
+            )
         }
     }
 
-    private class LandscapeImpl(val fragment: CardPlayerFragment) : CardImpl {
+    private class CardLandImpl(
+        private val binding: FragmentPlayerCardLandBinding,
+        private val fragment: CardPlayerFragment,
+    ) : CardImpl {
+        override val root get() = binding.root
+        override val toolbar get() = binding.playerToolbar
+        override val toolbarContainer: View? = null
+        override val slidingUpPanel get() = binding.playerSlidingLayout
+        override val playbackControlsContainer get() = binding.playbackControlsFragment
+        override val colorBackground get() = binding.colorBackground
+        override val colorBackgroundOverlay get() = binding.colorBackgroundOverlay
+        override val playingQueueCard get() = binding.playingQueueCard
+        override val playerPanel get() = binding.playerPanel
+        override val coloredToolbar = true
+
         override fun init() {
             with(fragment) {
                 // Current Song
                 observe(queueViewModel.currentSong, state = Lifecycle.State.STARTED) { song: Song? ->
-                    with(viewBinding) {
+                    with(binding) {
                         playerToolbar.title = song?.title ?: "-"
                         playerToolbar.subtitle = song?.infoString() ?: "-"
                     }
@@ -210,14 +240,14 @@ class CardPlayerFragment : AbsPlayerFragment() {
 
         override fun applyWindowInsect() {
             with(fragment) {
-                ViewCompat.setOnApplyWindowInsetsListener(viewBinding.root) { view, windowInsets ->
+                ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, windowInsets ->
                     val insets = windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars())
                     view.updateLayoutParams<MarginLayoutParams> {
                         bottomMargin = insets.bottom
                     }
                     windowInsets
                 }
-                ViewCompat.setOnApplyWindowInsetsListener(viewBinding.playerToolbar) { view, windowInsets ->
+                ViewCompat.setOnApplyWindowInsetsListener(binding.playerToolbar) { view, windowInsets ->
                     val insets = windowInsets.getInsets(WindowInsetsCompat.Type.statusBars())
                     view.updateLayoutParams<MarginLayoutParams> {
                         height = resources.getDimensionPixelSize(R.dimen.mini_player_height) + insets.top
@@ -232,8 +262,7 @@ class CardPlayerFragment : AbsPlayerFragment() {
             with(fragment) {
                 // Height
                 val controllerHeight = playbackControlsFragment.requireView().height
-                val playerSlidingLayout = viewBinding.playerSlidingLayout
-                playerSlidingLayout.panelHeight = playerSlidingLayout.height - controllerHeight
+                binding.playerSlidingLayout.panelHeight = binding.playerSlidingLayout.height - controllerHeight
             }
         }
     }

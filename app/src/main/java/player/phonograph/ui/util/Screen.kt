@@ -38,3 +38,7 @@ fun isLongScreen(resources: Resources): Boolean {
 fun isLandscape(resources: Resources): Boolean {
     return resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 }
+
+fun isNotPortrait(resources: Resources): Boolean {
+    return resources.configuration.screenWidthDp >= resources.configuration.screenHeightDp
+}

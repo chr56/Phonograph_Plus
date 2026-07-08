@@ -7,12 +7,13 @@ package player.phonograph.ui.modules.player.style
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
 import player.phonograph.R
-import player.phonograph.databinding.FragmentFlatPlayerBinding
+import player.phonograph.databinding.FragmentPlayerFlatLandBinding
+import player.phonograph.databinding.FragmentPlayerFlatPortraitBinding
 import player.phonograph.model.Song
 import player.phonograph.model.ui.UnarySlidingUpPanelProvider
 import player.phonograph.ui.modules.player.AbsPlayerFragment
 import player.phonograph.ui.resource.infoString
-import player.phonograph.ui.util.isLandscape
+import player.phonograph.ui.util.isNotPortrait
 import player.phonograph.ui.util.observe
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
@@ -30,16 +31,24 @@ import kotlinx.coroutines.launch
 
 class FlatPlayerFragment : AbsPlayerFragment() {
 
-    private var _viewBinding: FragmentFlatPlayerBinding? = null
-    private val viewBinding: FragmentFlatPlayerBinding get() = _viewBinding!!
+    override fun requireToolBarContainer(): View? = impl.toolbarContainer
+    override fun requireToolbar(): Toolbar = impl.toolbar
 
-    override fun requireToolBarContainer(): View? = viewBinding.toolbarContainer
-    override fun requireToolbar(): Toolbar = viewBinding.playerToolbar
-    override val slidingUpPanel: SlidingUpPanelLayout? get() = viewBinding.playerSlidingLayout
+    override val slidingUpPanel: SlidingUpPanelLayout? get() = impl.slidingUpPanel
 
-    private lateinit var impl: FlatImpl
+    private var _impl: FlatImpl? = null
+    private val impl: FlatImpl get() = _impl!!
 
     private interface FlatImpl {
+        val root: View
+        val toolbar: Toolbar
+        val toolbarContainer: View?
+        val slidingUpPanel: SlidingUpPanelLayout?
+        val playbackControlsContainer: View
+        val colorBackground: View
+        val colorBackgroundOverlay: View
+        val playerPanel: View?
+        val coloredToolbar: Boolean
         fun init()
         fun adjustHeight()
         fun applyWindowInsect()
@@ -47,14 +56,17 @@ class FlatPlayerFragment : AbsPlayerFragment() {
 
     override val controllerPosition: Point
         get() = Point(
-            viewBinding.playbackControlsFragment.left,
-            viewBinding.playbackControlsFragment.top
+            impl.playbackControlsContainer.left,
+            impl.playbackControlsContainer.top
         )
 
     override fun inflateView(inflater: LayoutInflater): View {
-        impl = (if (isLandscape(resources)) LandscapeImpl(this) else PortraitImpl(this))
-        _viewBinding = FragmentFlatPlayerBinding.inflate(inflater)
-        return viewBinding.root
+        _impl = if (isNotPortrait(resources)) {
+            FlatLandImpl(FragmentPlayerFlatLandBinding.inflate(inflater), this)
+        } else {
+            FlatPortraitImpl(FragmentPlayerFlatPortraitBinding.inflate(inflater))
+        }
+        return impl.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -63,7 +75,8 @@ class FlatPlayerFragment : AbsPlayerFragment() {
 
         lifecycleScope.launch {
             onLayoutChangedEffect.collect { count ->
-                if (count >= 0 && _viewBinding != null) {
+                val impl = _impl
+                if (count >= 0 && impl != null) {
                     if (count == 0) {
                         impl.applyWindowInsect()
                         fixPanelNestedScrolling()
@@ -78,13 +91,13 @@ class FlatPlayerFragment : AbsPlayerFragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        viewBinding.playerSlidingLayout?.removePanelSlideListener(this)
-        _viewBinding = null
+        _impl?.slidingUpPanel?.removePanelSlideListener(this)
+        _impl = null
     }
 
     private fun fixPanelNestedScrolling() {
         val parent = parentFragment ?: activity
-        val slidingLayout = viewBinding.playerSlidingLayout
+        val slidingLayout = impl.slidingUpPanel
         if (slidingLayout != null) {
             slidingLayout.setScrollableView(queueFragment.scrollableArea)
         } else if (parent is UnarySlidingUpPanelProvider) {
@@ -93,27 +106,27 @@ class FlatPlayerFragment : AbsPlayerFragment() {
 
         val fragmentActivity = activity
         if (fragmentActivity is UnarySlidingUpPanelProvider) {
-            fragmentActivity.requestToSetAntiDragView(viewBinding.playerPanel)
+            fragmentActivity.requestToSetAntiDragView(impl.playerPanel)
         }
     }
 
 
     override fun requestToCollapse(): Boolean {
-        with(viewBinding.playerSlidingLayout ?: return false) {
+        with(impl.slidingUpPanel ?: return false) {
             if (panelState != PanelState.COLLAPSED) panelState = PanelState.COLLAPSED
         }
         return true
     }
 
     override fun requestToExpand(): Boolean {
-        with(viewBinding.playerSlidingLayout ?: return false) {
+        with(impl.slidingUpPanel ?: return false) {
             if (panelState != PanelState.EXPANDED) panelState = PanelState.EXPANDED
         }
         return true
     }
 
     override fun requestToSwitchState() {
-        with(viewBinding.playerSlidingLayout ?: return) {
+        with(impl.slidingUpPanel ?: return) {
             if (panelState == PanelState.EXPANDED) {
                 panelState = PanelState.COLLAPSED
             } else if (panelState == PanelState.COLLAPSED) {
@@ -123,68 +136,84 @@ class FlatPlayerFragment : AbsPlayerFragment() {
     }
 
     override fun requestToSetAntiDragView(view: View?): Boolean {
-        val slidingLayout = viewBinding.playerSlidingLayout ?: return false
+        val slidingLayout = impl.slidingUpPanel ?: return false
         slidingLayout.setAntiDragView(view)
         return true
     }
 
     override fun requestToSetScrollableView(view: View?): Boolean {
-        val slidingLayout = viewBinding.playerSlidingLayout ?: return false
+        val slidingLayout = impl.slidingUpPanel ?: return false
         slidingLayout.setScrollableView(view)
         return true
     }
 
-    override val useTransparentStatusbar: Boolean get() = impl is LandscapeImpl
+    override val useTransparentStatusbar: Boolean get() = impl.coloredToolbar
 
-    override val playerColoredBackground: View get() = viewBinding.colorBackground
-    override val playerColoredBackgroundOverlay: View get() = viewBinding.colorBackgroundOverlay
-    override val coloredToolbar: Boolean get() = impl is LandscapeImpl
+    override val playerColoredBackground: View get() = impl.colorBackground
+    override val playerColoredBackgroundOverlay: View get() = impl.colorBackgroundOverlay
+    override val coloredToolbar: Boolean get() = impl.coloredToolbar
 
     override fun collapseToNormal() {
-        viewBinding.playerSlidingLayout?.panelState = PanelState.COLLAPSED
+        impl.slidingUpPanel?.panelState = PanelState.COLLAPSED
     }
 
-    private class PortraitImpl(val fragment: FlatPlayerFragment) : FlatImpl {
+    private class FlatPortraitImpl(private val binding: FragmentPlayerFlatPortraitBinding) : FlatImpl {
+        override val root get() = binding.root
+        override val toolbar get() = binding.playerToolbar
+        override val toolbarContainer get() = binding.toolbarContainer
+        override val slidingUpPanel get() = binding.playerSlidingLayout
+        override val playbackControlsContainer get() = binding.playbackControlsFragment
+        override val colorBackground get() = binding.colorBackground
+        override val colorBackgroundOverlay get() = binding.colorBackgroundOverlay
+        override val playerPanel get() = binding.playerPanel
+        override val coloredToolbar = false
+
         private lateinit var panelHeightAdjuster: QueuePanelHeightAdjuster
         override fun init() {
-            panelHeightAdjuster = QueuePanelHeightAdjuster(fragment.resources)
+            panelHeightAdjuster = QueuePanelHeightAdjuster(binding.root.resources)
         }
 
         override fun applyWindowInsect() {
-            with(fragment) {
-                val statusBarOverlay = viewBinding.statusBarOverlay
-                if (statusBarOverlay != null) {
-                    ViewCompat.setOnApplyWindowInsetsListener(statusBarOverlay) { view, windowInsets ->
-                        val insets = windowInsets.getInsets(WindowInsetsCompat.Type.statusBars())
-                        view.updateLayoutParams<MarginLayoutParams> {
-                            height = insets.top
-                        }
-                        WindowInsetsCompat.CONSUMED
-                    }
+            ViewCompat.setOnApplyWindowInsetsListener(binding.statusBarOverlay) { view, windowInsets ->
+                val insets = windowInsets.getInsets(WindowInsetsCompat.Type.statusBars())
+                view.updateLayoutParams<MarginLayoutParams> {
+                    height = insets.top
                 }
+                WindowInsetsCompat.CONSUMED
             }
         }
 
         override fun adjustHeight() {
-            with(fragment) {
-                panelHeightAdjuster.adjust(
-                    basicPlayer = viewBinding.coverContainer,
-                    queuePanel = viewBinding.playerSlidingLayout!!,
-                    albumCoverContainer = viewBinding.playerAlbumCoverFragment,
-                )
-                val controller = viewBinding.playbackControlsFragment
-                viewBinding.colorBackground.layoutParams.height = controller.height
-                viewBinding.colorBackgroundOverlay.layoutParams.height = controller.height
-            }
+            panelHeightAdjuster.adjust(
+                basicPlayer = binding.coverContainer,
+                queuePanel = binding.playerSlidingLayout,
+                albumCoverContainer = binding.playerAlbumCoverFragment,
+            )
+            val controllerHeight = binding.playbackControlsFragment.height
+            binding.colorBackground.layoutParams.height = controllerHeight
+            binding.colorBackgroundOverlay.layoutParams.height = controllerHeight
         }
     }
 
-    private class LandscapeImpl(val fragment: FlatPlayerFragment) : FlatImpl {
+    private class FlatLandImpl(
+        private val binding: FragmentPlayerFlatLandBinding,
+        private val fragment: FlatPlayerFragment,
+    ) : FlatImpl {
+        override val root get() = binding.root
+        override val toolbar get() = binding.playerToolbar
+        override val toolbarContainer: View? = null
+        override val slidingUpPanel: SlidingUpPanelLayout? = null
+        override val playbackControlsContainer get() = binding.playbackControlsFragment
+        override val colorBackground get() = binding.colorBackground
+        override val colorBackgroundOverlay get() = binding.colorBackgroundOverlay
+        override val playerPanel: View? = null
+        override val coloredToolbar = true
+
         override fun init() {
             with(fragment) {
                 // Current Song
                 observe(queueViewModel.currentSong, state = Lifecycle.State.STARTED) { song: Song? ->
-                    with(viewBinding) {
+                    with(binding) {
                         playerToolbar.title = song?.title ?: "-"
                         playerToolbar.subtitle = song?.infoString() ?: "-"
                     }
@@ -194,14 +223,14 @@ class FlatPlayerFragment : AbsPlayerFragment() {
 
         override fun applyWindowInsect() {
             with(fragment) {
-                ViewCompat.setOnApplyWindowInsetsListener(viewBinding.root) { view, windowInsets ->
+                ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, windowInsets ->
                     val insets = windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars())
                     view.updateLayoutParams<MarginLayoutParams> {
                         bottomMargin = insets.bottom
                     }
                     windowInsets
                 }
-                ViewCompat.setOnApplyWindowInsetsListener(viewBinding.playerToolbar) { view, windowInsets ->
+                ViewCompat.setOnApplyWindowInsetsListener(binding.playerToolbar) { view, windowInsets ->
                     val insets = windowInsets.getInsets(WindowInsetsCompat.Type.statusBars())
                     view.updateLayoutParams<MarginLayoutParams> {
                         height = resources.getDimensionPixelSize(R.dimen.mini_player_height) + insets.top
@@ -213,11 +242,9 @@ class FlatPlayerFragment : AbsPlayerFragment() {
         }
 
         override fun adjustHeight() {
-            with(fragment) {
-                val controller = viewBinding.playbackControlsFragment
-                viewBinding.colorBackground.layoutParams.height = controller.height
-                viewBinding.colorBackgroundOverlay.layoutParams.height = controller.height
-            }
+            val controllerHeight = binding.playbackControlsFragment.height
+            binding.colorBackground.layoutParams.height = controllerHeight
+            binding.colorBackgroundOverlay.layoutParams.height = controllerHeight
         }
     }
 
