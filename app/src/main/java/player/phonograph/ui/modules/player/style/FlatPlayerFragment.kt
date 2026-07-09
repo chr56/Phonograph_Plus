@@ -14,15 +14,11 @@ import player.phonograph.model.ui.UnarySlidingUpPanelProvider
 import player.phonograph.ui.modules.player.AbsPlayerFragment
 import player.phonograph.ui.resource.infoString
 import player.phonograph.ui.util.isNotPortrait
-import player.phonograph.ui.util.observe
-import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import android.graphics.Point
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -31,38 +27,21 @@ import kotlinx.coroutines.launch
 
 class FlatPlayerFragment : AbsPlayerFragment() {
 
-    override fun requireToolBarContainer(): View? = impl.toolbarContainer
-    override fun requireToolbar(): Toolbar = impl.toolbar
-
-    override val slidingUpPanel: SlidingUpPanelLayout? get() = impl.slidingUpPanel
-
     private var _impl: FlatImpl? = null
     private val impl: FlatImpl get() = _impl!!
 
-    private interface FlatImpl {
-        val root: View
-        val toolbar: Toolbar
-        val toolbarContainer: View?
-        val slidingUpPanel: SlidingUpPanelLayout?
-        val playbackControlsContainer: View
-        val colorBackground: View
-        val colorBackgroundOverlay: View
-        val playerPanel: View?
-        val coloredToolbar: Boolean
+    override val frame: ViewElementsContainer get() = impl
+
+    private interface FlatImpl : ViewElementsContainer {
         fun init()
         fun adjustHeight()
         fun applyWindowInsect()
+        fun updateCurrentSong(song: Song?)
     }
 
-    override val controllerPosition: Point
-        get() = Point(
-            impl.playbackControlsContainer.left,
-            impl.playbackControlsContainer.top
-        )
-
-    override fun inflateView(inflater: LayoutInflater): View {
+    override fun inflatePlayerFrame(inflater: LayoutInflater): View {
         _impl = if (isNotPortrait(resources)) {
-            FlatLandImpl(FragmentPlayerFlatLandBinding.inflate(inflater), this)
+            FlatLandImpl(FragmentPlayerFlatLandBinding.inflate(inflater))
         } else {
             FlatPortraitImpl(FragmentPlayerFlatPortraitBinding.inflate(inflater))
         }
@@ -96,12 +75,12 @@ class FlatPlayerFragment : AbsPlayerFragment() {
     }
 
     private fun fixPanelNestedScrolling() {
-        val parent = parentFragment ?: activity
         val slidingLayout = impl.slidingUpPanel
         if (slidingLayout != null) {
             slidingLayout.setScrollableView(queueFragment.scrollableArea)
-        } else if (parent is UnarySlidingUpPanelProvider) {
-            parent.requestToSetScrollableView(queueFragment.scrollableArea)
+        } else {
+            val parent = (parentFragment ?: activity) as? UnarySlidingUpPanelProvider
+            parent?.requestToSetScrollableView(queueFragment.scrollableArea)
         }
 
         val fragmentActivity = activity
@@ -147,11 +126,11 @@ class FlatPlayerFragment : AbsPlayerFragment() {
         return true
     }
 
-    override val useTransparentStatusbar: Boolean get() = impl.coloredToolbar
+    override fun updateElevation(slideOffset: Float, density: Float) {}
 
-    override val playerColoredBackground: View get() = impl.colorBackground
-    override val playerColoredBackgroundOverlay: View get() = impl.colorBackgroundOverlay
-    override val coloredToolbar: Boolean get() = impl.coloredToolbar
+    override fun onCurrentSongChanged(song: Song?) {
+        _impl?.updateCurrentSong(song)
+    }
 
     override fun collapseToNormal() {
         impl.slidingUpPanel?.panelState = PanelState.COLLAPSED
@@ -163,10 +142,12 @@ class FlatPlayerFragment : AbsPlayerFragment() {
         override val toolbarContainer get() = binding.toolbarContainer
         override val slidingUpPanel get() = binding.playerSlidingLayout
         override val playbackControlsContainer get() = binding.playbackControlsFragment
-        override val colorBackground get() = binding.colorBackground
-        override val colorBackgroundOverlay get() = binding.colorBackgroundOverlay
+        override val coloredBackground get() = binding.colorBackground
+        override val coloredBackgroundOverlay get() = binding.colorBackgroundOverlay
         override val playerPanel get() = binding.playerPanel
-        override val coloredToolbar = false
+
+        override val preferTransparentStatusbar: Boolean = false
+        override val preferColoredToolbar: Boolean = false
 
         private lateinit var panelHeightAdjuster: QueuePanelHeightAdjuster
         override fun init() {
@@ -183,68 +164,73 @@ class FlatPlayerFragment : AbsPlayerFragment() {
             }
         }
 
+        private var lastControllerHeight = -1
         override fun adjustHeight() {
             panelHeightAdjuster.adjust(
                 basicPlayer = binding.coverContainer,
                 queuePanel = binding.playerSlidingLayout,
                 albumCoverContainer = binding.playerAlbumCoverFragment,
             )
-            val controllerHeight = binding.playbackControlsFragment.height
-            binding.colorBackground.layoutParams.height = controllerHeight
-            binding.colorBackgroundOverlay.layoutParams.height = controllerHeight
+            val currentControllerHeight = binding.playbackControlsFragment.height
+            if (currentControllerHeight != lastControllerHeight) {
+                lastControllerHeight = currentControllerHeight
+                binding.colorBackground.layoutParams.height = currentControllerHeight
+                binding.colorBackgroundOverlay.layoutParams.height = currentControllerHeight
+            }
+
         }
+
+        override fun updateCurrentSong(song: Song?) {}
     }
 
-    private class FlatLandImpl(
-        private val binding: FragmentPlayerFlatLandBinding,
-        private val fragment: FlatPlayerFragment,
-    ) : FlatImpl {
+    private class FlatLandImpl(private val binding: FragmentPlayerFlatLandBinding) : FlatImpl {
         override val root get() = binding.root
         override val toolbar get() = binding.playerToolbar
         override val toolbarContainer: View? = null
         override val slidingUpPanel: SlidingUpPanelLayout? = null
         override val playbackControlsContainer get() = binding.playbackControlsFragment
-        override val colorBackground get() = binding.colorBackground
-        override val colorBackgroundOverlay get() = binding.colorBackgroundOverlay
+        override val coloredBackground get() = binding.colorBackground
+        override val coloredBackgroundOverlay get() = binding.colorBackgroundOverlay
         override val playerPanel: View? = null
-        override val coloredToolbar = true
 
-        override fun init() {
-            with(fragment) {
-                // Current Song
-                observe(queueViewModel.currentSong, state = Lifecycle.State.STARTED) { song: Song? ->
-                    with(binding) {
-                        playerToolbar.title = song?.title ?: "-"
-                        playerToolbar.subtitle = song?.infoString() ?: "-"
-                    }
-                }
-            }
-        }
+        override val preferTransparentStatusbar: Boolean = true
+        override val preferColoredToolbar: Boolean = true
+
+        override fun init() {}
 
         override fun applyWindowInsect() {
-            with(fragment) {
-                ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, windowInsets ->
-                    val insets = windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars())
-                    view.updateLayoutParams<MarginLayoutParams> {
-                        bottomMargin = insets.bottom
-                    }
-                    windowInsets
+            ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, windowInsets ->
+                val insets = windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars())
+                view.updateLayoutParams<MarginLayoutParams> {
+                    bottomMargin = insets.bottom
                 }
-                ViewCompat.setOnApplyWindowInsetsListener(binding.playerToolbar) { view, windowInsets ->
-                    val insets = windowInsets.getInsets(WindowInsetsCompat.Type.statusBars())
-                    view.updateLayoutParams<MarginLayoutParams> {
-                        height = resources.getDimensionPixelSize(R.dimen.mini_player_height) + insets.top
-                    }
-                    view.updatePadding(top = insets.top)
-                    WindowInsetsCompat.CONSUMED
+                windowInsets
+            }
+            ViewCompat.setOnApplyWindowInsetsListener(binding.playerToolbar) { view, windowInsets ->
+                val insets = windowInsets.getInsets(WindowInsetsCompat.Type.statusBars())
+                view.updateLayoutParams<MarginLayoutParams> {
+                    height = binding.root.resources.getDimensionPixelSize(R.dimen.mini_player_height) + insets.top
                 }
+                view.updatePadding(top = insets.top)
+                WindowInsetsCompat.CONSUMED
             }
         }
 
+        private var lastControllerHeight = -1
         override fun adjustHeight() {
-            val controllerHeight = binding.playbackControlsFragment.height
-            binding.colorBackground.layoutParams.height = controllerHeight
-            binding.colorBackgroundOverlay.layoutParams.height = controllerHeight
+            val currentControllerHeight = binding.playbackControlsFragment.height
+            if (currentControllerHeight != lastControllerHeight) {
+                lastControllerHeight = currentControllerHeight
+                binding.colorBackground.layoutParams.height = currentControllerHeight
+                binding.colorBackgroundOverlay.layoutParams.height = currentControllerHeight
+            }
+        }
+
+        override fun updateCurrentSong(song: Song?) {
+            with(binding) {
+                playerToolbar.title = song?.title ?: "-"
+                playerToolbar.subtitle = song?.infoString() ?: "-"
+            }
         }
     }
 

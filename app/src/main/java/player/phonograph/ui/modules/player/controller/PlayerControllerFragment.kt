@@ -6,6 +6,7 @@ package player.phonograph.ui.modules.player.controller
 
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import player.phonograph.foundation.compat.parcelable
+import player.phonograph.foundation.isValidFloatValue
 import player.phonograph.model.service.PlayerState
 import player.phonograph.model.ui.PlayerControllerStyle
 import player.phonograph.model.ui.PlayerControllerStyle.Companion.ButtonPosition
@@ -23,6 +24,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import kotlin.math.max
 
 abstract class PlayerControllerFragment<B : PlayerControllerBinding> : AbsMusicServiceFragment() {
 
@@ -110,6 +112,8 @@ abstract class PlayerControllerFragment<B : PlayerControllerBinding> : AbsMusicS
         binding.onUpdatePlayerState(PlayerControllerBinding.STATE_STOPPED, shouldWithAnimation)
     }
 
+    abstract fun updateElevation(slideOffset: Float, density: Float)
+
     protected val shouldWithAnimation get() = lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
 
     abstract fun provideRippleCenter(): Point?
@@ -134,6 +138,8 @@ abstract class PlayerControllerFragment<B : PlayerControllerBinding> : AbsMusicS
     class FlatStyled : PlayerControllerFragment<PlayerControllerFlatStyledBinding>() {
         override val binding: PlayerControllerFlatStyledBinding = PlayerControllerFlatStyledBinding()
 
+        override fun updateElevation(slideOffset: Float, density: Float) {}
+
         override fun provideRippleCenter(): Point? = null
     }
 
@@ -145,6 +151,13 @@ abstract class PlayerControllerFragment<B : PlayerControllerBinding> : AbsMusicS
             set(value) {
                 binding.centralButton.elevation = value
             }
+
+        override fun updateElevation(slideOffset: Float, density: Float) {
+            val buttonElevation: Float = (2 * max(0f, 1 - slideOffset * 16) + 2) * density
+            if (isValidFloatValue(buttonElevation)) {
+                fabElevation = buttonElevation
+            }
+        }
 
         override fun provideRippleCenter(): Point {
             val fab = binding.centralButton

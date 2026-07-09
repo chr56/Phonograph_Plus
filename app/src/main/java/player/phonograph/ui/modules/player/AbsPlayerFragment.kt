@@ -12,6 +12,7 @@ import player.phonograph.foundation.compat.openEqualizer
 import player.phonograph.foundation.compat.parcelable
 import player.phonograph.foundation.error.warning
 import player.phonograph.mechanism.event.EventHub
+import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.model.ui.NowPlayingScreenStyle
 import player.phonograph.model.ui.PlayerBaseStyle
@@ -86,29 +87,19 @@ abstract class AbsPlayerFragment :
         const val ARGUMENT_STYLE = "player_style"
     }
 
-    protected var argumentStyle: NowPlayingScreenStyle? = null
-
-    protected val viewModel: PlayerFragmentViewModel by viewModels()
-    protected val lyricsViewModel: LyricsViewModel by viewModels({ requireActivity() })
-    protected val panelViewModel: PanelViewModel by viewModel(ownerProducer = { requireActivity() })
-
+    protected abstract val frame: ViewElementsContainer
     protected lateinit var playbackControlsFragment: PlayerControllerFragment<*>
     protected lateinit var queueFragment: PlayerQueueFragment
 
-    protected abstract val slidingUpPanel: SlidingUpPanelLayout?
+    protected val viewModel: PlayerFragmentViewModel by viewModels()
+    protected val lyricsViewModel: LyricsViewModel by viewModels(ownerProducer = { requireActivity() })
+    protected val panelViewModel: PanelViewModel by viewModel(ownerProducer = { requireActivity() })
 
-    protected abstract val controllerPosition: Point
-
-    protected abstract fun requireToolBarContainer(): View?
-    protected abstract fun requireToolbar(): Toolbar
-
-    protected abstract fun inflateView(inflater: LayoutInflater): View
-
+    //region Lifecycle
+    protected var argumentStyle: NowPlayingScreenStyle? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         argumentStyle = arguments?.parcelable<NowPlayingScreenStyle>(ARGUMENT_STYLE)
-
         favoritesEventReceiver.registerSelf(requireContext())
     }
 
@@ -117,7 +108,7 @@ abstract class AbsPlayerFragment :
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        val inflated = inflateView(inflater)
+        val inflated = inflatePlayerFrame(inflater)
         val controller =
             PlayerControllerFragment.newInstance(argumentStyle?.controllerStyle ?: PlayerControllerStyle.DEFAULT)
         val queue = PlayerQueueFragment.newInstance(
@@ -135,10 +126,12 @@ abstract class AbsPlayerFragment :
         return inflated
     }
 
+    protected abstract fun inflatePlayerFrame(inflater: LayoutInflater): View
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         lastScreenIsNotPortrait = !isNotPortrait(resources) // force trigger on first layout
-        slidingUpPanel?.addPanelSlideListener(this)
+        frame.slidingUpPanel?.addPanelSlideListener(this)
         initToolbar()
         observeState()
         view.addOnLayoutChangeListener(this)
@@ -147,9 +140,9 @@ abstract class AbsPlayerFragment :
     override fun onDestroyView() {
         requireView().removeOnLayoutChangeListener(this)
         onLayoutChangedEffect.value = -1
+        currentAnimatorSet?.cancel()
         favoriteMenuItem = null
         lyricsMenuItem = null
-        currentAnimatorSet?.cancel()
         super.onDestroyView()
     }
 
@@ -157,7 +150,9 @@ abstract class AbsPlayerFragment :
         super.onDestroy()
         favoritesEventReceiver.unregisterSelf(requireContext())
     }
+    //endregion
 
+    //region Window Insets
     protected val onLayoutChangedEffect: MutableStateFlow<Int> = MutableStateFlow(-1)
     override fun onLayoutChange(
         v: View?,
@@ -166,10 +161,10 @@ abstract class AbsPlayerFragment :
     ) {
         onLayoutChangedEffect.update { it + 1 }
     }
+    //endregion
 
     //region Configuration Change
     private var lastScreenIsNotPortrait: Boolean = false
-
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         val nowNotPortrait = isNotPortrait(resources)
@@ -190,7 +185,7 @@ abstract class AbsPlayerFragment :
     private fun initToolbar() {
         buildPlayerToolbar(
             requireActivity(),
-            requireToolbar(),
+            frame.toolbar,
             lifecycle,
             childFragmentManager,
             lyricsViewModel,
@@ -218,6 +213,8 @@ abstract class AbsPlayerFragment :
     }
     //endregion
 
+    //region SlideUpPanel
+
     fun onShow() {
         playbackControlsFragment.onShow()
     }
@@ -227,8 +224,15 @@ abstract class AbsPlayerFragment :
         collapseToNormal()
     }
 
-    //region SlideUpPanel
-    override fun onPanelSlide(panel: View, slideOffset: Float) {}
+    override fun onPanelSlide(panel: View, slideOffset: Float) {
+        val density = resources.displayMetrics.density
+
+        // Update elevation
+        updateElevation(slideOffset, density)
+        playbackControlsFragment.updateElevation(slideOffset, density)
+    }
+
+    protected abstract fun updateElevation(slideOffset: Float, density: Float)
 
     override fun onPanelStateChanged(panel: View, previousState: PanelState, newState: PanelState) {
         when (newState) {
@@ -258,11 +262,12 @@ abstract class AbsPlayerFragment :
                 collapseToNormal()
             }
         }
-    //endregion
 
     protected abstract fun collapseToNormal()
 
-    open val useTransparentStatusbar: Boolean = false
+    //endregion
+
+    //region Color & Color Animation
 
     private var currentAnimatorSet: AnimatorSet? = null
 
@@ -278,38 +283,42 @@ abstract class AbsPlayerFragment :
         }
     }
 
-    protected abstract val coloredToolbar: Boolean
-
-    protected abstract val playerColoredBackground: View
-    protected abstract val playerColoredBackgroundOverlay: View
-
     protected fun buildDefaultColorChangeAnimatorSet(
         @ColorInt oldColor: Int,
         @ColorInt newColor: Int,
     ): AnimatorSet {
 
-        // todo: fix offset
         val rippleCenter = playbackControlsFragment.provideRippleCenter()
+        val controllerPosition = Point(
+            frame.playbackControlsContainer.left,
+            frame.playbackControlsContainer.top,
+        )
         val backgroundAnimator: Animator? =
-            if (rippleCenter != null && playerColoredBackground.isAttachedToWindow) {
+            if (rippleCenter != null && frame.coloredBackground.isAttachedToWindow) {
                 makeCircularRevealAnimation(
-                    playerColoredBackground,
-                    playerColoredBackgroundOverlay,
+                    frame.coloredBackground,
+                    frame.coloredBackgroundOverlay,
                     rippleCenter, controllerPosition,
                     newColor
                 )
             } else {
-                playerColoredBackground.backgroundColorTransitionAnimator(oldColor, newColor)
+                frame.coloredBackground.backgroundColorTransitionAnimator(oldColor, newColor)
             }
 
         val toolbarAnimator =
-            if (coloredToolbar) requireToolbar().backgroundColorTransitionAnimator(oldColor, newColor) else null
+            if (frame.preferColoredToolbar) {
+                frame.toolbar.backgroundColorTransitionAnimator(oldColor, newColor)
+            } else {
+                null
+            }
 
 
         val toolbarTextAnimator =
-            if (coloredToolbar) {
+            if (frame.preferColoredToolbar) {
                 ValueAnimator.ofArgb(oldColor, newColor)
-                    .setupValueAnimator { setToolbarWidgetColor(it.animatedValue as Int) }
+                    .setupValueAnimator {
+                        setToolbarWidgetColor(it.animatedValue as Int)
+                    }
             } else {
                 null
             }
@@ -349,8 +358,8 @@ abstract class AbsPlayerFragment :
 
     protected open fun forceChangeColor(@ColorInt newColor: Int) {
         playbackControlsFragment.requireView().setBackgroundColor(newColor)
-        if (coloredToolbar) {
-            requireToolbar().setBackgroundColor(newColor)
+        if (frame.preferColoredToolbar) {
+            frame.toolbar.setBackgroundColor(newColor)
             setToolbarWidgetColor(newColor)
         }
     }
@@ -360,17 +369,20 @@ abstract class AbsPlayerFragment :
         val titleTextColor = textColorOn(context, backgroundColor)
         val subtitleTextColor = secondaryTextColorOn(context, backgroundColor)
 
-        val playerToolbar = requireToolbar()
+        val playerToolbar = frame.toolbar
         playerToolbar.setToolbarTextColor(titleTextColor, titleTextColor, subtitleTextColor)
         tintToolbarMenuActionIcons(playerToolbar.menu, titleTextColor)
         tintOverflowButtonColor(context, titleTextColor)
     }
+    //endregion
 
+    //region State
     private fun observeState() {
         observe(queueViewModel.currentSong) { song ->
             if (song != null) {
                 lyricsViewModel.loadLyricsFor(requireContext(), song)
                 viewModel.updateFavoriteState(requireContext(), song)
+                onCurrentSongChanged(song)
             }
         }
         observe(viewModel.favoriteState) { (song, isFavorite) ->
@@ -387,8 +399,10 @@ abstract class AbsPlayerFragment :
             }
         }
         observe(viewModel.showToolbar) {
-            val container = requireToolBarContainer() ?: return@observe
-            updateToolbarVisibility(container, it, animated = isResumed)
+            val container = frame.toolbarContainer
+            if (container != null) {
+                updateToolbarVisibility(container, it, animated = isResumed)
+            }
         }
         observe(lyricsViewModel.lyricsInfo) { lyricsInfo ->
             MusicPlayerRemote.replaceLyrics(lyricsInfo?.activatedLyrics as? LrcLyrics)
@@ -401,12 +415,34 @@ abstract class AbsPlayerFragment :
         }
     }
 
+    protected abstract fun onCurrentSongChanged(song: Song?)
 
     private val favoritesEventReceiver = EventHub.EventReceiver(EventHub.EVENT_FAVORITES_CHANGED) { _, _ ->
         lifecycleScope.launch {
             withStarted { viewModel.refreshFavoriteState(requireContext()) }
         }
     }
+    //endregion
+
+    interface ViewElementsContainer {
+        val root: View
+
+        val toolbar: Toolbar
+        val toolbarContainer: View?
+
+        val playerPanel: View?
+        val playbackControlsContainer: View
+        val slidingUpPanel: SlidingUpPanelLayout?
+
+        val coloredBackground: View
+        val coloredBackgroundOverlay: View
+
+        val preferTransparentStatusbar: Boolean
+        val preferColoredToolbar: Boolean
+    }
+
+    val useTransparentStatusbar: Boolean
+        get() = if (isResumed) frame.preferTransparentStatusbar else false // fixme: lifecycle issue
 
 }
 

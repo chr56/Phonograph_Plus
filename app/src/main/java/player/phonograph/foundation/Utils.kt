@@ -39,6 +39,10 @@ inline fun <T> List<T>.sort(
     else this.sortedWith(compareBy(selector))
 }
 
+//
+// Float
+//
+fun isValidFloatValue(value: Float): Boolean = value >= -Float.MAX_VALUE && value <= Float.MAX_VALUE
 
 
 //
