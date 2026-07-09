@@ -28,11 +28,11 @@ fun isTablet(resources: Resources): Boolean {
 }
 
 fun isWideScreen(resources: Resources): Boolean {
-    return (resources.configuration.screenWidthDp / resources.configuration.screenHeightDp) >= 1.0f
+    return (resources.configuration.screenWidthDp.toFloat() / resources.configuration.screenHeightDp) >= 1.0f
 }
 
 fun isLongScreen(resources: Resources): Boolean {
-    return (resources.configuration.screenHeightDp / resources.configuration.screenWidthDp) >= 1.8f
+    return (resources.configuration.screenHeightDp.toFloat() / resources.configuration.screenWidthDp) >= 1.8f
 }
 
 fun isLandscape(resources: Resources): Boolean {
