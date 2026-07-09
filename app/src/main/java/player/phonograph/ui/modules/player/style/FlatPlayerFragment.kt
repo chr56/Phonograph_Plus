@@ -13,7 +13,7 @@ import player.phonograph.model.Song
 import player.phonograph.model.ui.UnarySlidingUpPanelProvider
 import player.phonograph.ui.modules.player.AbsPlayerFragment
 import player.phonograph.ui.resource.infoString
-import player.phonograph.ui.util.isNotPortrait
+import player.phonograph.ui.util.SCREEN_CATEGORY_PORTRAIT
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
@@ -39,11 +39,10 @@ class FlatPlayerFragment : AbsPlayerFragment() {
         fun updateCurrentSong(song: Song?)
     }
 
-    override fun inflatePlayerFrame(inflater: LayoutInflater): View {
-        _impl = if (isNotPortrait(resources)) {
-            FlatLandImpl(FragmentPlayerFlatLandBinding.inflate(inflater))
-        } else {
-            FlatPortraitImpl(FragmentPlayerFlatPortraitBinding.inflate(inflater))
+    override fun inflatePlayerFrame(inflater: LayoutInflater, screenCategory: Int): View {
+        _impl = when (screenCategory) {
+            SCREEN_CATEGORY_PORTRAIT -> FlatPortraitImpl(FragmentPlayerFlatPortraitBinding.inflate(inflater))
+            else                     -> FlatLandImpl(FragmentPlayerFlatLandBinding.inflate(inflater))
         }
         return impl.root
     }

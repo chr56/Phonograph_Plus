@@ -33,8 +33,10 @@ import player.phonograph.ui.theme.getTintedDrawable
 import player.phonograph.ui.theme.secondaryTextColorOn
 import player.phonograph.ui.theme.textColorOn
 import player.phonograph.ui.util.PHONOGRAPH_ANIM_TIME
+import player.phonograph.ui.util.SCREEN_CATEGORY_PORTRAIT
+import player.phonograph.ui.util.ScreenCategory
 import player.phonograph.ui.util.backgroundColorTransitionAnimator
-import player.phonograph.ui.util.isNotPortrait
+import player.phonograph.ui.util.detectScreenCategory
 import player.phonograph.ui.util.observe
 import player.phonograph.ui.util.setupValueAnimator
 import util.theme.view.menu.setMenuColor
@@ -100,6 +102,8 @@ abstract class AbsPlayerFragment :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         argumentStyle = arguments?.parcelable<NowPlayingScreenStyle>(ARGUMENT_STYLE)
+
+        lastScreenCategory = detectScreenCategory(resources)
         favoritesEventReceiver.registerSelf(requireContext())
     }
 
@@ -108,13 +112,14 @@ abstract class AbsPlayerFragment :
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        val inflated = inflatePlayerFrame(inflater)
+        val screenCategory = detectScreenCategory(resources)
+        val inflated = inflatePlayerFrame(inflater, screenCategory)
         val controller =
             PlayerControllerFragment.newInstance(argumentStyle?.controllerStyle ?: PlayerControllerStyle.DEFAULT)
         val queue = PlayerQueueFragment.newInstance(
             withShadow = argumentStyle?.baseStyle == PlayerBaseStyle.FLAT, // todo
             withActionButtons = argumentStyle?.options?.showModeButtonsForQueue == true,
-            displayCurrentSong = !isNotPortrait(resources)
+            displayCurrentSong = screenCategory == SCREEN_CATEGORY_PORTRAIT, // todo
         )
         childFragmentManager.commit {
             replace(R.id.playback_controls_fragment, controller)
@@ -126,11 +131,10 @@ abstract class AbsPlayerFragment :
         return inflated
     }
 
-    protected abstract fun inflatePlayerFrame(inflater: LayoutInflater): View
+    protected abstract fun inflatePlayerFrame(inflater: LayoutInflater, @ScreenCategory screenCategory: Int): View
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        lastScreenIsNotPortrait = !isNotPortrait(resources) // force trigger on first layout
         frame.slidingUpPanel?.addPanelSlideListener(this)
         initToolbar()
         observeState()
@@ -164,12 +168,12 @@ abstract class AbsPlayerFragment :
     //endregion
 
     //region Configuration Change
-    private var lastScreenIsNotPortrait: Boolean = false
+    private var lastScreenCategory: Int = 0
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        val nowNotPortrait = isNotPortrait(resources)
-        if (nowNotPortrait != lastScreenIsNotPortrait) {
-            lastScreenIsNotPortrait = nowNotPortrait
+        val current = detectScreenCategory(resources)
+        if (current != lastScreenCategory) {
+            lastScreenCategory = current
             parentFragmentManager.commit {
                 detach(this@AbsPlayerFragment)
                 attach(this@AbsPlayerFragment)

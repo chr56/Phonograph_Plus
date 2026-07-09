@@ -10,7 +10,7 @@ import player.phonograph.model.sort.SortRef
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
-import player.phonograph.ui.util.isLandscape
+import player.phonograph.ui.util.isOrientationLandscape
 import android.content.Context
 import android.content.res.Resources
 
@@ -18,7 +18,7 @@ import android.content.res.Resources
 sealed class PageDisplayConfig(context: Context) {
 
     protected val res: Resources = context.resources
-    protected val isLandscape: Boolean get() = isLandscape(res)
+    protected val isLandscape: Boolean get() = isOrientationLandscape(res)
 
     abstract var sortMode: SortMode
     abstract val availableSortRefs: Array<SortRef>

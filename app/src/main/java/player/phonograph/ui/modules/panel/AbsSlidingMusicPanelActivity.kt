@@ -16,7 +16,7 @@ import player.phonograph.ui.modules.player.style.buildPlayerFragment
 import player.phonograph.ui.theme.ThemeSettingsDelegate.primaryColor
 import player.phonograph.ui.theme.themeFooterColor
 import player.phonograph.ui.theme.updateSystemBarsColor
-import player.phonograph.ui.util.isNotPortrait
+import player.phonograph.ui.util.isOrientationLandscape
 import player.phonograph.ui.util.observe
 import util.theme.color.darkenColor
 import androidx.activity.OnBackPressedCallback
@@ -276,7 +276,7 @@ abstract class AbsSlidingMusicPanelActivity :
         if (playerFragment?.useTransparentStatusbar == true) Color.TRANSPARENT else color
 
     private fun actualNavigationbarColor(@ColorInt color: Int): Int =
-        if (panelViewModel.isPanelHidden.value && !isNotPortrait(resources)) translucentScrim else color
+        if (panelViewModel.isPanelHidden.value && isOrientationLandscape(resources)) translucentScrim else color
 
     private var animator: ValueAnimator? = null
 

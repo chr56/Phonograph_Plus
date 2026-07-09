@@ -14,7 +14,7 @@ import player.phonograph.model.ui.UnarySlidingUpPanelProvider
 import player.phonograph.ui.modules.player.AbsPlayerFragment
 import player.phonograph.ui.resource.infoString
 import player.phonograph.ui.theme.themeCardBackgroundColor
-import player.phonograph.ui.util.isNotPortrait
+import player.phonograph.ui.util.SCREEN_CATEGORY_PORTRAIT
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
@@ -41,11 +41,10 @@ class CardPlayerFragment : AbsPlayerFragment() {
         fun updateElevation(value: Float)
     }
 
-    override fun inflatePlayerFrame(inflater: LayoutInflater): View {
-        _impl = if (isNotPortrait(resources)) {
-            CardLandImpl(FragmentPlayerCardLandBinding.inflate(inflater))
-        } else {
-            CardPortraitImpl(FragmentPlayerCardPortraitBinding.inflate(inflater))
+    override fun inflatePlayerFrame(inflater: LayoutInflater, screenCategory: Int): View {
+        _impl = when (screenCategory) {
+            SCREEN_CATEGORY_PORTRAIT -> CardPortraitImpl(FragmentPlayerCardPortraitBinding.inflate(inflater))
+            else                     -> CardLandImpl(FragmentPlayerCardLandBinding.inflate(inflater))
         }
         return impl.root
     }

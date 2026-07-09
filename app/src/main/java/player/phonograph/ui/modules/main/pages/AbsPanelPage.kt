@@ -18,9 +18,9 @@ import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.ui.modules.popup.ListOptionsPopup
 import player.phonograph.ui.theme.getTintedDrawableOnBackground
 import player.phonograph.ui.theme.textColorPrimary
-import player.phonograph.ui.util.isLandscape
+import player.phonograph.ui.util.isOrientationLandscape
+import player.phonograph.ui.util.isScreenWiderThanExpected
 import player.phonograph.ui.util.isTablet
-import player.phonograph.ui.util.isWideScreen
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.withResumed
@@ -184,7 +184,7 @@ sealed class AbsPanelPage : AbsPage() {
     protected open fun preparePopup(popup: ListOptionsPopup) {
         with(popup) {
             viewBinding.titleGridSize.text =
-                if (isLandscape(resources)) {
+                if (isOrientationLandscape(resources)) {
                     resources.getText(R.string.label_grid_size_land)
                 } else {
                     resources.getText(R.string.label_grid_size)
@@ -277,11 +277,11 @@ sealed class AbsPanelPage : AbsPage() {
         val layout = displayConfig.layout
         val warningLayout: Boolean =
             if (layout.isGrid) {
-                displayConfig.gridSize < (if (isLandscape(resources) || isWideScreen(resources)) 3 else 2)
+                displayConfig.gridSize < (if (isOrientationLandscape(resources) || isScreenWiderThanExpected(resources)) 3 else 2)
             } else if (layout.compatInWidth) {
-                displayConfig.gridSize > (if (isLandscape(resources) || isTablet(resources)) 5 else 3)
+                displayConfig.gridSize > (if (isOrientationLandscape(resources) || isTablet(resources)) 5 else 3)
             } else {
-                displayConfig.gridSize > (if (isLandscape(resources) || isTablet(resources)) 4 else 2)
+                displayConfig.gridSize > (if (isOrientationLandscape(resources) || isTablet(resources)) 4 else 2)
             }
         if (warningLayout) {
             Toast.makeText(
