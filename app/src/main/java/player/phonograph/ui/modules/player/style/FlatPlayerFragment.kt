@@ -9,11 +9,13 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
 import player.phonograph.R
 import player.phonograph.databinding.FragmentPlayerFlatLandBinding
 import player.phonograph.databinding.FragmentPlayerFlatPortraitBinding
+import player.phonograph.databinding.FragmentPlayerFlatSquareBinding
 import player.phonograph.model.Song
 import player.phonograph.model.ui.UnarySlidingUpPanelProvider
 import player.phonograph.ui.modules.player.AbsPlayerFragment
 import player.phonograph.ui.resource.infoString
 import player.phonograph.ui.util.SCREEN_CATEGORY_PORTRAIT
+import player.phonograph.ui.util.SCREEN_CATEGORY_SQUARE
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
@@ -42,6 +44,7 @@ class FlatPlayerFragment : AbsPlayerFragment() {
     override fun inflatePlayerFrame(inflater: LayoutInflater, screenCategory: Int): View {
         _impl = when (screenCategory) {
             SCREEN_CATEGORY_PORTRAIT -> FlatPortraitImpl(FragmentPlayerFlatPortraitBinding.inflate(inflater))
+            SCREEN_CATEGORY_SQUARE   -> FlatSquareImpl(FragmentPlayerFlatSquareBinding.inflate(inflater))
             else                     -> FlatLandImpl(FragmentPlayerFlatLandBinding.inflate(inflater))
         }
         return impl.root
@@ -231,6 +234,45 @@ class FlatPlayerFragment : AbsPlayerFragment() {
                 playerToolbar.subtitle = song?.infoString() ?: "-"
             }
         }
+    }
+
+    private class FlatSquareImpl(private val binding: FragmentPlayerFlatSquareBinding) : FlatImpl {
+        override val root get() = binding.root
+        override val toolbar get() = binding.playerToolbar
+        override val toolbarContainer get() = binding.toolbarContainer
+        override val slidingUpPanel: SlidingUpPanelLayout? = null
+        override val playbackControlsContainer get() = binding.playbackControlsFragment
+        override val coloredBackground get() = binding.colorBackground
+        override val coloredBackgroundOverlay get() = binding.colorBackgroundOverlay
+        override val playerPanel get() = binding.playerPanel
+
+        override val preferTransparentStatusbar: Boolean = false
+        override val preferColoredToolbar: Boolean = false
+
+        override fun init() {}
+
+        override fun applyWindowInsect() {
+            ViewCompat.setOnApplyWindowInsetsListener(binding.statusBarPadding) { view, windowInsets ->
+                val insets = windowInsets.getInsets(WindowInsetsCompat.Type.statusBars())
+                view.updateLayoutParams<MarginLayoutParams> {
+                    height = insets.top
+                }
+                WindowInsetsCompat.CONSUMED
+            }
+            ViewCompat.setOnApplyWindowInsetsListener(binding.playerContentContainer) { view, windowInsets ->
+                val insets = windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars())
+                view.updateLayoutParams<MarginLayoutParams> {
+                    bottomMargin = insets.bottom
+                    leftMargin = insets.left
+                    rightMargin = insets.right
+                }
+                WindowInsetsCompat.CONSUMED
+            }
+        }
+
+        override fun adjustHeight() {}
+
+        override fun updateCurrentSong(song: Song?) {}
     }
 
 }

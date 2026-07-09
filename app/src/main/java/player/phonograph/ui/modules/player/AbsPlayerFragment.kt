@@ -33,6 +33,7 @@ import player.phonograph.ui.theme.getTintedDrawable
 import player.phonograph.ui.theme.secondaryTextColorOn
 import player.phonograph.ui.theme.textColorOn
 import player.phonograph.ui.util.PHONOGRAPH_ANIM_TIME
+import player.phonograph.ui.util.SCREEN_CATEGORY_LANDSCAPE
 import player.phonograph.ui.util.SCREEN_CATEGORY_PORTRAIT
 import player.phonograph.ui.util.ScreenCategory
 import player.phonograph.ui.util.backgroundColorTransitionAnimator
@@ -119,7 +120,7 @@ abstract class AbsPlayerFragment :
         val queue = PlayerQueueFragment.newInstance(
             withShadow = argumentStyle?.baseStyle == PlayerBaseStyle.FLAT, // todo
             withActionButtons = argumentStyle?.options?.showModeButtonsForQueue == true,
-            displayCurrentSong = screenCategory == SCREEN_CATEGORY_PORTRAIT, // todo
+            displayCurrentSong = screenCategory != SCREEN_CATEGORY_LANDSCAPE, // todo
         )
         childFragmentManager.commit {
             replace(R.id.playback_controls_fragment, controller)
@@ -465,7 +466,7 @@ private fun buildPlayerToolbar(
         lyricsMenuItem = menuItem(activity.getString(R.string.label_lyrics)) {
             order = 0
             icon = context.getTintedDrawable(R.drawable.ic_comment_text_outline_white_24dp, Color.WHITE)
-            showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
+            showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
             visible = false
             itemId = R.id.action_show_lyrics
             onClick {

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/player_fragment_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <View
+        android:id="@+id/color_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <View
+        android:id="@+id/color_background_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <LinearLayout
+        android:id="@+id/player_content_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:baselineAligned="false"
+        android:orientation="horizontal"
+        android:weightSum="5">
+
+        <!-- Left column: album cover (with toolbar) + controls -->
+        <FrameLayout
+            android:id="@+id/cover_container"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="vertical">
+
+                <androidx.fragment.app.FragmentContainerView
+                    android:id="@+id/player_album_cover_fragment"
+                    android:name="player.phonograph.ui.modules.player.PlayerAlbumCoverFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:layout_height="288dp" />
+
+
+                <androidx.fragment.app.FragmentContainerView
+                    android:id="@+id/playback_controls_fragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:layout_height="48dp" />
+
+            </LinearLayout>
+
+            <FrameLayout
+                android:id="@+id/toolbar_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/toolbar_gradient">
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/player_toolbar"
+                    style="@style/Widget.Phonograph.Toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/mini_player_height"
+                    android:background="@android:color/transparent" />
+
+            </FrameLayout>
+
+        </FrameLayout>
+
+        <!-- Right column: queue -->
+        <FrameLayout
+            android:id="@+id/player_panel"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:background="@color/background_medium_lightblack">
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/player_queue_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:displayCurrentSong="true"
+                tools:layout_height="640dp" />
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/status_bar_padding"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/status_bar_padding"
+        android:background="@android:color/transparent" />
+
+</FrameLayout>
