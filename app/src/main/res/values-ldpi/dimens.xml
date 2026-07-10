@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="controller_button_square">48dp</dimen>
+    <dimen name="controller_button_height">64dp</dimen>
+    <dimen name="controller_button_width">40dp</dimen>
+    <dimen name="controller_button_padding_vertical">8dp</dimen>
+    <dimen name="controller_button_padding_horizontal">4dp</dimen>
+    <dimen name="controller_buttons_margin">4dp</dimen>
+</resources>

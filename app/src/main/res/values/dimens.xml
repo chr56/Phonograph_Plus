@@ -13,10 +13,15 @@
 
     <dimen name="player_queue_panel_height_min">96dp</dimen>
     <dimen name="progress_container_height">20dp</dimen>
-    <dimen name="fab_media_controller_container_height">100dp</dimen>
-    <dimen name="media_controller_container_height">84dp</dimen>
 
     <dimen name="player_queue_sub_header_height">42dp</dimen>
+
+    <dimen name="controller_button_square">56dp</dimen>
+    <dimen name="controller_button_height">72dp</dimen>
+    <dimen name="controller_button_width">48dp</dimen>
+    <dimen name="controller_buttons_padding_vertical">12dp</dimen>
+    <dimen name="controller_buttons_padding_horizontal">8dp</dimen>
+    <dimen name="controller_buttons_margin">16dp</dimen>
 
     <dimen name="status_bar_padding">24dp</dimen>
 
