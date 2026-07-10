@@ -46,9 +46,9 @@ fun detectScreenCategory(resources: Resources): Int {
     val width = resources.configuration.screenWidthDp
     val height = resources.configuration.screenHeightDp
 
-    if (width + height <= 240) return SCREEN_CATEGORY_MINI
+    if (width + height <= 480) return SCREEN_CATEGORY_MINI
 
-    if (abs(height - width) / (width + 0.0625f) <= 0.125f) return SCREEN_CATEGORY_SQUARE
+    if (abs(height - width) / (width + 0.0625f) <= 0.15625f) return SCREEN_CATEGORY_SQUARE
 
     return if (width >= height) {
         SCREEN_CATEGORY_LANDSCAPE
