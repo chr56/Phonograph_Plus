@@ -543,8 +543,8 @@
     <string name="music_library_metadata_sync_mode">Music Library Sync Mode</string>
     <string name="music_library_metadata_sync_mode_standard">Standard</string>
     <string name="music_library_metadata_sync_mode_exclude_genres">Exclude Genres</string>
-    <string name="music_library_metadata_sync_flag_count_composer_as_artist">Count Composer as Artist</string>
-    <string name="music_library_metadata_sync_flag_count_composer_as_artist_description">When disabled, composers will not be linked to songs and will not appear in Artists. (This will be ignored when Metadata Source sets to Mediastore)</string>
+    <string name="music_library_metadata_sync_flag_regard_composers_as_artist">Regard Composers as Artist</string>
+    <string name="music_library_metadata_sync_flag_regard_composers_as_artist_description">When disabled, composers will not be linked to songs and will not appear in Artists. (This will be ignored when Metadata Source sets to Mediastore)</string>
     <string name="permission_name_post_notifications">Post Notifications</string>
     <string name="permission_desc_post_notifications">Since Android T (13), applications require this permission to post notifications.</string>
     <string name="permission_name_read_media_audio">Read Media Audio</string>

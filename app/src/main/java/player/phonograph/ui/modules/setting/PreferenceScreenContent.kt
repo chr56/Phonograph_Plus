@@ -121,8 +121,8 @@ fun PreferenceScreenContent() {
             )
             BooleanPreference(
                 key = Keys.musicLibrarySyncFlagCountComposerAsArtist,
-                titleRes = R.string.music_library_metadata_sync_flag_count_composer_as_artist,
-                summaryRes = R.string.music_library_metadata_sync_flag_count_composer_as_artist_description,
+                titleRes = R.string.music_library_metadata_sync_flag_regard_composers_as_artist,
+                summaryRes = R.string.music_library_metadata_sync_flag_regard_composers_as_artist_description,
             )
         }
         SettingsGroup(titleRes = R.string.pref_header_images) {
