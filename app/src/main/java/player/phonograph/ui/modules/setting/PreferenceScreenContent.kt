@@ -120,7 +120,7 @@ fun PreferenceScreenContent() {
                 title = stringResource(R.string.music_library_metadata_sync_mode),
             )
             BooleanPreference(
-                key = Keys.musicLibrarySyncFlagCountComposerAsArtist,
+                key = Keys.musicLibrarySyncFlagRegardComposerAsArtist,
                 titleRes = R.string.music_library_metadata_sync_flag_regard_composers_as_artist,
                 summaryRes = R.string.music_library_metadata_sync_flag_regard_composers_as_artist_description,
             )

@@ -21,7 +21,7 @@ object SyncExecutors {
         val syncExecutor = when {
             backend.syncBasicDatabase -> BasicSyncExecutor(musicDatabase)
             else                      -> RelationshipSyncExecutor(
-                musicDatabase, withGenres = backend.syncWithGenres, countComposerAsArtist = backend.countComposerAsArtist
+                musicDatabase, withGenres = backend.syncWithGenres, countComposerAsArtist = backend.regardComposerAsArtist
             )
         }
         return syncExecutor
