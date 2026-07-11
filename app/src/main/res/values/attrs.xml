@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <attr name="roundSelector" format="reference" />
-    <attr name="rectSelector" format="reference" />
-    <attr name="rectSelectorStrong" format="reference" />
-
-    <attr name="defaultFooterColor" format="color" />
-
-    <attr name="toolbarPopupTheme" format="reference" />
-
-    <attr name="iconColor" format="color" />
-    <attr name="dividerColor" format="color" />
-
     <declare-styleable name="player_queue">
         <attr name="displayCurrentSong" format="boolean" />
         <attr name="withShadow" format="boolean" />
         <attr name="withActionButtons" format="boolean" />
     </declare-styleable>
+
+    <attr name="toolbarPopupTheme" format="reference" />
+
+    <attr name="iconColor" format="color" />
+    <attr name="dividerColor" format="color" />
+    <attr name="defaultFooterColor" format="color" />
+
+    <attr name="roundSelector" format="reference" />
+    <attr name="rectSelector" format="reference" />
+    <attr name="rectSelectorStrong" format="reference" />
 
 </resources>

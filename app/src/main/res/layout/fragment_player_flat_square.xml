@@ -92,7 +92,7 @@
     <FrameLayout
         android:id="@+id/status_bar_padding"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/status_bar_padding"
+        android:layout_height="@dimen/status_bar_height"
         android:background="@android:color/transparent" />
 
 </FrameLayout>

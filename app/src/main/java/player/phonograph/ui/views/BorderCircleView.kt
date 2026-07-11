@@ -24,7 +24,7 @@ class BorderCircleView : FrameLayout {
     private val paintBorder: Paint = Paint().apply { isAntiAlias = true; color = Color.BLACK }
 
     private val mCheck: Drawable = ContextCompat.getDrawable(context, R.drawable.ic_check)!!
-    private val borderWidth: Int = resources.getDimension(R.dimen.circleview_border).toInt()
+    private val borderWidth: Int = resources.getDimension(R.dimen.circle_view_border).toInt()
 
     private var paintCheck: Paint? = null
 

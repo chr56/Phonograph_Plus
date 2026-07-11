@@ -57,7 +57,6 @@ import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
 import android.content.Context
 import android.content.Intent
-import android.content.res.Resources
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -263,23 +262,18 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvide
                 controller: MultiSelectionController<Album>,
             ) {
                 super.bind(item, position, dataset, presenter, controller)
+                // setup margin
                 with(itemView) {
-                    (layoutParams as MarginLayoutParams).updateMargin(
-                        resources,
-                        position == 0,
-                        position == dataset.size - 1
-                    )
-                }
-            }
-
-            private fun MarginLayoutParams.updateMargin(resources: Resources, left: Boolean, right: Boolean) {
-                val listMargin = resources.getDimensionPixelSize(R.dimen.default_item_margin)
-                marginStart = 8
-                marginEnd = 8
-                if (left) {
-                    marginStart += listMargin
-                } else if (right) {
-                    marginEnd += listMargin
+                    val min = resources.getDimensionPixelSize(R.dimen.grid_item_margin_min)
+                    val extra = resources.getDimensionPixelSize(R.dimen.grid_item_margin_extra)
+                    val params = layoutParams as MarginLayoutParams
+                    params.marginStart = min
+                    params.marginEnd = min
+                    if (position == 0) { // Left
+                        params.marginStart += extra
+                    } else if (position == dataset.size - 1) { // Right
+                        params.marginEnd += extra
+                    }
                 }
             }
 

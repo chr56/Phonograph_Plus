@@ -127,7 +127,7 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
             init {
                 val context = itemView.context
                 image?.also { image ->
-                    val iconPadding = context.resources.getDimensionPixelSize(R.dimen.list_item_image_icon_padding)
+                    val iconPadding = context.resources.getDimensionPixelSize(R.dimen.list_item_padding_image_icon)
                     image.setPadding(iconPadding, iconPadding, iconPadding, iconPadding)
                 }
             }
@@ -137,12 +137,12 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
             init {
                 val context = itemView.context
                 image?.also { image ->
-                    val iconPadding = context.resources.getDimensionPixelSize(R.dimen.list_item_image_icon_padding)
+                    val iconPadding = context.resources.getDimensionPixelSize(R.dimen.list_item_padding_image_icon)
                     image.setPadding(iconPadding, iconPadding, iconPadding, iconPadding)
                 }
                 shortSeparator?.visibility = View.GONE
                 itemView.setBackgroundColor(themeCardBackgroundColor(context))
-                itemView.elevation = context.resources.getDimensionPixelSize(R.dimen.card_elevation).toFloat()
+                itemView.elevation = context.resources.getDimensionPixelSize(R.dimen.default_elevation).toFloat()
             }
         }
 

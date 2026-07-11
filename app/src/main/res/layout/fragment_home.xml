@@ -34,7 +34,7 @@
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabs"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/tab_height"
+            android:layout_height="@dimen/page_tab_height"
             app:tabContentStart="72dp"
             app:tabPaddingStart="8dp"
             app:tabPaddingEnd="8dp"

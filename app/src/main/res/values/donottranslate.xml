@@ -28,6 +28,11 @@
         }
     </string>
 
+    <string name="transition_album_art" translatable="false">album_art_transition</string>
+    <string name="transition_artist_image" translatable="false">artist_image_transition</string>
+    <string name="transition_fab" translatable="false">fab_transition</string>
+    <string name="transition_mini_player" translatable="false">mini_player_transition</string>
+    <string name="transition_toolbar" translatable="false">toolbar_transition</string>
 
     <string name="grid_size_1" translatable="false">1</string>
     <string name="grid_size_2" translatable="false">2</string>

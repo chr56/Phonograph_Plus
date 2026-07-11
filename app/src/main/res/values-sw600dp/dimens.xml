@@ -1,8 +1,13 @@
 <resources>
+
+    <!-- Pages -->
+    <dimen name="page_tab_height">48dp</dimen>
+    <dimen name="page_toolbar_height">48dp</dimen>
+    <dimen name="page_path_navigation_height">42dp</dimen>
+
+    <!-- Detail Page -->
     <dimen name="detail_header_height">176dp</dimen>
     <dimen name="detail_header_image_height">144dp</dimen>
     <dimen name="detail_header_small_image_height">80dp</dimen>
-
-    <dimen name="path_navigation_header_height">42dp</dimen>
 
 </resources>

@@ -86,7 +86,7 @@
                         android:layout_marginRight="16dp"
                         android:layout_marginBottom="-8dp"
                         app:cardBackgroundColor="?cardBackgroundColor"
-                        app:cardElevation="@dimen/card_elevation"
+                        app:cardElevation="@dimen/default_elevation"
                         app:cardUseCompatPadding="false">
 
                         <androidx.fragment.app.FragmentContainerView

@@ -49,7 +49,7 @@
         android:fontFamily="sans-serif-light"
         android:text="@string/msg_empty_playlist"
         android:textColor="?android:textColorSecondary"
-        android:textSize="@dimen/empty_text_size"
+        android:textSize="20sp"
         android:visibility="gone" />
 
 </FrameLayout>

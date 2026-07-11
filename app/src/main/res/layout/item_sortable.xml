@@ -10,10 +10,10 @@
     android:foreground="@drawable/rect_selector_auto"
     android:minHeight="@dimen/list_item_height"
     android:orientation="horizontal"
-    android:paddingStart="@dimen/dialog_frame_margin"
-    android:paddingLeft="@dimen/dialog_frame_margin"
-    android:paddingEnd="@dimen/dialog_frame_margin"
-    android:paddingRight="@dimen/dialog_frame_margin"
+    android:paddingStart="@dimen/list_item_padding_content"
+    android:paddingLeft="@dimen/list_item_padding_content"
+    android:paddingEnd="@dimen/list_item_padding_content"
+    android:paddingRight="@dimen/list_item_padding_content"
     tools:gravity="start|center_vertical">
 
     <player.phonograph.ui.views.AccentColorCheckBox
@@ -33,10 +33,10 @@
         android:ellipsize="end"
         android:gravity="center_vertical"
         android:minHeight="@dimen/list_item_height"
-        android:paddingStart="@dimen/list_item_control_margin"
-        android:paddingTop="@dimen/list_item_vertical_margin_choice"
-        android:paddingEnd="@dimen/list_item_control_margin"
-        android:paddingBottom="@dimen/list_item_vertical_margin_choice"
+        android:paddingStart="@dimen/list_item_margin_control"
+        android:paddingTop="@dimen/list_item_margin_vertical"
+        android:paddingEnd="@dimen/list_item_margin_control"
+        android:paddingBottom="@dimen/list_item_margin_vertical"
         tools:text="Item" />
 
     <player.phonograph.ui.views.IconImageView

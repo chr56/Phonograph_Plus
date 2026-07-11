@@ -1,21 +1,28 @@
 <resources>
 
-    <dimen name="default_item_margin">16dp</dimen>
+    <!-- Default -->
+    <dimen name="default_elevation">2dp</dimen>
+    <dimen name="default_padding">8dp</dimen>
 
-    <dimen name="detail_header_height">176dp</dimen>
-    <dimen name="detail_header_image_height">144dp</dimen>
-    <dimen name="detail_header_small_image_height">80dp</dimen>
-    <dimen name="toolbar_elevation">4dp</dimen>
-    <dimen name="card_elevation">2dp</dimen>
+    <!-- Items -->
+    <dimen name="list_item_height">48dp</dimen>
+    <dimen name="list_item_margin_control">6dp</dimen>
+    <dimen name="list_item_margin_vertical">8dp</dimen>
+    <dimen name="list_item_padding_image_icon">8dp</dimen>
+    <dimen name="list_item_padding_content">24dp</dimen>
+    <dimen name="grid_item_margin_min">4dp</dimen>
+    <dimen name="grid_item_margin_extra">12dp</dimen>
 
-    <!-- 3x standard action bar height (56dp) -->
-    <dimen name="toolbar_scrim_height">168dp</dimen>
+    <!-- Pages -->
+    <dimen name="page_tab_height">48dp</dimen>
+    <dimen name="page_toolbar_height">56dp</dimen>
+    <dimen name="page_path_navigation_height">42dp</dimen>
 
-    <dimen name="player_queue_panel_height_min">96dp</dimen>
-    <dimen name="progress_container_height">20dp</dimen>
-
+    <!-- Player -->
+    <dimen name="mini_player_height">56dp</dimen>
+    <dimen name="player_queue_panel_min_height">96dp</dimen>
     <dimen name="player_queue_sub_header_height">42dp</dimen>
-
+    <dimen name="player_progress_container_height">20dp</dimen>
     <dimen name="controller_button_square">56dp</dimen>
     <dimen name="controller_button_height">72dp</dimen>
     <dimen name="controller_button_width">48dp</dimen>
@@ -23,64 +30,42 @@
     <dimen name="controller_buttons_padding_horizontal">8dp</dimen>
     <dimen name="controller_buttons_margin">16dp</dimen>
 
-    <dimen name="status_bar_padding">24dp</dimen>
+    <!-- Detail Page -->
+    <dimen name="detail_header_height">176dp</dimen>
+    <dimen name="detail_header_image_height">144dp</dimen>
+    <dimen name="detail_header_small_image_height">80dp</dimen>
 
-    <dimen name="tab_height">48dp</dimen>
+    <!-- Images -->
+    <dimen name="big_image_size">128dp</dimen>
 
-    <!--
-Refer to App Widget Documentation for margin information
-http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
-    -->
-    <dimen name="pause_bar_width">5dp</dimen>
-    <dimen name="pause_bar_distance">4dp</dimen>
-    <dimen name="pause_bar_height">14dp</dimen>
+    <!-- Toolbar -->
+    <dimen name="toolbar_height">56dp</dimen>
+    <dimen name="toolbar_scrim_height">168dp</dimen> <!-- 3 x 56dp -->
+    <dimen name="toolbar_elevation">4dp</dimen>
 
-    <dimen name="empty_text_size">20sp</dimen>
-
-    <dimen name="notification_big_image_size">128dp</dimen>
-
-    <!-- MUST BE THE RESULT OF WIDTH PLUS INSET-->
-
-    <!-- ONLY 0dp WHILE THERE IS THE BUG IN DESIGN SUPPORT LIBRARY 22.2.0-->
-    <dimen name="fab_margin_top_left_right">16dp</dimen>
-
-    <!-- For use with 24dp drawables in the item_list layouts-->
-    <dimen name="list_item_image_icon_padding">8dp</dimen>
-
-    <dimen name="mini_player_height">56dp</dimen>
+    <!-- System Bar -->
     <dimen name="navigation_bar_height">48dp</dimen>
+    <dimen name="status_bar_height">24dp</dimen>
 
-    <dimen name="page_panel_height">56dp</dimen>
-    <dimen name="path_navigation_header_height">42dp</dimen>
-
-    <!--App Widgets-->
+    <!--App Widgets -->
     <dimen name="app_widget_classic_image_size">96dp</dimen>
     <dimen name="app_widget_classic_min_width">250dp</dimen>
     <dimen name="app_widget_classic_min_height">40dp</dimen>
-
     <dimen name="app_widget_small_button_height">48dp</dimen>
     <dimen name="app_widget_small_image_size">48dp</dimen>
     <dimen name="app_widget_small_min_width">250dp</dimen>
     <dimen name="app_widget_small_min_height">40dp</dimen>
-
     <dimen name="app_widget_big_min_width">250dp</dimen>
     <dimen name="app_widget_big_min_height">110dp</dimen>
-
     <dimen name="app_widget_card_image_size">56dp</dimen>
     <dimen name="app_widget_card_min_width">250dp</dimen>
     <dimen name="app_widget_card_min_height">40dp</dimen>
     <dimen name="app_widget_card_buttons_width">128dp</dimen>
     <dimen name="app_widget_card_radius">2dp</dimen>
 
-
-    <dimen name="pref_default_textsize_subheading">16sp</dimen>
-    <dimen name="pref_default_textsize_body">14sp</dimen>
-    <dimen name="pref_preference_inset">16dp</dimen>
-    <dimen name="circleview_border">1dp</dimen>
-
-    <dimen name="list_item_height">48dp</dimen>
-    <dimen name="list_item_control_margin">6dp</dimen>
-    <dimen name="list_item_vertical_margin_choice">8dp</dimen>
-    <dimen name="dialog_frame_margin">24dp</dimen>
-
+    <!--Views -->
+    <dimen name="pause_bar_height">14dp</dimen>
+    <dimen name="pause_bar_width">5dp</dimen>
+    <dimen name="pause_bar_distance">4dp</dimen>
+    <dimen name="circle_view_border">1dp</dimen>
 </resources>

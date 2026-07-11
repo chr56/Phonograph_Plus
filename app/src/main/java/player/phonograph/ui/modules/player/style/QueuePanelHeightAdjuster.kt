@@ -12,7 +12,7 @@ import kotlin.math.max
 
 class QueuePanelHeightAdjuster(resources: Resources) {
 
-    private val minQueuePanelHeight = resources.getDimensionPixelSize(R.dimen.player_queue_panel_height_min)
+    private val minQueuePanelHeight = resources.getDimensionPixelSize(R.dimen.player_queue_panel_min_height)
 
     private var targetQueuePanelHeight = 0
     private var targetAlbumCoverHeight = 0
