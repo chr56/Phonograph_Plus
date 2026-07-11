@@ -1,0 +1,57 @@
+name: Feature Request
+description: Suggest new features or improvements
+title: "[Feature Request] "
+labels: [ "Enhancement" ]
+
+body:
+  - type: textarea
+    id: background-introduction
+    attributes:
+      label: Background & Introduction
+      description: Describe background and motivation, and then introduce your idea.
+      placeholder: |
+        Describe the background context, current problem, or motivation behind it.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      description: Please confirm that you searched existing issues and did not find a similar one.
+      options:
+        - label: I have searched the existing issues and confirmed that no similar issue has been opened.
+          required: true
+
+  - type: textarea
+    id: proposed-features-suggestions
+    attributes:
+      label: Proposed Features or Suggestions
+      description: Describe your detailed idea for the features or suggestions.
+      value: |
+        The more detail and concrete you provide here, the more likely it is to be implemented. 
+        For example:
+        - detailed behaviors for this feature or improvement (please be thoughtful and care about edge cases);
+        - difficulties, underlying mechanisms, and any potential controversial changes;
+        - limitations, constraints, and possible trade-offs;
+        - the final improvements you want to see;
+        - ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: other-information
+    attributes:
+      label: Other Information
+      description: Any extra notes, references, related links or any other stuffs that need to be mentioned.
+    validations:
+      required: false
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: Your story may be too long to read, please provide a very short final summary.
+      placeholder: "Keep it brief; few sentences are fine. "
+    validations:
+      required: true

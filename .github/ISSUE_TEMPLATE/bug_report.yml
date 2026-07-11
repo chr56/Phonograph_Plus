@@ -8,7 +8,7 @@ body:
     id: summary
     attributes:
       label: Bug Summary
-      description: A clear and concise description of what this bug is.
+      description: A clear and concise description of this bug.
     validations:
       required: true
 
@@ -16,8 +16,8 @@ body:
     id: app-version
     attributes:
       label: Version
-      description: "Which version are you using?"
-      placeholder: "1.x.x"
+      description: "The version you are currently using when it happened."
+      placeholder: "2.x.x (concrete version, NEVER say 'latest')"
     validations:
       required: true
 
@@ -25,7 +25,27 @@ body:
     id: step-to-reproduce
     attributes:
       label: Steps to reproduce the bug
-      description: (Optional) Steps to reproduce the bugs or unexpected behaviors, or when this happened.
+      description: (Optional) Steps to reproduce the bugs or unexpected behaviors.
+      placeholder: When and how this happened? Steps to reproduce?
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      description: Please confirm that you searched existing issues and did not find a similar one.
+      options:
+        - label: I have searched the existing issues (and FAQ) and confirmed that no similar issue has been opened.
+          required: true
+        - label: This bug can be reproduced every time.
+          required: false
+
+  - type: upload
+    id: screenshots
+    attributes:
+      label: Screenshots or Screen recordings
+      description: (Optional)
     validations:
       required: false
 
@@ -33,15 +53,8 @@ body:
     id: environment
     attributes:
       label: Environment
-      description: What is your environment (such as Android OS version, ROM)? (Optional)
-    validations:
-      required: false
-
-  - type: textarea
-    id: screenshots
-    attributes:
-      label: Screenshots or Screen recordings
-      description: (Optional)
+      description: (Optional) Your environment.
+      placeholder: Environment? (e.g. Android OS version, phone vendor/OEM)
     validations:
       required: false
 
