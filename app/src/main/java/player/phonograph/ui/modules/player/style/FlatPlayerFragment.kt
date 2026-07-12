@@ -41,13 +41,13 @@ class FlatPlayerFragment : AbsPlayerFragment() {
         fun updateCurrentSong(song: Song?)
     }
 
-    override fun inflatePlayerFrame(inflater: LayoutInflater, screenCategory: Int): View {
+    override fun inflatePlayerFrame(inflater: LayoutInflater, screenCategory: Int): ViewElementsContainer {
         _impl = when (screenCategory) {
             SCREEN_CATEGORY_PORTRAIT -> FlatPortraitImpl(FragmentPlayerFlatPortraitBinding.inflate(inflater))
             SCREEN_CATEGORY_SQUARE   -> FlatSquareImpl(FragmentPlayerFlatSquareBinding.inflate(inflater))
             else                     -> FlatLandImpl(FragmentPlayerFlatLandBinding.inflate(inflater))
         }
-        return impl.root
+        return impl
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -151,6 +151,9 @@ class FlatPlayerFragment : AbsPlayerFragment() {
         override val preferTransparentStatusbar: Boolean = false
         override val preferColoredToolbar: Boolean = false
 
+        override val displayCurrentSongStandalone: Boolean = false
+        override val shadowForQueue: Boolean = true
+
         private lateinit var panelHeightAdjuster: QueuePanelHeightAdjuster
         override fun init() {
             panelHeightAdjuster = QueuePanelHeightAdjuster(binding.root.resources)
@@ -197,6 +200,9 @@ class FlatPlayerFragment : AbsPlayerFragment() {
 
         override val preferTransparentStatusbar: Boolean = true
         override val preferColoredToolbar: Boolean = true
+
+        override val displayCurrentSongStandalone: Boolean = true
+        override val shadowForQueue: Boolean = true
 
         override fun init() {}
 
@@ -248,6 +254,9 @@ class FlatPlayerFragment : AbsPlayerFragment() {
 
         override val preferTransparentStatusbar: Boolean = false
         override val preferColoredToolbar: Boolean = false
+
+        override val displayCurrentSongStandalone: Boolean = false
+        override val shadowForQueue: Boolean = true
 
         override fun init() {}
 

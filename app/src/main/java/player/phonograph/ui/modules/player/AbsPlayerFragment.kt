@@ -15,14 +15,12 @@ import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.model.ui.NowPlayingScreenStyle
-import player.phonograph.model.ui.PlayerBaseStyle
 import player.phonograph.model.ui.PlayerControllerStyle
 import player.phonograph.model.ui.UnarySlidingUpPanelProvider
 import player.phonograph.repo.loader.FavoriteTracks
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.modules.panel.AbsMusicServiceFragment
 import player.phonograph.ui.modules.panel.PanelViewModel
-import player.phonograph.ui.modules.panel.QueueViewModel
 import player.phonograph.ui.modules.player.PlayerAlbumCoverFragment.Companion.VISIBILITY_ANIM_DURATION
 import player.phonograph.ui.modules.player.controller.PlayerControllerFragment
 import player.phonograph.ui.modules.player.dialogs.LyricsDialog
@@ -33,8 +31,6 @@ import player.phonograph.ui.theme.getTintedDrawable
 import player.phonograph.ui.theme.secondaryTextColorOn
 import player.phonograph.ui.theme.textColorOn
 import player.phonograph.ui.util.PHONOGRAPH_ANIM_TIME
-import player.phonograph.ui.util.SCREEN_CATEGORY_LANDSCAPE
-import player.phonograph.ui.util.SCREEN_CATEGORY_PORTRAIT
 import player.phonograph.ui.util.ScreenCategory
 import player.phonograph.ui.util.backgroundColorTransitionAnimator
 import player.phonograph.ui.util.detectScreenCategory
@@ -49,8 +45,6 @@ import androidx.annotation.ColorInt
 import androidx.appcompat.widget.Toolbar
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
-import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -114,13 +108,13 @@ abstract class AbsPlayerFragment :
         savedInstanceState: Bundle?,
     ): View? {
         val screenCategory = detectScreenCategory(resources)
-        val inflated = inflatePlayerFrame(inflater, screenCategory)
+        val frame = inflatePlayerFrame(inflater, screenCategory)
         val controller =
             PlayerControllerFragment.newInstance(argumentStyle?.controllerStyle ?: PlayerControllerStyle.DEFAULT)
         val queue = PlayerQueueFragment.newInstance(
-            withShadow = argumentStyle?.baseStyle == PlayerBaseStyle.FLAT, // todo
+            withShadow = frame.shadowForQueue, // todo
             withActionButtons = argumentStyle?.options?.showModeButtonsForQueue == true,
-            displayCurrentSong = screenCategory != SCREEN_CATEGORY_LANDSCAPE, // todo
+            displayCurrentSong = !frame.displayCurrentSongStandalone,
         )
         childFragmentManager.commit {
             replace(R.id.playback_controls_fragment, controller)
@@ -129,10 +123,10 @@ abstract class AbsPlayerFragment :
         childFragmentManager.executePendingTransactions()
         playbackControlsFragment = controller
         queueFragment = queue
-        return inflated
+        return frame.root
     }
 
-    protected abstract fun inflatePlayerFrame(inflater: LayoutInflater, @ScreenCategory screenCategory: Int): View
+    protected abstract fun inflatePlayerFrame(inflater: LayoutInflater, @ScreenCategory screenCategory: Int): ViewElementsContainer
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -188,16 +182,115 @@ abstract class AbsPlayerFragment :
     private var favoriteMenuItem: MenuItem? = null
 
     private fun initToolbar() {
-        buildPlayerToolbar(
-            requireActivity(),
-            frame.toolbar,
-            lifecycle,
-            childFragmentManager,
-            lyricsViewModel,
-            queueViewModel
-        ).also {
-            lyricsMenuItem = it.first
-            favoriteMenuItem = it.second
+        val activity = requireActivity()
+        attach(activity, frame.toolbar.menu) {
+            // visible
+            lyricsMenuItem = menuItem(getString(R.string.label_lyrics)) {
+                order = 0
+                icon = context.getTintedDrawable(R.drawable.ic_comment_text_outline_white_24dp, Color.WHITE)
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
+                visible = false
+                itemId = R.id.action_show_lyrics
+                onClick {
+                    if (lyricsViewModel.hasLyrics) {
+                        LyricsDialog().show(childFragmentManager, "LYRICS")
+                    }
+                    true
+                }
+            }
+
+            favoriteMenuItem = menuItem(getString(R.string.action_add_to_favorites)) {
+                order = 1
+                icon = context.getTintedDrawable(R.drawable.ic_favorite_border_white_24dp, Color.WHITE)
+                // default state
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
+                itemId = R.id.action_toggle_favorite
+                onClick {
+                    val song = queueViewModel.currentSong.value
+                    if (song != null) lifecycle.coroutineScope.launch(Dispatchers.IO) {
+                        FavoriteTracks.toggleState(context, song)
+                        EventHub.sendEvent(context, EventHub.EVENT_FAVORITES_CHANGED)
+                    }
+                    true
+                }
+            }
+
+            // collapsed
+            menuItem {
+                title = getString(R.string.action_change_now_playing_screen)
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+                onClick {
+                    NowPlayingScreenStylePreferenceDialog().show(childFragmentManager, "NOW_PLAYING_SCREEN")
+                    true
+                }
+            }
+            menuItem {
+                title = getString(R.string.action_choose_lyrics)
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+                onClick {
+                    val activity = activity
+                    val accessor = activity as? IOpenFileStorageAccessible
+                    if (accessor != null) {
+                        accessor.openFileStorageAccessDelegate.launch(OpenDocumentContract.Config(arrayOf("*/*"))) { uri ->
+                            if (uri == null) return@launch
+                            CoroutineScope(Dispatchers.IO).launch {
+                                val lyricsViewModel = ViewModelProvider(activity)[LyricsViewModel::class.java]
+                                lyricsViewModel.appendLyricsFrom(activity, uri)
+                            }
+                        }
+                    } else {
+                        warning(activity, "Lyrics", "Can not open file from $activity")
+                    }
+                    true
+                }
+            }
+            menuItem {
+                title = getString(R.string.action_sleep_timer)
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+                onClick {
+                    SleepTimerDialog()
+                        .show(childFragmentManager, "SET_SLEEP_TIMER")
+                    true
+                }
+            }
+            menuItem {
+                title = getString(R.string.label_equalizer)
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+                onClick {
+                    val audioSessionId = MusicPlayerRemote.audioSessionId
+                    if (audioSessionId <= 0) {
+                        Toast.makeText(
+                            activity,
+                            getString(R.string.err_no_audio_ID),
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                    if (!openEqualizer(activity, audioSessionId)) {
+                        Toast.makeText(
+                            activity,
+                            getString(R.string.err_no_equalizer),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                    true
+                }
+            }
+            menuItem {
+                title = activity.getString(R.string.label_speed)
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+                onClick {
+                    SpeedControlDialog().show(childFragmentManager, "SPEED_CONTROL_DIALOG")
+                    true
+                }
+            }
+        }
+
+        with(frame.toolbar) {
+            setNavigationIcon(R.drawable.ic_close_white_24dp)
+            setNavigationOnClickListener {
+                activity.onBackPressedDispatcher.onBackPressed()
+            }
+            setMenuColor(activity, this, this.menu, Color.WHITE)
         }
     }
 
@@ -294,16 +387,16 @@ abstract class AbsPlayerFragment :
     ): AnimatorSet {
 
         val rippleCenter = playbackControlsFragment.provideRippleCenter()
-        val controllerPosition = Point(
-            frame.playbackControlsContainer.left,
-            frame.playbackControlsContainer.top,
-        )
         val backgroundAnimator: Animator? =
             if (rippleCenter != null && frame.coloredBackground.isAttachedToWindow) {
                 makeCircularRevealAnimation(
                     frame.coloredBackground,
                     frame.coloredBackgroundOverlay,
-                    rippleCenter, controllerPosition,
+                    rippleCenter,
+                    Point(
+                        frame.playbackControlsContainer.left,
+                        frame.playbackControlsContainer.top,
+                    ),
                     newColor
                 )
             } else {
@@ -444,129 +537,12 @@ abstract class AbsPlayerFragment :
 
         val preferTransparentStatusbar: Boolean
         val preferColoredToolbar: Boolean
+
+        val displayCurrentSongStandalone: Boolean
+        val shadowForQueue: Boolean
     }
 
     val useTransparentStatusbar: Boolean
         get() = if (isResumed) frame.preferTransparentStatusbar else false // fixme: lifecycle issue
 
-}
-
-private fun buildPlayerToolbar(
-    activity: FragmentActivity,
-    playerToolbar: Toolbar,
-    lifecycle: Lifecycle,
-    childFragmentManager: FragmentManager,
-    lyricsViewModel: LyricsViewModel,
-    queueViewModel: QueueViewModel,
-): Pair<MenuItem?, MenuItem?> {
-    var lyricsMenuItem: MenuItem? = null
-    var favoriteMenuItem: MenuItem? = null
-    attach(activity, playerToolbar.menu) {
-        // visible
-        lyricsMenuItem = menuItem(activity.getString(R.string.label_lyrics)) {
-            order = 0
-            icon = context.getTintedDrawable(R.drawable.ic_comment_text_outline_white_24dp, Color.WHITE)
-            showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
-            visible = false
-            itemId = R.id.action_show_lyrics
-            onClick {
-                if (lyricsViewModel.hasLyrics) {
-                    LyricsDialog().show(childFragmentManager, "LYRICS")
-                }
-                true
-            }
-        }
-
-        favoriteMenuItem = menuItem(activity.getString(R.string.action_add_to_favorites)) {
-            order = 1
-            icon = context.getTintedDrawable(R.drawable.ic_favorite_border_white_24dp, Color.WHITE)
-            // default state
-            showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
-            itemId = R.id.action_toggle_favorite
-            onClick {
-                val song = queueViewModel.currentSong.value
-                if (song != null) lifecycle.coroutineScope.launch(Dispatchers.IO) {
-                    FavoriteTracks.toggleState(context, song)
-                    EventHub.sendEvent(context, EventHub.EVENT_FAVORITES_CHANGED)
-                }
-                true
-            }
-        }
-
-        // collapsed
-        menuItem {
-            title = activity.getString(R.string.action_change_now_playing_screen)
-            showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
-            onClick {
-                NowPlayingScreenStylePreferenceDialog().show(childFragmentManager, "NOW_PLAYING_SCREEN")
-                true
-            }
-        }
-        menuItem {
-            title = activity.getString(R.string.action_choose_lyrics)
-            showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
-            onClick {
-                val activity = activity
-                val accessor = activity as? IOpenFileStorageAccessible
-                if (accessor != null) {
-                    accessor.openFileStorageAccessDelegate.launch(OpenDocumentContract.Config(arrayOf("*/*"))) { uri ->
-                        if (uri == null) return@launch
-                        CoroutineScope(Dispatchers.IO).launch {
-                            val lyricsViewModel = ViewModelProvider(activity)[LyricsViewModel::class.java]
-                            lyricsViewModel.appendLyricsFrom(activity, uri)
-                        }
-                    }
-                } else {
-                    warning(activity, "Lyrics", "Can not open file from $activity")
-                }
-                true
-            }
-        }
-        menuItem {
-            title = activity.getString(R.string.action_sleep_timer)
-            showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
-            onClick {
-                SleepTimerDialog()
-                    .show(childFragmentManager, "SET_SLEEP_TIMER")
-                true
-            }
-        }
-        menuItem {
-            title = activity.getString(R.string.label_equalizer)
-            showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
-            onClick {
-                val audioSessionId = MusicPlayerRemote.audioSessionId
-                if (audioSessionId <= 0) {
-                    Toast.makeText(
-                        activity,
-                        activity.resources.getString(R.string.err_no_audio_ID),
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-                if (!openEqualizer(activity, audioSessionId)) {
-                    Toast.makeText(
-                        activity,
-                        activity.resources.getString(R.string.err_no_equalizer),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-                true
-            }
-        }
-        menuItem {
-            title = activity.getString(R.string.label_speed)
-            showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
-            onClick {
-                SpeedControlDialog().show(childFragmentManager, "SPEED_CONTROL_DIALOG")
-                true
-            }
-        }
-    }
-
-    playerToolbar.setNavigationIcon(R.drawable.ic_close_white_24dp)
-    playerToolbar.setNavigationOnClickListener {
-        activity.onBackPressedDispatcher.onBackPressed()
-    }
-    setMenuColor(activity, playerToolbar, playerToolbar.menu, Color.WHITE)
-    return lyricsMenuItem to favoriteMenuItem
 }

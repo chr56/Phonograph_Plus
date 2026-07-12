@@ -43,13 +43,13 @@ class CardPlayerFragment : AbsPlayerFragment() {
         fun updateElevation(value: Float)
     }
 
-    override fun inflatePlayerFrame(inflater: LayoutInflater, screenCategory: Int): View {
+    override fun inflatePlayerFrame(inflater: LayoutInflater, screenCategory: Int): ViewElementsContainer {
         _impl = when (screenCategory) {
             SCREEN_CATEGORY_PORTRAIT -> CardPortraitImpl(FragmentPlayerCardPortraitBinding.inflate(inflater))
             SCREEN_CATEGORY_SQUARE   -> CardSquareImpl(FragmentPlayerCardSquareBinding.inflate(inflater))
             else                     -> CardLandImpl(FragmentPlayerCardLandBinding.inflate(inflater))
         }
-        return impl.root
+        return impl
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -148,6 +148,9 @@ class CardPlayerFragment : AbsPlayerFragment() {
         override val preferTransparentStatusbar: Boolean = true
         override val preferColoredToolbar: Boolean = false
 
+        override val displayCurrentSongStandalone: Boolean = false
+        override val shadowForQueue: Boolean = false
+
         private lateinit var panelHeightAdjuster: QueuePanelHeightAdjuster
         override fun init() {
             panelHeightAdjuster = QueuePanelHeightAdjuster(binding.root.resources)
@@ -192,6 +195,9 @@ class CardPlayerFragment : AbsPlayerFragment() {
 
         override val preferTransparentStatusbar: Boolean = true
         override val preferColoredToolbar: Boolean = true
+
+        override val displayCurrentSongStandalone: Boolean = true
+        override val shadowForQueue: Boolean = false
 
         override fun init() {
             // for some reason, the XML attribute doesn't get applied here.
@@ -249,6 +255,9 @@ class CardPlayerFragment : AbsPlayerFragment() {
 
         override val preferTransparentStatusbar: Boolean = true
         override val preferColoredToolbar: Boolean = false
+
+        override val displayCurrentSongStandalone: Boolean = false
+        override val shadowForQueue: Boolean = false
 
         override fun init() {
             binding.playingQueueCard.setCardBackgroundColor(themeCardBackgroundColor(binding.root.context))
