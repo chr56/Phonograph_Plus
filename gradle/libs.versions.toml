@@ -39,7 +39,7 @@ room = "2.8.4"
 
 #### Popular Start
 ktxc = "1.11.0"
-ktxs-json = "1.10.0"
+ktxs-json = "1.11.0"
 ktxs-ktoml = "0.7.0"
 ktxs-kaml = "0.90.0"
 okhttp = "4.12.0"
