@@ -41,10 +41,13 @@ object UpdateChecker {
         force: Boolean = false,
         callback: suspend (versionCatalog: VersionCatalog, upgradable: Boolean) -> Unit,
     ) {
-        val versionCatalog = fetchVersionCatalog()
-        if (versionCatalog != null) {
-            val upgradable = checkUpgradable(versionCatalog, force)
-            callback(versionCatalog, upgradable)
+        try {
+            val versionCatalog = fetchVersionCatalog()
+            if (versionCatalog != null) {
+                val upgradable = checkUpgradable(versionCatalog, force)
+                callback(versionCatalog, upgradable)
+            }
+        } catch (_: Exception) {
         }
     }
 

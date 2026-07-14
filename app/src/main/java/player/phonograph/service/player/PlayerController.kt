@@ -32,7 +32,6 @@ import android.os.PowerManager.WakeLock
 import android.util.Log
 import android.widget.Toast
 import kotlin.math.abs
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import java.io.File
 
@@ -773,7 +772,7 @@ class PlayerController : ServiceComponent, Controller {
     }
 
     fun updateLyrics() {
-        service.coroutineScope.launch(SupervisorJob()) {
+        service.coroutineScope.launch {
             lyricsUpdater.updateViaSong(service, queueManager.currentSong)
         }
     }

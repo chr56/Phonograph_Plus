@@ -55,7 +55,6 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
 class MainActivity : AbsSlidingMusicPanelActivity(),
@@ -228,7 +227,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
             )
             return
         }
-        lifecycleScope.launch(SupervisorJob()) {
+        lifecycleScope.launch {
             UpdateChecker.checkUpdate { versionCatalog: VersionCatalog, upgradable: Boolean ->
                 if (upgradable) {
                     UpdateChecker.sendNotification(

@@ -14,8 +14,8 @@ import player.phonograph.service.ServiceComponent
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
 import android.content.Context
+import android.util.Log
 import kotlin.math.max
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import java.io.File
 
@@ -29,13 +29,17 @@ class LyricsUpdater : ServiceComponent {
         if (song == null) return
         val enableLyrics = Settings(context)[Keys.enableLyrics].read()
         if (!enableLyrics) return
-        val file = File(song.data)
-        lyrics =
-            if (StoragePermissionChecker.hasStorageReadPermission(context) && file.exists()) {
-                LyricsLoader.search(file, song.title).firstLrcLyrics()
-            } else {
-                null
-            }
+        try {
+            val file = File(song.data)
+            lyrics =
+                if (StoragePermissionChecker.hasStorageReadPermission(context) && file.exists()) {
+                    LyricsLoader.search(file, song.title).firstLrcLyrics()
+                } else {
+                    null
+                }
+        } catch (e: Exception) {
+            Log.e("Lyrics", "Failed to update lyrics!", e)
+        }
     }
 
     fun updateViaLyrics(new: LrcLyrics) {
@@ -44,7 +48,7 @@ class LyricsUpdater : ServiceComponent {
 
     override fun onCreate(musicService: MusicService) {
         val song = musicService.queueManager.currentSong
-        musicService.coroutineScope.launch(SupervisorJob()) {
+        musicService.coroutineScope.launch {
             updateViaSong(musicService, song)
         }
     }
