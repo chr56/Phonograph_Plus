@@ -11,7 +11,6 @@ import player.phonograph.databinding.ActivityAboutBinding
 import player.phonograph.foundation.content.PackageMetadata
 import player.phonograph.foundation.error.warning
 import player.phonograph.mechanism.UpdateChecker
-import player.phonograph.model.version.VersionCatalog
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
 import player.phonograph.ui.basis.ToolbarActivity
@@ -34,6 +33,7 @@ import android.view.View
 import android.widget.Toast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -180,20 +180,19 @@ class AboutActivity : ToolbarActivity() {
 
     private fun checkForUpdates() {
         lifecycleScope.launch {
-            UpdateChecker.checkUpdate { versionCatalog: VersionCatalog, upgradable: Boolean ->
-                if (upgradable) {
-                    UpgradeInfoDialog.create(versionCatalog).show(supportFragmentManager, "UPGRADE")
-                    val ignored = Settings(App.instance)[Keys.ignoreUpgradeDate].data
-                    val current = versionCatalog.latest(CURRENT_RELEASE_CHANNEL.lowercase())?.date ?: 0
-                    if (ignored >= current) {
-                        lifecycleScope.launch(Dispatchers.Main) {
-                            Toast.makeText(this@AboutActivity, R.string.msg_ignored_update, Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                } else {
+            val versionCatalog = UpdateChecker.downloadVersionCatalog() ?: return@launch
+            if (UpdateChecker.checkUpgradable(versionCatalog, force = false)) {
+                UpgradeInfoDialog.create(versionCatalog).show(supportFragmentManager, "UPGRADE")
+                val ignored = Settings(App.instance)[Keys.ignoreUpgradeDate].data
+                val current = versionCatalog.latest(CURRENT_RELEASE_CHANNEL.lowercase())?.date ?: 0
+                if (ignored >= current) {
                     lifecycleScope.launch(Dispatchers.Main) {
-                        Toast.makeText(this@AboutActivity, R.string.msg_no_updates, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@AboutActivity, R.string.msg_ignored_update, Toast.LENGTH_SHORT).show()
                     }
+                }
+            } else {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@AboutActivity, R.string.msg_no_updates, Toast.LENGTH_SHORT).show()
                 }
             }
         }

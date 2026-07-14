@@ -228,18 +228,18 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
             return
         }
         lifecycleScope.launch {
-            UpdateChecker.checkUpdate { versionCatalog: VersionCatalog, upgradable: Boolean ->
-                if (upgradable) {
-                    UpdateChecker.sendNotification(
+            val versionCatalog = UpdateChecker.downloadVersionCatalog() ?: return@launch
+            val upgradable = UpdateChecker.checkUpgradable(versionCatalog, force = true)
+            if (upgradable) {
+                UpdateChecker.sendNotification(
+                    this@MainActivity,
+                    versionCatalog,
+                    launchingIntent(
                         this@MainActivity,
                         versionCatalog,
-                        launchingIntent(
-                            this@MainActivity,
-                            versionCatalog,
-                            Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-                        )
+                        Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
                     )
-                }
+                )
             }
             Settings(this@MainActivity)[Keys.lastCheckUpgradeTimeStamp].data = System.currentTimeMillis()
         }

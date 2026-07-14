@@ -9,7 +9,6 @@ import player.phonograph.foundation.concurrent.coroutineToast
 import player.phonograph.foundation.error.warning
 import player.phonograph.mechanism.UpdateChecker
 import player.phonograph.model.Song
-import player.phonograph.model.version.VersionCatalog
 import player.phonograph.repo.mediastore.MediaStoreSongsActions
 import player.phonograph.ui.modules.main.MainActivity
 import player.phonograph.ui.modules.upgrade.UpgradeInfoDialog
@@ -64,34 +63,41 @@ class DebugDialog : DialogFragment() {
         },
         "Check for updates (Dialog)" to {
             CoroutineScope(Dispatchers.Unconfined).launch {
-                UpdateChecker.checkUpdate(true) { versionCatalog: VersionCatalog, upgradable: Boolean ->
-                    try {
-                        UpgradeInfoDialog.create(versionCatalog)
-                            .show(hostActivity.get()?.supportFragmentManager!!, "DebugDialog")
-                        if (!upgradable) {
-                            coroutineToast(App.instance, "not upgradable")
-                        }
-                    } catch (e: IllegalStateException) {
-                        Log.e("CheckUpdateCallback", e.message.orEmpty())
-                    }
+                val activity = hostActivity.get() ?: return@launch
+                val versionCatalog = UpdateChecker.downloadVersionCatalog() ?: return@launch
+                try {
+                    UpgradeInfoDialog.create(versionCatalog).show(activity.supportFragmentManager, "DebugDialog")
+                } catch (e: IllegalStateException) {
+                    Log.e("CheckUpdateCallback", e.message.orEmpty())
+                }
+                if (!UpdateChecker.checkUpgradable(versionCatalog, force = true)) {
+                    coroutineToast(activity, "Not upgradable!")
+                } else {
+                    coroutineToast(activity, "Upgradable!")
                 }
             }
         },
         "Check for updates (Notification)" to {
             CoroutineScope(Dispatchers.Unconfined).launch {
-                UpdateChecker.checkUpdate(true) { versionCatalog: VersionCatalog, upgradable: Boolean ->
+                val context = App.instance
+                val versionCatalog = UpdateChecker.downloadVersionCatalog()
+                if (versionCatalog != null) {
                     UpdateChecker.sendNotification(
-                        App.instance,
+                        context,
                         versionCatalog,
                         MainActivity.launchingIntent(
-                            App.instance,
+                            context,
                             versionCatalog,
                             Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
                         )
                     )
-                    if (!upgradable) {
-                        coroutineToast(App.instance, "not upgradable")
+                    if (!UpdateChecker.checkUpgradable(versionCatalog, force = true)) {
+                        coroutineToast(context, "Not upgradable!")
+                    } else {
+                        coroutineToast(context, "Upgradable!")
                     }
+                } else {
+                    coroutineToast(context, "Not found!")
                 }
             }
         },

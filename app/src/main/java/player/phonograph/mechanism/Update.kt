@@ -19,6 +19,7 @@ import player.phonograph.settings.Settings
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.ReceiveChannel
@@ -33,45 +34,10 @@ import java.io.IOException
 object UpdateChecker {
 
     /**
-     * check update from repositories
-     * @param force override [Keys.ignoreUpgradeDate]
-     * @param callback execute if [VersionCatalog] is fetched successfully
-     */
-    suspend fun checkUpdate(
-        force: Boolean = false,
-        callback: suspend (versionCatalog: VersionCatalog, upgradable: Boolean) -> Unit,
-    ) {
-        try {
-            val versionCatalog = fetchVersionCatalog()
-            if (versionCatalog != null) {
-                val upgradable = checkUpgradable(versionCatalog, force)
-                callback(versionCatalog, upgradable)
-            }
-        } catch (_: Exception) {
-        }
-    }
-
-    fun sendNotification(
-        context: Context,
-        catalog: VersionCatalog,
-        handlerIntent: Intent,
-    ) {
-        val version =
-            catalog.versions.filter { it.channel == CURRENT_RELEASE_CHANNEL.lowercase() }.maxByOrNull { it.versionCode } ?: return
-
-        val title = version.versionName
-        val note = version.releaseNote.parsed(context.resources)
-
-        Notifications.Upgrade.post(
-            context, title, note, handlerIntent
-        )
-    }
-
-    /**
      * @return [VersionCatalog] or null (failure)
      */
     @OptIn(ExperimentalCoroutinesApi::class)
-    private suspend fun fetchVersionCatalog(): VersionCatalog? = withContext(Dispatchers.IO) {
+    suspend fun downloadVersionCatalog(): VersionCatalog? = withContext(Dispatchers.IO) {
         // source
         val requestGithub = Request.Builder().url(requestUriGitHub).get().build()
 
@@ -100,7 +66,7 @@ object UpdateChecker {
             channelBitBucket.onReceiveCatching { it.getOrNull() }
             channelJsdelivr.onReceiveCatching { it.getOrNull() }
             channelFastGit.onReceiveCatching { it.getOrNull() }
-            onTimeout(18000) {
+            onTimeout(12.seconds) {
                 Log.i(TAG, "Timeout!")
                 null
             }
@@ -157,7 +123,7 @@ object UpdateChecker {
      * @return true if new versions available
      */
     @Suppress("KotlinConstantConditions")
-    private fun checkUpgradable(versionCatalog: VersionCatalog, force: Boolean): Boolean {
+    fun checkUpgradable(versionCatalog: VersionCatalog, force: Boolean): Boolean {
 
         val currentVersionCode = BuildConfig.VERSION_CODE
 
@@ -200,6 +166,22 @@ object UpdateChecker {
 
             else                                    -> false
         }
+    }
+
+    fun sendNotification(
+        context: Context,
+        catalog: VersionCatalog,
+        handlerIntent: Intent,
+    ) {
+        val version =
+            catalog.versions.filter { it.channel == CURRENT_RELEASE_CHANNEL.lowercase() }.maxByOrNull { it.versionCode } ?: return
+
+        val title = version.versionName
+        val note = version.releaseNote.parsed(context.resources)
+
+        Notifications.Upgrade.post(
+            context, title, note, handlerIntent
+        )
     }
 
 
