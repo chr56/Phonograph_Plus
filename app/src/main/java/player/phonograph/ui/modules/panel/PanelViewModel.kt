@@ -37,6 +37,13 @@ class PanelViewModel(
         }
     }
 
+    private val _useTransparentStatusbar: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val useTransparentStatusbar get() = _useTransparentStatusbar.asStateFlow()
+
+    fun updateStatusbarTransparent(transparent: Boolean) {
+        _useTransparentStatusbar.value = transparent
+    }
+
     private val _isPanelHidden: MutableStateFlow<Boolean> = MutableStateFlow(true)
     val isPanelHidden get() = _isPanelHidden.asStateFlow()
 

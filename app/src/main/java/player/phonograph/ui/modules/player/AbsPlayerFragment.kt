@@ -131,6 +131,7 @@ abstract class AbsPlayerFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         frame.slidingUpPanel?.addPanelSlideListener(this)
+        panelViewModel.updateStatusbarTransparent(frame.preferTransparentStatusbar)
         initToolbar()
         observeState()
         view.addOnLayoutChangeListener(this)
@@ -541,8 +542,5 @@ abstract class AbsPlayerFragment :
         val displayCurrentSongStandalone: Boolean
         val shadowForQueue: Boolean
     }
-
-    val useTransparentStatusbar: Boolean
-        get() = if (isResumed) frame.preferTransparentStatusbar else false // fixme: lifecycle issue
 
 }

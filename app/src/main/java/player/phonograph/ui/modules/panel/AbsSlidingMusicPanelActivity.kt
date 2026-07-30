@@ -273,7 +273,7 @@ abstract class AbsSlidingMusicPanelActivity :
     }
 
     private fun actualStatusbarColor(@ColorInt color: Int): Int =
-        if (playerFragment?.useTransparentStatusbar == true) Color.TRANSPARENT else color
+        if (panelViewModel.useTransparentStatusbar.value) Color.TRANSPARENT else color
 
     private fun actualNavigationbarColor(@ColorInt color: Int): Int =
         if (panelViewModel.isPanelHidden.value && isOrientationLandscape(resources)) translucentScrim else color
