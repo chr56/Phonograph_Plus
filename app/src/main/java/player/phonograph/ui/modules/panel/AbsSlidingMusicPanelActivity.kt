@@ -268,7 +268,7 @@ abstract class AbsSlidingMusicPanelActivity :
         val navigationbarColor: Int =
             argbEvaluator.evaluate(progress, actualNavigationbarColor(from), actualNavigationbarColor(to)) as Int
         val statusbarColor: Int =
-            argbEvaluator.evaluate(progress, from, actualStatusbarColor(to)) as Int
+            argbEvaluator.evaluate(progress, actualStatusbarColor(from), actualStatusbarColor(to)) as Int
         updateSystemBarsColor(statusbarColor, navigationbarColor)
     }
 
