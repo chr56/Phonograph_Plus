@@ -36,12 +36,12 @@ import player.phonograph.ui.resource.albumCountString
 import player.phonograph.ui.resource.buildInfoString
 import player.phonograph.ui.resource.readableYear
 import player.phonograph.ui.resource.songCountString
+import player.phonograph.ui.theme.SystemBarsControllerDelegate
 import player.phonograph.ui.theme.ThemeSettingsDelegate.primaryColor
 import player.phonograph.ui.theme.getTintedDrawable
 import player.phonograph.ui.theme.secondaryTextColorOn
 import player.phonograph.ui.theme.textColorOn
 import player.phonograph.ui.theme.themeFooterColor
-import player.phonograph.ui.theme.updateSystemBarsColor
 import player.phonograph.ui.util.BottomViewWindowInsetsController
 import player.phonograph.ui.util.applyControllableWindowInsetsAsBottomView
 import player.phonograph.ui.util.menuProvider
@@ -161,7 +161,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvide
         setToolbarColor(viewBinding.toolbar, color)
         viewBinding.toolbar.setTitleTextColor(textColorOn(this, color))
 
-        updateSystemBarsColor(color, Color.TRANSPARENT)
+        SystemBarsControllerDelegate.updateSystemBarsColor(this, color, Color.TRANSPARENT)
         val secondaryTextColor = secondaryTextColorOn(this, color)
         viewBinding.durationIcon.setImageDrawable(
             getTintedDrawable(R.drawable.ic_timer_white_24dp, secondaryTextColor)

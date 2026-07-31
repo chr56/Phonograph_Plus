@@ -13,9 +13,9 @@ import player.phonograph.settings.Settings
 import player.phonograph.ui.modules.player.AbsPlayerFragment
 import player.phonograph.ui.modules.player.MiniPlayerFragment
 import player.phonograph.ui.modules.player.style.buildPlayerFragment
+import player.phonograph.ui.theme.SystemBarsControllerDelegate
 import player.phonograph.ui.theme.ThemeSettingsDelegate.primaryColor
 import player.phonograph.ui.theme.themeFooterColor
-import player.phonograph.ui.theme.updateSystemBarsColor
 import player.phonograph.ui.util.isOrientationLandscape
 import player.phonograph.ui.util.observe
 import util.theme.color.darkenColor
@@ -129,7 +129,9 @@ abstract class AbsSlidingMusicPanelActivity :
         }
 
         // states
-        updateSystemBarsColor(darkenColor(primaryColor()), primaryColor()) // initial values
+        SystemBarsControllerDelegate.updateSystemBarsColor(
+            this, darkenColor(primaryColor()), primaryColor()
+        )
         observe(queueViewModel.queue) { queue -> panelViewModel.updatePanelState(hidden = queue.isEmpty()) }
         observe(panelViewModel.colorChange) { (oldColor, newColor) ->
             if (slidingUpPanelLayout.panelState == PanelState.EXPANDED) {
@@ -269,7 +271,7 @@ abstract class AbsSlidingMusicPanelActivity :
             argbEvaluator.evaluate(progress, actualNavigationbarColor(from), actualNavigationbarColor(to)) as Int
         val statusbarColor: Int =
             argbEvaluator.evaluate(progress, actualStatusbarColor(from), actualStatusbarColor(to)) as Int
-        updateSystemBarsColor(statusbarColor, navigationbarColor)
+        SystemBarsControllerDelegate.updateSystemBarsColor(this, statusbarColor, navigationbarColor)
     }
 
     private fun actualStatusbarColor(@ColorInt color: Int): Int =

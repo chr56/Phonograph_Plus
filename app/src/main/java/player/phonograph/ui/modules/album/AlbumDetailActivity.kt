@@ -19,21 +19,21 @@ import player.phonograph.model.sort.SortRef
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.model.ui.PaletteColorProvider
 import player.phonograph.repo.loader.Songs
-import player.phonograph.ui.goToArtistDetail
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayPresenter
 import player.phonograph.ui.adapter.SongBasicDisplayPresenter
+import player.phonograph.ui.goToArtistDetail
 import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.resource.Durations
 import player.phonograph.ui.resource.buildInfoString
 import player.phonograph.ui.resource.readableYear
 import player.phonograph.ui.resource.songCountString
+import player.phonograph.ui.theme.SystemBarsControllerDelegate
 import player.phonograph.ui.theme.ThemeSettingsDelegate.primaryColor
 import player.phonograph.ui.theme.getTintedDrawable
 import player.phonograph.ui.theme.secondaryTextColorOn
 import player.phonograph.ui.theme.setUpFastScrollRecyclerViewColor
 import player.phonograph.ui.theme.textColorOn
-import player.phonograph.ui.theme.updateSystemBarsColor
 import player.phonograph.ui.util.BottomViewWindowInsetsController
 import player.phonograph.ui.util.applyControllableWindowInsetsAsBottomView
 import player.phonograph.ui.util.menuProvider
@@ -161,7 +161,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvider
 
         viewBinding.toolbar.setBackgroundColor(color)
         setSupportActionBar(viewBinding.toolbar) // needed to auto readjust the toolbar content color
-        updateSystemBarsColor(color, Color.TRANSPARENT)
+        SystemBarsControllerDelegate.updateSystemBarsColor(this, color, Color.TRANSPARENT)
         setToolbarColor(viewBinding.toolbar, color)
 
         val secondaryTextColor = secondaryTextColorOn(this, color)

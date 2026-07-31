@@ -21,12 +21,12 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
 import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.modules.popup.OptionsPopup
+import player.phonograph.ui.theme.SystemBarsControllerDelegate
 import player.phonograph.ui.theme.ThemeSettingsDelegate.accentColor
 import player.phonograph.ui.theme.ThemeSettingsDelegate.primaryColor
 import player.phonograph.ui.theme.getTintedDrawable
 import player.phonograph.ui.theme.secondaryTextColorOn
 import player.phonograph.ui.theme.textColorOn
-import player.phonograph.ui.theme.updateSystemBarsColor
 import player.phonograph.ui.util.hideKeyboard
 import player.phonograph.ui.util.menuProvider
 import player.phonograph.ui.util.observe
@@ -90,7 +90,7 @@ class SearchActivity : AbsSlidingMusicPanelActivity(), SearchView.OnQueryTextLis
         setUpToolBar()
         setUpPager()
 
-        updateSystemBarsColor(darkenColor(primaryColor()), Color.TRANSPARENT)
+        SystemBarsControllerDelegate.updateSystemBarsColor(this, darkenColor(primaryColor()), Color.TRANSPARENT)
 
         observe(viewModel.query) { text -> searchView?.setQuery(text, false) }
         observe(Settings(this@SearchActivity)[Keys.disableRealTimeSearch].flow) { disableRealTimeSearch = it }

@@ -9,9 +9,8 @@ import player.phonograph.model.ui.GeneralTheme.Companion.THEME_AUTO_LIGHTBLACK
 import player.phonograph.model.ui.GeneralTheme.Companion.THEME_BLACK
 import player.phonograph.model.ui.GeneralTheme.Companion.THEME_DARK
 import player.phonograph.model.ui.GeneralTheme.Companion.THEME_LIGHT
+import player.phonograph.ui.theme.SystemBarsControllerDelegate
 import player.phonograph.ui.theme.ThemeSettingsDelegate
-import player.phonograph.ui.theme.setupSystemBars
-import player.phonograph.ui.theme.updateSystemBarsColor
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
@@ -151,8 +150,13 @@ private fun AwareSystemUIColor(color: Color) {
     val context = LocalContext.current
     LaunchedEffect(color) {
         if (context is Activity) {
-            context.setupSystemBars()
-            context.updateSystemBarsColor(color.toArgb(), 64 shl 24)
+            SystemBarsControllerDelegate.enableEdgeToEdge(context)
+            SystemBarsControllerDelegate.updateSystemBarsColor(
+                context, statusBarColor = color.toArgb(), navigationBarColor = 64 shl 24
+            )
+            SystemBarsControllerDelegate.updateTaskDescriptionColor(
+                context, color = color.toArgb()
+            )
         }
     }
 }

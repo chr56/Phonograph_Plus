@@ -15,9 +15,9 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
 import player.phonograph.ui.basis.ToolbarActivity
 import player.phonograph.ui.modules.upgrade.UpgradeInfoDialog
+import player.phonograph.ui.theme.SystemBarsControllerDelegate
 import player.phonograph.ui.theme.ThemeSettingsDelegate.isNightTheme
 import player.phonograph.ui.theme.ThemeSettingsDelegate.primaryColor
-import player.phonograph.ui.theme.updateSystemBarsColor
 import player.phonograph.ui.util.applyWindowInsetsAsBottomView
 import util.theme.color.darkenColor
 import util.theme.view.toolbar.setToolbarColor
@@ -46,7 +46,7 @@ class AboutActivity : ToolbarActivity() {
 
         binding = ActivityAboutBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        updateSystemBarsColor(darkenColor(primaryColor()), Color.TRANSPARENT)
+        SystemBarsControllerDelegate.updateSystemBarsColor(this, darkenColor(primaryColor()), Color.TRANSPARENT)
 
         setUpViews()
     }

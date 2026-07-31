@@ -8,6 +8,7 @@ package player.phonograph.foundation.compat
 
 import player.phonograph.foundation.error.warning
 import android.annotation.SuppressLint
+import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -93,4 +94,16 @@ fun openOutputStreamSafe(context: Context, uri: Uri, mode: String): OutputStream
     } catch (e: FileNotFoundException) {
         warning(context, "UriUtil", "File Not found (${uri.path})", e)
         null
+    }
+
+
+fun buildTaskDescription(opaqueColor: Int, title: String): ActivityManager.TaskDescription =
+    if (SDK_INT >= 33) {
+        ActivityManager.TaskDescription.Builder()
+            .setLabel(title)
+            .setBackgroundColor(opaqueColor)
+            .build()
+    } else {
+        @Suppress("DEPRECATION")
+        ActivityManager.TaskDescription(title, null, opaqueColor)
     }

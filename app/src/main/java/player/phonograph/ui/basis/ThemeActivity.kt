@@ -4,9 +4,8 @@
 
 package player.phonograph.ui.basis
 
+import player.phonograph.ui.theme.SystemBarsControllerDelegate
 import player.phonograph.ui.theme.ThemeSettingsDelegate
-import player.phonograph.ui.theme.setupSystemBars
-import player.phonograph.ui.theme.updateTaskDescriptionColor
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -37,9 +36,9 @@ abstract class ThemeActivity : MultiLanguageActivity() {
         // theme
         setTheme(ThemeSettingsDelegate.styleRes())
 
-        setupSystemBars()
+        SystemBarsControllerDelegate.enableEdgeToEdge(this)
 
-        updateTaskDescriptionColor()
+        SystemBarsControllerDelegate.updateTaskDescriptionColor(this)
 
         observeTheme()
     }

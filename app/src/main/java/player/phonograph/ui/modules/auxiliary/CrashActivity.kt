@@ -13,11 +13,11 @@ import player.phonograph.model.CrashReport.Constant.CRASH_TYPE_INTERNAL_ERROR
 import player.phonograph.settings.Settings
 import player.phonograph.ui.basis.ToolbarActivity
 import player.phonograph.ui.modules.setting.SettingsActivity
+import player.phonograph.ui.theme.SystemBarsControllerDelegate
 import player.phonograph.ui.theme.defaultTextColor
 import player.phonograph.ui.theme.getTintedDrawable
 import player.phonograph.ui.theme.systemNightMode
 import player.phonograph.ui.theme.textColorOn
-import player.phonograph.ui.theme.updateSystemBarsColor
 import player.phonograph.ui.util.alertDialog
 import util.theme.materials.MaterialColor
 import util.theme.view.toolbar.setToolbarColor
@@ -209,7 +209,7 @@ class CrashActivity : ToolbarActivity() {
 
     private fun setupTheme() {
         // System UI
-        updateSystemBarsColor(colorPrimaryDeep, Color.TRANSPARENT)
+        SystemBarsControllerDelegate.updateSystemBarsColor(this, colorPrimaryDeep, Color.TRANSPARENT)
 
         // toolbar theme
         binding.toolbar.apply {
