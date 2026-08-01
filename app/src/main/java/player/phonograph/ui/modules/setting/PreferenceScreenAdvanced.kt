@@ -13,19 +13,13 @@ import player.phonograph.ui.modules.setting.components.SettingsGroup
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 
 @Composable
 fun PreferenceScreenAdvanced() {
@@ -62,10 +56,10 @@ fun PreferenceScreenAdvanced() {
         }
         SettingsGroup(titleRes = R.string.pref_header_experimental) {
             ExperimentalContentThemeOverride {
-                Text(
-                    stringResource(R.string.msg_empty),
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
-                    textAlign = TextAlign.Center,
+                BooleanPreference(
+                    key = Keys.forceEnableEdgeToEdge,
+                    title = "Force enable edge to edge",
+                    summary = "Enable full edge to edge for Android 11 and later.",
                 )
             }
         }
