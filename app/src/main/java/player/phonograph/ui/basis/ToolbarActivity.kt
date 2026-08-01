@@ -18,7 +18,7 @@ import android.view.Menu
  * An abstract class providing material activity with toolbar
  * @author Karim Abou Zeid (kabouzeid)
  */
-abstract class ToolbarActivity : PermissionActivity() {
+abstract class ToolbarActivity : ThemeActivity() {
 
     //
     // Toolbar & Actionbar

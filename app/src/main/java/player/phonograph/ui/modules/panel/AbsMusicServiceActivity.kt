@@ -4,15 +4,20 @@
 
 package player.phonograph.ui.modules.panel
 
+import com.google.android.material.snackbar.Snackbar
 import org.koin.android.ext.android.inject
+import player.phonograph.R
+import player.phonograph.foundation.concurrent.runOnMainHandler
 import player.phonograph.foundation.permission.StoragePermissionChecker
 import player.phonograph.mechanism.event.MediaStoreObservation
 import player.phonograph.model.service.MusicServiceConnection
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.MusicPlayerRemote.ServiceToken
 import player.phonograph.service.queue.QueueManager
-import player.phonograph.ui.navigateToAppDetailSetting
 import player.phonograph.ui.basis.ToolbarActivity
+import player.phonograph.ui.navigateToAppDetailSetting
+import player.phonograph.ui.resource.Texts
+import player.phonograph.ui.theme.ThemeSettingsDelegate.accentColor
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.withResumed
@@ -20,6 +25,7 @@ import android.content.ComponentName
 import android.media.AudioManager
 import android.os.Bundle
 import android.os.IBinder
+import android.view.View
 import kotlinx.coroutines.launch
 
 /**
@@ -84,11 +90,31 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
     private suspend fun checkStorageReadPermission() {
         val result = StoragePermissionChecker.hasStorageReadPermission(this)
         if (!result) {
-            withResumed {
-                notifyPermissionDeniedUser(listOf(StoragePermissionChecker.necessaryStorageReadPermission)) {
-                    navigateToAppDetailSetting(this)
-                }
+            notifyPermissionDeniedUser(listOf(StoragePermissionChecker.necessaryStorageReadPermission))
+        }
+    }
+
+    private suspend fun notifyPermissionDeniedUser(missingPermissions: List<String>) {
+        if (missingPermissions.isEmpty()) return
+
+        val message = StringBuffer(getString(R.string.err_permissions_denied)).append('\n')
+        var requireGotoSetting = false
+        for (permission in missingPermissions) {
+            message
+                .append(Texts.permissionName(this, permission)).append('\n')
+                .append(Texts.permissionDescription(this, permission)).append('\n')
+            if (shouldShowRequestPermissionRationale(permission)) requireGotoSetting = true
+        }
+        withResumed {
+            val snackBar = Snackbar.make(snackBarContainer, message, Snackbar.LENGTH_INDEFINITE)
+            snackBar.anchorView = snackBarAnchor
+            if (requireGotoSetting) {
+                snackBar.setAction(R.string.action_settings) { navigateToAppDetailSetting(this) }
+            } else {
+                snackBar.setAction(R.string.action_grant) { navigateToAppDetailSetting(this) }
             }
+            snackBar.setActionTextColor(accentColor()).setTextMaxLines(Int.MAX_VALUE)
+            runOnMainHandler { snackBar.show() }
         }
     }
 
@@ -121,6 +147,12 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
             listener.onServiceDisconnected()
         }
     }
+
+    //
+    // SnackBar holder
+    //
+    protected open val snackBarContainer: View get() = window.decorView
+    protected open val snackBarAnchor: View? get() = null
 
 }
 

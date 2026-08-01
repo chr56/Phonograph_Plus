@@ -82,10 +82,4 @@ abstract class ThemeActivity : MultiLanguageActivity() {
         recreateEffect.emit(Unit)
     }
 
-    //
-    // SnackBar holder
-    //
-    protected open val snackBarContainer: View get() = window.decorView
-    protected open val snackBarAnchor: View? get() = null
-
 }
