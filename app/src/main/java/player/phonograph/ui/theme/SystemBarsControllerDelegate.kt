@@ -5,6 +5,8 @@
 package player.phonograph.ui.theme
 
 import player.phonograph.foundation.compat.buildTaskDescription
+import player.phonograph.settings.Keys
+import player.phonograph.settings.Settings
 import util.theme.color.darkenColor
 import util.theme.color.stripAlpha
 import androidx.annotation.ColorInt
@@ -66,7 +68,7 @@ object SystemBarsControllerDelegate {
             stubs.getOrPut(activity, ::SystemBarsStubs)
         }
 
-    private val systemBarsController: SystemBarsController by lazy(::createSystemBarsController)
+    private var systemBarsController: SystemBarsController? = null
     private var lifecycleCallbacksRegistered = false
 
     private val lifecycleCallbacks = object : Application.ActivityLifecycleCallbacks {
@@ -84,7 +86,11 @@ object SystemBarsControllerDelegate {
 
     private fun controller(activity: Activity): SystemBarsController {
         ensureLifecycleCallbacks(activity)
-        return systemBarsController
+        return systemBarsController ?: synchronized(this) {
+            createSystemBarsController(
+                force = Settings(activity)[Keys.forceEnableEdgeToEdge].data
+            ).also { systemBarsController = it }
+        }
     }
 
     private fun ensureLifecycleCallbacks(activity: Activity) {

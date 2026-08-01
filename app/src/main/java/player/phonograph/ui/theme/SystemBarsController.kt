@@ -40,10 +40,10 @@ interface SystemBarsController {
 
 }
 
-fun createSystemBarsController(): SystemBarsController =
+fun createSystemBarsController(force: Boolean): SystemBarsController =
     when {
         SDK_INT >= 35 -> SystemBarsControllerEdgeToEdge()
-        SDK_INT >= 30 -> SystemBarsControllerApi30()
+        SDK_INT >= 30 -> if (force) SystemBarsControllerEdgeToEdge() else SystemBarsControllerApi30()
         SDK_INT >= 29 -> SystemBarsControllerApi29()
         SDK_INT >= 28 -> SystemBarsControllerApi28()
         SDK_INT >= 26 -> SystemBarsControllerApi26()
