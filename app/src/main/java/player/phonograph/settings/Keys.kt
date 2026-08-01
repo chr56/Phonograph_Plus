@@ -239,6 +239,9 @@ object Keys {
     //<editor-fold desc="Experimental">
     //</editor-fold>
 
+    val forceEnableEdgeToEdge
+        get() = PrimitiveKey<Boolean>(booleanPK("force_enable_edge_to_edge")) { false }
+
     //</editor-fold>
 
     //<editor-fold desc="Updates">
