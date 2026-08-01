@@ -38,6 +38,7 @@ import player.phonograph.ui.util.BottomViewWindowInsetsController
 import player.phonograph.ui.util.applyControllableWindowInsetsAsBottomView
 import player.phonograph.ui.util.menuProvider
 import player.phonograph.ui.util.observe
+import util.theme.color.darkenColor
 import util.theme.view.menu.tintOverflowButtonColor
 import util.theme.view.menu.tintToolbarMenuActionIcons
 import util.theme.view.toolbar.setToolbarColor
@@ -161,7 +162,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvider
 
         viewBinding.toolbar.setBackgroundColor(color)
         setSupportActionBar(viewBinding.toolbar) // needed to auto readjust the toolbar content color
-        SystemBarsControllerDelegate.updateSystemBarsColor(this, color, Color.TRANSPARENT)
+        SystemBarsControllerDelegate.updateSystemBarsColor(this, darkenColor(color), Color.TRANSPARENT)
         setToolbarColor(viewBinding.toolbar, color)
 
         val secondaryTextColor = secondaryTextColorOn(this, color)

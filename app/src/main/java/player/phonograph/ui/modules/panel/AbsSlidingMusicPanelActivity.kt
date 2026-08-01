@@ -20,7 +20,6 @@ import player.phonograph.ui.util.isOrientationLandscape
 import player.phonograph.ui.util.observe
 import util.theme.color.darkenColor
 import androidx.activity.OnBackPressedCallback
-import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -129,9 +128,7 @@ abstract class AbsSlidingMusicPanelActivity :
         }
 
         // states
-        SystemBarsControllerDelegate.updateSystemBarsColor(
-            this, darkenColor(primaryColor()), primaryColor()
-        )
+        SystemBarsControllerDelegate.updateSystemBarsColor(this, darkenColor(primaryColor()), primaryColor())
         observe(queueViewModel.queue) { queue -> panelViewModel.updatePanelState(hidden = queue.isEmpty()) }
         observe(panelViewModel.colorChange) { (oldColor, newColor) ->
             if (slidingUpPanelLayout.panelState == PanelState.EXPANDED) {
@@ -167,7 +164,14 @@ abstract class AbsSlidingMusicPanelActivity :
         cancelSystemBarsColorAnimation()
         val from = panelViewModel.activityColor.value
         val to = panelViewModel.highlightColor.value
-        moveSystemBarsColor(from, to, slideOffset)
+        val statusbarColor: Int = argbEvaluator.evaluate(slideOffset, from, to) as Int
+        val navigationbarColor: Int =
+            if (panelViewModel.isPanelHidden.value && isOrientationLandscape(resources)) {
+                translucentScrim
+            } else {
+                argbEvaluator.evaluate(slideOffset, from, to) as Int
+            }
+        SystemBarsControllerDelegate.updateSystemBarsColor(this, statusbarColor, navigationbarColor)
     }
 
     override fun onPanelStateChanged(panel: View, previousState: PanelState, newState: PanelState) {
@@ -261,27 +265,8 @@ abstract class AbsSlidingMusicPanelActivity :
         }
     }
 
-    //region SystemBarsColors
-    private val argbEvaluator = ArgbEvaluator()
-    private fun moveSystemBarsColor(
-        @ColorInt from: Int, @ColorInt to: Int,
-        @FloatRange(from = 0.0, to = 1.0) progress: Float,
-    ) {
-        val navigationbarColor: Int =
-            argbEvaluator.evaluate(progress, actualNavigationbarColor(from), actualNavigationbarColor(to)) as Int
-        val statusbarColor: Int =
-            argbEvaluator.evaluate(progress, actualStatusbarColor(from), actualStatusbarColor(to)) as Int
-        SystemBarsControllerDelegate.updateSystemBarsColor(this, statusbarColor, navigationbarColor)
-    }
-
-    private fun actualStatusbarColor(@ColorInt color: Int): Int =
-        if (panelViewModel.useTransparentStatusbar.value) Color.TRANSPARENT else color
-
-    private fun actualNavigationbarColor(@ColorInt color: Int): Int =
-        if (panelViewModel.isPanelHidden.value && isOrientationLandscape(resources)) translucentScrim else color
-
+    //region Color Animation
     private var animator: ValueAnimator? = null
-
     private fun animateSystemBarsColor(oldColor: Int, newColor: Int) {
         cancelSystemBarsColorAnimation()
         animator = ValueAnimator.ofFloat(0f, 1f)
@@ -290,7 +275,12 @@ abstract class AbsSlidingMusicPanelActivity :
                 animator.interpolator = PathInterpolator(0.4f, 0f, 1f, 1f)
                 animator.addUpdateListener {
                     val progress = animator.animatedValue as Float
-                    moveSystemBarsColor(oldColor, newColor, progress)
+                    val statusbarColor: Int = if (!panelViewModel.useTransparentStatusbar.value) {
+                        argbEvaluator.evaluate(progress, oldColor, newColor) as Int
+                    } else {
+                        Color.TRANSPARENT
+                    }
+                    SystemBarsControllerDelegate.updateSystemBarsColor(this, statusbarColor, translucentScrim)
                 }
                 animator.start()
             }
@@ -309,6 +299,7 @@ abstract class AbsSlidingMusicPanelActivity :
     companion object {
         const val NOW_PLAYING_FRAGMENT = "NowPlayingPlayerFragment"
 
+        private val argbEvaluator = ArgbEvaluator()
         private val translucentScrim = Color.argb(64, 0, 0, 0)
     }
 }

@@ -46,6 +46,7 @@ import player.phonograph.ui.util.BottomViewWindowInsetsController
 import player.phonograph.ui.util.applyControllableWindowInsetsAsBottomView
 import player.phonograph.ui.util.menuProvider
 import player.phonograph.ui.util.observe
+import util.theme.color.darkenColor
 import util.theme.view.menu.tintOverflowButtonColor
 import util.theme.view.menu.tintToolbarMenuActionIcons
 import util.theme.view.toolbar.setToolbarColor
@@ -161,7 +162,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvide
         setToolbarColor(viewBinding.toolbar, color)
         viewBinding.toolbar.setTitleTextColor(textColorOn(this, color))
 
-        SystemBarsControllerDelegate.updateSystemBarsColor(this, color, Color.TRANSPARENT)
+        SystemBarsControllerDelegate.updateSystemBarsColor(this, darkenColor(color), Color.TRANSPARENT)
         val secondaryTextColor = secondaryTextColorOn(this, color)
         viewBinding.durationIcon.setImageDrawable(
             getTintedDrawable(R.drawable.ic_timer_white_24dp, secondaryTextColor)

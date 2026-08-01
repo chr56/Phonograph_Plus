@@ -9,6 +9,7 @@ import player.phonograph.model.ui.GeneralTheme.Companion.THEME_AUTO_LIGHTBLACK
 import player.phonograph.model.ui.GeneralTheme.Companion.THEME_BLACK
 import player.phonograph.model.ui.GeneralTheme.Companion.THEME_DARK
 import player.phonograph.model.ui.GeneralTheme.Companion.THEME_LIGHT
+import player.phonograph.ui.basis.ComposeActivity
 import player.phonograph.ui.theme.SystemBarsControllerDelegate
 import player.phonograph.ui.theme.ThemeSettingsDelegate
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -29,7 +30,6 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import android.app.Activity
 
 @Composable
 fun PhonographTheme(content: @Composable () -> Unit) {
@@ -63,7 +63,7 @@ private fun PhonographTheme(colors: Colors, content: @Composable () -> Unit) {
         shapes = Shapes,
         content = content
     )
-    AwareSystemUIColor(colors.primaryVariant)
+    AutoSystemBarsColor(colors.primaryVariant)
 }
 
 @Composable
@@ -146,10 +146,10 @@ private fun tweakColors(
 
 
 @Composable
-private fun AwareSystemUIColor(color: Color) {
+private fun AutoSystemBarsColor(color: Color) {
     val context = LocalContext.current
-    LaunchedEffect(color) {
-        if (context is Activity) {
+    if (context is ComposeActivity) {
+        LaunchedEffect(color) {
             SystemBarsControllerDelegate.enableEdgeToEdge(context)
             SystemBarsControllerDelegate.updateSystemBarsColor(
                 context, statusBarColor = color.toArgb(), navigationBarColor = 64 shl 24
