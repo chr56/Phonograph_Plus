@@ -99,4 +99,6 @@ object SystemBarsControllerDelegate {
             lifecycleCallbacksRegistered = true
         }
     }
+
+    const val translucentScrim: Int = 64 shl 24 // Color.argb(64, 0, 0, 0)
 }

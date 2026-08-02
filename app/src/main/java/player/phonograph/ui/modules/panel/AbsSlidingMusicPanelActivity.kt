@@ -14,6 +14,7 @@ import player.phonograph.ui.modules.player.AbsPlayerFragment
 import player.phonograph.ui.modules.player.MiniPlayerFragment
 import player.phonograph.ui.modules.player.style.buildPlayerFragment
 import player.phonograph.ui.theme.SystemBarsControllerDelegate
+import player.phonograph.ui.theme.SystemBarsControllerDelegate.translucentScrim
 import player.phonograph.ui.theme.ThemeSettingsDelegate.primaryColor
 import player.phonograph.ui.theme.themeFooterColor
 import player.phonograph.ui.util.isOrientationLandscape
@@ -300,6 +301,5 @@ abstract class AbsSlidingMusicPanelActivity :
         const val NOW_PLAYING_FRAGMENT = "NowPlayingPlayerFragment"
 
         private val argbEvaluator = ArgbEvaluator()
-        private val translucentScrim = Color.argb(64, 0, 0, 0)
     }
 }

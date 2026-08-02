@@ -11,6 +11,7 @@ import player.phonograph.model.ui.GeneralTheme.Companion.THEME_DARK
 import player.phonograph.model.ui.GeneralTheme.Companion.THEME_LIGHT
 import player.phonograph.ui.basis.ComposeActivity
 import player.phonograph.ui.theme.SystemBarsControllerDelegate
+import player.phonograph.ui.theme.SystemBarsControllerDelegate.translucentScrim
 import player.phonograph.ui.theme.ThemeSettingsDelegate
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Colors
@@ -152,7 +153,7 @@ private fun AutoSystemBarsColor(color: Color) {
         LaunchedEffect(color) {
             SystemBarsControllerDelegate.enableEdgeToEdge(context)
             SystemBarsControllerDelegate.updateSystemBarsColor(
-                context, statusBarColor = color.toArgb(), navigationBarColor = 64 shl 24
+                context, statusBarColor = color.toArgb(), navigationBarColor = translucentScrim
             )
             SystemBarsControllerDelegate.updateTaskDescriptionColor(
                 context, color = color.toArgb()
