@@ -122,6 +122,9 @@ class MainFragment : Fragment() {
         }
 
         (hostActivity as? AppCompatActivity)?.setSupportActionBar(binding.toolbar)
+        (hostActivity as? MainActivity)?.let { mainActivity ->
+            binding.toolbar.setNavigationOnClickListener { mainActivity.toggleDrawer() }
+        }
         with(binding.tabs) {
             setTabTextColors(secondaryTextColor, primaryTextColor)
             setSelectedTabIndicatorColor(accentColor)

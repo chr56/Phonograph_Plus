@@ -13,7 +13,7 @@ import player.phonograph.foundation.error.warning
 import player.phonograph.mechanism.UpdateChecker
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
-import player.phonograph.ui.basis.ToolbarActivity
+import player.phonograph.ui.basis.ThemeActivity
 import player.phonograph.ui.modules.upgrade.UpgradeInfoDialog
 import player.phonograph.ui.theme.SystemBarsControllerDelegate
 import player.phonograph.ui.theme.ThemeSettingsDelegate.isNightTheme
@@ -38,7 +38,7 @@ import kotlinx.coroutines.withContext
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
-class AboutActivity : ToolbarActivity() {
+class AboutActivity : ThemeActivity() {
     private lateinit var binding: ActivityAboutBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,6 +61,9 @@ class AboutActivity : ToolbarActivity() {
 
     private fun setUpToolbar() {
         setSupportActionBar(binding.toolbar)
+        binding.toolbar.setNavigationOnClickListener {
+            if (!isTaskRoot) onBackPressedDispatcher.onBackPressed()
+        }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         setToolbarColor(binding.toolbar, primaryColor())
     }

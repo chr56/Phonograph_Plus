@@ -42,6 +42,7 @@ import player.phonograph.ui.util.menuProvider
 import player.phonograph.ui.util.observe
 import player.phonograph.ui.util.showKeyboard
 import util.theme.view.menu.tintOverflowButtonColor
+import util.theme.view.menu.tintOverflowMenuItems
 import util.theme.view.menu.tintToolbarMenuActionIcons
 import util.theme.view.setBackgroundTint
 import util.theme.view.toolbar.setToolbarColor
@@ -173,6 +174,9 @@ class PlaylistDetailActivity :
 
     private fun setUpToolbar() {
         setSupportActionBar(binding.toolbar)
+        binding.toolbar.setNavigationOnClickListener {
+            if (!isTaskRoot) onBackPressedDispatcher.onBackPressed()
+        }
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         addMenuProvider(menuProvider(this::setupMenu))
         setToolbarColor(binding.toolbar, primaryColor())
@@ -339,6 +343,7 @@ class PlaylistDetailActivity :
         inflatePlaylistDetailMenu(menu, this, viewModel.playlist, iconColor, ::execute)
         tintToolbarMenuActionIcons(menu, iconColor)
         tintOverflowButtonColor(this, iconColor)
+        tintOverflowMenuItems(binding.toolbar, accentColor())
     }
 
     private fun execute(action: PlaylistAction): Boolean {

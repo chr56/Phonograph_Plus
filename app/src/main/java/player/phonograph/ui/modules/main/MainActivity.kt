@@ -200,7 +200,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
         }
     }
 
-    override fun navigateUp() {
+    fun toggleDrawer() {
         if (viewBinding.drawerLayout.isDrawerOpen(viewBinding.navigationView)) {
             viewBinding.drawerLayout.closeDrawer(viewBinding.navigationView)
         } else {

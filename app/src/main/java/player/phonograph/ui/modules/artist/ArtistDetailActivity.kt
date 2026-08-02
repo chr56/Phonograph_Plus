@@ -37,6 +37,7 @@ import player.phonograph.ui.resource.buildInfoString
 import player.phonograph.ui.resource.readableYear
 import player.phonograph.ui.resource.songCountString
 import player.phonograph.ui.theme.SystemBarsControllerDelegate
+import player.phonograph.ui.theme.ThemeSettingsDelegate.accentColor
 import player.phonograph.ui.theme.ThemeSettingsDelegate.primaryColor
 import player.phonograph.ui.theme.getTintedDrawable
 import player.phonograph.ui.theme.secondaryTextColorOn
@@ -47,6 +48,7 @@ import player.phonograph.ui.util.applyControllableWindowInsetsAsBottomView
 import player.phonograph.ui.util.menuProvider
 import player.phonograph.ui.util.observe
 import util.theme.color.darkenColor
+import util.theme.view.menu.tintOverflowMenuItems
 import util.theme.view.menu.tintOverflowButtonColor
 import util.theme.view.menu.tintToolbarMenuActionIcons
 import util.theme.view.toolbar.setToolbarColor
@@ -159,6 +161,9 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvide
         viewBinding.header.setBackgroundColor(color)
 
         setSupportActionBar(viewBinding.toolbar) // needed to auto readjust the toolbar content color
+        viewBinding.toolbar.setNavigationOnClickListener {
+            if (!isTaskRoot) onBackPressedDispatcher.onBackPressed()
+        }
         setToolbarColor(viewBinding.toolbar, color)
         viewBinding.toolbar.setTitleTextColor(textColorOn(this, color))
 
@@ -183,6 +188,9 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvide
 
     private fun setUpToolbar() {
         setSupportActionBar(viewBinding.toolbar)
+        viewBinding.toolbar.setNavigationOnClickListener {
+            if (!isTaskRoot) onBackPressedDispatcher.onBackPressed()
+        }
         supportActionBar?.title = null
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         addMenuProvider(menuProvider(this::setupMenu))
@@ -206,6 +214,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvide
         }
         tintToolbarMenuActionIcons(menu, iconColor)
         tintOverflowButtonColor(this, iconColor)
+        tintOverflowMenuItems(viewBinding.toolbar, accentColor())
     }
 
     private inner class MediaStoreListener :

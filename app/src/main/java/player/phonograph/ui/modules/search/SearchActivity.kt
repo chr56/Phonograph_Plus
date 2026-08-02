@@ -171,6 +171,9 @@ class SearchActivity : AbsSlidingMusicPanelActivity(), SearchView.OnQueryTextLis
 
     private fun setUpToolBar() {
         setSupportActionBar(binding.toolbar)
+        binding.toolbar.setNavigationOnClickListener {
+            if (!isTaskRoot) onBackPressedDispatcher.onBackPressed()
+        }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         addMenuProvider(menuProvider(this::setupMenu))
         setToolbarColor(binding.toolbar, primaryColor())

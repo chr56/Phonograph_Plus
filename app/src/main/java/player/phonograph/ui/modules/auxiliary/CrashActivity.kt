@@ -11,15 +11,17 @@ import player.phonograph.model.CrashReport
 import player.phonograph.model.CrashReport.Constant.CRASH_TYPE_CORRUPTED_DATA
 import player.phonograph.model.CrashReport.Constant.CRASH_TYPE_INTERNAL_ERROR
 import player.phonograph.settings.Settings
-import player.phonograph.ui.basis.ToolbarActivity
+import player.phonograph.ui.basis.ThemeActivity
 import player.phonograph.ui.modules.setting.SettingsActivity
 import player.phonograph.ui.theme.SystemBarsControllerDelegate
+import player.phonograph.ui.theme.ThemeSettingsDelegate.accentColor
 import player.phonograph.ui.theme.defaultTextColor
 import player.phonograph.ui.theme.getTintedDrawable
 import player.phonograph.ui.theme.systemNightMode
 import player.phonograph.ui.theme.textColorOn
 import player.phonograph.ui.util.alertDialog
 import util.theme.materials.MaterialColor
+import util.theme.view.menu.tintOverflowMenuItems
 import util.theme.view.toolbar.setToolbarColor
 import androidx.core.content.IntentCompat
 import androidx.core.view.ViewCompat
@@ -51,7 +53,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.io.File
 
-class CrashActivity : ToolbarActivity() {
+class CrashActivity : ThemeActivity() {
 
     private lateinit var binding: ActivityCrashBinding
 
@@ -216,6 +218,10 @@ class CrashActivity : ToolbarActivity() {
             setToolbarColor(this, colorPrimary)
             title = getString(titleRes)
             setSupportActionBar(this)
+            setNavigationOnClickListener {
+                if (!isTaskRoot) onBackPressedDispatcher.onBackPressed()
+            }
+            tintOverflowMenuItems(this, accentColor())
         }
         // float button
         binding.copyToClipboard.apply {

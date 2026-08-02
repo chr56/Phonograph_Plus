@@ -28,6 +28,7 @@ import player.phonograph.ui.util.BottomViewWindowInsetsController
 import player.phonograph.ui.util.applyControllableWindowInsetsAsBottomView
 import player.phonograph.ui.util.menuProvider
 import player.phonograph.ui.util.observe
+import util.theme.view.menu.tintOverflowMenuItems
 import util.theme.view.menu.tintOverflowButtonColor
 import util.theme.view.menu.tintToolbarMenuActionIcons
 import util.theme.view.toolbar.setToolbarColor
@@ -118,6 +119,9 @@ class GenreDetailActivity : AbsSlidingMusicPanelActivity(),
     private fun setUpToolBar() {
         binding.toolbar.setBackgroundColor(primaryColor())
         setSupportActionBar(binding.toolbar)
+        binding.toolbar.setNavigationOnClickListener {
+            if (!isTaskRoot) onBackPressedDispatcher.onBackPressed()
+        }
         supportActionBar!!.title = genre.name
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         addMenuProvider(menuProvider(this::setupMenu))
@@ -129,6 +133,7 @@ class GenreDetailActivity : AbsSlidingMusicPanelActivity(),
         inflateGenreDetailMenu(menu, this, genre, iconColor)
         tintToolbarMenuActionIcons(menu, iconColor)
         tintOverflowButtonColor(this, iconColor)
+        tintOverflowMenuItems(binding.toolbar, accentColor())
     }
 
 

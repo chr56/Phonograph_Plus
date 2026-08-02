@@ -14,7 +14,7 @@ import player.phonograph.model.service.MusicServiceConnection
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.MusicPlayerRemote.ServiceToken
 import player.phonograph.service.queue.QueueManager
-import player.phonograph.ui.basis.ToolbarActivity
+import player.phonograph.ui.basis.ThemeActivity
 import player.phonograph.ui.navigateToAppDetailSetting
 import player.phonograph.ui.resource.Texts
 import player.phonograph.ui.theme.ThemeSettingsDelegate.accentColor
@@ -31,7 +31,7 @@ import kotlinx.coroutines.launch
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
-abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventListener {
+abstract class AbsMusicServiceActivity : ThemeActivity(), MusicServiceEventListener {
 
     protected val queueManager: QueueManager by inject()
     protected val queueViewModel: QueueViewModel by viewModels()
@@ -155,4 +155,3 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
     protected open val snackBarAnchor: View? get() = null
 
 }
-
