@@ -23,7 +23,6 @@ import player.phonograph.ui.modules.tag.TagBrowserActivity
 import player.phonograph.ui.theme.tintButtons
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.FileProvider
-import androidx.core.util.Pair
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import android.content.Context
@@ -31,7 +30,6 @@ import android.content.Intent
 import android.media.RingtoneManager
 import android.net.Uri
 import android.provider.Settings
-import android.view.View
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -72,25 +70,15 @@ fun Song.actionGotoDetail(activity: FragmentActivity): Boolean {
     return true
 }
 
-fun Song.actionGotoAlbum(context: Context, transitionView: View?): Boolean =
-    if (transitionView != null) {
-        goToAlbumDetail(
-            context,
-            albumId,
-            arrayOf(Pair(transitionView, context.resources.getString(R.string.transition_album_art)))
-        )
-        true
-    } else {
-        goToAlbumDetail(context, albumId)
-        true
-    }
+fun Song.actionGotoAlbum(context: Context): Boolean {
+    goToAlbumDetail(context, albumId)
+    return true
+}
 
 
-fun Song.actionGotoArtist(context: Context, transitionView: View?): Boolean {
-    val sharedElements: Array<Pair<View, String>>? =
-        transitionView?.let { arrayOf(Pair(it, context.resources.getString(R.string.transition_artist_image))) }
+fun Song.actionGotoArtist(context: Context): Boolean {
     context.lifecycleScopeOrNewOne().launch {
-        goToArtistDetail(context, this@actionGotoArtist, sharedElements)
+        goToArtistDetail(context, this@actionGotoArtist)
     }
     return true
 }

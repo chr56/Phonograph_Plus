@@ -56,7 +56,6 @@
                         android:layout_margin="16dp"
                         android:scaleType="centerCrop"
                         android:src="@drawable/default_artist_image"
-                        android:transitionName="@string/transition_artist_image"
                         tools:ignore="ContentDescription,UnusedAttribute" />
 
                     <LinearLayout

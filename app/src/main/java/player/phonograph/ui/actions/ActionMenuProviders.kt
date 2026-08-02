@@ -59,7 +59,6 @@ object ActionMenuProviders {
     class SongActionMenuProvider(
         private val showPlay: Boolean,
         private val index: Int = Int.MIN_VALUE,
-        private val transitionView: View? = null,
     ) : ActionMenuProvider<Song> {
         override fun inflateMenu(menu: Menu, context: Context, song: Song, position: Int) = context.run {
             attach(menu) {
@@ -88,11 +87,11 @@ object ActionMenuProviders {
                 }
                 menuItem(title = getString(R.string.action_go_to_album)) { // id = R.id.action_go_to_album
                     showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
-                    onClick { song.actionGotoAlbum(context, transitionView) }
+                    onClick { song.actionGotoAlbum(context) }
                 }
                 menuItem(title = getString(R.string.action_go_to_artist)) { // id = R.id.action_go_to_artist
                     showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
-                    onClick { song.actionGotoArtist(context, transitionView) }
+                    onClick { song.actionGotoArtist(context) }
                 }
                 menuItem(title = getString(R.string.action_details)) { // id = R.id.action_details
                     showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER

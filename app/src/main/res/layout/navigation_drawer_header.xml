@@ -14,7 +14,6 @@
         android:layout_height="0dp"
         android:scaleType="centerCrop"
         android:src="@drawable/default_album_art"
-        android:transitionName="@string/transition_album_art"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="1.66"

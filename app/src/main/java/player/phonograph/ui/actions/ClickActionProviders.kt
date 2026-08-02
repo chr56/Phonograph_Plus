@@ -4,7 +4,6 @@
 
 package player.phonograph.ui.actions
 
-import player.phonograph.R
 import player.phonograph.foundation.testBit
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
@@ -34,9 +33,7 @@ import player.phonograph.ui.goToAlbumDetail
 import player.phonograph.ui.goToArtistDetail
 import player.phonograph.ui.goToGenreDetail
 import player.phonograph.ui.goToPlaylistDetail
-import androidx.core.util.Pair
 import android.content.Context
-import android.view.View
 import android.widget.ImageView
 import kotlin.random.Random
 import kotlinx.coroutines.runBlocking
@@ -123,21 +120,7 @@ object ClickActionProviders {
             context: Context,
             imageView: ImageView?,
         ): Boolean {
-            if (imageView != null) {
-                goToAlbumDetail(
-                    context,
-                    list[position].id,
-                    arrayOf(Pair(
-                        imageView,
-                        imageView.resources.getString(R.string.transition_album_art)
-                    ))
-                )
-            } else {
-                goToAlbumDetail(
-                    context,
-                    list[position].id
-                )
-            }
+            goToAlbumDetail(context, list[position].id)
             return true
         }
 
@@ -151,9 +134,7 @@ object ClickActionProviders {
             imageView: ImageView?,
         ): Boolean {
             val artist = list[position]
-            val sharedElements: Array<Pair<View, String>>? =
-                imageView?.let { arrayOf(Pair(it, context.resources.getString(R.string.transition_artist_image))) }
-            goToArtistDetail(context, artist.id, sharedElements)
+            goToArtistDetail(context, artist.id)
             return true
         }
 
@@ -301,7 +282,7 @@ object ClickActionProviders {
          * @param list      a list that this Displayable is among
          * @param position  position where selected
          * @param context  relative context
-         * @param imageView (optional) item's imagine for SceneTransitionAnimation
+         * @param imageView (optional) image view used for ShardElementsTransitionAnimation
          * @return true if action have been processed
          */
         fun listClick(
