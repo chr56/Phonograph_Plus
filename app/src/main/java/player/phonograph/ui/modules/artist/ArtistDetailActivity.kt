@@ -42,14 +42,13 @@ import player.phonograph.ui.theme.ThemeSettingsDelegate.primaryColor
 import player.phonograph.ui.theme.getTintedDrawable
 import player.phonograph.ui.theme.secondaryTextColorOn
 import player.phonograph.ui.theme.textColorOn
-import player.phonograph.ui.theme.themeFooterColor
 import player.phonograph.ui.util.BottomViewWindowInsetsController
 import player.phonograph.ui.util.applyControllableWindowInsetsAsBottomView
 import player.phonograph.ui.util.menuProvider
 import player.phonograph.ui.util.observe
 import util.theme.color.darkenColor
-import util.theme.view.menu.tintOverflowMenuItems
 import util.theme.view.menu.tintOverflowButtonColor
+import util.theme.view.menu.tintOverflowMenuItems
 import util.theme.view.menu.tintToolbarMenuActionIcons
 import util.theme.view.toolbar.setToolbarColor
 import androidx.activity.addCallback
@@ -67,7 +66,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.MarginLayoutParams
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.withContext
@@ -81,13 +79,12 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvide
     override val createFileStorageAccessDelegate: CreateFileStorageAccessDelegate = CreateFileStorageAccessDelegate()
     override val openFileStorageAccessDelegate: OpenFileStorageAccessDelegate = OpenFileStorageAccessDelegate()
     override val openDirStorageAccessDelegate: OpenDirStorageAccessDelegate = OpenDirStorageAccessDelegate()
-
-    private lateinit var bottomViewWindowInsetsController: BottomViewWindowInsetsController
+    override val getContentDelegate: GetContentDelegate = GetContentDelegate()
 
     private lateinit var albumAdapter: ArtistAlbumDisplayAdapter
     private lateinit var songAdapter: DisplayAdapter<Song>
 
-    override val getContentDelegate: GetContentDelegate = GetContentDelegate()
+    override fun createContentView(): View = wrapSlidingMusicPanel(viewBinding.root)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         viewModel.load(this)
@@ -99,12 +96,13 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvide
             getContentDelegate,
         )
 
-        viewBinding = ActivityArtistDetailBinding.inflate(layoutInflater)
+        viewBinding = ActivityArtistDetailBinding.inflate(layoutInflater) // must call before super due to `createContentView()`
 
         super.onCreate(savedInstanceState)
 
         setUpToolbar()
-        setUpViews()
+        setUpMainContent()
+
         observeData()
 
         lifecycle.addObserver(MediaStoreListener())
@@ -118,81 +116,13 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvide
         }
     }
 
-    override fun createContentView(): View = wrapSlidingMusicPanel(viewBinding.root)
-
-    private fun setUpViews() {
-        viewBinding.innerAppBar.addOnOffsetChangedListener { _, verticalOffset ->
-            viewBinding.mainContent.setPaddingTop(verticalOffset)
-        }
-
-        songAdapter = DisplayAdapter(this, ArtistSongDisplayPresenter)
-        with(viewBinding.songsRecycleView) {
-            adapter = songAdapter
-            layoutManager = LinearLayoutManager(this@ArtistDetailActivity, VERTICAL, false)
-        }
-
-        albumAdapter = ArtistAlbumDisplayAdapter(this, ArtistAlbumDisplayPresenter(false))
-        with(viewBinding.albumRecycleView) {
-            adapter = albumAdapter
-            layoutManager = LinearLayoutManager(this@ArtistDetailActivity, HORIZONTAL, false)
-        }
-        setColors(themeFooterColor(this))
-        // WindowInsets
-        bottomViewWindowInsetsController = viewBinding.songsRecycleView.applyControllableWindowInsetsAsBottomView()
-        observe(panelViewModel.isPanelHidden) { hidden -> bottomViewWindowInsetsController.enabled = hidden }
-    }
-
-    private fun observeData() {
-        observe(viewModel.artist) { artist -> updateArtistInfo(artist ?: Artist()) }
-        observe(viewModel.albums) { albums -> albumAdapter.dataset = albums ?: emptyList() }
-        observe(viewModel.songs) { songs -> songAdapter.dataset = songs ?: emptyList() }
-        observe(viewModel.paletteColor) { color -> setColors(color) }
-        observe(viewModel.usePaletteColor) { it ->
-            albumAdapter.presenter = ArtistAlbumDisplayPresenter(it)
-            val dataset = albumAdapter.dataset
-            synchronized(albumAdapter) {
-                albumAdapter.dataset = emptyList()
-                albumAdapter.dataset = dataset
-            }
-        }
-    }
-
-    private fun setColors(color: Int) {
-        viewBinding.header.setBackgroundColor(color)
-
-        setSupportActionBar(viewBinding.toolbar) // needed to auto readjust the toolbar content color
-        viewBinding.toolbar.setNavigationOnClickListener {
-            if (!isTaskRoot) onBackPressedDispatcher.onBackPressed()
-        }
-        setToolbarColor(viewBinding.toolbar, color)
-        viewBinding.toolbar.setTitleTextColor(textColorOn(this, color))
-
-        SystemBarsControllerDelegate.updateSystemBarsColor(this, darkenColor(color), Color.TRANSPARENT)
-        val secondaryTextColor = secondaryTextColorOn(this, color)
-        viewBinding.durationIcon.setImageDrawable(
-            getTintedDrawable(R.drawable.ic_timer_white_24dp, secondaryTextColor)
-        )
-        viewBinding.songCountIcon.setImageDrawable(
-            getTintedDrawable(R.drawable.ic_music_note_white_24dp, secondaryTextColor)
-        )
-        viewBinding.albumCountIcon.setImageDrawable(
-            getTintedDrawable(R.drawable.ic_album_white_24dp, secondaryTextColor)
-        )
-        viewBinding.durationText.setTextColor(secondaryTextColor)
-        viewBinding.songCountText.setTextColor(secondaryTextColor)
-        viewBinding.albumCountText.setTextColor(secondaryTextColor)
-        panelViewModel.updateActivityColor(color)
-    }
-
-    override val paletteColor: StateFlow<Int> get() = viewModel.paletteColor
-
     private fun setUpToolbar() {
         setSupportActionBar(viewBinding.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         viewBinding.toolbar.setNavigationOnClickListener {
             if (!isTaskRoot) onBackPressedDispatcher.onBackPressed()
         }
-        supportActionBar?.title = null
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        viewBinding.toolbar.title = getString(R.string.label_artist)
         addMenuProvider(menuProvider(this::setupMenu))
         setToolbarColor(viewBinding.toolbar, primaryColor())
     }
@@ -217,28 +147,92 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvide
         tintOverflowMenuItems(viewBinding.toolbar, accentColor())
     }
 
-    private inner class MediaStoreListener :
-            EventHub.LifeCycleEventReceiver(this, EventHub.EVENT_MUSIC_LIBRARY_CHANGED) {
-        override fun onEventReceived(context: Context, intent: Intent) {
-            viewModel.load(this@ArtistDetailActivity)
+    private lateinit var bottomViewWindowInsetsController: BottomViewWindowInsetsController
+    private fun setUpMainContent() {
+
+        songAdapter = DisplayAdapter(this, ArtistSongDisplayPresenter)
+        with(viewBinding.songsRecycleView) {
+            adapter = songAdapter
+            layoutManager = LinearLayoutManager(this@ArtistDetailActivity, VERTICAL, false)
         }
+
+        albumAdapter = ArtistAlbumDisplayAdapter(this, ArtistAlbumDisplayPresenter(false))
+        with(viewBinding.albumRecycleView) {
+            adapter = albumAdapter
+            layoutManager = LinearLayoutManager(this@ArtistDetailActivity, HORIZONTAL, false)
+        }
+
+        // Paddings
+        viewBinding.innerAppBar.addOnOffsetChangedListener { _, verticalOffset ->
+            with(viewBinding.mainContent) {
+                setPadding(paddingLeft, verticalOffset, paddingRight, paddingBottom)
+            }
+        }
+        // WindowInsets
+        bottomViewWindowInsetsController = viewBinding.songsRecycleView.applyControllableWindowInsetsAsBottomView()
+        observe(panelViewModel.isPanelHidden) { hidden -> bottomViewWindowInsetsController.enabled = hidden }
+    }
+
+    private fun observeData() {
+        observe(viewModel.artist) { artist -> updateArtistInfo(artist ?: Artist()) }
+        observe(viewModel.albums) { albums -> albumAdapter.dataset = albums ?: emptyList() }
+        observe(viewModel.songs) { songs -> songAdapter.dataset = songs ?: emptyList() }
+        observe(viewModel.paletteColor) { color -> updateColors(color) }
+        observe(viewModel.usePaletteColor) {
+            albumAdapter.presenter = ArtistAlbumDisplayPresenter(it)
+            val dataset = albumAdapter.dataset
+            synchronized(albumAdapter) {
+                albumAdapter.dataset = emptyList()
+                albumAdapter.dataset = dataset
+            }
+        }
+    }
+
+    private fun updateColors(color: Int) {
+        val textColor = textColorOn(this, color)
+        val secondaryTextColor = secondaryTextColorOn(this, color)
+
+        setToolbarColor(viewBinding.toolbar, color)
+        viewBinding.toolbar.setTitleTextColor(textColor)
+
+        val statusBarColor = darkenColor(color)
+        val navigationBarColor = if (panelViewModel.isPanelHidden.value) Color.TRANSPARENT else color
+        SystemBarsControllerDelegate.updateSystemBarsColor(this, statusBarColor, navigationBarColor)
+        panelViewModel.updateActivityColor(color)
+
+        viewBinding.header.setBackgroundColor(color)
+        viewBinding.durationIcon.setImageDrawable(
+            getTintedDrawable(R.drawable.ic_timer_white_24dp, secondaryTextColor)
+        )
+        viewBinding.songCountIcon.setImageDrawable(
+            getTintedDrawable(R.drawable.ic_music_note_white_24dp, secondaryTextColor)
+        )
+        viewBinding.albumCountIcon.setImageDrawable(
+            getTintedDrawable(R.drawable.ic_album_white_24dp, secondaryTextColor)
+        )
+        viewBinding.durationText.setTextColor(secondaryTextColor)
+        viewBinding.songCountText.setTextColor(secondaryTextColor)
+        viewBinding.albumCountText.setTextColor(secondaryTextColor)
     }
 
     private suspend fun updateArtistInfo(artist: Artist) {
         viewModel.loadArtistImage(this, artist, viewBinding.image)
-        supportActionBar!!.title = artist.name
+        viewBinding.toolbar.title = artist.name
         viewBinding.songCountText.text = songCountString(this, artist.songCount)
         viewBinding.albumCountText.text = albumCountString(this, artist.albumCount)
-        val songs = withContext(Dispatchers.IO) {
-            Songs.artist(this@ArtistDetailActivity, artist.id)
-        }
+        val songs = withContext(Dispatchers.IO) { Songs.artist(this@ArtistDetailActivity, artist.id) }
         viewBinding.durationText.text = Durations.short(
             songs.fold(0L) { acc: Long, song: Song -> acc + song.duration }
         )
     }
 
+    private inner class MediaStoreListener : EventHub.LifeCycleEventReceiver(this, EventHub.EVENT_MUSIC_LIBRARY_CHANGED) {
+        override fun onEventReceived(context: Context, intent: Intent) {
+            viewModel.load(this@ArtistDetailActivity)
+        }
+    }
 
-    private fun View.setPaddingTop(top: Int) = setPadding(paddingLeft, top, paddingRight, paddingBottom)
+    override val paletteColor: StateFlow<Int> get() = viewModel.paletteColor
 
     companion object {
         private const val EXTRA_ARTIST_ID = "extra_artist_id"
@@ -252,7 +246,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvide
     }
 
 
-    private class ArtistAlbumDisplayAdapter(activity: FragmentActivity, presenter: DisplayPresenter<Album>) :
+    class ArtistAlbumDisplayAdapter(activity: FragmentActivity, presenter: DisplayPresenter<Album>) :
             DisplayAdapter<Album>(activity, presenter) {
 
 
@@ -276,7 +270,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvide
                 with(itemView) {
                     val min = resources.getDimensionPixelSize(R.dimen.grid_item_margin_min)
                     val extra = resources.getDimensionPixelSize(R.dimen.grid_item_margin_extra)
-                    val params = layoutParams as MarginLayoutParams
+                    val params = layoutParams as ViewGroup.MarginLayoutParams
                     params.marginStart = min
                     params.marginEnd = min
                     if (position == 0) { // Left
@@ -293,6 +287,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvide
             }
         }
     }
+
 
     class ArtistAlbumDisplayPresenter(override val usePalette: Boolean) : AlbumBasicDisplayPresenter(SortMode(SortRef.YEAR)) {
 

@@ -8,6 +8,7 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 import player.phonograph.ui.modules.album.AlbumDetailActivityViewModel
 import player.phonograph.ui.modules.artist.ArtistDetailActivityViewModel
+import player.phonograph.ui.modules.genre.GenreDetailActivityViewModel
 import player.phonograph.ui.modules.panel.PanelViewModel
 import player.phonograph.ui.modules.playlist.PlaylistDetailViewModel
 
@@ -15,5 +16,6 @@ val moduleViewModels = module {
     viewModel { param -> PanelViewModel(param.get(), param.get()) }
     viewModel { param -> ArtistDetailActivityViewModel(param.get()) }
     viewModel { param -> AlbumDetailActivityViewModel(param.get()) }
+    viewModel { param -> GenreDetailActivityViewModel(param.get()) }
     viewModel { param -> PlaylistDetailViewModel(param.get(), param.get()) }
 }

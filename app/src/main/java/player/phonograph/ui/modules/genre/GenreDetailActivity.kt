@@ -7,15 +7,16 @@ import lib.storage.launcher.IOpenDirStorageAccessible
 import lib.storage.launcher.IOpenFileStorageAccessible
 import lib.storage.launcher.OpenDirStorageAccessDelegate
 import lib.storage.launcher.OpenFileStorageAccessDelegate
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
+import player.phonograph.R
 import player.phonograph.databinding.ActivityGenreDetailBinding
-import player.phonograph.foundation.compat.parcelable
 import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.Genre
 import player.phonograph.model.Song
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.model.ui.ItemLayoutStyle
-import player.phonograph.repo.loader.Genres
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayPresenter
 import player.phonograph.ui.adapter.SongBasicDisplayPresenter
@@ -28,11 +29,11 @@ import player.phonograph.ui.util.BottomViewWindowInsetsController
 import player.phonograph.ui.util.applyControllableWindowInsetsAsBottomView
 import player.phonograph.ui.util.menuProvider
 import player.phonograph.ui.util.observe
-import util.theme.view.menu.tintOverflowMenuItems
 import util.theme.view.menu.tintOverflowButtonColor
+import util.theme.view.menu.tintOverflowMenuItems
 import util.theme.view.menu.tintToolbarMenuActionIcons
 import util.theme.view.toolbar.setToolbarColor
-import androidx.lifecycle.lifecycleScope
+import androidx.activity.addCallback
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.content.Context
@@ -40,30 +41,23 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.View
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import kotlinx.coroutines.yield
 
 class GenreDetailActivity : AbsSlidingMusicPanelActivity(),
                             ICreateFileStorageAccessible, IOpenFileStorageAccessible, IOpenDirStorageAccessible {
 
-    private var _viewBinding: ActivityGenreDetailBinding? = null
-    private val binding: ActivityGenreDetailBinding get() = _viewBinding!!
-
-    private lateinit var genre: Genre
-    private lateinit var adapter: DisplayAdapter<Song>
+    private lateinit var viewBinding: ActivityGenreDetailBinding
+    private val viewModel: GenreDetailActivityViewModel by viewModel { parametersOf(parseIntent(intent)) }
 
     override val createFileStorageAccessDelegate: CreateFileStorageAccessDelegate = CreateFileStorageAccessDelegate()
     override val openFileStorageAccessDelegate: OpenFileStorageAccessDelegate = OpenFileStorageAccessDelegate()
     override val openDirStorageAccessDelegate: OpenDirStorageAccessDelegate = OpenDirStorageAccessDelegate()
 
-    private lateinit var bottomViewWindowInsetsController: BottomViewWindowInsetsController
+    private lateinit var adapter: DisplayAdapter<Song>
+
+    override fun createContentView(): View = wrapSlidingMusicPanel(viewBinding.root)
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        genre = parseIntent(intent) ?: throw IllegalArgumentException()
-        loadDataSet(this)
-        _viewBinding = ActivityGenreDetailBinding.inflate(layoutInflater)
+        viewModel.loadDataSet(this)
 
         registerActivityResultLauncherDelegate(
             createFileStorageAccessDelegate,
@@ -71,97 +65,81 @@ class GenreDetailActivity : AbsSlidingMusicPanelActivity(),
             openDirStorageAccessDelegate,
         )
 
+        viewBinding = ActivityGenreDetailBinding.inflate(layoutInflater) // must call before super due to `createContentView()`
+
         super.onCreate(savedInstanceState)
 
         setUpToolBar()
-        setUpRecyclerView()
+        setUpMainContent()
+
+        observeData()
 
         lifecycle.addObserver(MediaStoreListener())
-    }
 
-    override fun createContentView(): View {
-        return wrapSlidingMusicPanel(binding.root)
-    }
-
-    private var isRecyclerViewPrepared: Boolean = false
-
-    private fun loadDataSet(context: Context) {
-        lifecycleScope.launch(Dispatchers.IO) {
-            val list: List<Song> = Genres.songs(context, genre.id)
-
-            while (!isRecyclerViewPrepared) yield() // wait until ready
-
-            withContext(Dispatchers.Main) {
-                if (isRecyclerViewPrepared) adapter.dataset = list
-            }
+        // back-press
+        onBackPressedDispatcher.addCallback {
+            remove()
+            viewBinding.recyclerView.stopScroll()
+            onBackPressedDispatcher.onBackPressed()
         }
-    }
-
-    private fun setUpRecyclerView() {
-        adapter = DisplayAdapter(this, GenreSongDisplayPresenter)
-        binding.recyclerView.apply {
-            layoutManager = LinearLayoutManager(this@GenreDetailActivity)
-            adapter = this@GenreDetailActivity.adapter
-        }
-        binding.recyclerView.setUpFastScrollRecyclerViewColor(this, accentColor())
-        adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
-            override fun onChanged() {
-                super.onChanged()
-                checkIsEmpty()
-            }
-        })
-        isRecyclerViewPrepared = true
-        // WindowInsets
-        bottomViewWindowInsetsController = binding.recyclerView.applyControllableWindowInsetsAsBottomView()
-        observe(panelViewModel.isPanelHidden) { hidden -> bottomViewWindowInsetsController.enabled = hidden }
     }
 
     private fun setUpToolBar() {
-        binding.toolbar.setBackgroundColor(primaryColor())
-        setSupportActionBar(binding.toolbar)
-        binding.toolbar.setNavigationOnClickListener {
+        setSupportActionBar(viewBinding.toolbar)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        viewBinding.toolbar.setNavigationOnClickListener {
             if (!isTaskRoot) onBackPressedDispatcher.onBackPressed()
         }
-        supportActionBar!!.title = genre.name
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        viewBinding.toolbar.title = getString(R.string.label_genre)
         addMenuProvider(menuProvider(this::setupMenu))
-        setToolbarColor(binding.toolbar, primaryColor())
+        setToolbarColor(viewBinding.toolbar, primaryColor())
     }
 
     private fun setupMenu(menu: Menu) {
         val iconColor = textColorOn(this, panelViewModel.activityColor.value)
-        inflateGenreDetailMenu(menu, this, genre, iconColor)
+        inflateGenreDetailMenu(menu, this, viewModel.genre.value, iconColor)
         tintToolbarMenuActionIcons(menu, iconColor)
         tintOverflowButtonColor(this, iconColor)
-        tintOverflowMenuItems(binding.toolbar, accentColor())
+        tintOverflowMenuItems(viewBinding.toolbar, accentColor())
     }
 
+    private lateinit var bottomViewWindowInsetsController: BottomViewWindowInsetsController
+    private fun setUpMainContent() {
+        adapter = DisplayAdapter(this, GenreSongDisplayPresenter)
+        viewBinding.recyclerView.apply {
+            layoutManager = LinearLayoutManager(this@GenreDetailActivity)
+            adapter = this@GenreDetailActivity.adapter
+        }
+        viewBinding.recyclerView.setUpFastScrollRecyclerViewColor(this, accentColor())
+        adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+            override fun onChanged() {
+                viewBinding.empty.visibility = if (adapter.itemCount == 0) View.VISIBLE else View.GONE
+            }
+        })
+        // WindowInsets
+        bottomViewWindowInsetsController = viewBinding.recyclerView.applyControllableWindowInsetsAsBottomView()
+        observe(panelViewModel.isPanelHidden) { hidden -> bottomViewWindowInsetsController.enabled = hidden }
+    }
 
-    private inner class MediaStoreListener :
-            EventHub.LifeCycleEventReceiver(this, EventHub.EVENT_MUSIC_LIBRARY_CHANGED) {
+    private fun observeData() {
+        observe(viewModel.genre) { genre -> viewBinding.toolbar.title = genre.name ?: "GENRE #${genre.id}" }
+        observe(viewModel.songs) { songs -> adapter.dataset = songs }
+    }
+
+    private inner class MediaStoreListener : EventHub.LifeCycleEventReceiver(this, EventHub.EVENT_MUSIC_LIBRARY_CHANGED) {
         override fun onEventReceived(context: Context, intent: Intent) {
-            loadDataSet(this@GenreDetailActivity)
+            viewModel.loadDataSet(this@GenreDetailActivity)
         }
     }
 
-    private fun checkIsEmpty() {
-        binding.empty.visibility = if (adapter.itemCount == 0) View.VISIBLE else View.GONE
-    }
-
-    override fun onDestroy() {
-        binding.recyclerView.adapter = null
-        super.onDestroy()
-        _viewBinding = null
-    }
-
     companion object {
-        private const val EXTRA_GENRE = "extra_genre"
+        private const val EXTRA_GENRE_ID = "extra_genre_id"
         fun launchIntent(from: Context, genre: Genre): Intent =
             Intent(from, GenreDetailActivity::class.java).apply {
-                putExtra(EXTRA_GENRE, genre)
+                putExtra(EXTRA_GENRE_ID, genre.id)
             }
 
-        private fun parseIntent(intent: Intent) = intent.extras?.parcelable<Genre>(EXTRA_GENRE)
+        private fun parseIntent(intent: Intent): Long = intent.extras?.getLong(EXTRA_GENRE_ID) ?: -1
     }
 
     object GenreSongDisplayPresenter : SongBasicDisplayPresenter(SortMode(SortRef.ID)) {
