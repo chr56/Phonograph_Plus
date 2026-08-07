@@ -9,13 +9,10 @@ import player.phonograph.mechanism.metadata.RelationshipResolver.AccumulatedSong
 import player.phonograph.mechanism.metadata.RelationshipResolver.SongRelationship
 import player.phonograph.model.Song
 import player.phonograph.model.repo.sync.ProgressConnection
-import player.phonograph.model.repo.sync.SyncExecutor
+import player.phonograph.model.repo.sync.DataSource
 import player.phonograph.model.repo.sync.SyncReport
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
-import player.phonograph.repo.mediastore.MediaStoreGenres
-import player.phonograph.repo.mediastore.MediaStoreSongs
-import player.phonograph.repo.room.MusicDatabase
 import player.phonograph.repo.room.converter.EntityConverter
 import player.phonograph.repo.room.entity.AlbumEntity
 import player.phonograph.repo.room.entity.ArtistEntity
@@ -28,39 +25,16 @@ import player.phonograph.repo.room.entity.LinkageSongAndArtist.Companion.ROLE_AR
 import player.phonograph.repo.room.entity.LinkageSongAndArtist.Companion.ROLE_COMPOSER
 import player.phonograph.repo.room.entity.LinkageSongAndArtist.Companion.ROLE_FEATURE_ARTIST
 import player.phonograph.repo.room.entity.MediastoreSongEntity
-import androidx.room.withTransaction
-import android.content.Context
 
-/**
- * [SyncExecutor] with complex relationship solving
- */
-class RelationshipSyncExecutor(
-    private val musicDatabase: MusicDatabase,
-    private val withGenres: Boolean = true,
-    private val countComposerAsArtist: Boolean = true,
-) : SyncExecutor {
 
-    override suspend fun check(context: Context): Boolean = SyncExecutors.defaultCheck(context, musicDatabase) ||
-            (musicDatabase.ArtistQueryDao().count() == 0) || (musicDatabase.AlbumQueryDao().count() == 0)
-
-    override suspend fun sync(
-        context: Context,
-        channel: ProgressConnection?,
-    ): SyncReport {
-        val session = RelationshipSyncExecutorSession(context, musicDatabase, channel, withGenres, countComposerAsArtist)
-        return session.execute()
-    }
-
-}
-
-private class RelationshipSyncExecutorSession(
-    private val context: Context,
-    private val musicDatabase: MusicDatabase,
-    private val channel: ProgressConnection?,
+class RelationshipSyncExecutiveKernel(
+    private val musicDatabase: MusicDatabaseDataSink,
+    private val musicDataSource: DataSource,
+    private val relationshipResolver: RelationshipResolver,
     private val withGenres: Boolean,
     private val countComposerAsArtist: Boolean,
+    private val channel: ProgressConnection?,
 ) {
-
     private val songQueryDao = musicDatabase.SongQueryDao()
     private val songManipulateDao = musicDatabase.SongManipulateDao()
     private val albumQueryDao = musicDatabase.AlbumQueryDao()
@@ -101,7 +75,7 @@ private class RelationshipSyncExecutorSession(
         val latestInDatabase = songQueryDao.latest()
         val cutoff = latestInDatabase?.dateModified ?: 0
 
-        val newOrUpdated = MediaStoreSongs.since(context, timestamp = cutoff, useModifiedDate = true)
+        val newOrUpdated = musicDataSource.songs(timestamp = cutoff)
         if (newOrUpdated.isNotEmpty()) doRefresh(newOrUpdated)
 
         return newOrUpdated.size
@@ -122,7 +96,6 @@ private class RelationshipSyncExecutorSession(
     private lateinit var songToGenreMap: MutableMap<Long, List<String>>
 
     private suspend fun doRefresh(newOrUpdated: List<Song>) {
-        val relationshipResolver = RelationshipResolver.fromSettings(context)
 
         onProcessUpdate(0, 1, "Reducing relationships")
         relationships = newOrUpdated.map(relationshipResolver::solve)
@@ -345,8 +318,7 @@ private class RelationshipSyncExecutorSession(
         process: Int,
         total: Int,
     ) {
-        val relationshipResolver = RelationshipResolver.fromSettings(context)
-        val genresBySong = MediaStoreGenres.of(context, newOrUpdated.map { it.id })
+        val genresBySong = musicDataSource.songGenres(newOrUpdated.map { it.id })
         for ((index, song) in newOrUpdated.withIndex()) {
             val genres = genresBySong[song.id] ?: emptyList()
             val splitNamesForSong = mutableListOf<String>()
@@ -539,14 +511,9 @@ private class RelationshipSyncExecutorSession(
      * Remove deleted ones
      */
     suspend fun stageClean(): Int {
-        val includedSize = songQueryDao.total()
-        val allSize = MediaStoreSongs.total(context)
-        val deleted =
-            if (allSize != includedSize) {
-                doClean()
-            } else {
-                0
-            }
+        val existedCount = songQueryDao.total()
+        val songCount = musicDataSource.songCount()
+        val deleted = if (songCount != existedCount) doClean() else 0
         return deleted
     }
 
@@ -561,7 +528,7 @@ private class RelationshipSyncExecutorSession(
         val allIdsInDatabase = songQueryDao.allIds()
         process += 1
 
-        val allInMediastore = MediaStoreSongs.ids(context)
+        val allInMediastore = musicDataSource.songIds()
         process += 1
 
         val missingSongIds = mutableListOf<Long>()
@@ -672,8 +639,7 @@ private class RelationshipSyncExecutorSession(
         return missingEntities.size
     }
 
+    companion object {
+        private const val PBI = 32 // Progress bump interval
+    }
 }
-
-private const val PBI = 32 // Progress bump interval
-
-private const val TAG = "DatabaseSync"
