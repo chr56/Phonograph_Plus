@@ -38,7 +38,7 @@ class RelationshipResolver private constructor(
 
     fun splitJointTag(source: String?, separators: Array<String>): Collection<String> {
         if (source.isNullOrEmpty()) return emptySet()
-        return source.trim(Char::isWhitespace).split(*separators).map { it.trimStart() }
+        return source.trim(Char::isWhitespace).split(*separators).map { it.trim() }
     }
 
     fun extractFeatureArtists(raw: String?): Set<String> {
