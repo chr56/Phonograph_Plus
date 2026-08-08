@@ -250,7 +250,6 @@ object MusicLibraryBackendPreferenceProvider : ReadOnlyPreferenceProvider<MusicL
             MusicLibraryBackendOptionsParser(
                 Keys.musicLibrarySource.defaultValue(),
                 Keys.musicLibrarySyncMode.defaultValue(),
-                Keys.musicLibrarySyncFlagRegardComposerAsArtist.defaultValue(),
             )
         }
 
@@ -259,14 +258,13 @@ object MusicLibraryBackendPreferenceProvider : ReadOnlyPreferenceProvider<MusicL
         val musicLibrarySyncMode = readPrimitiveKey(dataStore.data, Keys.musicLibrarySyncMode)
         val regardComposerAsArtist = readPrimitiveKey(dataStore.data, Keys.musicLibrarySyncFlagRegardComposerAsArtist)
         return combine(musicLibrarySource, musicLibrarySyncMode, regardComposerAsArtist) { source, syncMode, count ->
-            MusicLibraryBackendOptionsParser(source, syncMode, count)
+            MusicLibraryBackendOptionsParser(source, syncMode)
         }
     }
 
     class MusicLibraryBackendOptionsParser(
         dataSource: String,
         syncMode: String,
-        override val regardComposerAsArtist: Boolean,
     ) : MusicLibraryBackendOptions {
         override val useMediaStoreSongs: Boolean = dataSource == PROVIDER_MEDIASTORE_DIRECT
         override val useMediaStoreArtists: Boolean = dataSource == PROVIDER_MEDIASTORE_DIRECT

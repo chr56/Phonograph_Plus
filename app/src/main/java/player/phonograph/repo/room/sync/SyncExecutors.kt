@@ -28,7 +28,6 @@ object SyncExecutors {
             else                      -> FullSyncExecutor(
                 musicDatabase,
                 withGenres = backend.syncWithGenres,
-                countComposerAsArtist = backend.regardComposerAsArtist
             )
         }
         return syncExecutor
@@ -65,7 +64,6 @@ object SyncExecutors {
     class FullSyncExecutor(
         private val musicDatabase: MusicDatabase,
         private val withGenres: Boolean = true,
-        private val countComposerAsArtist: Boolean = true,
     ) : SyncExecutor {
 
         override suspend fun check(context: Context): Boolean = SyncExecutors.defaultCheck(context, musicDatabase) ||
@@ -80,7 +78,6 @@ object SyncExecutors {
                 musicDataSource = MediaStoreDataSource(context),
                 relationshipResolver = RelationshipResolver.fromSettings(context),
                 withGenres = withGenres,
-                countComposerAsArtist = countComposerAsArtist,
                 channel = channel,
             )
             return session.execute()

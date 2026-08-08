@@ -32,7 +32,6 @@ class RelationshipSyncExecutiveKernel(
     private val musicDataSource: DataSource,
     private val relationshipResolver: RelationshipResolver,
     private val withGenres: Boolean,
-    private val countComposerAsArtist: Boolean,
     private val channel: ProgressConnection?,
 ) {
     private val songQueryDao = musicDatabase.SongQueryDao()
@@ -479,17 +478,15 @@ class RelationshipSyncExecutiveKernel(
                     )
                 }
             )
-            if (countComposerAsArtist) {
-                linkageSongAndArtists.addAll(
-                    relationship.composerArtists.map { name ->
-                        LinkageSongAndArtist(
-                            songId = relationship.song.id,
-                            artistId = artistNameToId[name] ?: 0,
-                            role = ROLE_COMPOSER,
-                        )
-                    }
-                )
-            }
+            linkageSongAndArtists.addAll(
+                relationship.composerArtists.map { name ->
+                    LinkageSongAndArtist(
+                        songId = relationship.song.id,
+                        artistId = artistNameToId[name] ?: 0,
+                        role = ROLE_COMPOSER,
+                    )
+                }
+            )
             linkageSongAndArtists.addAll(
                 relationship.featureArtists.map { name ->
                     LinkageSongAndArtist(

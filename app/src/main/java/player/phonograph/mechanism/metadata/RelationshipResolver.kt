@@ -15,6 +15,7 @@ import android.content.Context
 
 class RelationshipResolver private constructor(
     var enableFeatureArtistsExtraction: Boolean = true,
+    var regardComposerAsArtist: Boolean = true,
     var artistSeparators: Array<String> = DEFAULT_TAG_SEPARATORS_ARTISTS.toTypedArray(),
     var featureArtistsAbbr: Array<String> = DEFAULT_TAG_ABBR_FEATURES_ARTISTS.toTypedArray(),
     var genresSeparators: Array<String> = DEFAULT_TAG_SEPARATORS_GENRES.toTypedArray(),
@@ -25,8 +26,10 @@ class RelationshipResolver private constructor(
         suspend fun fromSettings(context: Context): RelationshipResolver {
             val artistSeparators = Settings(context)[Keys.tagSeparatorsArtists].read()
             val abbrFeatureArtists = Settings(context)[Keys.tagAbbrFeatureArtists].read()
+            val regardComposerAsArtist = Settings(context)[Keys.musicLibrarySyncFlagRegardComposerAsArtist].read()
             return RelationshipResolver(
                 enableFeatureArtistsExtraction = true,
+                regardComposerAsArtist = regardComposerAsArtist,
                 artistSeparators = artistSeparators.toTypedArray(),
                 featureArtistsAbbr = abbrFeatureArtists.toTypedArray(),
             )
@@ -53,7 +56,12 @@ class RelationshipResolver private constructor(
     fun solve(song: Song): SongRelationship {
         val defaultArtists = splitJointTag(song.artistName, separators = artistSeparators).toSet()
         val albumArtists = splitJointTag(song.albumArtistName, separators = artistSeparators).toSet()
-        val composerArtists = splitJointTag(song.composer, separators = artistSeparators).toSet()
+        val composerArtists =
+            if (regardComposerAsArtist) {
+                splitJointTag(song.composer, separators = artistSeparators).toSet()
+            } else {
+                emptySet()
+            }
         val featureArtists =
             if (enableFeatureArtistsExtraction) {
                 extractFeatureArtists(song.title) + extractFeatureArtists(song.albumName)
