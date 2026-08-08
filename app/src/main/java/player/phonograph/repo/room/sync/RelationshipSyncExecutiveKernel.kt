@@ -321,7 +321,7 @@ class RelationshipSyncExecutiveKernel(
         val genresBySong = musicDataSource.songGenres(newOrUpdated.map { it.id })
         for ((index, song) in newOrUpdated.withIndex()) {
             val genres = genresBySong[song.id] ?: emptyList()
-            val splitNamesForSong = mutableListOf<String>()
+            val splitNamesForSong = mutableSetOf<String>()
 
             for (genre in genres) {
                 // Split the raw genre string (e.g. "Pop, Rock")
@@ -340,7 +340,7 @@ class RelationshipSyncExecutiveKernel(
                     splitNamesForSong.add(realName)
                 }
             }
-            songToGenreMap[song.id] = splitNamesForSong
+            songToGenreMap[song.id] = splitNamesForSong.toList()
             if (index % PBI == 0) onProcessUpdate(process + index, total, "Analyzing Genres")
         }
     }
