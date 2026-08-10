@@ -24,11 +24,16 @@
     <dimen name="player_queue_sub_header_height">42dp</dimen>
     <dimen name="player_progress_container_height">20dp</dimen>
     <dimen name="controller_button_square">56dp</dimen>
-    <dimen name="controller_button_height">72dp</dimen>
-    <dimen name="controller_button_width">48dp</dimen>
-    <dimen name="controller_buttons_padding_vertical">12dp</dimen>
-    <dimen name="controller_buttons_padding_horizontal">8dp</dimen>
-    <dimen name="controller_buttons_margin">16dp</dimen>
+    <dimen name="controller_button_height">56dp</dimen>
+    <dimen name="controller_button_width">56dp</dimen>
+    <dimen name="controller_button_margin_outer">16dp</dimen>
+    <dimen name="controller_button_margin_inner">8dp</dimen>
+    <dimen name="controller_button_margin_vertical">8dp</dimen>
+    <dimen name="controller_button_padding_vertical">10dp</dimen>
+    <dimen name="controller_button_padding_horizontal">10dp</dimen>
+    <dimen name="pause_bar_height">20dp</dimen>
+    <dimen name="pause_bar_width">7dp</dimen>
+    <dimen name="pause_bar_distance">6dp</dimen>
 
     <!-- Detail Page -->
     <dimen name="detail_header_height">176dp</dimen>
@@ -64,8 +69,5 @@
     <dimen name="app_widget_card_radius">2dp</dimen>
 
     <!--Views -->
-    <dimen name="pause_bar_height">14dp</dimen>
-    <dimen name="pause_bar_width">5dp</dimen>
-    <dimen name="pause_bar_distance">4dp</dimen>
     <dimen name="circle_view_border">1dp</dimen>
 </resources>

@@ -67,8 +67,9 @@
 
         <ImageButton
             android:id="@+id/player_button_center"
-            android:layout_width="@dimen/controller_button_width"
-            android:layout_height="@dimen/controller_button_height"
+            android:layout_width="@dimen/controller_button_square"
+            android:layout_height="@dimen/controller_button_square"
+            android:layout_marginVertical="@dimen/controller_button_margin_vertical"
             android:background="?attr/roundSelector"
             android:contentDescription="@string/action_play_pause"
             android:paddingHorizontal="@dimen/controller_button_padding_horizontal"
@@ -85,13 +86,14 @@
             android:id="@+id/player_button_tertiary_left"
             android:layout_width="@dimen/controller_button_width"
             android:layout_height="@dimen/controller_button_height"
-            android:layout_marginStart="@dimen/controller_buttons_margin"
+            android:layout_marginStart="@dimen/controller_button_margin_outer"
             android:background="?attr/roundSelector"
             android:paddingHorizontal="@dimen/controller_button_padding_horizontal"
             android:paddingVertical="@dimen/controller_button_padding_vertical"
             android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="@+id/player_button_secondary_left"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/player_button_secondary_left"
             tools:ignore="ContentDescription,SpeakableTextPresentCheck"
             tools:src="@drawable/ic_repeat_white_24dp" />
 
@@ -99,13 +101,14 @@
             android:id="@+id/player_button_tertiary_right"
             android:layout_width="@dimen/controller_button_width"
             android:layout_height="@dimen/controller_button_height"
-            android:layout_marginEnd="@dimen/controller_buttons_margin"
+            android:layout_marginEnd="@dimen/controller_button_margin_outer"
             android:background="?attr/roundSelector"
             android:paddingHorizontal="@dimen/controller_button_padding_horizontal"
             android:paddingVertical="@dimen/controller_button_padding_vertical"
             android:scaleType="fitCenter"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/player_button_secondary_right"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/player_button_secondary_right"
             tools:ignore="ContentDescription,SpeakableTextPresentCheck"
             tools:src="@drawable/ic_shuffle_white_24dp" />
 
@@ -117,10 +120,10 @@
             android:paddingHorizontal="@dimen/controller_button_padding_horizontal"
             android:paddingVertical="@dimen/controller_button_padding_vertical"
             android:scaleType="fitCenter"
-            app:layout_constraintBottom_toBottomOf="@id/player_button_tertiary_left"
+            app:layout_constraintBottom_toBottomOf="@+id/player_button_primary_left"
             app:layout_constraintEnd_toStartOf="@id/player_button_primary_left"
             app:layout_constraintStart_toEndOf="@id/player_button_tertiary_left"
-            app:layout_constraintTop_toTopOf="@id/player_button_tertiary_left"
+            app:layout_constraintTop_toTopOf="@+id/player_button_primary_left"
             tools:ignore="ContentDescription,SpeakableTextPresentCheck"
             tools:src="@drawable/ic_skip_previous_white_24dp" />
 
@@ -132,10 +135,10 @@
             android:paddingHorizontal="@dimen/controller_button_padding_horizontal"
             android:paddingVertical="@dimen/controller_button_padding_vertical"
             android:scaleType="fitCenter"
-            app:layout_constraintBottom_toBottomOf="@id/player_button_tertiary_right"
+            app:layout_constraintBottom_toBottomOf="@+id/player_button_primary_right"
             app:layout_constraintEnd_toStartOf="@id/player_button_tertiary_right"
             app:layout_constraintStart_toEndOf="@id/player_button_primary_right"
-            app:layout_constraintTop_toTopOf="@id/player_button_tertiary_right"
+            app:layout_constraintTop_toTopOf="@+id/player_button_primary_right"
             tools:ignore="ContentDescription,SpeakableTextPresentCheck"
             tools:src="@drawable/ic_skip_next_white_24dp" />
 
@@ -147,10 +150,10 @@
             android:paddingHorizontal="@dimen/controller_button_padding_horizontal"
             android:paddingVertical="@dimen/controller_button_padding_vertical"
             android:scaleType="fitCenter"
-            app:layout_constraintBottom_toBottomOf="@id/player_button_secondary_left"
+            app:layout_constraintBottom_toBottomOf="@+id/player_button_center"
             app:layout_constraintEnd_toStartOf="@id/player_button_center"
             app:layout_constraintStart_toEndOf="@id/player_button_secondary_left"
-            app:layout_constraintTop_toTopOf="@id/player_button_secondary_left"
+            app:layout_constraintTop_toTopOf="@+id/player_button_center"
             tools:ignore="ContentDescription,SpeakableTextPresentCheck"
             tools:src="@drawable/ic_fast_rewind_white_24dp" />
 
@@ -162,10 +165,10 @@
             android:paddingHorizontal="@dimen/controller_button_padding_horizontal"
             android:paddingVertical="@dimen/controller_button_padding_vertical"
             android:scaleType="fitCenter"
-            app:layout_constraintBottom_toBottomOf="@id/player_button_secondary_right"
+            app:layout_constraintBottom_toBottomOf="@+id/player_button_center"
             app:layout_constraintEnd_toStartOf="@id/player_button_secondary_right"
             app:layout_constraintStart_toEndOf="@id/player_button_center"
-            app:layout_constraintTop_toTopOf="@id/player_button_secondary_right"
+            app:layout_constraintTop_toTopOf="@+id/player_button_center"
             tools:ignore="ContentDescription,SpeakableTextPresentCheck"
             tools:src="@drawable/ic_fast_forward_white_24dp" />
 

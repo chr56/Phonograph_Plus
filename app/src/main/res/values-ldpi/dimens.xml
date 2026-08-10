@@ -2,9 +2,14 @@
 <resources>
     <!-- Player -->
     <dimen name="controller_button_square">48dp</dimen>
-    <dimen name="controller_button_height">64dp</dimen>
-    <dimen name="controller_button_width">40dp</dimen>
-    <dimen name="controller_button_padding_vertical">8dp</dimen>
-    <dimen name="controller_button_padding_horizontal">4dp</dimen>
-    <dimen name="controller_buttons_margin">4dp</dimen>
+    <dimen name="controller_button_height">48dp</dimen>
+    <dimen name="controller_button_width">48dp</dimen>
+    <dimen name="controller_button_margin_outer">8dp</dimen>
+    <dimen name="controller_button_margin_inner">4dp</dimen>
+    <dimen name="controller_button_margin_vertical">8dp</dimen>
+    <dimen name="controller_button_padding_vertical">6dp</dimen>
+    <dimen name="controller_button_padding_horizontal">6dp</dimen>
+    <dimen name="pause_bar_height">14dp</dimen>
+    <dimen name="pause_bar_width">5dp</dimen>
+    <dimen name="pause_bar_distance">4dp</dimen>
 </resources>
