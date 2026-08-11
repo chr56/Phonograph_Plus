@@ -2,18 +2,16 @@
 
 package player.phonograph.ui.views
 
-import player.phonograph.R
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
-import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.Drawable
 import android.util.Property
 import android.view.animation.DecelerateInterpolator
 import kotlin.math.roundToInt
 
-class PlayPauseDrawable(context: Context) : Drawable() {
+class PlayPauseDrawable : Drawable() {
 
     private val leftPauseBar = Path()
     private val rightPauseBar = Path()
@@ -25,12 +23,11 @@ class PlayPauseDrawable(context: Context) : Drawable() {
             color = Color.WHITE
         }
 
-    private val pauseBarWidth: Float = context.resources.getDimensionPixelSize(R.dimen.pause_bar_width).toFloat()
-    private val pauseBarHeight: Float = context.resources.getDimensionPixelSize(R.dimen.pause_bar_height).toFloat()
-    private val pauseBarDistance: Float = context.resources.getDimensionPixelSize(R.dimen.pause_bar_distance).toFloat()
-
-    private var width = 0f
-    private var height = 0f
+    private var pauseBarWidth = 0f
+    private var pauseBarHeight = 0f
+    private var pauseBarDistance = 0f
+    private var centerX = 0f
+    private var centerY = 0f
 
     private var progress: Float = 0f
         private set(value) {
@@ -43,10 +40,12 @@ class PlayPauseDrawable(context: Context) : Drawable() {
 
     override fun onBoundsChange(bounds: Rect) {
         super.onBoundsChange(bounds)
-        if (bounds.width() > 0 && bounds.height() > 0) {
-            width = bounds.width().toFloat()
-            height = bounds.height().toFloat()
-        }
+        val iconSize = minOf(bounds.width(), bounds.height()) * SIZE_RATIO
+        pauseBarWidth = iconSize * PAUSE_BAR_WIDTH_RATIO
+        pauseBarHeight = iconSize
+        pauseBarDistance = iconSize * PAUSE_BAR_DISTANCE_RATIO
+        centerX = (bounds.left + bounds.right) / 2f
+        centerY = (bounds.top + bounds.bottom) / 2f
     }
 
     override fun draw(canvas: Canvas) {
@@ -93,14 +92,14 @@ class PlayPauseDrawable(context: Context) : Drawable() {
         val startingRotation = if (isPlay) 90f else 0f
         canvas.rotate(
             lerp(startingRotation, startingRotation + 90f, rotationProgress),
-            width / 2f,
-            height / 2f
+            centerX,
+            centerY
         )
 
         // Position the pause/play button in the center of the drawable's bounds.
         canvas.translate(
-            (width / 2f - (2f * barWidth + barDist) / 2f).roundToInt().toFloat(),
-            (height / 2f + pauseBarHeight / 2f).roundToInt().toFloat()
+            (centerX - (2f * barWidth + barDist) / 2f).roundToInt().toFloat(),
+            (centerY + pauseBarHeight / 2f).roundToInt().toFloat()
         )
 
         // Draw the two bars that form the animated pause/play button.
@@ -160,6 +159,11 @@ class PlayPauseDrawable(context: Context) : Drawable() {
         }
 
     companion object {
+        private const val PAUSE_BAR_WIDTH_RATIO = 7f / 20f
+        private const val PAUSE_BAR_DISTANCE_RATIO = 6f / 20f
+
+        private const val SIZE_RATIO = 0.67f
+
         private const val PLAY_PAUSE_ANIMATION_DURATION: Long = 250
 
         private val PROGRESS: Property<PlayPauseDrawable, Float> =

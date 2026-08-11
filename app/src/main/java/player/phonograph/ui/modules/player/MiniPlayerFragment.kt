@@ -62,7 +62,7 @@ class MiniPlayerFragment : AbsMusicServiceFragment() {
     }
 
     private fun setUpPlayPauseButton() {
-        miniPlayerPlayPauseDrawable = PlayPauseDrawable(requireContext())
+        miniPlayerPlayPauseDrawable = PlayPauseDrawable()
         observe(MusicPlayerRemote.currentState) {
             updatePlayPauseDrawableState(
                 lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)

@@ -74,7 +74,7 @@ class PlayerControllerFlatStyledBinding : PlayerControllerBinding() {
     private var playPauseDrawable: PlayPauseDrawable? = null
     private var disconnectedDrawable: Drawable? = null
     override fun setupPlayPauseButton(context: Context) {
-        playPauseDrawable = PlayPauseDrawable(context)
+        playPauseDrawable = PlayPauseDrawable()
         disconnectedDrawable = context.getTintedDrawable(R.drawable.ic_refresh_white_24dp, themeIconColor(context))
         with(playerPlayPauseButton) {
             setOnClickListener(PlayPauseButtonOnClickHandler())

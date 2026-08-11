@@ -84,7 +84,7 @@ class PlayerControllerClassicStyledBinding : PlayerControllerBinding() {
     override fun setupPlayPauseButton(context: Context) {
         val fabBackgroundColor = if (isNightTheme(context.resources)) Color.LTGRAY else Color.WHITE
         val fabIconColor = secondaryTextColorOn(context, fabBackgroundColor)
-        playPauseDrawable = PlayPauseDrawable(context).apply {
+        playPauseDrawable = PlayPauseDrawable().apply {
             colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
                 fabIconColor, BlendModeCompat.SRC_IN
             )

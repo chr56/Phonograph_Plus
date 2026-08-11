@@ -9,7 +9,4 @@
     <dimen name="controller_button_margin_vertical">8dp</dimen>
     <dimen name="controller_button_padding_vertical">6dp</dimen>
     <dimen name="controller_button_padding_horizontal">6dp</dimen>
-    <dimen name="pause_bar_height">14dp</dimen>
-    <dimen name="pause_bar_width">5dp</dimen>
-    <dimen name="pause_bar_distance">4dp</dimen>
 </resources>
