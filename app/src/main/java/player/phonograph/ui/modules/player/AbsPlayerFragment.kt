@@ -30,6 +30,7 @@ import player.phonograph.ui.modules.setting.dialog.NowPlayingScreenStylePreferen
 import player.phonograph.ui.theme.getTintedDrawable
 import player.phonograph.ui.theme.secondaryTextColorOn
 import player.phonograph.ui.theme.textColorOn
+import player.phonograph.ui.theme.themeFooterColor
 import player.phonograph.ui.util.PHONOGRAPH_ANIM_TIME
 import player.phonograph.ui.util.ScreenCategory
 import player.phonograph.ui.util.backgroundColorTransitionAnimator
@@ -47,7 +48,6 @@ import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.coroutineScope
 import androidx.lifecycle.lifecycleScope
@@ -130,12 +130,17 @@ abstract class AbsPlayerFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        frame.slidingUpPanel?.addPanelSlideListener(this)
-        panelViewModel.updateStatusbarTransparent(frame.preferTransparentStatusbar)
-        initToolbar()
+        setupMainContent()
+        setupToolbar()
+
         observeState()
+        forceChangeColor(themeFooterColor(requireContext()))
+        panelViewModel.updateStatusbarTransparent(frame.preferTransparentStatusbar)
+        frame.slidingUpPanel?.addPanelSlideListener(this)
         view.addOnLayoutChangeListener(this)
     }
+
+    protected abstract fun setupMainContent()
 
     override fun onDestroyView() {
         requireView().removeOnLayoutChangeListener(this)
@@ -182,7 +187,7 @@ abstract class AbsPlayerFragment :
     private var lyricsMenuItem: MenuItem? = null
     private var favoriteMenuItem: MenuItem? = null
 
-    private fun initToolbar() {
+    private fun setupToolbar() {
         val activity = requireActivity()
         attach(activity, frame.toolbar.menu) {
             // visible
@@ -370,22 +375,20 @@ abstract class AbsPlayerFragment :
 
     private var currentAnimatorSet: AnimatorSet? = null
 
-    private fun onColorChanged(oldColor: Int, newColor: Int) {
-        val animated = lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
-        if (animated) {
-            currentAnimatorSet?.end()
-            currentAnimatorSet?.cancel()
-            currentAnimatorSet = buildDefaultColorChangeAnimatorSet(oldColor, newColor).also { it.start() }
-        } else {
-            currentAnimatorSet?.cancel()
-            forceChangeColor(newColor)
+    private suspend fun onColorChanged(oldColor: Int, newColor: Int) {
+        withResumed {
+            if (isVisible) {
+                currentAnimatorSet?.end()
+                currentAnimatorSet?.cancel()
+                currentAnimatorSet = makeColorChangeAnimatorSet(oldColor, newColor).also { it.start() }
+            } else {
+                currentAnimatorSet?.cancel()
+                forceChangeColor(newColor)
+            }
         }
     }
 
-    protected fun buildDefaultColorChangeAnimatorSet(
-        @ColorInt oldColor: Int,
-        @ColorInt newColor: Int,
-    ): AnimatorSet {
+    protected fun makeColorChangeAnimatorSet(@ColorInt oldColor: Int, @ColorInt newColor: Int): AnimatorSet {
 
         val rippleCenter = playbackControlsFragment.provideRippleCenter()
         val backgroundAnimator: Animator? =
@@ -456,7 +459,7 @@ abstract class AbsPlayerFragment :
     }
 
     protected open fun forceChangeColor(@ColorInt newColor: Int) {
-        playbackControlsFragment.requireView().setBackgroundColor(newColor)
+        frame.coloredBackground.setBackgroundColor(newColor)
         if (frame.preferColoredToolbar) {
             frame.toolbar.setBackgroundColor(newColor)
             setToolbarWidgetColor(newColor)
@@ -508,9 +511,7 @@ abstract class AbsPlayerFragment :
             lyricsMenuItem?.isVisible = !lyricsInfo.isNullOrEmpty()
         }
         observe(panelViewModel.colorChange) { (oldColor, newColor) ->
-            withResumed { // fixme: fix lifecycle issues
-                onColorChanged(oldColor, newColor)
-            }
+            onColorChanged(oldColor, newColor)
         }
     }
 

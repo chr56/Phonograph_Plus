@@ -52,20 +52,15 @@ class CardPlayerFragment : AbsPlayerFragment() {
         return impl
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun setupMainContent() {
         impl.init()
+        impl.applyWindowInsect()
+        fixPanelNestedScrolling()
 
         lifecycleScope.launch {
             onLayoutChangedEffect.collect { count ->
-                val impl = _impl
-                if (count >= 0 && impl != null) {
-                    if (count == 0) {
-                        impl.applyWindowInsect()
-                        fixPanelNestedScrolling()
-                    } else {
-                        impl.adjustHeight()
-                    }
+                if (count > 0) {
+                    _impl?.adjustHeight()
                 }
             }
         }
@@ -78,8 +73,6 @@ class CardPlayerFragment : AbsPlayerFragment() {
     }
 
     private fun fixPanelNestedScrolling() {
-        impl.slidingUpPanel?.setScrollableView(queueFragment.scrollableArea)
-
         val fragmentActivity = activity
         if (fragmentActivity is UnarySlidingUpPanelProvider) {
             fragmentActivity.requestToSetAntiDragView(impl.playerPanel)

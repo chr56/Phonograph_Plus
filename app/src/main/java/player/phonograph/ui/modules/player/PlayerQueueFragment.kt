@@ -143,6 +143,8 @@ class PlayerQueueFragment : AbsMusicServiceFragment() {
 
         binding.playerRecyclerView.applyWindowInsetsAsBottomView()
 
+        (parentFragment as? UnarySlidingUpPanelProvider)?.requestToSetScrollableView(binding.playerRecyclerView)
+
         observeState()
     }
 
