@@ -11,6 +11,7 @@ import player.phonograph.repo.room.sync.SyncExecutors
 import androidx.room.withTransaction
 import android.content.Context
 import android.util.Log
+import kotlinx.coroutines.sync.Mutex
 
 object DatabaseActions {
 
@@ -55,11 +56,13 @@ object DatabaseActions {
         val syncExecutor = SyncExecutors.obtain(context, musicDatabase)
         return if (force || syncExecutor.check(context)) {
             try {
+                syncLock.lock()
                 syncExecutor.sync(context, progress)
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to sync database.", e)
                 null
             } finally {
+                syncLock.unlock()
                 EventHub.sendEvent(context.applicationContext, EventHub.EVENT_MUSIC_LIBRARY_CHANGED)
             }
         } else {
@@ -116,5 +119,6 @@ object DatabaseActions {
         return syncResult
     }
 
+    private val syncLock by lazy { Mutex() }
     private const val TAG = "Database"
 }
