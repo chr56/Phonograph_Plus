@@ -31,8 +31,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import android.content.res.Configuration
 
-@Preview(name = "Dark", widthDp = 360, uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
-@Preview(name = "Light", widthDp = 360, uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
+@Preview(name = "Phone Dark", widthDp = 360, uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@Preview(name = "Phone Light", widthDp = 360, uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
+// @Preview(name = "Tablet Dark", widthDp = 600, uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+// @Preview(name = "Tablet Light", widthDp = 600, uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
+// @Preview(name = "Mini Dark", widthDp = 120, uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+// @Preview(name = "Mini Light", widthDp = 120, uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
 annotation class ItemPreview
 
 private const val PreviewTitle = "Never gonna to give you up"
@@ -149,4 +153,150 @@ fun ItemList1LPreviews() = PhonographTheme {
     Column {
         ItemListSingleRow(PreviewTitle, leadingContent = { PreviewArtwork() }, onMenuClick = {})
     }
+}
+
+
+@ItemPreview
+@Composable
+fun TwoColumnsListItemsPreview() = PhonographTheme {
+    Row {
+        ItemList3LExtended(
+            title = PreviewLongTitle,
+            secondaryText = PreviewSecondary,
+            tertiaryText = PreviewTertiary,
+            modifier = Modifier.weight(1f),
+            onMenuClick = {},
+        )
+        ItemListExtended(
+            title = PreviewLongTitle,
+            description = PreviewDescription,
+            modifier = Modifier.weight(1f),
+            onMenuClick = {},
+        )
+    }
+}
+
+
+@ItemPreview
+@Composable
+fun AllListItemsPreview() = PhonographTheme {
+    Column {
+        ItemList(
+            PreviewTitle, PreviewDescription,
+            leadingContent = { ItemOrdinal("1", colorResource(R.color.default_text_color_primary)) },
+            showDragHandle = true,
+        )
+        ItemListExtended(
+            PreviewTitle, PreviewDescription,
+            showDragHandle = true,
+        )
+        ItemList3L(
+            PreviewTitle, PreviewSecondary, PreviewTertiary,
+            showDragHandle = true,
+        )
+        ItemList3LExtended(
+            PreviewTitle,
+            PreviewSecondary,
+            PreviewTertiary,
+            leadingContent = { PreviewArtwork() },
+            showDragHandle = true,
+        )
+        ItemListNoImage(
+            PreviewTitle, PreviewDescription,
+            showDragHandle = true,
+        )
+        ItemList3LNoImage(
+            PreviewTitle, PreviewSecondary, PreviewTertiary,
+            showDragHandle = true,
+        )
+        ItemList3LNoImage(
+            PreviewTitle, null, null,
+            divider = 72.dp,
+        )
+        ItemListSingleRow(
+            PreviewTitle, modifier = Modifier.background(Color(0xFF263238)),
+            colors = ItemDefaults.listColors().copy(title = Color.White),
+            leadingContent = { ItemOrdinal("2", colorResource(R.color.default_text_color_primary)) },
+        )
+    }
+}
+
+
+@ItemPreview
+@Composable
+fun InteractiveListItemPreview() = PhonographTheme {
+    var selected by remember { mutableStateOf(false) }
+    var menuExpanded by remember { mutableStateOf(false) }
+    var moved by remember { mutableStateOf(false) }
+    val dragModifier = Modifier.pointerInput(Unit) {
+        detectDragGestures { change, _ ->
+            change.consume()
+            moved = true
+        }
+    }
+    Column {
+        ItemList(
+            title = PreviewTitle,
+            description = if (moved) PreviewSecondary else PreviewDescription,
+            leadingContent = { ItemOrdinal("1", colorResource(R.color.default_text_color_primary)) },
+            selected = selected,
+            showDragHandle = true,
+            dragHandleModifier = dragModifier,
+            leadingModifier = dragModifier,
+            onClick = { selected = !selected },
+            onLongClick = { selected = true },
+            onMenuClick = { menuExpanded = true },
+        )
+        DropdownMenu(menuExpanded, onDismissRequest = { menuExpanded = false }) {
+            DropdownMenuItem(onClick = {
+                selected = !selected
+                menuExpanded = false
+            }) {
+                Text(PreviewTitle)
+            }
+        }
+    }
+}
+
+
+@ItemPreview
+@Composable
+fun AllGridItemPreviews() = PhonographTheme {
+    Column {
+        Row {
+            ItemGrid(
+                PreviewLongTitle, PreviewDescription, artwork = { PreviewArtwork() },
+                modifier = Modifier.weight(1f), colors = ItemDefaults.gridColors(Color(0xFF0A6DA1)),
+                selected = true,
+            )
+            ItemGrid(
+                PreviewTitle, null, artwork = { PreviewArtwork() },
+                modifier = Modifier.weight(1f), colors = ItemDefaults.gridColors(Color(0xFFC47009)),
+                selected = false,
+            )
+        }
+        Spacer(Modifier.height(12.dp))
+        Row {
+            ItemGridCardHorizontal(
+                PreviewTitle, PreviewDescription, artwork = { PreviewArtwork() },
+                modifier = Modifier.padding(start = 12.dp), colors = ItemDefaults.cardColors(Color(0xFF0A6DA1)),
+                selected = true,
+            )
+            ItemGridCardHorizontal(
+                PreviewLongTitle, null, artwork = { PreviewArtwork() },
+                modifier = Modifier.padding(end = 12.dp), colors = ItemDefaults.gridColors(Color(0xFFC47009)),
+                selected = false,
+            )
+        }
+    }
+}
+
+@ItemPreview
+@Composable
+fun InteractiveGridItemPreview() = PhonographTheme {
+    var selected by remember { mutableStateOf(false) }
+    ItemGrid(
+        PreviewTitle, PreviewDescription, artwork = { PreviewArtwork() }, selected = selected,
+        onClick = { selected = !selected }, onLongClick = { selected = true },
+    )
 }
