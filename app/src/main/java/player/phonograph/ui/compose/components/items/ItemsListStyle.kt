@@ -42,6 +42,7 @@ fun ListItemWithLeading(
     onClick: (() -> Unit)?,
     onLongClick: (() -> Unit)?,
     onMenuClick: (() -> Unit)?,
+    menuContent: (@Composable () -> Unit)? = null,
 ) {
     ListItemFrame(
         modifier, style.height, colors, selected, divider,
@@ -69,7 +70,7 @@ fun ListItemWithLeading(
                     .padding(start = style.contentStartPadding, end = style.contentEndPadding),
             )
             if (onMenuClick != null) {
-                ListItemMenu(style.menuWidth, colors.icon, onMenuClick)
+                ListItemMenu(style.menuWidth, colors.icon, onMenuClick, menuContent)
             }
         }
     }
@@ -93,6 +94,7 @@ fun ListItemWithoutLeading(
     onClick: (() -> Unit)?,
     onLongClick: (() -> Unit)?,
     onMenuClick: (() -> Unit)?,
+    menuContent: (@Composable () -> Unit)? = null,
 ) {
     ListItemFrame(
         modifier, style.height, colors, selected, divider,
@@ -111,7 +113,7 @@ fun ListItemWithoutLeading(
                     .padding(start = style.contentStartPadding, end = style.contentEndPadding),
             )
             if (onMenuClick != null) {
-                ListItemMenu(style.menuWidth, colors.icon, onMenuClick)
+                ListItemMenu(style.menuWidth, colors.icon, onMenuClick, menuContent)
             }
         }
     }

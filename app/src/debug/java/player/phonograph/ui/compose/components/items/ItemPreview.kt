@@ -246,15 +246,17 @@ fun InteractiveListItemPreview() = PhonographTheme {
             onClick = { selected = !selected },
             onLongClick = { selected = true },
             onMenuClick = { menuExpanded = true },
+            menuContent = {
+                DropdownMenu(menuExpanded, onDismissRequest = { menuExpanded = false }) {
+                    DropdownMenuItem(onClick = {
+                        selected = !selected
+                        menuExpanded = false
+                    }) {
+                        Text(PreviewTitle)
+                    }
+                }
+            },
         )
-        DropdownMenu(menuExpanded, onDismissRequest = { menuExpanded = false }) {
-            DropdownMenuItem(onClick = {
-                selected = !selected
-                menuExpanded = false
-            }) {
-                Text(PreviewTitle)
-            }
-        }
     }
 }
 

@@ -37,6 +37,7 @@ fun ItemList(
     onClick: (() -> Unit)? = null,
     onLongClick: (() -> Unit)? = null,
     onMenuClick: (() -> Unit)? = null,
+    menuContent: (@Composable () -> Unit)? = null,
 ) = ListItemWithLeading(
     style = ItemDefaults.listLayoutStyle(height = 72.dp),
     title = title,
@@ -56,6 +57,7 @@ fun ItemList(
     onClick = onClick,
     onLongClick = onLongClick,
     onMenuClick = onMenuClick,
+    menuContent = menuContent,
 )
 
 @Composable
@@ -76,6 +78,7 @@ fun ItemListExtended(
     onClick: (() -> Unit)? = null,
     onLongClick: (() -> Unit)? = null,
     onMenuClick: (() -> Unit)? = null,
+    menuContent: (@Composable () -> Unit)? = null,
 ) = ListItemWithLeading(
     style = ItemDefaults.listLayoutStyle(
         height = 84.dp, titleLines = 3, secondaryLines = 2,
@@ -98,6 +101,7 @@ fun ItemListExtended(
     onClick = onClick,
     onLongClick = onLongClick,
     onMenuClick = onMenuClick,
+    menuContent = menuContent,
 )
 
 @Composable
@@ -116,6 +120,7 @@ fun ItemListSingleRow(
     onClick: (() -> Unit)? = null,
     onLongClick: (() -> Unit)? = null,
     onMenuClick: (() -> Unit)? = null,
+    menuContent: (@Composable () -> Unit)? = null,
 ) = ListItemWithLeading(
     style = ItemDefaults.listLayoutStyle(height = 64.dp),
     title = title,
@@ -135,6 +140,7 @@ fun ItemListSingleRow(
     onClick = onClick,
     onLongClick = onLongClick,
     onMenuClick = onMenuClick,
+    menuContent = menuContent,
 )
 
 @Composable
@@ -153,6 +159,7 @@ fun ItemListNoImage(
     onClick: (() -> Unit)? = null,
     onLongClick: (() -> Unit)? = null,
     onMenuClick: (() -> Unit)? = null,
+    menuContent: (@Composable () -> Unit)? = null,
 ) = ListItemWithoutLeading(
     style = ItemDefaults.listLayoutStyle(
         height = 72.dp,
@@ -173,6 +180,7 @@ fun ItemListNoImage(
     onClick = onClick,
     onLongClick = onLongClick,
     onMenuClick = onMenuClick,
+    menuContent = menuContent,
 )
 
 @Composable
@@ -195,6 +203,7 @@ fun ItemList3L(
     onClick: (() -> Unit)? = null,
     onLongClick: (() -> Unit)? = null,
     onMenuClick: (() -> Unit)? = null,
+    menuContent: (@Composable () -> Unit)? = null,
 ) = ListItemWithLeading(
     style = ItemDefaults.listLayoutStyle(height = 72.dp),
     title = title,
@@ -214,6 +223,7 @@ fun ItemList3L(
     onClick = onClick,
     onLongClick = onLongClick,
     onMenuClick = onMenuClick,
+    menuContent = menuContent,
 )
 
 @Composable
@@ -236,6 +246,7 @@ fun ItemList3LExtended(
     onClick: (() -> Unit)? = null,
     onLongClick: (() -> Unit)? = null,
     onMenuClick: (() -> Unit)? = null,
+    menuContent: (@Composable () -> Unit)? = null,
 ) = ListItemWithLeading(
     style = ItemDefaults.listLayoutStyle(
         height = 84.dp, titleLines = 3, secondaryLines = 2,
@@ -258,6 +269,7 @@ fun ItemList3LExtended(
     onClick = onClick,
     onLongClick = onLongClick,
     onMenuClick = onMenuClick,
+    menuContent = menuContent,
 )
 
 @Composable
@@ -278,6 +290,7 @@ fun ItemList3LNoImage(
     onClick: (() -> Unit)? = null,
     onLongClick: (() -> Unit)? = null,
     onMenuClick: (() -> Unit)? = null,
+    menuContent: (@Composable () -> Unit)? = null,
 ) = ListItemWithoutLeading(
     style = ItemDefaults.listLayoutStyle(
         height = 84.dp, titleLines = 3, secondaryLines = 2,
@@ -298,6 +311,7 @@ fun ItemList3LNoImage(
     onClick = onClick,
     onLongClick = onLongClick,
     onMenuClick = onMenuClick,
+    menuContent = menuContent,
 )
 
 @Composable

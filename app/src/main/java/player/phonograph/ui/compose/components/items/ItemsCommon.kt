@@ -91,7 +91,12 @@ fun Modifier.itemInteraction(
 }
 
 @Composable
-fun ListItemMenu(width: Dp, iconColor: Color, onClick: () -> Unit) {
+fun ListItemMenu(
+    width: Dp,
+    iconColor: Color,
+    onClick: () -> Unit,
+    menuContent: (@Composable () -> Unit)? = null,
+) {
     Box(
         modifier = Modifier
             .padding(end = 8.dp)
@@ -107,6 +112,7 @@ fun ListItemMenu(width: Dp, iconColor: Color, onClick: () -> Unit) {
             modifier = Modifier.size(24.dp),
             tint = iconColor,
         )
+        menuContent?.invoke()
     }
 }
 
