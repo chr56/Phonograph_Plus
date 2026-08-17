@@ -108,7 +108,12 @@ fun DragHandle(
 }
 
 @Composable
-fun ItemMenuButton(width: Dp, iconColor: Color, onClick: () -> Unit) {
+fun ItemMenuButton(
+    width: Dp,
+    iconColor: Color,
+    onClick: () -> Unit,
+    menuContent: (@Composable () -> Unit)? = null,
+) {
     Box(
         modifier = Modifier
             .padding(end = 8.dp)
@@ -124,6 +129,7 @@ fun ItemMenuButton(width: Dp, iconColor: Color, onClick: () -> Unit) {
             modifier = Modifier.size(24.dp),
             tint = iconColor,
         )
+        menuContent?.invoke()
     }
 }
 
