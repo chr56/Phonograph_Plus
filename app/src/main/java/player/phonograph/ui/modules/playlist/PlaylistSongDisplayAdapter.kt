@@ -4,7 +4,6 @@
 
 package player.phonograph.ui.modules.playlist
 
-import player.phonograph.foundation.produceSafeId
 import player.phonograph.model.QueueSong
 import player.phonograph.model.ui.UIMode
 import player.phonograph.ui.actions.ActionMenuProviders
@@ -72,8 +71,6 @@ class PlaylistSongDisplayAdapter(
 
             }
         }
-
-    override fun getItemId(position: Int): Long = produceSafeId(presenter.getItemID(dataset[position]), position)
 
     override fun onBindViewHolder(holder: DisplayViewHolder<QueueSong>, position: Int) {
         if (viewModel.currentMode.value == UIMode.Editor) {

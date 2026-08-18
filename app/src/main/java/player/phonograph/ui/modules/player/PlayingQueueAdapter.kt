@@ -4,7 +4,6 @@
 
 package player.phonograph.ui.modules.player
 
-import player.phonograph.foundation.produceSafeId
 import player.phonograph.model.Song
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.service.MusicPlayerRemote
@@ -37,8 +36,6 @@ class PlayingQueueAdapter(activity: FragmentActivity) :
             field = value
             notifyDataSetChanged()
         }
-
-    override fun getItemId(position: Int): Long = produceSafeId(presenter.getItemID(dataset[position]), position)
 
     override fun getItemViewType(position: Int): Int = when {
         position < current -> HISTORY

@@ -9,6 +9,7 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemState
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemViewHolder
 import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange
 import com.h6ah4i.android.widget.advrecyclerview.draggable.annotation.DraggableItemStateFlags
+import player.phonograph.foundation.produceSafeId
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.ui.resource.Layouts
 import player.phonograph.ui.util.hitTest
@@ -54,6 +55,8 @@ abstract class DraggableDisplayAdapter<I>(
         }
     }
     //endregion
+
+    override fun getItemId(position: Int): Long = produceSafeId(presenter.getItemID(dataset[position]), position)
 
     override fun getItemViewType(position: Int): Int = presenter.layoutStyle.ordinal
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<I> {
