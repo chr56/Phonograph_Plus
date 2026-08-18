@@ -27,6 +27,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.commit
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
 import android.graphics.Color
@@ -35,6 +36,7 @@ import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.view.animation.PathInterpolator
+import kotlinx.coroutines.launch
 
 /**
  *
@@ -105,14 +107,14 @@ abstract class AbsSlidingMusicPanelActivity :
             })
             layout.addPanelSlideListener(this)
         }
+        panelBinding.navigationBar.setOnClickListener {
+            lifecycleScope.launch { panelViewModel.requestToExpand() }
+        }
 
         // add fragment
-        val nowPlayingScreenStyle = Settings(this)[Keys.nowPlayingScreenStyle].flow
-        observe(nowPlayingScreenStyle, state = Lifecycle.State.STARTED, distinctive = true) { screen ->
-            // todo
+        val playerStyle = Settings(this)[Keys.nowPlayingScreenStyle].flow
+        observe(playerStyle, distinctive = true) { screen ->
             setupPlayerFragment(screen)
-            miniPlayerFragment?.requireView()?.setOnClickListener { requestToExpand() }
-            panelBinding.navigationBar.setOnClickListener { requestToExpand() }
         }
 
 
@@ -139,16 +141,21 @@ abstract class AbsSlidingMusicPanelActivity :
         observe(panelViewModel.isMiniPlayerHidden, state = Lifecycle.State.STARTED) { hidden ->
             updatePanelHiddenState(hidden)
         }
+        observe(panelViewModel.effects, state = Lifecycle.State.STARTED) { action ->
+            when (action) {
+                PanelViewModel.Action.Collapse -> requestToCollapse()
+                PanelViewModel.Action.Expand   -> requestToExpand()
+                PanelViewModel.Action.Toggle   -> requestToSwitchState()
+            }
+        }
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         cancelSystemBarsColorAnimation() // just in case
+        super.onDestroy()
     }
 
-    private var _screenStyle: NowPlayingScreenStyle? = null
     private fun setupPlayerFragment(style: NowPlayingScreenStyle) {
-        if (playerFragment != null && _screenStyle == style) return
         val fragment = buildPlayerFragment(style)
         supportFragmentManager.apply {
             commit {
@@ -157,9 +164,9 @@ abstract class AbsSlidingMusicPanelActivity :
             executePendingTransactions()
         }
         playerFragment = fragment
-        _screenStyle = style
     }
 
+    //region PanelSlideListener
     override fun onPanelSlide(panel: View, @FloatRange(from = 0.0, to = 1.0) slideOffset: Float) {
         setMiniPlayerFadingProgress(slideOffset)
         cancelSystemBarsColorAnimation()
@@ -179,10 +186,11 @@ abstract class AbsSlidingMusicPanelActivity :
         when (newState) {
             PanelState.COLLAPSED -> onPanelCollapsed(panel)
             PanelState.EXPANDED  -> onPanelExpanded(panel)
-            PanelState.ANCHORED  -> requestToCollapse() // this fixes a bug where the panel would get stuck for some reason
+            PanelState.ANCHORED  -> requestToCollapse() // avoid getting stuck for some reason
             else                 -> {}
         }
     }
+    //endregion
 
     @Suppress("DEPRECATION")
     open fun onPanelCollapsed(panel: View?) {
@@ -216,10 +224,11 @@ abstract class AbsSlidingMusicPanelActivity :
 
     private val panelBackPressedCallback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            requestToCollapse()
+            lifecycleScope.launch { panelViewModel.requestToCollapse() }
         }
     }
 
+    //region UnarySlidingUpPanelProvider
     override fun requestToCollapse(): Boolean {
         with(slidingUpPanelLayout) {
             if (panelState != PanelState.COLLAPSED) panelState = PanelState.COLLAPSED
@@ -253,6 +262,7 @@ abstract class AbsSlidingMusicPanelActivity :
         slidingUpPanelLayout.setScrollableView(view)
         return true
     }
+    //endregion
 
     private fun setMiniPlayerFadingProgress(@FloatRange(from = 0.0, to = 1.0) progress: Float) {
         val alpha = 1 - progress

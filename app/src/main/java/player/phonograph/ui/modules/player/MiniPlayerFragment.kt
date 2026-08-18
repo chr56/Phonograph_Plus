@@ -5,12 +5,15 @@ import player.phonograph.databinding.FragmentMiniPlayerBinding
 import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.modules.panel.AbsMusicServiceFragment
+import player.phonograph.ui.modules.panel.PanelViewModel
 import player.phonograph.ui.theme.ThemeSettingsDelegate.accentColor
 import player.phonograph.ui.theme.getTintedDrawable
 import player.phonograph.ui.theme.themeIconColor
 import player.phonograph.ui.util.observe
 import player.phonograph.ui.views.PlayPauseDrawable
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.Drawable
@@ -21,6 +24,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import kotlin.math.abs
+import kotlinx.coroutines.launch
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -34,20 +38,30 @@ class MiniPlayerFragment : AbsMusicServiceFragment() {
 
     private val musicProgressUpdateDelegate = MusicProgressUpdateDelegate(::onUpdateProgress)
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        viewBinding = FragmentMiniPlayerBinding.inflate(layoutInflater)
-        lifecycle.addObserver(musicProgressUpdateDelegate)
-        super.onCreate(savedInstanceState)
-    }
+    private val panelViewModel: PanelViewModel by viewModels(ownerProducer = { requireActivity() })
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        viewBinding = FragmentMiniPlayerBinding.inflate(layoutInflater)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        view.setOnTouchListener(FlingPlayBackController(activity))
-        setUpMiniPlayer()
+        miniPlayerPlayPauseDrawable = PlayPauseDrawable()
+        observe(MusicPlayerRemote.currentState) {
+            refreshPlayPauseDrawableState()
+        }
+        observe(queueViewModel.currentSong) { song ->
+            replaceText(song?.title ?: getString(R.string.msg_empty))
+        }
+        binding.progressIndicator.setIndicatorColor(accentColor())
+        binding.miniPlayerActionButton.setOnClickListener(PlayPauseButtonOnClickHandler())
+        binding.root.setOnClickListener {
+            lifecycleScope.launch { panelViewModel.requestToExpand() }
+        }
+        @SuppressLint("ClickableViewAccessibility")
+        binding.root.setOnTouchListener(FlingPlayBackController(activity))
+        lifecycle.addObserver(musicProgressUpdateDelegate)
     }
 
     override fun onDestroyView() {
@@ -55,30 +69,12 @@ class MiniPlayerFragment : AbsMusicServiceFragment() {
         viewBinding = null
     }
 
-    private fun setUpMiniPlayer() {
-        setUpPlayPauseButton()
-        binding.miniPlayerActionButton.setOnClickListener(PlayPauseButtonOnClickHandler())
-        binding.progressIndicator.setIndicatorColor(accentColor())
-    }
-
-    private fun setUpPlayPauseButton() {
-        miniPlayerPlayPauseDrawable = PlayPauseDrawable()
-        observe(MusicPlayerRemote.currentState) {
-            updatePlayPauseDrawableState(
-                lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
-            )
-        }
-        observe(queueViewModel.currentSong) {
-            replaceText(if (it != null) it.title else getString(R.string.msg_empty))
-        }
-    }
-
     override fun onServiceConnected() {
         val context = requireContext()
         val currentSong: Song? = MusicPlayerRemote.currentSong
         replaceText(currentSong?.title ?: context.getString(R.string.msg_not_available))
         replaceDrawable(miniPlayerPlayPauseDrawable)
-        updatePlayPauseDrawableState(false)
+        refreshPlayPauseDrawableState()
     }
 
     override fun onServiceDisconnected() {
@@ -93,6 +89,7 @@ class MiniPlayerFragment : AbsMusicServiceFragment() {
         binding.progressIndicator.show()
     }
 
+    // implementation for fling to switch
     private class FlingPlayBackController(context: Context?) : View.OnTouchListener {
         var flingPlayBackController: GestureDetector =
             GestureDetector(
@@ -133,7 +130,8 @@ class MiniPlayerFragment : AbsMusicServiceFragment() {
         binding.miniPlayerActionButton.setImageDrawable(drawable)
     }
 
-    private fun updatePlayPauseDrawableState(animate: Boolean) {
-        miniPlayerPlayPauseDrawable?.update(!MusicPlayerRemote.isPlaying, animate)
+    private fun refreshPlayPauseDrawableState() {
+        val withAnimated = lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
+        miniPlayerPlayPauseDrawable?.update(!MusicPlayerRemote.isPlaying, withAnimated)
     }
 }

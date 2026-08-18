@@ -172,7 +172,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                     viewBinding.navigationView.inflateHeaderView(R.layout.navigation_drawer_header).also { view ->
                         view.setOnClickListener {
                             viewBinding.drawerLayout.closeDrawers()
-                            requestToExpand()
+                            lifecycleScope.launch { panelViewModel.requestToExpand() }
                         }
                     }
             }
