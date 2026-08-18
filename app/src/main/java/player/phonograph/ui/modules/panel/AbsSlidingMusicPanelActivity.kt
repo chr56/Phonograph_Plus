@@ -146,18 +146,18 @@ abstract class AbsSlidingMusicPanelActivity :
         cancelSystemBarsColorAnimation() // just in case
     }
 
+    private var _screenStyle: NowPlayingScreenStyle? = null
     private fun setupPlayerFragment(style: NowPlayingScreenStyle) {
-        supportFragmentManager.commit {
-            replace(
-                R.id.player_fragment_container,
-                buildPlayerFragment(style),
-                NOW_PLAYING_FRAGMENT
-            )
+        if (playerFragment != null && _screenStyle == style) return
+        val fragment = buildPlayerFragment(style)
+        supportFragmentManager.apply {
+            commit {
+                replace(R.id.player_fragment_container, fragment, NOW_PLAYING_FRAGMENT)
+            }
+            executePendingTransactions()
         }
-        supportFragmentManager.executePendingTransactions()
-
-        playerFragment = supportFragmentManager.findFragmentById(R.id.player_fragment_container) as AbsPlayerFragment
-
+        playerFragment = fragment
+        _screenStyle = style
     }
 
     override fun onPanelSlide(panel: View, @FloatRange(from = 0.0, to = 1.0) slideOffset: Float) {
