@@ -140,7 +140,7 @@ fun AdvancedDialogFrame(
     }
 }
 
-private class DialogBuilder() : DialogBuilderScope {
+private class DialogBuilder : DialogBuilderScope {
 
     private var _title: String = ""
     private var _painter: Painter? = null
@@ -194,15 +194,14 @@ private class DialogBuilder() : DialogBuilderScope {
 
     @Composable
     fun Build(modifier: Modifier) {
-        Column(modifier) {
-            TopAppBar(
-                title = { Text(_title) },
-                modifier = Modifier.fillMaxWidth(),
-                navigationIcon = navigationIcon(_painter, _onDismissRequest),
-                actions = { for (item in _actionButtons) ActionIconButton(item) }
-            )
-            _content()
-        }
+        AdvancedDialogFrame(
+            modifier = modifier,
+            title = _title,
+            onDismissRequest = _onDismissRequest,
+            navigationButtonIcon = _painter,
+            actions = _actionButtons,
+            content = _content,
+        )
     }
 }
 
