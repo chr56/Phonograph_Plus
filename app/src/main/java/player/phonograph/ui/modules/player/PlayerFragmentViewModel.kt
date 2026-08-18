@@ -5,6 +5,7 @@
 package player.phonograph.ui.modules.player
 
 import player.phonograph.model.Song
+import player.phonograph.model.ui.PanelAction
 import player.phonograph.repo.loader.FavoriteTracks
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -44,29 +45,23 @@ class PlayerFragmentViewModel : ViewModel() {
             !_shownToolbar.value
         )
 
-    private val _queuePanelEffects = MutableSharedFlow<Action>()
+    private val _queuePanelEffects = MutableSharedFlow<PanelAction>()
     val queuePanelEffects get() = _queuePanelEffects.asSharedFlow()
 
-    suspend fun updateQueuePanel(action: Action) {
+    suspend fun updateQueuePanelState(action: PanelAction) {
         _queuePanelEffects.emit(action)
     }
 
-    sealed interface Action {
-        object Expand : Action
-        object Collapse : Action
-        object Toggle : Action
+    suspend fun collapsePanel() {
+        updateQueuePanelState(PanelAction.Collapse)
     }
 
-    suspend fun requestToCollapse() {
-        updateQueuePanel(Action.Collapse)
+    suspend fun expandPanel() {
+        updateQueuePanelState(PanelAction.Expand)
     }
 
-    suspend fun requestToExpand() {
-        updateQueuePanel(Action.Expand)
-    }
-
-    suspend fun requestToTogglePanel() {
-        updateQueuePanel(Action.Toggle)
+    suspend fun togglePanel() {
+        updateQueuePanelState(PanelAction.Toggle)
     }
 
 }

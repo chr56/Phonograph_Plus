@@ -57,7 +57,7 @@ class MiniPlayerFragment : AbsMusicServiceFragment() {
         binding.progressIndicator.setIndicatorColor(accentColor())
         binding.miniPlayerActionButton.setOnClickListener(PlayPauseButtonOnClickHandler())
         binding.root.setOnClickListener {
-            lifecycleScope.launch { panelViewModel.requestToExpand() }
+            lifecycleScope.launch { panelViewModel.expandPanel() }
         }
         @SuppressLint("ClickableViewAccessibility")
         binding.root.setOnTouchListener(FlingPlayBackController(activity))

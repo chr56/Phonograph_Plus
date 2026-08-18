@@ -7,6 +7,7 @@ import org.koin.core.parameter.parametersOf
 import player.phonograph.R
 import player.phonograph.databinding.SlidingMusicPanelLayoutBinding
 import player.phonograph.model.ui.NowPlayingScreenStyle
+import player.phonograph.model.ui.PanelAction
 import player.phonograph.model.ui.UnarySlidingUpPanelProvider
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
@@ -109,7 +110,7 @@ abstract class AbsSlidingMusicPanelActivity :
             layout.addPanelSlideListener(this)
         }
         panelBinding.navigationBar.setOnClickListener {
-            lifecycleScope.launch { panelViewModel.requestToExpand() }
+            lifecycleScope.launch { panelViewModel.expandPanel() }
         }
 
         // add fragment
@@ -142,11 +143,11 @@ abstract class AbsSlidingMusicPanelActivity :
         observe(panelViewModel.isMiniPlayerHidden, state = Lifecycle.State.STARTED) { hidden ->
             updatePanelHiddenState(hidden)
         }
-        observe(panelViewModel.effects, state = Lifecycle.State.STARTED) { action ->
+        observe(panelViewModel.playerPanelEffects, state = Lifecycle.State.STARTED) { action ->
             when (action) {
-                PanelViewModel.Action.Collapse -> panelSwitcher.collapse(slidingUpPanelLayout)
-                PanelViewModel.Action.Expand   -> panelSwitcher.expand(slidingUpPanelLayout)
-                PanelViewModel.Action.Toggle   -> panelSwitcher.toggle(slidingUpPanelLayout)
+                PanelAction.Collapse -> panelSwitcher.collapse(slidingUpPanelLayout)
+                PanelAction.Expand   -> panelSwitcher.expand(slidingUpPanelLayout)
+                PanelAction.Toggle   -> panelSwitcher.toggle(slidingUpPanelLayout)
             }
         }
     }
@@ -225,7 +226,7 @@ abstract class AbsSlidingMusicPanelActivity :
 
     private val panelBackPressedCallback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            lifecycleScope.launch { panelViewModel.requestToCollapse() }
+            lifecycleScope.launch { panelViewModel.collapsePanel() }
         }
     }
 

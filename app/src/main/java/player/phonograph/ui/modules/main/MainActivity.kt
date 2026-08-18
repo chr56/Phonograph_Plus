@@ -20,6 +20,7 @@ import player.phonograph.mechanism.UpdateChecker
 import player.phonograph.mechanism.coil.loadImage
 import player.phonograph.model.Song
 import player.phonograph.model.pages.PagesConfig
+import player.phonograph.model.ui.PanelAction
 import player.phonograph.model.version.VersionCatalog
 import player.phonograph.settings.Keys
 import player.phonograph.settings.PrerequisiteSettings
@@ -172,7 +173,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                     viewBinding.navigationView.inflateHeaderView(R.layout.navigation_drawer_header).also { view ->
                         view.setOnClickListener {
                             viewBinding.drawerLayout.closeDrawers()
-                            lifecycleScope.launch { panelViewModel.requestToExpand() }
+                            lifecycleScope.launch { panelViewModel.expandPanel() }
                         }
                     }
             }

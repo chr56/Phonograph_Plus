@@ -4,6 +4,7 @@
 
 package player.phonograph.ui.modules.panel
 
+import player.phonograph.model.ui.PanelAction
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -53,29 +54,23 @@ class PanelViewModel(
         _isMiniPlayerHidden.value = hidden
     }
 
-    private val _effects = MutableSharedFlow<Action>()
-    val effects get() = _effects.asSharedFlow()
+    private val _playerPanelEffects = MutableSharedFlow<PanelAction>()
+    val playerPanelEffects get() = _playerPanelEffects.asSharedFlow()
 
-    suspend fun updatePanel(action: Action) {
-        _effects.emit(action)
+    suspend fun updatePanelState(action: PanelAction) {
+        _playerPanelEffects.emit(action)
     }
 
-    sealed interface Action {
-        object Expand : Action
-        object Collapse : Action
-        object Toggle : Action
+    suspend fun collapsePanel() {
+        updatePanelState(PanelAction.Collapse)
     }
 
-    suspend fun requestToCollapse() {
-        updatePanel(Action.Collapse)
+    suspend fun expandPanel() {
+        updatePanelState(PanelAction.Expand)
     }
 
-    suspend fun requestToExpand() {
-        updatePanel(Action.Expand)
-    }
-
-    suspend fun requestToToggle() {
-        updatePanel(Action.Toggle)
+    suspend fun togglePanel() {
+        updatePanelState(PanelAction.Toggle)
     }
 
 }

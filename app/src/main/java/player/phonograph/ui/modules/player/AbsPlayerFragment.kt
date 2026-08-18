@@ -15,6 +15,7 @@ import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.model.ui.NowPlayingScreenStyle
+import player.phonograph.model.ui.PanelAction
 import player.phonograph.model.ui.PlayerControllerStyle
 import player.phonograph.model.ui.UnarySlidingUpPanelProvider
 import player.phonograph.repo.loader.FavoriteTracks
@@ -503,9 +504,9 @@ abstract class AbsPlayerFragment :
         }
         observe(viewModel.queuePanelEffects) { action ->
             when (action) {
-                PlayerFragmentViewModel.Action.Collapse -> panelSwitcher.collapse(frame.slidingUpPanel)
-                PlayerFragmentViewModel.Action.Expand   -> panelSwitcher.expand(frame.slidingUpPanel)
-                PlayerFragmentViewModel.Action.Toggle   -> panelSwitcher.toggle(frame.slidingUpPanel)
+                PanelAction.Collapse -> panelSwitcher.collapse(frame.slidingUpPanel)
+                PanelAction.Expand   -> panelSwitcher.expand(frame.slidingUpPanel)
+                PanelAction.Toggle   -> panelSwitcher.toggle(frame.slidingUpPanel)
             }
         }
         observe(viewModel.showToolbar) {

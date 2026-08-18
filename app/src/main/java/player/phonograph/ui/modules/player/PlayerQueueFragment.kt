@@ -248,7 +248,7 @@ class PlayerQueueFragment : AbsMusicServiceFragment() {
 
             root.setOnClickListener {
                 lifecycleScope.launch {
-                    playerViewModel.requestToTogglePanel() // toggle the panel
+                    playerViewModel.togglePanel() // toggle the panel
                 }
             }
             menu.setOnClickListener {
