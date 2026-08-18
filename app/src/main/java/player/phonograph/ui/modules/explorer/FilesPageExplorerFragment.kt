@@ -63,7 +63,7 @@ class FilesPageExplorerFragment : AbsFilesExplorerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         bottomViewWindowInsetsController = binding.recyclerView.applyControllableWindowInsetsAsBottomView()
-        observe(panelViewModel.isPanelHidden) { hidden -> bottomViewWindowInsetsController.enabled = hidden }
+        observe(panelViewModel.isMiniPlayerHidden) { hidden -> bottomViewWindowInsetsController.enabled = hidden }
 
         SettingsObserver(view.context, lifecycleScope).apply {
             jobs += collect(Keys.showFileImages) { value ->

@@ -120,7 +120,7 @@ abstract class AbsSlidingMusicPanelActivity :
         ViewCompat.setOnApplyWindowInsetsListener(panelBinding.root) { view, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
             bottomNavigationBarHeight = insets.bottom
-            updatePanelHiddenState(panelViewModel.isPanelHidden.value)
+            updatePanelHiddenState(panelViewModel.isMiniPlayerHidden.value)
             view.updateLayoutParams<MarginLayoutParams> {
                 rightMargin = insets.right
                 leftMargin = insets.left
@@ -130,13 +130,13 @@ abstract class AbsSlidingMusicPanelActivity :
 
         // states
         SystemBarsControllerDelegate.updateSystemBarsColor(this, darkenColor(primaryColor()), primaryColor())
-        observe(queueViewModel.queue) { queue -> panelViewModel.updatePanelState(hidden = queue.isEmpty()) }
+        observe(queueViewModel.queue) { queue -> panelViewModel.updateMiniPlayerVisibility(hidden = queue.isEmpty()) }
         observe(panelViewModel.colorChange) { (oldColor, newColor) ->
             if (slidingUpPanelLayout.panelState == PanelState.EXPANDED) {
                 animateSystemBarsColor(oldColor, newColor)
             }
         }
-        observe(panelViewModel.isPanelHidden, state = Lifecycle.State.STARTED) { hidden ->
+        observe(panelViewModel.isMiniPlayerHidden, state = Lifecycle.State.STARTED) { hidden ->
             updatePanelHiddenState(hidden)
         }
     }
@@ -167,7 +167,7 @@ abstract class AbsSlidingMusicPanelActivity :
         val to = panelViewModel.highlightColor.value
         val statusbarColor: Int = argbEvaluator.evaluate(slideOffset, from, to) as Int
         val navigationbarColor: Int =
-            if (panelViewModel.isPanelHidden.value && isOrientationLandscape(resources)) {
+            if (panelViewModel.isMiniPlayerHidden.value && isOrientationLandscape(resources)) {
                 translucentScrim
             } else {
                 argbEvaluator.evaluate(slideOffset, from, to) as Int

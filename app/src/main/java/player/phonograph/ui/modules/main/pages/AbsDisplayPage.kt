@@ -72,7 +72,7 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>> : AbsPanelPage() {
         observe(viewModel.loading) { binding.mainContentContainer.isRefreshing = it }
 
         bottomViewWindowInsetsController = binding.recyclerView.applyControllableWindowInsetsAsBottomView()
-        observe(panelViewModel.isPanelHidden) { hidden -> bottomViewWindowInsetsController.enabled = hidden }
+        observe(panelViewModel.isMiniPlayerHidden) { hidden -> bottomViewWindowInsetsController.enabled = hidden }
     }
 
     protected lateinit var adapter: A

@@ -86,7 +86,7 @@ abstract class SearchResultPageFragment<T> : Fragment() {
             binding.empty.visibility = if (data.isEmpty()) View.VISIBLE else View.GONE
             updateDataset(data)
         }
-        observe(panelViewModel.isPanelHidden) { hidden -> bottomViewWindowInsetsController.enabled = hidden }
+        observe(panelViewModel.isMiniPlayerHidden) { hidden -> bottomViewWindowInsetsController.enabled = hidden }
     }
 
     protected abstract fun targetFlow(): StateFlow<List<T>>

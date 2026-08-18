@@ -44,11 +44,11 @@ class PanelViewModel(
         _useTransparentStatusbar.value = transparent
     }
 
-    private val _isPanelHidden: MutableStateFlow<Boolean> = MutableStateFlow(true)
-    val isPanelHidden get() = _isPanelHidden.asStateFlow()
+    private val _isMiniPlayerHidden: MutableStateFlow<Boolean> = MutableStateFlow(true)
+    val isMiniPlayerHidden get() = _isMiniPlayerHidden.asStateFlow()
 
-    fun updatePanelState(hidden: Boolean) {
-        _isPanelHidden.value = hidden
+    fun updateMiniPlayerVisibility(hidden: Boolean) {
+        _isMiniPlayerHidden.value = hidden
     }
 
 }

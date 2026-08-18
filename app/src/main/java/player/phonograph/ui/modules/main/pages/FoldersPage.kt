@@ -103,7 +103,7 @@ class FoldersPage : AbsPanelPage() {
         }
 
         bottomViewWindowInsetsController = binding.recyclerView.applyControllableWindowInsetsAsBottomView()
-        observe(panelViewModel.isPanelHidden) { hidden -> bottomViewWindowInsetsController.enabled = hidden }
+        observe(panelViewModel.isMiniPlayerHidden) { hidden -> bottomViewWindowInsetsController.enabled = hidden }
     }
 
     private fun prepareAdaptersAndData() {

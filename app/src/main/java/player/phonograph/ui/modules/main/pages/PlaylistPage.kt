@@ -195,7 +195,7 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
         }
         val initialMarginBottom = addNewItemButton.marginBottom
         ViewCompat.setOnApplyWindowInsetsListener(addNewItemButton) { view, windowInsets ->
-            if (panelViewModel.isPanelHidden.value) {
+            if (panelViewModel.isMiniPlayerHidden.value) {
                 val insets = windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars())
                 view.updateLayoutParams<MarginLayoutParams> {
                     bottomMargin = initialMarginBottom + insets.bottom

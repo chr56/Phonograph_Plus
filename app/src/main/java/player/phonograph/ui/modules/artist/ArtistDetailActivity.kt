@@ -170,7 +170,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvide
         }
         // WindowInsets
         bottomViewWindowInsetsController = viewBinding.songsRecycleView.applyControllableWindowInsetsAsBottomView()
-        observe(panelViewModel.isPanelHidden) { hidden -> bottomViewWindowInsetsController.enabled = hidden }
+        observe(panelViewModel.isMiniPlayerHidden) { hidden -> bottomViewWindowInsetsController.enabled = hidden }
     }
 
     private fun observeData() {
@@ -196,7 +196,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvide
         viewBinding.toolbar.setTitleTextColor(textColor)
 
         val statusBarColor = darkenColor(color)
-        val navigationBarColor = if (panelViewModel.isPanelHidden.value) Color.TRANSPARENT else color
+        val navigationBarColor = if (panelViewModel.isMiniPlayerHidden.value) Color.TRANSPARENT else color
         SystemBarsControllerDelegate.updateSystemBarsColor(this, statusBarColor, navigationBarColor)
         panelViewModel.updateActivityColor(color)
 
