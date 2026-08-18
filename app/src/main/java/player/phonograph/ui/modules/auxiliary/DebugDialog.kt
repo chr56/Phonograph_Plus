@@ -8,7 +8,6 @@ import player.phonograph.App
 import player.phonograph.foundation.concurrent.coroutineToast
 import player.phonograph.foundation.error.warning
 import player.phonograph.mechanism.UpdateChecker
-import player.phonograph.model.Song
 import player.phonograph.repo.mediastore.MediaStoreSongsActions
 import player.phonograph.ui.modules.main.MainActivity
 import player.phonograph.ui.modules.upgrade.UpgradeInfoDialog
@@ -49,16 +48,31 @@ class DebugDialog : DialogFragment() {
                 Exception("Test"),
             )
         },
-        "Check Overflowed Song Ids" to {
+        "Diagnose Song Ids" to {
             CoroutineScope(Dispatchers.IO).launch {
-                val errors = MediaStoreSongsActions.checkEmbeddedIdOverflow(App.instance)
-                dumpSong("Overflowed Ids", errors)
-            }
-        },
-        "Check Conflicted Song Ids" to {
-            CoroutineScope(Dispatchers.IO).launch {
-                val errors = MediaStoreSongsActions.checkIdConflict(App.instance)
-                dumpSong("Conflicted Position Embedded Ids", errors)
+                val report = MediaStoreSongsActions.validateSongsIds(App.instance)
+                val message = buildString {
+                    if (report.invalid.isNotEmpty()) {
+                        append(
+                            report.invalid.fold("Invalid Ids:\n ") { acc, song -> "$acc\n[${song.id}]${song.title}" }
+                        ).append('\n')
+                    } else {
+                        append("No invalid ids.\n")
+                    }
+                    if (report.overflowed.isNotEmpty()) {
+                        append(
+                            report.overflowed.fold("Overflowed Ids:\n ") { acc, song -> "$acc\n[${song.id}]${song.title}" }
+                        ).append('\n')
+                    } else {
+                        append("No overflowed ids.\n")
+                    }
+                }
+                withContext(Dispatchers.Main) {
+                    AlertDialog.Builder(hostActivity.get()!!)
+                        .setTitle("Results")
+                        .setMessage(message)
+                        .show()
+                }
             }
         },
         "Check for updates (Dialog)" to {
@@ -102,17 +116,6 @@ class DebugDialog : DialogFragment() {
             }
         },
     )
-
-    private suspend fun dumpSong(title: String, errors: Collection<Song>) {
-        val message = errors.fold("$title:\n") { acc, song -> "$acc\n${song.id}: ${song.title}" }
-        withContext(Dispatchers.Main) {
-            AlertDialog.Builder(hostActivity.get()!!)
-                .setTitle(title)
-                .setMessage(message)
-                .show()
-        }
-    }
-
 
     private lateinit var hostActivity: WeakReference<FragmentActivity>
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

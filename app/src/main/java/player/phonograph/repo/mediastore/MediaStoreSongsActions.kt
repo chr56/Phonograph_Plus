@@ -5,9 +5,8 @@
 package player.phonograph.repo.mediastore
 
 import player.phonograph.debug
-import player.phonograph.foundation.isEmbeddingOverflow
+import player.phonograph.foundation.SafeIdentifierGenerator
 import player.phonograph.foundation.mediastore.mediastoreUriSongsExternal
-import player.phonograph.foundation.produceSafeId
 import player.phonograph.model.Song
 import player.phonograph.repo.loader.Songs
 import android.content.Context
@@ -46,32 +45,22 @@ object MediaStoreSongsActions {
         }
     }
 
-    suspend fun dumpAllSongIds(context: Context): Collection<Long> = Songs.all(context).map { it.id }
+    class ValidationResult(val invalid: List<Song>, val overflowed: List<Song>)
 
-    suspend fun checkEmbeddedIdOverflow(context: Context): Collection<Song> {
-
-        val ids = dumpAllSongIds(context)
-        val overflowed = ids.filter { isEmbeddingOverflow(it) }
-
-        return if (overflowed.isNotEmpty()) {
-            overflowed.mapNotNull { Songs.id(context, it) }
-        } else {
-            emptyList()
+    /**
+     * Debug function, check invalid and embedding-overflowed ids
+     */
+    suspend fun validateSongsIds(context: Context): ValidationResult {
+        val invalid = mutableListOf<Song>()
+        val overflowed = mutableListOf<Song>()
+        for (song in Songs.all(context)) {
+            val id = song.id
+            if (SafeIdentifierGenerator.checkInvalidation(id)) invalid.add(song)
+            if (SafeIdentifierGenerator.checkEmbeddingOverflowed(id)) overflowed.add(song)
         }
+        return ValidationResult(invalid = invalid, overflowed = overflowed)
     }
 
-    suspend fun checkIdConflict(context: Context): Collection<Song> {
-        val ids = dumpAllSongIds(context)
-        val safeIds = ids.mapIndexed { pos, id -> produceSafeId(id, pos) }
-
-        val uniques = safeIds.toSet()
-        if (uniques.size != ids.size) {
-            val conflicted = ids - uniques
-            return conflicted.mapNotNull { Songs.id(context, it) }
-        } else {
-            return emptyList()
-        }
-    }
 
     private const val TAG = "DeleteSongs"
 }
