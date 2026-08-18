@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022~2025 chr_56
+ *  Copyright (c) 2022~2026 chr_56
  */
 
 package player.phonograph.ui.compose.components
@@ -24,35 +24,28 @@ class ActionItem(
     val textRes: Int = -1,
     val tint: Color? = null,
     val onClick: () -> Unit,
-)
+) {
+    @Composable
+    fun iconPainter(): Painter = if (imageVector != null) {
+        rememberVectorPainter(imageVector)
+    } else {
+        painterResource(imageRes)
+    }
+
+    @Composable
+    fun text(): String? = if (textRes > 0) stringResource(textRes) else text
+}
 
 
 @Composable
-fun ActionIconButton(
-    item: ActionItem,
-    modifier: Modifier = Modifier,
-) {
-    val icon =
-        if (item.imageVector != null) {
-            rememberVectorPainter(item.imageVector)
-        } else {
-            painterResource(item.imageRes)
-        }
-    val text =
-        if (item.textRes > 0) {
-            stringResource(item.textRes)
-        } else {
-            item.text
-        }
-    val tint = item.tint ?: MaterialTheme.colors.onPrimary
-    IconButton(onClick = item.onClick) {
-        Icon(
-            icon,
-            contentDescription = text,
-            tint = tint,
-            modifier = modifier,
-        )
-    }
+fun ActionIconButton(item: ActionItem, modifier: Modifier = Modifier) {
+    ActionIconButton(
+        icon = item.iconPainter(),
+        tint = item.tint ?: MaterialTheme.colors.onPrimary,
+        modifier = modifier,
+        text = item.text(),
+        onClick = item.onClick,
+    )
 }
 
 @Composable
@@ -72,21 +65,6 @@ fun ActionIconButton(
         )
     }
 }
-
-@Composable
-fun ActionIconButton(
-    imageVector: ImageVector,
-    tint: Color,
-    modifier: Modifier = Modifier,
-    text: String? = null,
-    onClick: () -> Unit,
-) = ActionIconButton(
-    icon = rememberVectorPainter(imageVector),
-    tint = tint,
-    modifier = modifier,
-    text = text,
-    onClick = onClick,
-)
 
 
 @Composable

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2023 chr_56
+ *  Copyright (c) 2023~2026 chr_56
  */
 
 package player.phonograph.ui.compose.components
@@ -18,9 +18,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -49,22 +46,10 @@ fun DropDownMenuContent(
 
 @Composable
 private fun MenuItem(item: ActionItem, withIcon: Boolean) {
-    val text =
-        if (item.textRes > 0) {
-            stringResource(item.textRes)
-        } else {
-            item.text!!
-        }
     if (withIcon) {
-        val icon =
-            if (item.imageVector != null) {
-                rememberVectorPainter(item.imageVector)
-            } else {
-                painterResource(item.imageRes)
-            }
-        IconTextMenuItem(icon = icon, text = text, tint = item.tint, onClick = item.onClick)
+        IconTextMenuItem(icon = item.iconPainter(), text = item.text()!!, tint = item.tint, onClick = item.onClick)
     } else {
-        TextMenuItem(text = text, onClick = item.onClick)
+        TextMenuItem(text = item.text()!!, onClick = item.onClick)
     }
 }
 
