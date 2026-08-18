@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2026 chr_56
  */
 
 package player.phonograph.ui.compose.components
@@ -31,33 +31,11 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun ListItem(
-    modifier: Modifier = Modifier,
     title: String,
     subtitle: String,
     onClick: () -> Unit,
-    onMenuClick: () -> Unit,
-    painter: Painter? = null,
-    colorFilter: ColorFilter? = null,
-) {
-    ListItemFrame(
-        modifier = modifier.wrapContentHeight(Alignment.Top),
-        mainContent = {
-            TwoLinesContent(title, subtitle, onClick)
-        },
-        left = {
-            Icon(painter, colorFilter)
-        },
-        right = {
-            Menu(onMenuClick)
-        },
-    )
-}
-@Composable
-fun ListItem(
     modifier: Modifier = Modifier,
-    title: String,
-    subtitle: String,
-    onClick: () -> Unit,
+    onMenuClick: (() -> Unit)? = null,
     painter: Painter? = null,
     colorFilter: ColorFilter? = null,
 ) {
@@ -68,6 +46,11 @@ fun ListItem(
         },
         left = {
             if (painter != null) Icon(painter, colorFilter)
+        },
+        right = if (onMenuClick != null) {
+            { Menu(onMenuClick) }
+        } else {
+            null
         },
     )
 }
@@ -124,13 +107,11 @@ private fun Menu(onMenuClick: () -> Unit) {
 private fun ListItemFrame(
     modifier: Modifier = Modifier,
     mainContent: @Composable BoxScope.() -> Unit,
-    left: @Composable BoxScope.() -> Unit,
+    left: (@Composable BoxScope.() -> Unit)? = null,
     right: (@Composable BoxScope.() -> Unit)? = null,
 ) {
     ItemRowLayout(modifier) {
-        Box(Modifier.maxPercentage(0.15f)) {
-            left()
-        }
+        if (left != null) Box(Modifier.maxPercentage(0.15f)) { left() }
         Box(
             Modifier
                 .maxPercentage(if (right != null) 0.7f else 0.85f)
@@ -138,8 +119,6 @@ private fun ListItemFrame(
         ) {
             mainContent()
         }
-        if (right != null) Box(Modifier.maxPercentage(0.15f)) {
-            right()
-        }
+        if (right != null) Box(Modifier.maxPercentage(0.15f)) { right() }
     }
 }

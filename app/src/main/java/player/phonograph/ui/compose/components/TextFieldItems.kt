@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022~2023 chr_56
+ * Copyright (c) 2022~2026 chr_56
  */
 
 package player.phonograph.ui.compose.components
@@ -45,6 +45,54 @@ fun VerticalTextFieldItem(
     allowReset: Boolean = false,
     allowClear: Boolean = true,
 ) {
+    var currentValue by remember { mutableStateOf(value ?: "") }
+    val changeCurrentValue = { str: String ->
+        currentValue = str
+        onTextChanged(str)
+    }
+    LabeledTextField(
+        title = title,
+        value = currentValue,
+        hint = hint,
+        onValueChange = changeCurrentValue,
+        trailingIcon = {
+            if (extraTrailingIcon != null) extraTrailingIcon()
+            TrailingIcon(
+                onReset = { changeCurrentValue(value ?: "") },
+                allowReset = allowReset,
+                onClear = { changeCurrentValue("") },
+                allowClear = allowClear
+            )
+        },
+    )
+}
+
+
+@Composable
+fun VerticalTextFieldItem(
+    title: String,
+    value: MutableStateFlow<String>,
+    hint: String,
+    trailingIcon: @Composable (() -> Unit)? = null,
+) {
+    val currentValue by value.collectAsState()
+    LabeledTextField(
+        title = title,
+        value = currentValue,
+        hint = hint,
+        onValueChange = { value.tryEmit(it) },
+        trailingIcon = trailingIcon,
+    )
+}
+
+@Composable
+private fun LabeledTextField(
+    title: String,
+    value: String,
+    hint: String,
+    onValueChange: (String) -> Unit,
+    trailingIcon: @Composable (() -> Unit)? = null,
+) {
     Column(
         modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),
         verticalArrangement = Arrangement.SpaceEvenly
@@ -60,15 +108,10 @@ fun VerticalTextFieldItem(
                 .align(Alignment.Start),
         )
         // content
-        var currentValue by remember { mutableStateOf(value ?: "") }
-        val changeCurrentValue = { str: String ->
-            currentValue = str
-            onTextChanged(str)
-        }
         TextField(
-            value = currentValue,
+            value = value,
             placeholder = { Text(text = hint) },
-            onValueChange = changeCurrentValue,
+            onValueChange = onValueChange,
             modifier = Modifier
                 .align(Alignment.Start)
                 .fillMaxWidth(),
@@ -83,17 +126,12 @@ fun VerticalTextFieldItem(
                 fontSize = 14.sp,
             ),
             trailingIcon = {
-                if (extraTrailingIcon != null) extraTrailingIcon()
-                TrailingIcon(
-                    onReset = { changeCurrentValue(value ?: "") },
-                    allowReset = allowReset,
-                    onClear = { changeCurrentValue("") },
-                    allowClear = allowClear
-                )
+                trailingIcon?.invoke()
             }
         )
     }
 }
+
 
 @Composable
 private fun TrailingIcon(
@@ -117,53 +155,5 @@ private fun TrailingIcon(
                 modifier = Modifier
                     .padding(8.dp)
                     .clickable { onClear() })
-    }
-}
-
-
-@Composable
-fun VerticalTextFieldItem(
-    title: String,
-    value: MutableStateFlow<String>,
-    hint: String,
-    trailingIcon: @Composable (() -> Unit)? = null,
-) {
-    Column(
-        modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),
-        verticalArrangement = Arrangement.SpaceEvenly
-    ) {
-        // title
-        Text(
-            text = title,
-            style = TextStyle(
-                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp,
-            ),
-            modifier = Modifier
-                .align(Alignment.Start),
-        )
-        // content
-        val currentValue = value.collectAsState()
-        TextField(
-            value = currentValue.value,
-            placeholder = { Text(text = hint) },
-            onValueChange = { value.tryEmit(it) },
-            modifier = Modifier
-                .align(Alignment.Start)
-                .fillMaxWidth(),
-            colors = TextFieldDefaults.textFieldColors(
-                backgroundColor = MaterialTheme.colors.background,
-                textColor = MaterialTheme.colors.onSurface,
-                focusedIndicatorColor = MaterialTheme.colors.onSurface.copy(alpha = TextFieldDefaults.IconOpacity),
-                unfocusedIndicatorColor = Color.Transparent,
-            ),
-            textStyle = TextStyle(
-                //color = MaterialTheme.colors.onSurface.copy(alpha = 0.92f),
-                fontSize = 14.sp,
-            ),
-            trailingIcon = {
-                trailingIcon?.invoke()
-            }
-        )
     }
 }

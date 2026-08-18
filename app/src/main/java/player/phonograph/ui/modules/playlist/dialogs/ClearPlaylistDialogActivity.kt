@@ -211,7 +211,6 @@ class ClearPlaylistDialogActivity : DialogActivity(),
                     val name = remember { playlist.name }
                     val description = remember { Texts.playlist(resources, playlist.location) }
                     ListItem(
-                        modifier = Modifier,
                         title = name,
                         subtitle = description,
                         onClick = {},
