@@ -9,6 +9,7 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemState
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemViewHolder
 import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange
 import com.h6ah4i.android.widget.advrecyclerview.draggable.annotation.DraggableItemStateFlags
+import player.phonograph.foundation.SafeIdentifierGenerator
 import player.phonograph.foundation.produceSafeId
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.ui.resource.Layouts
@@ -56,7 +57,15 @@ abstract class DraggableDisplayAdapter<I>(
     }
     //endregion
 
-    override fun getItemId(position: Int): Long = produceSafeId(presenter.getItemID(dataset[position]), position)
+    override fun getItemId(position: Int): Long = produceSafeId(
+        // There are some user crash reports with `dragging target must provide valid ID`.
+        // This may be caused by the broken item id, so we just check and acquire a safe one.
+        id = generator.acquire(
+            presenter.getItemID(dataset[position])
+        ),
+        position = position
+    )
+    protected val generator = SafeIdentifierGenerator(seed = System.currentTimeMillis() / 23)
 
     override fun getItemViewType(position: Int): Int = presenter.layoutStyle.ordinal
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<I> {
