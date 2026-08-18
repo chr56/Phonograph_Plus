@@ -92,6 +92,7 @@ class PlayerQueueFragment : AbsMusicServiceFragment() {
     private val binding: FragmentQueueBinding get() = _viewBinding!!
 
     private val panelViewModel: PanelViewModel by viewModel(ownerProducer = { requireActivity() })
+    private val playerViewModel: PlayerFragmentViewModel by viewModel(ownerProducer = { requireParentFragment() })
 
     private var argumentWithShadow: Boolean = false
     private var argumentWithActionButtons: Boolean = true
@@ -246,8 +247,9 @@ class PlayerQueueFragment : AbsMusicServiceFragment() {
             image.setImageResource(R.drawable.ic_volume_up_white_24dp)
 
             root.setOnClickListener {
-                val parent = parentFragment
-                if (parent is UnarySlidingUpPanelProvider) parent.requestToSwitchState() // toggle the panel
+                lifecycleScope.launch {
+                    playerViewModel.requestToTogglePanel() // toggle the panel
+                }
             }
             menu.setOnClickListener {
                 val song: Song? = MusicPlayerRemote.currentSong

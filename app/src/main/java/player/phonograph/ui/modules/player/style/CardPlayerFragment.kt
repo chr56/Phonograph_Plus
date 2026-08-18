@@ -79,30 +79,6 @@ class CardPlayerFragment : AbsPlayerFragment() {
         }
     }
 
-    override fun requestToCollapse(): Boolean {
-        with(impl.slidingUpPanel ?: return true) {
-            if (panelState != PanelState.COLLAPSED) panelState = PanelState.COLLAPSED
-        }
-        return true
-    }
-
-    override fun requestToExpand(): Boolean {
-        with(impl.slidingUpPanel ?: return true) {
-            if (panelState != PanelState.EXPANDED) panelState = PanelState.EXPANDED
-        }
-        return true
-    }
-
-    override fun requestToSwitchState() {
-        with(impl.slidingUpPanel ?: return) {
-            if (panelState == PanelState.EXPANDED) {
-                panelState = PanelState.COLLAPSED
-            } else if (panelState == PanelState.COLLAPSED) {
-                panelState = PanelState.EXPANDED
-            }
-        }
-    }
-
     override fun requestToSetAntiDragView(view: View?): Boolean {
         impl.slidingUpPanel?.setAntiDragView(view)
         return true

@@ -33,6 +33,7 @@ import player.phonograph.ui.theme.textColorOn
 import player.phonograph.ui.theme.themeFooterColor
 import player.phonograph.ui.util.PHONOGRAPH_ANIM_TIME
 import player.phonograph.ui.util.ScreenCategory
+import player.phonograph.ui.util.SlidingUpPanelSwitchHelper
 import player.phonograph.ui.util.backgroundColorTransitionAnimator
 import player.phonograph.ui.util.detectScreenCategory
 import player.phonograph.ui.util.observe
@@ -500,6 +501,13 @@ abstract class AbsPlayerFragment :
                 }
             }
         }
+        observe(viewModel.queuePanelEffects) { action ->
+            when (action) {
+                PlayerFragmentViewModel.Action.Collapse -> panelSwitcher.collapse(frame.slidingUpPanel)
+                PlayerFragmentViewModel.Action.Expand   -> panelSwitcher.expand(frame.slidingUpPanel)
+                PlayerFragmentViewModel.Action.Toggle   -> panelSwitcher.toggle(frame.slidingUpPanel)
+            }
+        }
         observe(viewModel.showToolbar) {
             val container = frame.toolbarContainer
             if (container != null) {
@@ -516,6 +524,8 @@ abstract class AbsPlayerFragment :
     }
 
     protected abstract fun onCurrentSongChanged(song: Song?)
+
+    protected val panelSwitcher: SlidingUpPanelSwitchHelper = SlidingUpPanelSwitchHelper()
 
     private val favoritesEventReceiver = EventHub.EventReceiver(EventHub.EVENT_FAVORITES_CHANGED) { _, _ ->
         lifecycleScope.launch {

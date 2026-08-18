@@ -17,6 +17,7 @@ import player.phonograph.ui.theme.SystemBarsControllerDelegate
 import player.phonograph.ui.theme.SystemBarsControllerDelegate.translucentScrim
 import player.phonograph.ui.theme.ThemeSettingsDelegate.primaryColor
 import player.phonograph.ui.theme.themeFooterColor
+import player.phonograph.ui.util.SlidingUpPanelSwitchHelper
 import player.phonograph.ui.util.isOrientationLandscape
 import player.phonograph.ui.util.observe
 import util.theme.color.darkenColor
@@ -143,9 +144,9 @@ abstract class AbsSlidingMusicPanelActivity :
         }
         observe(panelViewModel.effects, state = Lifecycle.State.STARTED) { action ->
             when (action) {
-                PanelViewModel.Action.Collapse -> requestToCollapse()
-                PanelViewModel.Action.Expand   -> requestToExpand()
-                PanelViewModel.Action.Toggle   -> requestToSwitchState()
+                PanelViewModel.Action.Collapse -> panelSwitcher.collapse(slidingUpPanelLayout)
+                PanelViewModel.Action.Expand   -> panelSwitcher.expand(slidingUpPanelLayout)
+                PanelViewModel.Action.Toggle   -> panelSwitcher.toggle(slidingUpPanelLayout)
             }
         }
     }
@@ -186,7 +187,7 @@ abstract class AbsSlidingMusicPanelActivity :
         when (newState) {
             PanelState.COLLAPSED -> onPanelCollapsed(panel)
             PanelState.EXPANDED  -> onPanelExpanded(panel)
-            PanelState.ANCHORED  -> requestToCollapse() // avoid getting stuck for some reason
+            PanelState.ANCHORED  -> panelSwitcher.collapse(slidingUpPanelLayout) // avoid getting stuck for some reason
             else                 -> {}
         }
     }
@@ -211,7 +212,7 @@ abstract class AbsSlidingMusicPanelActivity :
     }
 
     private fun updatePanelHiddenState(hidden: Boolean) {
-        if (hidden) requestToCollapse()
+        if (hidden) panelSwitcher.collapse(slidingUpPanelLayout)
         val targetPanelHeight: Int = if (!hidden) {
             bottomNavigationBarHeight + miniPlayerHeight
         } else {
@@ -229,29 +230,8 @@ abstract class AbsSlidingMusicPanelActivity :
     }
 
     //region UnarySlidingUpPanelProvider
-    override fun requestToCollapse(): Boolean {
-        with(slidingUpPanelLayout) {
-            if (panelState != PanelState.COLLAPSED) panelState = PanelState.COLLAPSED
-        }
-        return true
-    }
 
-    override fun requestToExpand(): Boolean {
-        with(slidingUpPanelLayout) {
-            if (panelState != PanelState.EXPANDED) panelState = PanelState.EXPANDED
-        }
-        return true
-    }
-
-    override fun requestToSwitchState() {
-        with(slidingUpPanelLayout) {
-            if (panelState == PanelState.EXPANDED) {
-                panelState = PanelState.COLLAPSED
-            } else if (panelState == PanelState.COLLAPSED) {
-                panelState = PanelState.EXPANDED
-            }
-        }
-    }
+    protected val panelSwitcher: SlidingUpPanelSwitchHelper = SlidingUpPanelSwitchHelper()
 
     override fun requestToSetAntiDragView(view: View?): Boolean {
         slidingUpPanelLayout.setAntiDragView(view)

@@ -77,31 +77,6 @@ class FlatPlayerFragment : AbsPlayerFragment() {
         }
     }
 
-
-    override fun requestToCollapse(): Boolean {
-        with(impl.slidingUpPanel ?: return false) {
-            if (panelState != PanelState.COLLAPSED) panelState = PanelState.COLLAPSED
-        }
-        return true
-    }
-
-    override fun requestToExpand(): Boolean {
-        with(impl.slidingUpPanel ?: return false) {
-            if (panelState != PanelState.EXPANDED) panelState = PanelState.EXPANDED
-        }
-        return true
-    }
-
-    override fun requestToSwitchState() {
-        with(impl.slidingUpPanel ?: return) {
-            if (panelState == PanelState.EXPANDED) {
-                panelState = PanelState.COLLAPSED
-            } else if (panelState == PanelState.COLLAPSED) {
-                panelState = PanelState.EXPANDED
-            }
-        }
-    }
-
     override fun requestToSetAntiDragView(view: View?): Boolean {
         val slidingLayout = impl.slidingUpPanel ?: return false
         slidingLayout.setAntiDragView(view)

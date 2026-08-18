@@ -10,7 +10,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
@@ -41,5 +43,30 @@ class PlayerFragmentViewModel : ViewModel() {
         _shownToolbar.tryEmit(
             !_shownToolbar.value
         )
+
+    private val _queuePanelEffects = MutableSharedFlow<Action>()
+    val queuePanelEffects get() = _queuePanelEffects.asSharedFlow()
+
+    suspend fun updateQueuePanel(action: Action) {
+        _queuePanelEffects.emit(action)
+    }
+
+    sealed interface Action {
+        object Expand : Action
+        object Collapse : Action
+        object Toggle : Action
+    }
+
+    suspend fun requestToCollapse() {
+        updateQueuePanel(Action.Collapse)
+    }
+
+    suspend fun requestToExpand() {
+        updateQueuePanel(Action.Expand)
+    }
+
+    suspend fun requestToTogglePanel() {
+        updateQueuePanel(Action.Toggle)
+    }
 
 }
