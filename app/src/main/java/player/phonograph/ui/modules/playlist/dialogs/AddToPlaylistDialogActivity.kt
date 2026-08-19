@@ -18,9 +18,9 @@ import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.ui.basis.DialogActivity
 import player.phonograph.ui.compose.PhonographTheme
-import player.phonograph.ui.compose.components.ButtonPanel
-import player.phonograph.ui.compose.components.CheckBoxItem
-import player.phonograph.ui.compose.components.ListItem
+import player.phonograph.ui.compose.components.actions.ButtonPanel
+import player.phonograph.ui.compose.components.input.CheckBoxItem
+import player.phonograph.ui.compose.components.display.ListItem
 import player.phonograph.ui.resource.Texts
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels

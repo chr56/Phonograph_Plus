@@ -6,8 +6,8 @@ package player.phonograph.ui.modules.tag.components
 
 import player.phonograph.R
 import player.phonograph.model.Song
-import player.phonograph.ui.compose.components.CascadeVerticalItem
-import player.phonograph.ui.compose.components.VerticalTextItem
+import player.phonograph.ui.compose.components.sections.CascadeVerticalItem
+import player.phonograph.ui.compose.components.display.VerticalTextItem
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column

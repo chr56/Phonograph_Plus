@@ -12,9 +12,9 @@ import player.phonograph.model.ui.GeneralTheme
 import player.phonograph.settings.PrerequisiteSettings
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
-import player.phonograph.ui.compose.components.ActionItem
-import player.phonograph.ui.compose.components.AdvancedDialogFrame
-import player.phonograph.ui.compose.components.LimitedDialog
+import player.phonograph.ui.compose.components.actions.ActionItem
+import player.phonograph.ui.compose.components.dialogs.AdvancedDialogFrame
+import player.phonograph.ui.compose.components.dialogs.LimitedDialog
 import player.phonograph.ui.theme.tintButtons
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.foundation.layout.fillMaxWidth

@@ -15,7 +15,7 @@ import player.phonograph.model.Song
 import player.phonograph.repo.loader.Songs
 import player.phonograph.ui.basis.ComposeActivity
 import player.phonograph.ui.compose.PhonographTheme
-import player.phonograph.ui.compose.components.SystemBarsPadded
+import player.phonograph.ui.compose.components.system.SystemBarsPadded
 import player.phonograph.ui.modules.tag.components.RequestWebSearchButton
 import player.phonograph.ui.modules.web.IWebSearchRequester
 import player.phonograph.ui.modules.web.WebSearchLauncher

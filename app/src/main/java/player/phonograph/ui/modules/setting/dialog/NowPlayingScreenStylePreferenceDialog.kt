@@ -9,7 +9,7 @@ import player.phonograph.model.ui.NowPlayingScreenStyle
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Preference
 import player.phonograph.settings.Settings
-import player.phonograph.ui.compose.components.ActionItem
+import player.phonograph.ui.compose.components.actions.ActionItem
 import player.phonograph.ui.modules.setting.elements.NowPlayingScreenStyleSettings
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons

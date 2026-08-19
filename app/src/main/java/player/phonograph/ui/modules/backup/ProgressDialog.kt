@@ -6,7 +6,7 @@ package player.phonograph.ui.modules.backup
 
 import player.phonograph.R
 import player.phonograph.ui.compose.PhonographTheme
-import player.phonograph.ui.compose.components.Progress
+import player.phonograph.ui.compose.components.display.Progress
 import player.phonograph.ui.theme.tintButtons
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.ui.platform.ComposeView

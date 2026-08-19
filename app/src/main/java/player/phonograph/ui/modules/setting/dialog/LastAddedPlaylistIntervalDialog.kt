@@ -9,7 +9,7 @@ import player.phonograph.model.time.Duration
 import player.phonograph.model.time.TimeIntervalCalculationMode
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
-import player.phonograph.ui.compose.components.ActionItem
+import player.phonograph.ui.compose.components.actions.ActionItem
 import player.phonograph.ui.modules.setting.elements.LastAddedPlaylistIntervalSettings
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons

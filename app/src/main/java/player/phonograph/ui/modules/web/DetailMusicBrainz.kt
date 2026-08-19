@@ -15,10 +15,10 @@ import mms.musicbrainz.MusicBrainzReleaseGroup
 import mms.musicbrainz.MusicBrainzTag
 import mms.musicbrainz.MusicBrainzTrack
 import player.phonograph.R
-import player.phonograph.ui.compose.components.CascadeFlowRow
-import player.phonograph.ui.compose.components.CascadeVerticalItem
-import player.phonograph.ui.compose.components.Chip
-import player.phonograph.ui.compose.components.TextItem
+import player.phonograph.ui.compose.components.sections.CascadeFlowRow
+import player.phonograph.ui.compose.components.sections.CascadeVerticalItem
+import player.phonograph.ui.compose.components.display.Chip
+import player.phonograph.ui.compose.components.display.TextItem
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

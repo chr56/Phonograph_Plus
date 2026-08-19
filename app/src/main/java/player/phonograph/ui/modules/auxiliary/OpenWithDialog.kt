@@ -19,7 +19,7 @@ import player.phonograph.service.queue.QueueManager
 import player.phonograph.service.queue.executePlayRequest
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
-import player.phonograph.ui.compose.components.ModeRadioBox
+import player.phonograph.ui.compose.components.input.ModeRadioBox
 import player.phonograph.ui.modules.main.MainActivity
 import player.phonograph.ui.resource.Texts
 import player.phonograph.ui.theme.accentColoredButtonStyle

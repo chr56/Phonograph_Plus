@@ -7,9 +7,9 @@ package player.phonograph.ui.modules.explorer
 import player.phonograph.R
 import player.phonograph.ui.basis.ComposeActivity
 import player.phonograph.ui.compose.PhonographTheme
-import player.phonograph.ui.compose.components.ActionItem
-import player.phonograph.ui.compose.components.AdvancedDialogFrame
-import player.phonograph.ui.compose.components.LimitedDialog
+import player.phonograph.ui.compose.components.actions.ActionItem
+import player.phonograph.ui.compose.components.dialogs.AdvancedDialogFrame
+import player.phonograph.ui.compose.components.dialogs.LimitedDialog
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.viewModels
@@ -43,7 +43,7 @@ class PathSelectorDialogActivity : ComposeActivity() {
                         AdvancedDialogFrame(
                             modifier = Modifier.height(this.maxHeight * 0.833f),
                             title = stringResource(R.string.label_path_selector),
-                            navigationButtonIcon= rememberVectorPainter(Icons.Default.Close),
+                            navigationButtonIcon = rememberVectorPainter(Icons.Default.Close),
                             onDismissRequest = ::finish,
                             actions = listOf(
                                 ActionItem(

@@ -10,10 +10,10 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
-import player.phonograph.ui.compose.components.ActionItem
-import player.phonograph.ui.compose.components.AdvancedDialogFrame
-import player.phonograph.ui.compose.components.ColorPalettePicker
-import player.phonograph.ui.compose.components.LimitedDialog
+import player.phonograph.ui.compose.components.actions.ActionItem
+import player.phonograph.ui.compose.components.dialogs.AdvancedDialogFrame
+import player.phonograph.ui.compose.components.picker.ColorPalettePicker
+import player.phonograph.ui.compose.components.dialogs.LimitedDialog
 import player.phonograph.ui.theme.ColorPalette
 import androidx.annotation.RequiresApi
 import androidx.compose.material.icons.Icons
@@ -41,7 +41,7 @@ class MonetColorPickerDialog : ComposeViewDialogFragment() {
     private lateinit var mode: ColorPalette.Variant
     private val settingKey
         get() = when (mode) {
-            ColorPalette.Variant.Primary        -> Keys.monetPalettePrimaryColor
+            ColorPalette.Variant.Primary         -> Keys.monetPalettePrimaryColor
             ColorPalette.Variant.Accent          -> Keys.monetPaletteAccentColor
             ColorPalette.Variant.PrimaryForNight -> Keys.monetPalettePrimaryColorForNight
             ColorPalette.Variant.AccentForNight  -> Keys.monetPaletteAccentColorForNight

@@ -5,7 +5,7 @@
 package player.phonograph.ui.modules.web
 
 import player.phonograph.R
-import player.phonograph.ui.compose.components.HorizontalTextItem
+import player.phonograph.ui.compose.components.display.HorizontalTextItem
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

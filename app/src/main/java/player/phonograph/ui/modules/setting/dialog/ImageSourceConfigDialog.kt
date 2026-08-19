@@ -10,7 +10,7 @@ import player.phonograph.model.coil.ImageSourceConfig
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
 import player.phonograph.ui.adapter.SortableListAdapter
-import player.phonograph.ui.compose.components.ActionItem
+import player.phonograph.ui.compose.components.actions.ActionItem
 import player.phonograph.ui.resource.Texts
 import player.phonograph.ui.theme.textColorPrimary
 import androidx.appcompat.widget.AppCompatTextView

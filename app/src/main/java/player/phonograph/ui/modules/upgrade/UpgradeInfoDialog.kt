@@ -21,21 +21,24 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
-import player.phonograph.ui.compose.components.TempPopupContent
+import player.phonograph.ui.compose.components.actions.ButtonPanel
 import player.phonograph.ui.theme.accentColoredButtonStyle
 import player.phonograph.ui.util.alertDialog
 import util.theme.materials.MaterialColor
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
@@ -50,6 +53,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
@@ -199,11 +203,11 @@ private val channelColors: Map<String, Int>
 
 @Composable
 private fun VersionNote(version: Version) {
-    val context = LocalContext.current
+    val resources = LocalResources.current
     Box(
         Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
     ) {
-        val note = remember { noteAnnotationString(version.releaseNote.parsed(context.resources)) }
+        val note = remember { noteAnnotationString(version.releaseNote.parsed(resources)) }
         Text(note, fontSize = 14.sp)
     }
 }
@@ -247,7 +251,7 @@ private fun noteAnnotationString(spanned: Spanned): AnnotatedString = buildAnnot
 @Composable
 private fun VersionPopupContent(version: Version, dismissPopup: () -> Unit) {
     val context = LocalContext.current
-    TempPopupContent(dismissPopup = dismissPopup, onClick = dismissPopup) {
+    OverlayPopupContent(dismissPopup = dismissPopup, onClick = dismissPopup) {
         Column {
             for (link in version.link) {
                 TextButton(onClick = { context.open(link.uri) }) {
@@ -266,6 +270,24 @@ private fun VersionPopupContent(version: Version, dismissPopup: () -> Unit) {
                     )
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun OverlayPopupContent(dismissPopup: () -> Unit, onClick: () -> Unit, content: @Composable () -> Unit) {
+    Surface(elevation = 2.dp) {
+        Column(Modifier.width(IntrinsicSize.Max)) {
+            Box(modifier = Modifier.padding(horizontal = 12.dp, vertical = 12.dp)) {
+                content()
+            }
+            ButtonPanel(
+                stringResource(android.R.string.cancel),
+                dismissPopup,
+                stringResource(android.R.string.ok),
+                { dismissPopup(); onClick() },
+                modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+            )
         }
     }
 }

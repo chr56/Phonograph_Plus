@@ -10,7 +10,7 @@ import player.phonograph.foundation.testBit
 import player.phonograph.foundation.unsetBit
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
-import player.phonograph.ui.compose.components.ActionItem
+import player.phonograph.ui.compose.components.actions.ActionItem
 import player.phonograph.ui.modules.setting.elements.ClickModeSettings
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons

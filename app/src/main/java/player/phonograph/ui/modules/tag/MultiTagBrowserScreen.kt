@@ -8,7 +8,7 @@ import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.model.metadata.ConventionalMusicMetadataKey
 import player.phonograph.model.metadata.InteractiveAction.Edit
-import player.phonograph.ui.compose.components.Title
+import player.phonograph.ui.compose.components.display.Title
 import player.phonograph.ui.modules.tag.components.ArtworkSection
 import player.phonograph.ui.modules.tag.components.EditableTagItem
 import player.phonograph.ui.modules.tag.components.FileItems
