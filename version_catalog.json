@@ -1,6 +1,30 @@
 {
     "versions": [
         {
+            "channel": "stable",
+            "versionName": "2.0.1",
+            "versionCode": 20001,
+            "date": 1787131000,
+            "link": [
+                {
+                    "name": "Github Release (Website)",
+                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v2.0.1"
+                },
+                {
+                    "name": "Github Release Modern Variant APK (File Download Link)",
+                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v2.0.1/PhonographPlus_2.0.1_ModernStableRelease.apk"
+                },
+                {
+                    "name": "Github Release Legacy Variant APK (File Download Link)",
+                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v2.0.1/PhonographPlus_2.0.1_LegacyStableRelease.apk"
+                }
+            ],
+            "releaseNote": {
+                "zh-cn": "<ol><li>提示 自 v2.0 起，签名已被更换，详见发布页注释！</li><li>修复 状态栏颜色动画的若干异常表现</li><li>修复 播放器主题色在回到前台后瞬间显示为默认颜色</li><li>修复 播放器顶部某些情况下在导航栏后显露（Android 15+）</li><li>改进 优化方形屏幕适配</li><li>改进 增加播放控件按钮大小</li><li>移除 专辑与艺术家详情页的共享元素转场动画</li><li>新增 针对 Android 11+ 的真正边到边沉浸（可选，实验性支持）</li><li>开发 更新 Kotlin 至 2.4.10, 更新依赖</li></ol>",
+                "en": "<ol><li>NOTE: Since v2.0, we have replaced our signing key, see GitHub Release Page for details.</li><li>Fix: some weird behaviours of statusbar color animations</li><li>Fix: player theme color flashing to default when resuming from background</li><li>Fix: top of player conditionally peaking behind navigation bar on Android 15 and later</li><li>Improve: optimize for square-shaped screens</li><li>Improve: enlarger playback buttons</li><li>Remove: shard elements transition animations for albums and artist details</li><li>New: support the true edge-to-edge display for Android 11 and later (optional, experimental)</li><li>Development: upgrade Kotlin to 2.4.10, update dependencies</li></ol>"
+            }
+        },
+        {
             "channel": "preview",
             "versionName": "2.0.1-dev1",
             "versionCode": 20000,
@@ -22,30 +46,6 @@
             "releaseNote": {
                 "zh-cn": "<ol><li>修复 状态栏颜色动画的若干异常表现</li><li>修复 播放器顶部偶尔在导航栏后显露（Android 15+）</li><li>改进 优化方形屏幕适配</li><li>改进 增加播放控件按钮大小</li><li>移除 专辑与艺术家详情页的共享元素转场动画</li><li>新增 针对 Android 11+ 的完整边到边支持（可选，实验性支持）</li><li>开发 更新 Kotlin 至 2.4.10, 更新依赖</li></ol>",
                 "en": "<ol><li>Fix: some weird behaviours of statusbar color animations</li><li>Fix: sometimes top of player gets revealed behind navigation bar (Android 15 and later)</li><li>Improve: optimize for square-shaped screens</li><li>Improve: larger playback buttons</li><li>Remove: shard elements transition animations for albums and artist details</li><li>New: support the true edge-to-edge for Android 11 and later (optional, experimental)</li><li>Development: upgrade Kotlin to 2.4.10, update dependencies</li></ol>"
-            }
-        },
-        {
-            "channel": "stable",
-            "versionName": "2.0.0",
-            "versionCode": 20000,
-            "date": 1783350000,
-            "link": [
-                {
-                    "name": "Github Release (Website)",
-                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v2.0.0"
-                },
-                {
-                    "name": "Github Release Modern Variant APK (File Download Link)",
-                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v2.0.0/PhonographPlus_2.0.0_ModernStableRelease.apk"
-                },
-                {
-                    "name": "Github Release Legacy Variant APK (File Download Link)",
-                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v2.0.0/PhonographPlus_2.0.0_LegacyStableRelease.apk"
-                }
-            ],
-            "releaseNote": {
-                "zh-cn": "<ol><li>分发 注意！自 v2.0 起，签名已被更换；请卸载后重装或使用 Intermediate 过渡包完成升级！</li><li>分发 最低要求升至 Android 8 (API 26), Legacy 版本除外</li><li>修改 默认启用多重艺术家和多重流派解析（从实验性功能转正）</li><li>修改 默认创建数据库播放列表</li><li>修改 调整部分默认设置</li><li>修改 重新组织了设置页面</li><li>新增 支持任务卡片被移除时停止服务（感谢 @jpgjm）</li><li>新增 桌面小部件支持深色模式</li><li>改进 支持在夜间模式下使用另一套配色方案</li><li>改进 支持同步时跳过流派解析</li><li>改进 内部数据库同步性能</li><li>改进 支持禁用历史记录</li><li>改进 起始介绍页中增加授权全部权限按钮</li><li>修复 起始介绍页中导入备份对话框文本颜色异常</li><li>修复 在 Android 15 及其以上版本上，扁平风格播放器状态栏颜色异常</li><li>修复 因路径查找失败导致的恢复播放列表、播放文件夹或外部文件时崩溃的问题</li><li>修复 部分设备上切回前台后偶尔全部标签页消失</li><li>翻译 更新 巴西葡萄牙语（Ricardo）、荷兰语（Polovinci）</li><li>开发 适配 SDK API 36 (Android 16), 使用 SDK 37 构建</li><li>开发 使用 Gradle 9.5.1 构建, 使用 AGP 9.2.1 构建, 更新依赖</li><li>开发 增强内部元数据数据库</li></ol>",
-                "en": "<ol><li>Distribution: IMPORTANT! since v2.0, we have replaced our signing key, as a breaking change. You need to uninstall first or use Intermediate variant; see related instructions to migrate or transit.</li><li>Distribution: raise minimal requirement to Android 8 (API 26), except for Legacy variant</li><li>Modify: Multiple artists and genres parsing is now enabled by default (graduated from the experimental)</li><li>Modify: create database playlists by default</li><li>Modify: change some default settings</li><li>Modify: reorganized settings pages</li><li>New: quit app when removed from Recent Screen (optional, thanks to @jpgjm)</li><li>New: add dark mode support for widgets</li><li>Improve: support using another color scheme for night</li><li>Improve: support skipping genres parsing in database synchronization</li><li>Improve: internal database synchronization performance</li><li>Improve: support disabling history</li><li>Improve: add grant all permissions button in app intro</li><li>Fix: text colors of backup dialog in app intro</li><li>Fix: statusbar color in Flat Player on Android 15 and higher</li><li>Fix: crash when restoring playlists and playing folders or external files, due to path lookup failures</li><li>Fix: occasionally all tabs disappearing when returning to the foreground on some devices</li><li>Translation: update Portuguese Brazilian (by Ricardo), Dutch (by Polovinci)</li><li>Development: targeting SDK API 36 (Android 16), build with SDK 37</li><li>Development: build with Gradle 9.5.1, build with AGP 9.2.1, update dependencies</li><li>Development: enhance the internal database for metadata</li></ol>"
             }
         }
     ]
