@@ -1,25 +1,27 @@
-version: "2.0.1-dev1"
-channel: "PREVIEW"
-versionCode: 20000
-timestamp: 1786890000
+version: "2.0.1"
+channel: "STABLE"
+versionCode: 20001
+timestamp: 1787131000
 notes:
   en:
     items:
       - "Fix: some weird behaviours of statusbar color animations"
-      - "Fix: sometimes top of player gets revealed behind navigation bar (Android 15 and later)"
+      - "Fix: player theme color flashing to default when resuming from background"
+      - "Fix: top of player conditionally peaking behind navigation bar on Android 15 and later"
       - "Improve: optimize for square-shaped screens"
-      - "Improve: larger playback buttons"
+      - "Improve: enlarger playback buttons"
       - "Remove: shard elements transition animations for albums and artist details"
-      - "New: support the true edge-to-edge for Android 11 and later (optional, experimental)"
+      - "New: support the true edge-to-edge display for Android 11 and later (optional, experimental)"
       - "Development: upgrade Kotlin to 2.4.10, update dependencies"
   zh:
     items:
       - "修复 状态栏颜色动画的若干异常表现"
-      - "修复 播放器顶部偶尔在导航栏后显露（Android 15+）"
+      - "修复 播放器主题色在回到前台后瞬间显示为默认颜色"
+      - "修复 播放器顶部某些情况下在导航栏后显露（Android 15+）"
       - "改进 优化方形屏幕适配"
       - "改进 增加播放控件按钮大小"
       - "移除 专辑与艺术家详情页的共享元素转场动画"
-      - "新增 针对 Android 11+ 的完整边到边支持（可选，实验性支持）"
+      - "新增 针对 Android 11+ 的真正边到边沉浸（可选，实验性支持）"
       - "开发 更新 Kotlin 至 2.4.10, 更新依赖"
 
 previousVersion: "2.0.0"

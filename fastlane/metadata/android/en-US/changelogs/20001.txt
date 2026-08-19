@@ -1,0 +1,8 @@
+<b>2.0.1(20001) 2026.08.19</b>
+- Fix: some weird behaviours of statusbar color animations
+- Fix: player theme color flashing to default when resuming from background
+- Fix: top of player conditionally peaking behind navigation bar on Android 15 and later
+- Improve: optimize for square-shaped screens
+- Improve: enlarger playback buttons
+- Remove: shard elements transition animations for albums and artist details
+...(Visit project homepage to see full changelogs)
