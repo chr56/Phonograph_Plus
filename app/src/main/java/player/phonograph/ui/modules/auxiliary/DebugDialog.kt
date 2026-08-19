@@ -104,7 +104,7 @@ class DebugDialog : DialogFragment() {
     )
 
     private suspend fun dumpSong(title: String, errors: Collection<Song>) {
-        val message = errors.fold("$title\n:") { acc, song -> "$acc\n${song.id}: ${song.title}" }
+        val message = errors.fold("$title:\n") { acc, song -> "$acc\n${song.id}: ${song.title}" }
         withContext(Dispatchers.Main) {
             AlertDialog.Builder(hostActivity.get()!!)
                 .setTitle(title)
