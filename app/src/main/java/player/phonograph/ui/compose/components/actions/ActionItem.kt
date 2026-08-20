@@ -5,7 +5,6 @@
 package player.phonograph.ui.compose.components.actions
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
@@ -17,7 +16,6 @@ class ActionItem(
     val imageRes: Int = -1,
     val text: String? = null,
     val textRes: Int = -1,
-    val tint: Color? = null,
     val onClick: () -> Unit,
 ) {
     @Composable

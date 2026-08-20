@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun MenuItem(item: ActionItem, withIcon: Boolean) {
     if (withIcon) {
-        IconTextMenuItem(icon = item.iconPainter(), text = item.text()!!, tint = item.tint, onClick = item.onClick)
+        IconTextMenuItem(icon = item.iconPainter(), text = item.text()!!, onClick = item.onClick)
     } else {
         TextMenuItem(text = item.text()!!, onClick = item.onClick)
     }
@@ -49,7 +49,6 @@ fun TextMenuItem(
 fun IconTextMenuItem(
     icon: Painter,
     text: String,
-    tint: Color?,
     onClick: () -> Unit,
 ) {
     Row(
@@ -61,7 +60,7 @@ fun IconTextMenuItem(
         Icon(
             icon,
             contentDescription = text,
-            tint = tint ?: MaterialTheme.colors.onSurface,
+            tint = MaterialTheme.colors.onSurface,
             modifier = Modifier.align(Alignment.CenterVertically)
         )
         Text(

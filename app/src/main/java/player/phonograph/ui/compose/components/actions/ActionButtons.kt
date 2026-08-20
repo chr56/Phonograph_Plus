@@ -17,7 +17,7 @@ import androidx.compose.ui.graphics.painter.Painter
 fun ActionIconButton(item: ActionItem, modifier: Modifier = Modifier) {
     ActionIconButton(
         icon = item.iconPainter(),
-        tint = item.tint ?: MaterialTheme.colors.onPrimary,
+        tint = MaterialTheme.colors.onPrimary,
         modifier = modifier,
         text = item.text(),
         onClick = item.onClick,
