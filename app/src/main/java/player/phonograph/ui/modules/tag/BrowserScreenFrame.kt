@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -145,6 +146,13 @@ private fun ExitWithoutSavingDialog(
             }
         }
     ) {
-        title(res = R.string.action_exit_without_saving)
+        Text(
+            stringResource(R.string.action_exit_without_saving),
+            Modifier
+                .fillMaxWidth()
+                .padding(vertical = 24.dp, horizontal =12.dp)
+                .height(64.dp),
+            style = MaterialTheme.typography.body1
+        )
     }
 }

@@ -4,17 +4,12 @@
 
 package player.phonograph.ui.modules.tag.components
 
-import com.vanpra.composematerialdialogs.MaterialDialog
-import com.vanpra.composematerialdialogs.MaterialDialogState
-import com.vanpra.composematerialdialogs.title
 import lib.storage.launcher.IOpenFileStorageAccessible
 import lib.storage.launcher.OpenDocumentContract
-import player.phonograph.R
 import player.phonograph.foundation.error.warning
 import player.phonograph.model.metadata.InteractiveAction
 import player.phonograph.model.metadata.InteractiveAction.Edit
 import player.phonograph.ui.modules.tag.AbsMetadataViewModel
-import player.phonograph.ui.theme.accentColoredButtonStyle
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -34,20 +29,20 @@ fun <VM : AbsMetadataViewModel> ArtworkSection(
     cacheFileName: String,
     content: @Composable (BoxScope.() -> Unit),
 ) {
-    Box(modifier = Modifier.clickable { viewModel.coverImageDetailDialogState.show() }, content = content)
+    Box(modifier = Modifier.clickable { viewModel.imageActionDialogState.show() }, content = content)
     val context = LocalContext.current
     ImageActionMenuDialog(
-        state = viewModel.coverImageDetailDialogState,
+        state = viewModel.imageActionDialogState,
         artworkExist = artworkExist,
         onSave = { viewModel.submitEvent(context, InteractiveAction.ExtractArtwork) },
         onDelete = { viewModel.submitEvent(context, Edit.RemoveArtwork) },
         onUpdate = {
             selectImage(context, cacheFileName, viewModel::submitEvent)
-            viewModel.coverImageDetailDialogState.hide()
+            viewModel.imageActionDialogState.hide()
         },
         onView = {
-            viewModel.coverImageViewerDialogState.show()
-            viewModel.coverImageDetailDialogState.hide()
+            viewModel.imageViewerDialogState.show()
+            viewModel.imageActionDialogState.hide()
         },
         editMode = editMode
     )
@@ -88,24 +83,4 @@ private fun createCacheFile(context: Context, uri: Uri, name: String): File {
     }
     cacheFile.deleteOnExit()
     return cacheFile
-}
-
-
-@Composable
-private fun ImageActionMenuDialog(
-    state: MaterialDialogState,
-    artworkExist: Boolean,
-    onSave: () -> Unit,
-    onDelete: () -> Unit,
-    onUpdate: () -> Unit,
-    onView: (() -> Unit)?,
-    editMode: Boolean,
-) = MaterialDialog(
-    dialogState = state,
-    buttons = {
-        positiveButton(res = android.R.string.ok, textStyle = accentColoredButtonStyle()) { state.hide() }
-    }
-) {
-    title(res = R.string.label_details)
-    ImageActionMenu(artworkExist, editMode, onSave, onDelete, onUpdate, onView)
 }

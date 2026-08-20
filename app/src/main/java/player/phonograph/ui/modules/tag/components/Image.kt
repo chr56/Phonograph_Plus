@@ -4,9 +4,13 @@
 
 package player.phonograph.ui.modules.tag.components
 
+import com.vanpra.composematerialdialogs.MaterialDialog
+import com.vanpra.composematerialdialogs.MaterialDialogState
+import com.vanpra.composematerialdialogs.title
 import player.phonograph.R
-import androidx.annotation.StringRes
+import player.phonograph.ui.theme.accentColoredButtonStyle
 import androidx.activity.compose.BackHandler
+import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,14 +22,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -38,11 +40,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.BitmapPainter
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
@@ -83,6 +85,25 @@ fun AudioImage(bitmap: Bitmap?, backgroundColor: Color, modifier: Modifier = Mod
 }
 
 @Composable
+fun ImageActionMenuDialog(
+    state: MaterialDialogState,
+    artworkExist: Boolean,
+    onSave: () -> Unit,
+    onDelete: () -> Unit,
+    onUpdate: () -> Unit,
+    onView: (() -> Unit)?,
+    editMode: Boolean,
+) = MaterialDialog(
+    dialogState = state,
+    buttons = {
+        positiveButton(res = android.R.string.ok, textStyle = accentColoredButtonStyle()) { state.hide() }
+    }
+) {
+    title(res = R.string.label_details)
+    ImageActionMenu(artworkExist, editMode, onSave, onDelete, onUpdate, onView)
+}
+
+@Composable
 fun ImageActionMenu(
     artworkExist: Boolean,
     editMode: Boolean,
@@ -93,7 +114,7 @@ fun ImageActionMenu(
 ) {
     Column(
         modifier = Modifier
-            .padding(horizontal = 48.dp)
+            .padding(horizontal = 32.dp)
             .wrapContentWidth()
     ) {
         if (artworkExist) {
@@ -189,10 +210,9 @@ fun ArtworkImageViewer(bitmap: Bitmap, onDismissRequest: () -> Unit) {
 private fun MenuItem(@StringRes textRes: Int, onClick: () -> Unit) =
     Text(
         text = stringResource(textRes),
-        color = MaterialTheme.colors.primary,
         textAlign = TextAlign.Start,
         modifier = Modifier
             .fillMaxWidth()
-            .requiredHeight(56.dp)
-            .clickable(onClick = onClick),
+            .clickable(onClick = onClick)
+            .padding(horizontal = 16.dp, vertical = 16.dp)
     )

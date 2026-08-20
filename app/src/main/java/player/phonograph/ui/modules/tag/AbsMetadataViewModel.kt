@@ -43,8 +43,8 @@ sealed class AbsMetadataViewModel : ViewModel() {
 
     val saveConfirmationDialogState = MaterialDialogState(false)
     val exitWithoutSavingDialogState = MaterialDialogState(false)
-    val coverImageDetailDialogState = MaterialDialogState(false)
-    val coverImageViewerDialogState = MaterialDialogState(false)
+    val imageActionDialogState = MaterialDialogState(false)
+    val imageViewerDialogState = MaterialDialogState(false)
 
     abstract fun generateMetadataDifference(context: Context): MetadataChanges
 }
