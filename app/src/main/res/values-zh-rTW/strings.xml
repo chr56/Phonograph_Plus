@@ -163,6 +163,7 @@
     <string name="primary_color_for_night_desc">暗色主題主色調</string>
     <string name="accent_color_for_night_desc">暗色主題重點色調</string>
     <string name="action_update_image">更新圖片</string>
+    <string name="action_view_image">查看圖片</string>
     <string name="msg_empty_playlist">播放清單是空的</string>
     <string name="msg_no_playlists">沒有播放清單</string>
     <string name="msg_empty">空的</string>

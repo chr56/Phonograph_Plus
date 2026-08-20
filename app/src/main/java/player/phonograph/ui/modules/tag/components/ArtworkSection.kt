@@ -45,6 +45,10 @@ fun <VM : AbsMetadataViewModel> ArtworkSection(
             selectImage(context, cacheFileName, viewModel::submitEvent)
             viewModel.coverImageDetailDialogState.hide()
         },
+        onView = {
+            viewModel.coverImageViewerDialogState.show()
+            viewModel.coverImageDetailDialogState.hide()
+        },
         editMode = editMode
     )
 }
@@ -94,6 +98,7 @@ private fun ImageActionMenuDialog(
     onSave: () -> Unit,
     onDelete: () -> Unit,
     onUpdate: () -> Unit,
+    onView: (() -> Unit)?,
     editMode: Boolean,
 ) = MaterialDialog(
     dialogState = state,
@@ -102,5 +107,5 @@ private fun ImageActionMenuDialog(
     }
 ) {
     title(res = R.string.label_details)
-    ImageActionMenu(artworkExist, editMode, onSave, onDelete, onUpdate)
+    ImageActionMenu(artworkExist, editMode, onSave, onDelete, onUpdate, onView)
 }

@@ -16,6 +16,7 @@ import player.phonograph.model.metadata.MusicMetadata
 import player.phonograph.ui.compose.components.CascadeVerticalItem
 import player.phonograph.ui.compose.components.Title
 import player.phonograph.ui.modules.tag.components.ArtworkSection
+import player.phonograph.ui.modules.tag.components.ArtworkImageViewer
 import player.phonograph.ui.modules.tag.components.AudioImage
 import player.phonograph.ui.modules.tag.components.EditableTagItem
 import player.phonograph.ui.modules.tag.components.InsertNewButton
@@ -150,6 +151,9 @@ private fun ArtworkSection(viewModel: TagBrowserActivityViewModel) {
         if (bitmap != null || editable) {
             AudioImage(bitmap, MaterialTheme.colors.primary)
         }
+    }
+    if (viewModel.coverImageViewerDialogState.showing && bitmap != null) {
+        ArtworkImageViewer(bitmap) { viewModel.coverImageViewerDialogState.hide() }
     }
 }
 

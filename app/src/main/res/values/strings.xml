@@ -91,6 +91,7 @@
     <string name="action_move_up">Move up</string>
     <string name="action_move_down">Move down</string>
     <string name="action_update_image">Update image</string>
+    <string name="action_view_image">View image</string>
     <string name="action_remove_cover">Remove cover</string>
     <string name="action_reset_artist_image">Reset artist image</string>
     <string name="action_set_artist_image">Set artist image</string>
