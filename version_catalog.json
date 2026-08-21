@@ -15,6 +15,10 @@
                     "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v2.0.1/PhonographPlus_2.0.1_ModernStableRelease.apk"
                 },
                 {
+                    "name": "Github Release Modern Intermediate Variant APK (File Download Link)",
+                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v2.0.1/PhonographPlus_2.0.1_ModernStableIntermediateRelease.apk"
+                },
+                {
                     "name": "Github Release Legacy Variant APK (File Download Link)",
                     "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v2.0.1/PhonographPlus_2.0.1_LegacyStableRelease.apk"
                 }
@@ -37,6 +41,10 @@
                 {
                     "name": "Github Release Modern Variant APK (File Download Link)",
                     "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_2.0.1-dev1/PhonographPlus_2.0.1-dev1_ModernPreviewRelease.apk"
+                },
+                {
+                    "name": "Github Release Modern Variant APK (File Download Link)",
+                    "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_2.0.1-dev1/PhonographPlus_2.0.1-dev1_ModernPreviewIntermediateRelease.apk"
                 },
                 {
                     "name": "Github Release Legacy Variant APK (File Download Link)",
