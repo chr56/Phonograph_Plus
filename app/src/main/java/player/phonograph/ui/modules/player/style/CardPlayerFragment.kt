@@ -22,7 +22,6 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
@@ -37,6 +36,7 @@ class CardPlayerFragment : AbsPlayerFragment() {
 
     private interface CardImpl : ViewElementsContainer {
         fun init()
+        fun setGradientScrim(show: Boolean)
         fun adjustHeight()
         fun applyWindowInsect()
         fun updateCurrentSong(song: Song?)
@@ -55,6 +55,7 @@ class CardPlayerFragment : AbsPlayerFragment() {
     override fun setupMainContent() {
         impl.init()
         impl.applyWindowInsect()
+        impl.setGradientScrim(argumentStyle?.options?.showGradientScrim != false)
         fixPanelNestedScrolling()
 
         lifecycleScope.launch {
@@ -127,6 +128,12 @@ class CardPlayerFragment : AbsPlayerFragment() {
             binding.playingQueueCard.setCardBackgroundColor(themeCardBackgroundColor(binding.root.context))
         }
 
+        override fun setGradientScrim(show: Boolean) {
+            binding.toolbarContainer.setBackgroundResource(
+                if (show) R.drawable.toolbar_gradient else android.R.color.transparent
+            )
+        }
+
         override fun applyWindowInsect() {
             ViewCompat.setOnApplyWindowInsetsListener(binding.statusBarPadding) { view, windowInsets ->
                 val insets = windowInsets.getInsets(WindowInsetsCompat.Type.statusBars())
@@ -172,6 +179,8 @@ class CardPlayerFragment : AbsPlayerFragment() {
             // for some reason, the XML attribute doesn't get applied here.
             binding.playingQueueCard.setCardBackgroundColor(themeCardBackgroundColor(binding.root.context))
         }
+
+        override fun setGradientScrim(show: Boolean) {}
 
         override fun applyWindowInsect() {
             ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, windowInsets ->
@@ -230,6 +239,12 @@ class CardPlayerFragment : AbsPlayerFragment() {
 
         override fun init() {
             binding.playingQueueCard.setCardBackgroundColor(themeCardBackgroundColor(binding.root.context))
+        }
+
+        override fun setGradientScrim(show: Boolean) {
+            binding.toolbarContainer.setBackgroundResource(
+                if (show) R.drawable.toolbar_gradient else android.R.color.transparent
+            )
         }
 
         override fun applyWindowInsect() {

@@ -21,7 +21,6 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
@@ -36,6 +35,7 @@ class FlatPlayerFragment : AbsPlayerFragment() {
 
     private interface FlatImpl : ViewElementsContainer {
         fun init()
+        fun setGradientScrim(show: Boolean)
         fun adjustHeight()
         fun applyWindowInsect()
         fun updateCurrentSong(song: Song?)
@@ -53,6 +53,7 @@ class FlatPlayerFragment : AbsPlayerFragment() {
     override fun setupMainContent() {
         impl.init()
         impl.applyWindowInsect()
+        impl.setGradientScrim(argumentStyle?.options?.showGradientScrim != false)
         fixPanelNestedScrolling()
 
         lifecycleScope.launch {
@@ -120,6 +121,12 @@ class FlatPlayerFragment : AbsPlayerFragment() {
             panelHeightAdjuster = QueuePanelHeightAdjuster(binding.root.resources)
         }
 
+        override fun setGradientScrim(show: Boolean) {
+            binding.toolbarContainer.setBackgroundResource(
+                if (show) R.drawable.toolbar_gradient else android.R.color.transparent
+            )
+        }
+
         override fun applyWindowInsect() {
             ViewCompat.setOnApplyWindowInsetsListener(binding.statusBarOverlay) { view, windowInsets ->
                 val insets = windowInsets.getInsets(WindowInsetsCompat.Type.statusBars())
@@ -166,6 +173,8 @@ class FlatPlayerFragment : AbsPlayerFragment() {
         override val shadowForQueue: Boolean = true
 
         override fun init() {}
+
+        override fun setGradientScrim(show: Boolean) {}
 
         override fun applyWindowInsect() {
             ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, windowInsets ->
@@ -220,6 +229,12 @@ class FlatPlayerFragment : AbsPlayerFragment() {
         override val shadowForQueue: Boolean = true
 
         override fun init() {}
+
+        override fun setGradientScrim(show: Boolean) {
+            binding.toolbarContainer.setBackgroundResource(
+                if (show) R.drawable.toolbar_gradient else android.R.color.transparent
+            )
+        }
 
         override fun applyWindowInsect() {
             ViewCompat.setOnApplyWindowInsetsListener(binding.statusBarPadding) { view, windowInsets ->
