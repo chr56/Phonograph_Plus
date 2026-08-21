@@ -130,6 +130,7 @@
     <string name="player_controller_function_seek">快退/快進</string>
     <string name="player_controller_function_queue_mode_normal">迴圈/隨機</string>
     <string name="player_controller_function_queue_mode_alternative">隨機/迴圈</string>
+    <string name="pref_title_display_gradient_scrim">顯示頂部漸變灰度蒙層</string>
     <string name="pref_title_display_modes_with_queue">迴圈隨機按鈕與播放佇列一同顯示</string>
     <string name="pref_title_general_theme">主題</string>
     <string name="pref_title_player_style">主播放器外觀</string>

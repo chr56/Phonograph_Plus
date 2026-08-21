@@ -168,6 +168,9 @@ private fun PlayerStyleOptions(
     current: PlayerOptions,
     update: (PlayerOptions) -> Unit,
 ) {
+    CheckBoxOption(stringResource(R.string.pref_title_display_gradient_scrim), current.showGradientScrim) {
+        update(current.copy(showGradientScrim = it))
+    }
     CheckBoxOption(stringResource(R.string.pref_title_display_modes_with_queue), current.showModeButtonsForQueue) {
         update(current.copy(showModeButtonsForQueue = it))
     }

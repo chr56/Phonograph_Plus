@@ -376,6 +376,7 @@
     <string name="pref_title_colored_notification">Colored notification</string>
     <string name="pref_title_disable_real_time_search">Disable realtime local search</string>
     <string name="pref_title_display_lyrics_time_axis">Display lyrics time axis</string>
+    <string name="pref_title_display_gradient_scrim">Display top gradient scrim</string>
     <string name="pref_title_display_modes_with_queue">Display Repeat and Shuffle buttons in Playing Queue toolbar</string>
     <string name="pref_title_enable_monet">Enable Monet</string>
     <string name="pref_title_external_play_request">Default action when playing from the external</string>
