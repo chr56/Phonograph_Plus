@@ -22,7 +22,8 @@ data class NowPlayingScreenStyle(
                 baseStyle = PlayerBaseStyle.CARD,
                 controllerStyle = PlayerControllerStyle.DEFAULT,
                 options = PlayerOptions(
-                    showModeButtonsForQueue = true
+                    showModeButtonsForQueue = true,
+                    showGradientScrim = true,
                 )
             )
     }

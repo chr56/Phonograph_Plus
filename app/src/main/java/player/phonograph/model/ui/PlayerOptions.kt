@@ -13,4 +13,5 @@ import kotlinx.serialization.Serializable
 @Parcelize
 data class PlayerOptions(
     @SerialName("mode_buttons_for_queue") val showModeButtonsForQueue: Boolean,
+    @SerialName("toolbar_gradient") val showGradientScrim: Boolean = true,
 ) : Parcelable
