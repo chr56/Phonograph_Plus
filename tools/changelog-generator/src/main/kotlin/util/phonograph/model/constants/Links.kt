@@ -6,6 +6,7 @@ package util.phonograph.model.constants
 
 const val DOWNLOAD_LINK_GITHUB_HOME_LABEL = "Github Release (Website)"
 const val DOWNLOAD_LINK_GITHUB_MODERN_LABEL = "Github Release Modern Variant APK (File Download Link)"
+const val DOWNLOAD_LINK_GITHUB_MODERN_INTERMEDIATE_LABEL = "Github Release Modern Intermediate Variant APK (File Download Link)"
 const val DOWNLOAD_LINK_GITHUB_LEGACY_LABEL = "Github Release Legacy Variant APK (File Download Link)"
 
 const val GITHUB_LINK_PREFIX = "https://github.com/chr56/Phonograph_Plus"

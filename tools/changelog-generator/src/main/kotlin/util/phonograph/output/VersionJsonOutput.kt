@@ -12,6 +12,7 @@ import util.phonograph.model.TargetVariant
 import util.phonograph.model.VersionJson
 import util.phonograph.model.constants.DOWNLOAD_LINK_GITHUB_HOME_LABEL
 import util.phonograph.model.constants.DOWNLOAD_LINK_GITHUB_LEGACY_LABEL
+import util.phonograph.model.constants.DOWNLOAD_LINK_GITHUB_MODERN_INTERMEDIATE_LABEL
 import util.phonograph.model.constants.DOWNLOAD_LINK_GITHUB_MODERN_LABEL
 import util.phonograph.model.constants.downloadLink
 import util.phonograph.model.constants.releaseLink
@@ -49,6 +50,10 @@ class VersionJsonOutput(versionJsonFile: File, private val metadata: ReleaseMeta
             VersionJson.Item.Link(
                 name = DOWNLOAD_LINK_GITHUB_MODERN_LABEL,
                 url = downloadLink(tag, version, variant(TargetVariant.MODERN))
+            ),
+            VersionJson.Item.Link(
+                name = DOWNLOAD_LINK_GITHUB_MODERN_INTERMEDIATE_LABEL,
+                url = downloadLink(tag, version, intermediateVariant())
             ),
             VersionJson.Item.Link(
                 name = DOWNLOAD_LINK_GITHUB_LEGACY_LABEL,
