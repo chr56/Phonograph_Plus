@@ -18,9 +18,13 @@
 [![Dev CI Building Status](https://img.shields.io/github/actions/workflow/status/chr56/Phonograph_Plus/dev.yml?label=Dev%20building)](https://github.com/chr56/Phonograph_Plus/actions/workflows/dev.yml)
 
 
-**维护中和开发中的 [Phonograph](https://github.com/kabouzeid/Phonograph) 独立分支**
+**维护中的全新 Phonograph 独立分支**
 
-Phonograph 原为一款 Android 质感设计的本地音乐播放器。Phonograph Plus 是 Phonograph 的独立分支，自2021年起一直在维护和开发中（原项目自2020起不再活跃并于2023归档）。
+Phonograph Plus 是一款轻量级的 Android 本地音乐播放器。
+
+Phonograph Plus 源自于经典播放器 [Phonograph](https://github.com/kabouzeid/Phonograph)，后者已在 2020 年后停止维护，并于 2023 年归档。
+Phonograph Plus 作为独立分支，自 2021 年起持续维护和开发，继承了其大部分功能：
+Phonograph Plus 基本上保留了 Phonograph 的大部分原始界面设计，并新增了大量功能和改进，改进整体用户体验，同时，其内部也进行了现代化改造。
 
 
 ## **下载**
@@ -30,7 +34,7 @@ Phonograph 原为一款 Android 质感设计的本地音乐播放器。Phonograp
 [<img src="https://img.shields.io/f-droid/v/player.phonograph.plus?label=F-droid" alt="F-droid">](https://f-droid.org/packages/player.phonograph.plus/)
 
 > [!IMPORTANT]
-> 全球自 2027 年起，在启用 Play Protect 的 GMS 设备安装 Phonograph Plus 时可能较为曲折；2027 年后，我们可能会停止发布可安装的 APK ，仅发布源码。
+> 全世界自 2027 年起，在启用 Play Protect 的 GMS 设备安装 Phonograph Plus 时可能较为“曲折”；2027 年后，我们可能会停止发布可安装的 APK ，仅发布源码。
 > 详情请参阅 [Android 开发者验证](./docs/Version_Guide_ZH.md#android-developer-verification)
 
 Phonograph Plus 可从 GitHub Release (稳定版通道和预览版通道[^1]) 和 F-droid[^2] (稳定版通道) 上获取；各种版本区别请另阅 [版本指南](./docs/Version_Guide_ZH.md)。
@@ -39,6 +43,10 @@ Phonograph Plus 可从 GitHub Release (稳定版通道和预览版通道[^1]) �
 
 [^2]: 在 F-droid 上启用了可重复构建，从 F-Droid 上获取的 APK 应与 GitHub Release 上获取的 APK 完全相同
 
+
+## **截屏**
+
+见 [Gallery](docs/Gallery.md)
 
 ## **特性**
 
@@ -49,13 +57,14 @@ Phonograph Plus 继承了原版 Phonograph 的所有功能，并进行了扩展�
 - 轻量
 - 完全离线，无广告
 - Material Design 2
-- 夜间模式（浅/暗/黑，支持自动切换）
+- 夜间模式（浅/暗/黑，支持自动切换），可在夜间使用另一套配色
 - 自定义主题色（主色调/强调色），支持 Monet 取色
 - 最基础音频播放功能（含速度控制、睡眠定时器和系统提供的均衡器）
 - 高度灵活的播放队列管理（随机、重复、完全自由的拖动排序、播放队列快照）
 - 歌词支持（内嵌或外挂的 .lrc 歌词和纯文本歌词）
 - 高度自定义的播放通知
 - 高度灵活的音乐库分类，按歌曲、艺术家、专辑、流派和文件夹（扁平或树状）分类，支持多种排序方式，多选支持，支持网格或列表布局等多种布局样式
+- 支持使用自定义分隔符解析多重艺术家和多重流派
 - 高度自定义的主播放器界面
 - Android Auto 支持
 - 高度可定制的点击行为
@@ -63,19 +72,16 @@ Phonograph Plus 继承了原版 Phonograph 的所有功能，并进行了扩展�
 - 搜索支持
 - 歌曲收藏支持
 - 文件播放列表（查看和基本编辑；可置顶播放列表）
-- 内部数据库播放列表
-- 播放历史和频次记录，灵活间隔的最近添加歌曲
+- 内部数据库播放列表（支持导出和置顶）
+- 播放历史和频次记录（皆可被禁用），可指定间隔的最近添加歌曲列表
 - 音频文件元数据查看器和标签编辑器
-- 应用捷径和小部件
+- 应用捷径和小部件（支持深色模式）
 - 图片多来源
 - 设置备份
 - 应用内语言切换
 - ...
 
 了解近期的改动，请移步[更新日志](https://phonographplus.github.io/changelogs/changeslogs/changelog-ZH-CN.html)!
-
-## **截屏**
-见 [Gallery](docs/Gallery.md)
 
 ## **翻译**
 
@@ -84,15 +90,17 @@ Phonograph Plus 继承了原版 Phonograph 的所有功能，并进行了扩展�
 ## **常见问题**
 见 [Trouble Shooting & FAQ](docs/FAQ.md)
 
-## **构建指南与开发指南**
+## **开发**
+
+### 构建与开发
 
 [Build_Instructions.md](docs/Build_Instructions.md)
 
 [Developer Guide](docs/Developer_Guide.md)
 
-## **开发计划**
+### 开发计划
 
-见 [路线图](docs/Road_Map_ZH.md) 与 [Road Map](docs/Road_Map.md)。
+见 [路线图](docs/Road_Map_ZH.md) 或 [Road Map](docs/Road_Map.md)。
 
 ## **仓库镜像**
 

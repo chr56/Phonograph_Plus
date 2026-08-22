@@ -19,7 +19,12 @@
 
 **A revived classic material designed music player for Android**
 
-Phonograph is a light-weighted material designed local music player for Android. And Phonograph Plus currently is an _independent_ fork of [Phonograph](https://github.com/kabouzeid/Phonograph) since it is no longer maintained (which has been no longer active after 2020 and has been archived in 2023), and has been in maintenance and development since 2021.
+Phonograph Plus is a light-weighted offline music player for Android. 
+
+It is an independent, actively maintained fork of [Phonograph](https://github.com/kabouzeid/Phonograph), which been no longer actively maintained after 2020 and has been archived in 2023. 
+Phonograph Plus has been in maintenance and development since 2021. 
+It retains most of Phonograph's original features and familiar user interface while adding new capabilities and enhancements for better user experience. 
+Its underlying codebase has been modernized for development as well.
 
 ## **Downloads**
 
@@ -39,24 +44,26 @@ For descriptions on different version variants, please see [Version Guide](./doc
 
 [^2]: Reproducible Builds are enabled on F-droid, APKs from F-droid shall be exactly equivalent to ones from GitHub Releases, byte by byte.
 
+## **Screenshots**
+See [Gallery](docs/Gallery.md)
 
 ## **Features**
 
-Phonograph Plus inherits all features from [Phonograph](https://github.com/kabouzeid/Phonograph). Here is a notable feature list:
+Phonograph Plus inherits most all features from [Phonograph](https://github.com/kabouzeid/Phonograph). Here is a notable feature list:
 
 If you're familiar with original Phonograph, please see [Additional Features or Enhancements Compared to Original Phonograph](./docs/Feature_Comparison.md).
 
 - Light weight
-- Offline, AD-free and privacy
+- Offline and privacy without advisement
 - Classic Material Design 2
-- Night mode (Light, Dark, Black) supporting automatically switching
+- Night mode (Light, Dark, Black) supporting automatically switching, with an optional alternate night color scheme
 - Customizable theme color (primary, accent) with Monet support
 - Foundational audio playing function (including speed control, sleep timer and equalizer externally provided by system)
 - Flexible queue management (shuffle, repeat, freely rearrange by dragging, queue snapshots)
 - Lyrics support (both synchronized .lrc lyrics and text lyrics, embed or external)
 - Flexible playback notifications that are highly customizable
-- Flexible music organization, organised by songs, artist, albums, genres and folders (flatten or treed), ordered by various orders, with
-  multiple selection support, viewed in grid or list with various layout style
+- Flexible music organization, organized by songs, artist, albums, genres and folders (flatten or treed), ordered by various orders, with multiple selection support, viewed in grid or list with various layout style
+- Multiple artists and genres parsing, with customizable separators
 - Flexible main player user interface that are highly customizable
 - Android Auto support
 - Highly customizable behaviours for clicking
@@ -64,10 +71,10 @@ If you're familiar with original Phonograph, please see [Additional Features or 
 - Search support
 - Favorite songs support
 - File Playlist support (viewing and basic editing; also pin-able)
-- Internal Database Playlist support
-- Play history and frequency record, and last added songs by flexible time intervals
+- Internal Database Playlist support, including export and pinning
+- Optional play history and frequency record, last added songs by flexible time intervals
 - Enhanced audio metadata viewer and tag editor
-- App shortcut and widgets
+- App shortcut and widgets, with dark mode support
 - Multiple source of artwork
 - Backup support of settings and data
 - In-app language switch
@@ -76,9 +83,6 @@ If you're familiar with original Phonograph, please see [Additional Features or 
 It is suggested to browser the [Changelog](https://phonographplus.github.io/changelogs/changeslogs/changelog.html) to
 view all recent changes, improvements and new features.
 
-## **Screenshot**
-See [Gallery](docs/Gallery.md)
-
 ## **Translation**
 
 Translate Phonograph Plus into your language -> [Crowdin](https://crowdin.com/project/phonograph-plus)
@@ -86,17 +90,20 @@ Translate Phonograph Plus into your language -> [Crowdin](https://crowdin.com/pr
 We have removed Bulgarian, Croatian, Swedish and Norwegian Nynorsk translations due to missing too much.
 
 ## **Trouble Shooting & FAQ**
-See [Trouble Shooting & FAQ](docs/FAQ.md)
 
-## **Build Instructions & Developer Guide**
+[Trouble Shooting & FAQ](docs/FAQ.md)
 
-See [Build_Instructions.md](docs/Build_Instructions.md)
+## **Development**
 
-See [Developer Guide](docs/Developer_Guide.md)
+### Build & Development
 
-## **Development Plan** & **TO-DO list**
+[Build_Instructions.md](docs/Build_Instructions.md)
 
-See [Road Map](docs/Road_Map.md)
+[Developer Guide](docs/Developer_Guide.md)
+
+### Development Plan
+
+[Road Map](docs/Road_Map.md)
 
 ## **Repository Mirrors**
 
