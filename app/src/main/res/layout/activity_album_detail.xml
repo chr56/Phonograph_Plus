@@ -81,7 +81,6 @@
                         android:layout_marginBottom="16dp"
                         android:ellipsize="end"
                         android:gravity="center_vertical"
-                        android:maxLines="@integer/detail_header_tile_maxLines"
                         android:orientation="horizontal"
                         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                         app:layout_constraintBottom_toTopOf="@id/song_count_text"
