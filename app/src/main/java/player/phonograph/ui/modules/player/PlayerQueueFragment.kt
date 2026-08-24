@@ -39,6 +39,7 @@ import player.phonograph.ui.theme.themeIconColor
 import player.phonograph.ui.theme.tintButtons
 import player.phonograph.ui.util.PHONOGRAPH_ANIM_TIME
 import player.phonograph.ui.util.applyWindowInsetsAsBottomView
+import player.phonograph.ui.util.isOrientationLandscape
 import player.phonograph.ui.util.observe
 import player.phonograph.ui.util.textColorTransitionAnimator
 import util.theme.color.darkenColor
@@ -130,6 +131,11 @@ class PlayerQueueFragment : AbsMusicServiceFragment() {
         savedInstanceState: Bundle?,
     ): View {
         _viewBinding = FragmentQueueBinding.inflate(inflater)
+        if (isOrientationLandscape(resources)) {
+            binding.playerQueueSubHeader.apply {
+                height = (5 * height / 6)
+            }
+        }
         return binding.root
     }
 

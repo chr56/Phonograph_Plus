@@ -9,7 +9,4 @@
     <dimen name="detail_header_height">144dp</dimen>
     <dimen name="detail_header_image_height">112dp</dimen>
     <dimen name="detail_header_small_image_height">80dp</dimen>
-
-    <!-- Player -->
-    <dimen name="player_queue_sub_header_height">32dp</dimen>
 </resources>
