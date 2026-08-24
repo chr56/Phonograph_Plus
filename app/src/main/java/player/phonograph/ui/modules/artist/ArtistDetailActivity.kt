@@ -201,18 +201,24 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvide
         panelViewModel.updateActivityColor(color)
 
         viewBinding.header.setBackgroundColor(color)
-        viewBinding.durationIcon.setImageDrawable(
-            getTintedDrawable(R.drawable.ic_timer_white_24dp, secondaryTextColor)
-        )
-        viewBinding.songCountIcon.setImageDrawable(
-            getTintedDrawable(R.drawable.ic_music_note_white_24dp, secondaryTextColor)
-        )
-        viewBinding.albumCountIcon.setImageDrawable(
-            getTintedDrawable(R.drawable.ic_album_white_24dp, secondaryTextColor)
+
+        viewBinding.durationText.setCompoundDrawablesWithIntrinsicBounds(
+            getTintedDrawable(R.drawable.ic_timer_white_24dp, secondaryTextColor), null, null, null
         )
         viewBinding.durationText.setTextColor(secondaryTextColor)
+        viewBinding.durationText.compoundDrawablePadding = 16
+
+        viewBinding.songCountText.setCompoundDrawablesWithIntrinsicBounds(
+            getTintedDrawable(R.drawable.ic_music_note_white_24dp, secondaryTextColor), null, null, null
+        )
         viewBinding.songCountText.setTextColor(secondaryTextColor)
+        viewBinding.songCountText.compoundDrawablePadding = 16
+
+        viewBinding.albumCountText.setCompoundDrawablesWithIntrinsicBounds(
+            getTintedDrawable(R.drawable.ic_album_white_24dp, secondaryTextColor), null, null, null
+        )
         viewBinding.albumCountText.setTextColor(secondaryTextColor)
+        viewBinding.albumCountText.compoundDrawablePadding = 16
     }
 
     private suspend fun updateArtistInfo(artist: Artist) {

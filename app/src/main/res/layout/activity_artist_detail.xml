@@ -65,92 +65,35 @@
                         android:layout_marginBottom="16dp"
                         android:orientation="vertical">
 
-                        <LinearLayout
+                        <TextView
+                            android:id="@+id/album_count_text"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center_vertical"
-                            android:orientation="horizontal"
-                            android:paddingStart="0dp"
-                            android:paddingLeft="0dp"
                             android:paddingEnd="16dp"
-                            android:paddingRight="16dp">
+                            android:paddingRight="16dp"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
-                            <ImageView
-                                android:id="@+id/album_count_icon"
-                                android:layout_width="24dp"
-                                android:layout_height="24dp"
-                                android:layout_marginStart="0dp"
-                                android:layout_marginLeft="0dp"
-                                android:layout_marginEnd="8dp"
-                                android:layout_marginRight="8dp"
-                                tools:ignore="ContentDescription,UnusedAttribute" />
-
-                            <TextView
-                                android:id="@+id/album_count_text"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
+                        <TextView
+                            android:id="@+id/song_count_text"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center_vertical"
-                            android:orientation="horizontal"
-                            android:paddingStart="0dp"
-                            android:paddingLeft="0dp"
                             android:paddingEnd="16dp"
-                            android:paddingRight="16dp">
+                            android:paddingRight="16dp"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
-                            <ImageView
-                                android:id="@+id/song_count_icon"
-                                android:layout_width="24dp"
-                                android:layout_height="24dp"
-                                android:layout_marginStart="0dp"
-                                android:layout_marginLeft="0dp"
-                                android:layout_marginEnd="8dp"
-                                android:layout_marginRight="8dp"
-                                tools:ignore="ContentDescription,UnusedAttribute" />
-
-                            <TextView
-                                android:id="@+id/song_count_text"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
+                        <TextView
+                            android:id="@+id/duration_text"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center_vertical"
-                            android:orientation="horizontal"
-                            android:paddingStart="0dp"
-                            android:paddingLeft="0dp"
                             android:paddingEnd="16dp"
-                            android:paddingRight="16dp">
-
-                            <ImageView
-                                android:id="@+id/duration_icon"
-                                android:layout_width="24dp"
-                                android:layout_height="24dp"
-                                android:layout_marginStart="0dp"
-                                android:layout_marginLeft="0dp"
-                                android:layout_marginEnd="8dp"
-                                android:layout_marginRight="8dp"
-                                tools:ignore="ContentDescription,UnusedAttribute" />
-
-                            <TextView
-                                android:id="@+id/duration_text"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
-
-                        </LinearLayout>
+                            android:paddingRight="16dp"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
                     </LinearLayout>
 
