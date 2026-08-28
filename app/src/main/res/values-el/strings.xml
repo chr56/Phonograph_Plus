@@ -126,7 +126,7 @@
     <string name="app_widget_small_name">Phonograph - Μικρό</string>
     <string name="app_shortcut_shuffle_all_short">Τυχαία αναπαραγωγή</string>
     <string name="app_shortcut_top_tracks_short">Κορυφαία Κομμάτια</string>
-    <string name="app_shortcut_last_added_short">Προστέθηκαν τελευταία</string>
+    <string name="app_shortcut_last_added_short">@string/playlist_last_added</string>
     <string name="about_special_thanks_to">Ιδιαίτερες ευχαριστίες προς</string>
     <string name="about_support_development">Υποστηρίξτε την ανάπτυξη της εφαρμογής</string>
     <string name="about_version">Έκδοση</string>

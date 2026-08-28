@@ -37,6 +37,7 @@
     <string name="action_share">Teilen</string>
     <string name="action_settings">Einstellungen</string>
     <string name="action_grant">Erlauben</string>
+    <string name="action_grant_all">Alle erlauben</string>
     <string name="action_about">Über</string>
     <string name="action_add_to_favorites">Zu Favoriten hinzufügen</string>
     <string name="action_remove_from_favorites">Aus Favoriten entfernen</string>
@@ -119,6 +120,7 @@
     <string name="label_file_playlists">Datei-Wiedergabelisten</string>
     <string name="label_database_playlists">Datenbank-Wiedergabelisten</string>
     <string name="label_other">Sonstiges</string>
+    <string name="label_name">Name</string>
     <string name="label_misc">Sonstiges</string>
     <string name="label_biography">Biografie</string>
     <string name="label_wiki">Wiki</string>
@@ -306,6 +308,7 @@
     <string name="notification_update_name">Aktualisieren</string>
     <string name="notification_update_description">App-Benachrichtigungen können aktualisiert werden.</string>
     <string name="notification_error_name">Fehlerberichte</string>
+    <string name="notification_error_description">Benachrichtigungen zum Anzeigen von Fehlerberichten nach nicht-fatalen internen Fehlern.</string>
     <string name="notification_background_name">Hintergrundarbeit</string>
     <string name="notification_background_description">Benachrichtigung über laufende Aufgaben, die im Hintergrund laufen.</string>
     <string name="notification_database_name">Datenbank-Synchronisation</string>
@@ -358,6 +361,7 @@
     <string name="pref_header_files">Dateien</string>
     <string name="pref_header_notification">Benachrichtigung</string>
     <string name="pref_header_compatibility">Kompatibilität</string>
+    <string name="pref_header_experimental">Experimentell</string>
     <string name="pref_title_always_play">Spiele immer</string>
     <string name="pref_title_always_use_media_session_to_display_cover">Medien-Session immer verwenden, um Cover anzuzeigen</string>
     <string name="pref_title_app_shortcuts">Farbige App-Shortcuts</string>
@@ -397,6 +401,9 @@
     <string name="pref_title_use_legacy_favorite_playlist_impl">Altes Lieblings-Wiedergabelisten Verfahren verwenden</string>
     <string name="pref_title_use_legacy_status_bar_lyrics_api">Herkömmliche StatusBar Lyrics API verwenden</string>
     <string name="perf_title_fixed_tab_layout">Alle Tabs fixieren</string>
+    <string name="pref_title_lyrics_size_cover">Schriftgröße des Songtexts (Hauptspieler)</string>
+    <string name="pref_title_lyrics_align_cover">Ausrichtung des Songtexts (Hauptspieler)</string>
+    <string name="pref_title_lyrics_size_dialog">Schriftgröße des Songtextes (Pop-up)</string>
     <string name="pref_summary_always_play">Ignoriere jegliche Unterbrechungen und spiele weiter, egal was noch gespielt wird. (Dies kann unter bestimmten Umständen zu leiser Ausgabe führen.)</string>
     <string name="pref_summary_always_use_media_session_to_display_cover">Benutze immer Media Session, um dem System Cover-Bilder für Benachrichtigungen usw. bereitzustellen.</string>
     <string name="pref_summary_audio_ducking">Benachrichtigungen, Navigation etc.</string>
