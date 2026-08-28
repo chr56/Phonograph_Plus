@@ -6,8 +6,9 @@ package player.phonograph.ui.modules.setting.components
 
 import player.phonograph.R
 import player.phonograph.foundation.concurrent.coroutineToast
-import player.phonograph.ui.compose.components.actions.ActionItem
+import player.phonograph.model.menu.ActionEntry
 import player.phonograph.ui.compose.components.dialogs.AdvancedDialogFrame
+import player.phonograph.ui.resource.ActionSemantics
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -34,9 +35,6 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.outlined.Build
-import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -78,22 +76,19 @@ fun StringValuesEditor(
         title = title,
         onDismissRequest = onDismissRequest,
         actions = listOf(
-            ActionItem(
-                imageVector = Icons.Default.Refresh,
-                textRes = R.string.action_refresh,
-                onClick = actionRefresh,
+            ActionEntry.ToolbarEntry(
+                semantic = ActionSemantics.Refresh,
+                action = { actionRefresh() },
             ),
         ),
         collapsedActions = listOf(
-            ActionItem(
-                imageVector = Icons.Outlined.Delete,
-                textRes = R.string.action_clear,
-                onClick = { showClearConfirmationDialog = true },
+            ActionEntry.ToolbarEntry(
+                semantic = ActionSemantics.Clear,
+                action = { showClearConfirmationDialog = true },
             ),
-            ActionItem(
-                imageVector = Icons.Outlined.Build,
-                textRes = R.string.action_reset,
-                onClick = { showResetConfirmationDialog = true },
+            ActionEntry.ToolbarEntry(
+                semantic = ActionSemantics.Reset,
+                action = { showResetConfirmationDialog = true },
             ),
         ),
     ) {

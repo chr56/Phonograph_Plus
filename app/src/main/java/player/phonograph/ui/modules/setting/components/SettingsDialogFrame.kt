@@ -5,7 +5,7 @@
 package player.phonograph.ui.modules.setting.components
 
 import player.phonograph.R
-import player.phonograph.ui.compose.components.actions.ActionItem
+import player.phonograph.model.menu.ActionEntry
 import player.phonograph.ui.compose.components.dialogs.AdvancedDialogFrame
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,7 +35,7 @@ fun SettingsDialogFrame(
     modifier: Modifier,
     title: String,
     onDismissRequest: () -> Unit,
-    actions: List<ActionItem>,
+    actions: List<ActionEntry>,
     innerShadow: Boolean = false,
     scrollable: Boolean = false,
     content: @Composable () -> Unit,

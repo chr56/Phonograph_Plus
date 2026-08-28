@@ -11,17 +11,17 @@ import player.phonograph.foundation.dateTimeSuffixCompat
 import player.phonograph.foundation.error.warning
 import player.phonograph.mechanism.backup.Backup
 import player.phonograph.model.backup.BackupItem
+import player.phonograph.model.menu.ActionEntry
 import player.phonograph.model.ui.GeneralTheme
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
-import player.phonograph.ui.compose.components.actions.ActionItem
 import player.phonograph.ui.compose.components.dialogs.AdvancedDialogFrame
 import player.phonograph.ui.compose.components.dialogs.LimitedDialog
+import player.phonograph.ui.resource.ActionSemantics
 import player.phonograph.ui.theme.tintButtons
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -66,10 +66,9 @@ class BackupExportDialog : ComposeViewDialogFragment() {
                     navigationButtonIcon = rememberVectorPainter(Icons.Default.Close),
                     onDismissRequest = ::dismiss,
                     actions = listOf(
-                        ActionItem(
-                            Icons.Default.Check,
-                            textRes = android.R.string.ok,
-                            onClick = { execute() }
+                        ActionEntry.ToolbarEntry(
+                            semantic = ActionSemantics.Confirm,
+                            action = { execute() }
                         )
                     ),
                 ) {

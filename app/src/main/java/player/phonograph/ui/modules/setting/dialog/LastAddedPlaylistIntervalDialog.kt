@@ -5,15 +5,14 @@
 package player.phonograph.ui.modules.setting.dialog
 
 import player.phonograph.R
+import player.phonograph.model.menu.ActionEntry
 import player.phonograph.model.time.Duration
 import player.phonograph.model.time.TimeIntervalCalculationMode
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
-import player.phonograph.ui.compose.components.actions.ActionItem
 import player.phonograph.ui.modules.setting.elements.LastAddedPlaylistIntervalSettings
+import player.phonograph.ui.resource.ActionSemantics
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -44,10 +43,9 @@ class LastAddedPlaylistIntervalDialog : AbsSettingsDialog() {
             modifier = Modifier,
             title = stringResource(R.string.pref_title_last_added_interval),
             actions = listOf(
-                ActionItem(
-                    Icons.Default.Check,
-                    textRes = android.R.string.ok,
-                    onClick = {
+                ActionEntry.ToolbarEntry(
+                    semantic = ActionSemantics.Confirm,
+                    action = {
                         Settings(context)[Keys._lastAddedCutOffMode].data = currentlySelectedMode.value
                         Settings(context)[Keys._lastAddedCutOffDuration].data = currentlySelected.serialise()
                     }

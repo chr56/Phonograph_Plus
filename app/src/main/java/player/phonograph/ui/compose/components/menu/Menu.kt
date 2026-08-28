@@ -4,14 +4,12 @@
 
 package player.phonograph.ui.compose.components.menu
 
-import player.phonograph.R
+import player.phonograph.model.menu.ActionEntry
 import player.phonograph.ui.compose.components.actions.ActionIconButton
-import player.phonograph.ui.compose.components.actions.ActionItem
+import player.phonograph.ui.resource.ActionSemantics
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.DropdownMenu
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -19,21 +17,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 
-@Composable
-fun DropDownMenuContent(
-    list: List<Pair<String, Function0<Unit>>>,
-) {
-    Column {
-        for ((str, block) in list) {
-            TextMenuItem(text = str, onClick = block)
-        }
-    }
-}
-
 
 @Composable
 fun DropDownMenuContent(
-    actions: List<ActionItem>,
+    actions: List<ActionEntry>,
     withIcon: Boolean = false,
 ) {
     Column {
@@ -45,11 +32,13 @@ fun DropDownMenuContent(
 
 
 @Composable
-fun CollapsedActionMenu(actions: List<ActionItem>, withIcon: Boolean, modifier: Modifier = Modifier) {
+fun CollapsedActionMenu(actions: List<ActionEntry>, withIcon: Boolean, modifier: Modifier = Modifier) {
     var showMenu by remember { mutableStateOf(false) }
     Box(modifier) {
         ActionIconButton(
-            ActionItem(imageVector = Icons.Default.MoreVert, textRes = R.string.action_more) { showMenu = true }
+            ActionEntry.ToolbarEntry(
+                semantic = ActionSemantics.More, action = { showMenu = true }
+            )
         )
         DropdownMenu(expanded = showMenu, onDismissRequest = { showMenu = false }) {
             DropDownMenuContent(actions, withIcon = withIcon)

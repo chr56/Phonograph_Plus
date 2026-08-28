@@ -4,7 +4,10 @@
 
 package player.phonograph.ui.compose.components.menu
 
-import player.phonograph.ui.compose.components.actions.ActionItem
+import player.phonograph.model.menu.ActionEntry
+import player.phonograph.ui.resource.interpreter
+import player.phonograph.ui.resource.painter
+import player.phonograph.ui.resource.text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -14,23 +17,28 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
 
 @Composable
-fun MenuItem(item: ActionItem, withIcon: Boolean) {
+fun MenuItem(item: ActionEntry, withIcon: Boolean) {
+    val scope = rememberCoroutineScope()
+    val semantic = remember(item) { item.semantic.interpreter() }
+    val onClick: () -> Unit = { scope.launch { item.action() } }
     if (withIcon) {
-        IconTextMenuItem(icon = item.iconPainter(), text = item.text()!!, onClick = item.onClick)
+        IconTextMenuItem(icon = semantic.painter(), text = semantic.text(), onClick = onClick)
     } else {
-        TextMenuItem(text = item.text()!!, onClick = item.onClick)
+        TextMenuItem(text = semantic.text(), onClick = onClick)
     }
 }
 
 @Composable
-fun TextMenuItem(
+private fun TextMenuItem(
     text: String,
     onClick: () -> Unit,
 ) {
@@ -46,7 +54,7 @@ fun TextMenuItem(
 }
 
 @Composable
-fun IconTextMenuItem(
+private fun IconTextMenuItem(
     icon: Painter,
     text: String,
     onClick: () -> Unit,

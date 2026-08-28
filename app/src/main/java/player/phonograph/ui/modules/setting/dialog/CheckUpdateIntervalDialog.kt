@@ -5,14 +5,12 @@
 package player.phonograph.ui.modules.setting.dialog
 
 import player.phonograph.R
+import player.phonograph.model.menu.ActionEntry
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
-import player.phonograph.ui.compose.components.actions.ActionItem
 import player.phonograph.ui.modules.setting.elements.CheckUpdateIntervalSettings
+import player.phonograph.ui.resource.ActionSemantics
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,18 +32,16 @@ class CheckUpdateIntervalDialog : AbsSettingsDialog() {
             modifier = Modifier,
             title = stringResource(R.string.pref_title_check_for_updates_interval),
             actions = listOf(
-                ActionItem(
-                    Icons.Default.Refresh,
-                    textRes = R.string.action_reset,
-                    onClick = {
+                ActionEntry.ToolbarEntry(
+                    semantic = ActionSemantics.Reset,
+                    action = {
                         preference.data = key.valueProvider.defaultValue()
                         dismiss()
                     }
                 ),
-                ActionItem(
-                    Icons.Default.Check,
-                    textRes = android.R.string.ok,
-                    onClick = {
+                ActionEntry.ToolbarEntry(
+                    semantic = ActionSemantics.Confirm,
+                    action = {
                         preference.data = duration
                         dismiss()
                     }

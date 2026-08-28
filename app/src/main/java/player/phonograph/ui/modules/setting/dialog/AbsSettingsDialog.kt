@@ -4,9 +4,9 @@
 
 package player.phonograph.ui.modules.setting.dialog
 
+import player.phonograph.model.menu.ActionEntry
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
-import player.phonograph.ui.compose.components.actions.ActionItem
 import player.phonograph.ui.compose.components.dialogs.LimitedDialog
 import player.phonograph.ui.modules.setting.components.SettingsDialogFrame
 import androidx.compose.runtime.Composable
@@ -18,7 +18,7 @@ abstract class AbsSettingsDialog : ComposeViewDialogFragment() {
     protected fun SettingsDialog(
         modifier: Modifier,
         title: String,
-        actions: List<ActionItem>,
+        actions: List<ActionEntry>,
         scrollable: Boolean = false,
         innerShadow: Boolean = false,
         content: @Composable () -> Unit,

@@ -8,13 +8,12 @@ import player.phonograph.R
 import player.phonograph.foundation.setBit
 import player.phonograph.foundation.testBit
 import player.phonograph.foundation.unsetBit
+import player.phonograph.model.menu.ActionEntry
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
-import player.phonograph.ui.compose.components.actions.ActionItem
 import player.phonograph.ui.modules.setting.elements.ClickModeSettings
+import player.phonograph.ui.resource.ActionSemantics
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -52,10 +51,9 @@ class ClickModeSettingDialog : AbsSettingsDialog() {
             modifier = Modifier,
             title = stringResource(R.string.pref_title_click_behavior),
             actions = listOf(
-                ActionItem(
-                    Icons.Default.Check,
-                    textRes = android.R.string.ok,
-                    onClick = { dismiss() }
+                ActionEntry.ToolbarEntry(
+                    semantic = ActionSemantics.Confirm,
+                    action = { dismiss() }
                 )
             ),
             scrollable = true,

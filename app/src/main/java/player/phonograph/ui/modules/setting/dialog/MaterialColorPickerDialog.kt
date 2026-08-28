@@ -6,19 +6,20 @@ package player.phonograph.ui.modules.setting.dialog
 
 import player.phonograph.R
 import player.phonograph.mechanism.PhonographShortcutManager
+import player.phonograph.model.menu.ActionEntry
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
-import player.phonograph.ui.compose.components.actions.ActionItem
 import player.phonograph.ui.compose.components.dialogs.AdvancedDialogFrame
+import player.phonograph.ui.compose.components.dialogs.LimitedDialog
 import player.phonograph.ui.compose.components.picker.ColorPalettePicker
 import player.phonograph.ui.compose.components.picker.ColorPicker
-import player.phonograph.ui.compose.components.dialogs.LimitedDialog
+import player.phonograph.ui.resource.ActionSemantics
+import player.phonograph.ui.resource.ConcreteActionSemantic
 import player.phonograph.ui.theme.ColorPalette
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -67,10 +68,12 @@ class MaterialColorPickerDialog : ComposeViewDialogFragment() {
                     navigationButtonIcon = rememberVectorPainter(Icons.Default.Close),
                     onDismissRequest = ::dismiss,
                     actions = listOf(
-                        ActionItem(
-                            imageRes = R.drawable.ic_edit_white_24dp,
-                            textRes = R.string.pref_category_advanced,
-                            onClick = {
+                        ActionEntry.ToolbarEntry(
+                            semantic = ConcreteActionSemantic(
+                                imageRes = R.drawable.ic_edit_white_24dp,
+                                textRes = R.string.pref_category_advanced,
+                            ),
+                            action = {
                                 page = if (SDK_INT >= VERSION_CODES.S) {
                                     when (page) {
                                         Page.Material -> Page.HSV
@@ -85,10 +88,9 @@ class MaterialColorPickerDialog : ComposeViewDialogFragment() {
                                 }
                             }
                         ),
-                        ActionItem(
-                            Icons.Default.Check,
-                            textRes = R.string.action_select,
-                            onClick = {
+                        ActionEntry.ToolbarEntry(
+                            semantic = ActionSemantics.Select,
+                            action = {
                                 applyNewColor(
                                     context,
                                     colorSelected.toArgb(),

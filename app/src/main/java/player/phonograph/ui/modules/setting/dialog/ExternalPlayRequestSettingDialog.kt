@@ -5,13 +5,12 @@
 package player.phonograph.ui.modules.setting.dialog
 
 import player.phonograph.R
+import player.phonograph.model.menu.ActionEntry
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
-import player.phonograph.ui.compose.components.actions.ActionItem
 import player.phonograph.ui.modules.setting.elements.ExternalPlayRequestSettings
+import player.phonograph.ui.resource.ActionSemantics
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -64,10 +63,9 @@ class ExternalPlayRequestSettingDialog : AbsSettingsDialog() {
             modifier = Modifier,
             title = stringResource(R.string.pref_title_external_play_request),
             actions = listOf(
-                ActionItem(
-                    Icons.Default.Check,
-                    textRes = android.R.string.ok,
-                    onClick = { dismiss() }
+                ActionEntry.ToolbarEntry(
+                    semantic = ActionSemantics.Confirm,
+                    action = { dismiss() }
                 )
             ),
             scrollable = true,

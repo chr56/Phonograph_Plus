@@ -5,11 +5,12 @@
 package player.phonograph.ui.modules.explorer
 
 import player.phonograph.R
+import player.phonograph.model.menu.ActionEntry
 import player.phonograph.ui.basis.ComposeActivity
 import player.phonograph.ui.compose.PhonographTheme
-import player.phonograph.ui.compose.components.actions.ActionItem
 import player.phonograph.ui.compose.components.dialogs.AdvancedDialogFrame
 import player.phonograph.ui.compose.components.dialogs.LimitedDialog
+import player.phonograph.ui.resource.ActionSemantics
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.viewModels
@@ -18,7 +19,6 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
@@ -46,10 +46,9 @@ class PathSelectorDialogActivity : ComposeActivity() {
                             navigationButtonIcon = rememberVectorPainter(Icons.Default.Close),
                             onDismissRequest = ::finish,
                             actions = listOf(
-                                ActionItem(
-                                    imageVector = Icons.Default.Check,
-                                    textRes = R.string.action_select,
-                                    onClick = ::onSelect,
+                                ActionEntry.ToolbarEntry(
+                                    semantic = ActionSemantics.Select,
+                                    action = { onSelect() },
                                 )
                             ),
                         ) {

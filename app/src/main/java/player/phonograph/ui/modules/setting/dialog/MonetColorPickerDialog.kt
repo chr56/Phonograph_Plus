@@ -5,19 +5,19 @@
 package player.phonograph.ui.modules.setting.dialog
 
 import player.phonograph.R
+import player.phonograph.model.menu.ActionEntry
 import player.phonograph.model.ui.MonetColor
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
-import player.phonograph.ui.compose.components.actions.ActionItem
 import player.phonograph.ui.compose.components.dialogs.AdvancedDialogFrame
-import player.phonograph.ui.compose.components.picker.ColorPalettePicker
 import player.phonograph.ui.compose.components.dialogs.LimitedDialog
+import player.phonograph.ui.compose.components.picker.ColorPalettePicker
+import player.phonograph.ui.resource.ActionSemantics
 import player.phonograph.ui.theme.ColorPalette
 import androidx.annotation.RequiresApi
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -41,10 +41,10 @@ class MonetColorPickerDialog : ComposeViewDialogFragment() {
     private lateinit var mode: ColorPalette.Variant
     private val settingKey
         get() = when (mode) {
-            ColorPalette.Variant.Primary         -> Keys.monetPalettePrimaryColor
-            ColorPalette.Variant.Accent          -> Keys.monetPaletteAccentColor
+            ColorPalette.Variant.Primary -> Keys.monetPalettePrimaryColor
+            ColorPalette.Variant.Accent -> Keys.monetPaletteAccentColor
             ColorPalette.Variant.PrimaryForNight -> Keys.monetPalettePrimaryColorForNight
-            ColorPalette.Variant.AccentForNight  -> Keys.monetPaletteAccentColorForNight
+            ColorPalette.Variant.AccentForNight -> Keys.monetPaletteAccentColorForNight
         }
 
     private fun read(): MonetColor.MonetColorPalette {
@@ -75,10 +75,9 @@ class MonetColorPickerDialog : ComposeViewDialogFragment() {
                     navigationButtonIcon = rememberVectorPainter(Icons.Default.Close),
                     onDismissRequest = ::dismiss,
                     actions = listOf(
-                        ActionItem(
-                            Icons.Default.Check,
-                            textRes = R.string.action_select,
-                            onClick = { save(selected) }
+                        ActionEntry.ToolbarEntry(
+                            semantic = ActionSemantics.Select,
+                            action = { save(selected) }
                         )
                     ),
                 ) {

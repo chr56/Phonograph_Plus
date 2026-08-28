@@ -5,16 +5,14 @@
 package player.phonograph.ui.modules.setting.dialog
 
 import player.phonograph.R
+import player.phonograph.model.menu.ActionEntry
 import player.phonograph.model.ui.NowPlayingScreenStyle
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Preference
 import player.phonograph.settings.Settings
-import player.phonograph.ui.compose.components.actions.ActionItem
 import player.phonograph.ui.modules.setting.elements.NowPlayingScreenStyleSettings
+import player.phonograph.ui.resource.ActionSemantics
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -45,18 +43,16 @@ class NowPlayingScreenStylePreferenceDialog : AbsSettingsDialog() {
             modifier = Modifier,
             title = stringResource(R.string.pref_title_now_playing_screen_style),
             actions = listOf(
-                ActionItem(
-                    Icons.Default.Refresh,
-                    textRes = R.string.action_reset,
-                    onClick = {
+                ActionEntry.ToolbarEntry(
+                    semantic = ActionSemantics.Reset,
+                    action = {
                         lifecycleScope.launch(Dispatchers.IO) { preference.reset() }
                         dismiss()
                     }
                 ),
-                ActionItem(
-                    Icons.Default.Check,
-                    textRes = android.R.string.ok,
-                    onClick = {
+                ActionEntry.ToolbarEntry(
+                    semantic = ActionSemantics.Confirm,
+                    action = {
                         lifecycleScope.launch(Dispatchers.IO) { preference.edit { state.value } }
                         dismiss()
                     }

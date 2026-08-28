@@ -5,18 +5,16 @@
 package player.phonograph.ui.modules.setting.dialog
 
 import player.phonograph.R
+import player.phonograph.model.menu.ActionEntry
 import player.phonograph.model.pages.PagesConfig
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
 import player.phonograph.ui.adapter.SortableListAdapter
-import player.phonograph.ui.compose.components.actions.ActionItem
+import player.phonograph.ui.resource.ActionSemantics
 import player.phonograph.ui.resource.Texts
 import player.phonograph.ui.theme.textColorPrimary
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -40,15 +38,13 @@ class HomeTabConfigDialog : AbsSettingsDialog() {
             modifier = Modifier,
             title = stringResource(R.string.label_library_categories),
             actions = listOf(
-                ActionItem(
-                    Icons.Default.Refresh,
-                    textRes = R.string.action_reset,
-                    onClick = { actionReset() }
+                ActionEntry.ToolbarEntry(
+                    semantic = ActionSemantics.Reset,
+                    action = { actionReset() }
                 ),
-                ActionItem(
-                    Icons.Default.Check,
-                    textRes = android.R.string.ok,
-                    onClick = { actionApply() }
+                ActionEntry.ToolbarEntry(
+                    semantic = ActionSemantics.Confirm,
+                    action = { actionApply() }
                 ),
             )
         ) {

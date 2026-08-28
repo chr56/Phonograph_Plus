@@ -5,10 +5,11 @@
 package player.phonograph.ui.compose.components.dialogs
 
 import player.phonograph.R
+import player.phonograph.model.menu.ActionEntry
 import player.phonograph.ui.compose.components.actions.ActionIconButton
-import player.phonograph.ui.compose.components.actions.ActionItem
 import player.phonograph.ui.compose.components.actions.optionalActionIconButton
 import player.phonograph.ui.compose.components.menu.CollapsedActionMenu
+import player.phonograph.ui.resource.ConcreteActionSemantic
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -34,8 +35,8 @@ fun AdvancedDialogFrame(
     title: String,
     onDismissRequest: () -> Unit,
     navigationButtonIcon: Painter? = rememberVectorPainter(Icons.AutoMirrored.Default.ArrowBack),
-    actions: List<ActionItem> = emptyList(),
-    collapsedActions: List<ActionItem> = emptyList(),
+    actions: List<ActionEntry> = emptyList(),
+    collapsedActions: List<ActionEntry> = emptyList(),
     iconsInCollapsedMenu: Boolean = false,
     content: @Composable ColumnScope.() -> Unit,
 ) {
@@ -67,9 +68,9 @@ interface DialogBuilderScope {
         onClick: () -> Unit,
     )
 
-    fun actionButton(item: ActionItem)
+    fun actionButton(item: ActionEntry)
 
-    fun actionButtons(items: List<ActionItem>)
+    fun actionButtons(items: List<ActionEntry>)
 
     fun content(block: @Composable ColumnScope.() -> Unit)
 
@@ -95,7 +96,7 @@ private class DialogBuilder : DialogBuilderScope {
 
     private var _title: String = ""
     private var _painter: Painter? = null
-    private val _actionButtons: MutableList<ActionItem> = mutableListOf()
+    private val _actionButtons: MutableList<ActionEntry> = mutableListOf()
     private var _content: @Composable (ColumnScope.() -> Unit) = {}
     private var _onDismissRequest: () -> Unit = {}
 
@@ -115,21 +116,23 @@ private class DialogBuilder : DialogBuilderScope {
         onClick: () -> Unit,
     ) {
         _actionButtons.add(
-            ActionItem(
-                imageVector = imageVector,
-                imageRes = imageRes,
-                text = text,
-                textRes = textRes,
-                onClick = onClick
+            ActionEntry.ToolbarEntry(
+                semantic = ConcreteActionSemantic(
+                    imageVector = imageVector,
+                    imageRes = imageRes,
+                    text = text,
+                    textRes = textRes,
+                ),
+                action = onClick,
             )
         )
     }
 
-    override fun actionButton(item: ActionItem) {
+    override fun actionButton(item: ActionEntry) {
         _actionButtons.add(item)
     }
 
-    override fun actionButtons(items: List<ActionItem>) {
+    override fun actionButtons(items: List<ActionEntry>) {
         _actionButtons.addAll(items)
     }
 

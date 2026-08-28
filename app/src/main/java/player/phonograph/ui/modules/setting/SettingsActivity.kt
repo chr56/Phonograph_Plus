@@ -14,6 +14,7 @@ import lib.storage.launcher.OpenFileStorageAccessDelegate
 import player.phonograph.R
 import player.phonograph.foundation.Reboot
 import player.phonograph.mechanism.backup.Backup
+import player.phonograph.model.menu.ActionEntry
 import player.phonograph.settings.Settings
 import player.phonograph.ui.basis.ComposeActivity
 import player.phonograph.ui.compose.PhonographTheme
@@ -24,6 +25,8 @@ import player.phonograph.ui.modules.backup.BackupExportDialog
 import player.phonograph.ui.modules.backup.BackupImportDialog
 import player.phonograph.ui.modules.explorer.PathSelectorContractTool
 import player.phonograph.ui.modules.explorer.PathSelectorRequester
+import player.phonograph.ui.resource.ActionSemantics
+import player.phonograph.ui.resource.ConcreteActionSemantic
 import util.theme.materials.MaterialColor
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -54,7 +57,6 @@ import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
-import android.content.Context
 import android.os.Bundle
 import android.widget.Toast
 import kotlinx.coroutines.Dispatchers
@@ -132,74 +134,78 @@ class SettingsActivity : ComposeActivity(),
         val context = LocalContext.current
         DropDownMenuContent(
             listOf(
-                menuItemClearAll(context),
-                menuItemImport(context),
-                menuItemExport(),
-                menuItemDeleteDatabase(),
+                ActionEntry.ToolbarEntry(
+                    semantic = ActionSemantics.ClearAllPreference,
+                    action = {
+                        AlertDialog.Builder(context)
+                            .setTitle(R.string.action_clear_all_preference)
+                            .setMessage(R.string.warning_clear_all_preference_msg)
+                            .setNegativeButton(android.R.string.cancel) { dialog, _ ->
+                                dialog.dismiss()
+                            }
+                            .setPositiveButton(R.string.action_clear_all_preference) { dialog, _ ->
+                                dialog.dismiss()
+                                runBlocking {
+                                    if (Settings(context).clearAll()) {
+                                        Toast.makeText(context, R.string.success, Toast.LENGTH_SHORT).show()
+                                        Reboot.reboot(context)
+                                    } else {
+                                        Toast.makeText(context, R.string.failed, Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                            }
+                            .create().apply {
+                                setOnShowListener {
+                                    (it as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(
+                                        MaterialColor.Red._A700.asColor
+                                    )
+                                }
+                            }.show()
+                    }
+                ),
+                ActionEntry.ToolbarEntry(
+                    semantic = ConcreteActionSemantic(
+                        textRes = R.string.action_import,
+                        text = stringResource(id = R.string.action_import).format(stringResource(id = R.string.label_backup))
+                    ),
+                    action = {
+                        openFileStorageAccessDelegate.launch(
+                            OpenDocumentContract.Config(arrayOf("*/*"))
+                        ) { uri ->
+                            uri ?: return@launch
+                            lifecycleScope.launch(Dispatchers.IO) {
+                                context.contentResolver.openFileDescriptor(uri, "r")?.use {
+                                    FileInputStream(it.fileDescriptor).use { stream ->
+                                        val sessionId = Backup.Import.startImportBackupFromArchive(
+                                            context = this@SettingsActivity, stream
+                                        )
+                                        BackupImportDialog.newInstance(sessionId).show(supportFragmentManager, "IMPORT")
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ),
+                ActionEntry.ToolbarEntry(
+                    semantic = ConcreteActionSemantic(
+                        textRes = R.string.action_export,
+                        text = stringResource(id = R.string.action_export).format(stringResource(id = R.string.label_backup))
+                    ),
+                    action = {
+                        BackupExportDialog().show(supportFragmentManager, "EXPORT")
+                    }
+                ),
+                ActionEntry.ToolbarEntry(
+                    semantic = ConcreteActionSemantic(
+                        textRes = R.string.label_database_maintenance
+                    ),
+                    action = {
+                        DatabaseMaintenanceDialog.create().show(supportFragmentManager, "DATABASE_MAINTENANCE")
+                    }
+                )
             )
         )
     }
-
-    @Composable
-    private fun menuItemClearAll(context: Context): Pair<String, Function0<Unit>> =
-        stringResource(id = R.string.action_clear_all_preference) to {
-            AlertDialog.Builder(context)
-                .setTitle(R.string.action_clear_all_preference)
-                .setMessage(R.string.warning_clear_all_preference_msg)
-                .setNegativeButton(android.R.string.cancel) { dialog, _ ->
-                    dialog.dismiss()
-                }
-                .setPositiveButton(R.string.action_clear_all_preference) { dialog, _ ->
-                    dialog.dismiss()
-                    runBlocking {
-                        if (Settings(context).clearAll()) {
-                            Toast.makeText(context, R.string.success, Toast.LENGTH_SHORT).show()
-                            Reboot.reboot(context)
-                        } else {
-                            Toast.makeText(context, R.string.failed, Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                }
-                .create().apply {
-                    setOnShowListener {
-                        (it as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(
-                            MaterialColor.Red._A700.asColor
-                        )
-                    }
-                }.show()
-        }
-
-    @Composable
-    private fun menuItemImport(context: Context): Pair<String, Function0<Unit>> =
-        stringResource(id = R.string.action_import).format(stringResource(id = R.string.label_backup)) to {
-            openFileStorageAccessDelegate.launch(
-                OpenDocumentContract.Config(arrayOf("*/*"))
-            ) { uri ->
-                uri ?: return@launch
-                lifecycleScope.launch(Dispatchers.IO) {
-                    context.contentResolver.openFileDescriptor(uri, "r")?.use {
-                        FileInputStream(it.fileDescriptor).use { stream ->
-                            val sessionId = Backup.Import.startImportBackupFromArchive(
-                                context = this@SettingsActivity, stream
-                            )
-                            BackupImportDialog.newInstance(sessionId).show(supportFragmentManager, "IMPORT")
-                        }
-                    }
-                }
-            }
-        }
-
-    @Composable
-    private fun menuItemExport(): Pair<String, Function0<Unit>> =
-        stringResource(id = R.string.action_export).format(stringResource(id = R.string.label_backup)) to {
-            BackupExportDialog().show(supportFragmentManager, "EXPORT")
-        }
-
-    @Composable
-    private fun menuItemDeleteDatabase(): Pair<String, Function0<Unit>> =
-        stringResource(R.string.label_database_maintenance) to {
-            DatabaseMaintenanceDialog.create().show(supportFragmentManager, "DATABASE_MAINTENANCE")
-        }
 
 
     override val createFileStorageAccessDelegate: CreateFileStorageAccessDelegate = CreateFileStorageAccessDelegate()
