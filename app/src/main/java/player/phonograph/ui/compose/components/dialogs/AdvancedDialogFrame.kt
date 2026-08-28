@@ -7,8 +7,7 @@ package player.phonograph.ui.compose.components.dialogs
 import player.phonograph.R
 import player.phonograph.model.menu.ActionEntry
 import player.phonograph.ui.compose.components.actions.ActionIconButton
-import player.phonograph.ui.compose.components.actions.optionalActionIconButton
-import player.phonograph.ui.compose.components.menu.CollapsedActionMenu
+import player.phonograph.ui.compose.components.actions.CollapsedActionMenu
 import player.phonograph.ui.resource.ConcreteActionSemantic
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -160,9 +159,16 @@ private class DialogBuilder : DialogBuilderScope {
 
 @Composable
 private fun navigationIcon(painter: Painter?, onClick: () -> Unit) =
-    optionalActionIconButton(
-        painter,
-        tint = MaterialTheme.colors.onPrimary,
-        text = stringResource(R.string.action_exit),
-        onClick = onClick
-    )
+    if (painter != null) {
+        @Composable {
+            ActionIconButton(
+                painter,
+                tint = MaterialTheme.colors.onPrimary,
+                text = stringResource(R.string.action_exit),
+                onClick = onClick
+            )
+        }
+    } else {
+        null
+    }
+

@@ -51,25 +51,3 @@ fun ActionIconButton(
     }
 }
 
-
-@Composable
-fun optionalActionIconButton(
-    painter: Painter?,
-    tint: Color,
-    modifier: Modifier = Modifier,
-    text: String? = null,
-    onClick: () -> Unit,
-): (@Composable () -> Unit)? =
-    if (painter != null) {
-        @Composable {
-            ActionIconButton(
-                painter,
-                tint = tint,
-                modifier = modifier,
-                text = text,
-                onClick = onClick
-            )
-        }
-    } else {
-        null
-    }

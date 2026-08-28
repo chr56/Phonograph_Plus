@@ -18,7 +18,7 @@ import player.phonograph.model.menu.ActionEntry
 import player.phonograph.settings.Settings
 import player.phonograph.ui.basis.ComposeActivity
 import player.phonograph.ui.compose.PhonographTheme
-import player.phonograph.ui.compose.components.menu.DropDownMenuContent
+import player.phonograph.ui.compose.components.actions.DropDownMenuContent
 import player.phonograph.ui.compose.components.system.SystemBarsPadded
 import player.phonograph.ui.modules.auxiliary.DatabaseMaintenanceDialog
 import player.phonograph.ui.modules.backup.BackupExportDialog
