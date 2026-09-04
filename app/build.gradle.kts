@@ -32,7 +32,7 @@ android {
     namespace = "player.phonograph"
 
     defaultConfig {
-        minSdk = 26
+        minSdk = 23
         targetSdk = 36
 
         applicationId = "player.phonograph.plus"
@@ -131,7 +131,7 @@ android {
             resValue("string", "app_name", "$appName Checkout")
             applicationIdSuffix = ".checkout"
 
-            minSdk = 24
+            minSdk = 23
 
             manifestPlaceholders["GIT_COMMIT_HASH"] = getGitHash(false) ?: "n/a"
         }
@@ -146,7 +146,7 @@ android {
             matchingFallbacks.add("modern")
 
             targetSdk = 28
-            minSdk = 24
+            minSdk = 23
         }
 
     }

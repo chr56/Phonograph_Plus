@@ -183,7 +183,12 @@ class PlayingNotificationManager : ServiceComponent {
                     notificationManager.notify(NOTIFICATION_ID, notification)
                     when (service.playerState) {
                         PLAYING, PAUSED    -> service.startForeground(NOTIFICATION_ID, notification)
-                        STOPPED, PREPARING -> service.stopForeground(STOP_FOREGROUND_DETACH)
+                        STOPPED, PREPARING -> if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N) {
+                            service.stopForeground(STOP_FOREGROUND_DETACH)
+                        } else {
+                            @Suppress("DEPRECATION")
+                            service.stopForeground(false)
+                        }
                     }
                 }
             }
@@ -196,7 +201,12 @@ class PlayingNotificationManager : ServiceComponent {
 
     @Synchronized
     private fun removeNotification() {
-        service.stopForeground(STOP_FOREGROUND_REMOVE)
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N) {
+            service.stopForeground(STOP_FOREGROUND_REMOVE)
+        } else {
+            @Suppress("DEPRECATION")
+            service.stopForeground(true)
+        }
         notificationManager.cancel(NOTIFICATION_ID)
     }
 

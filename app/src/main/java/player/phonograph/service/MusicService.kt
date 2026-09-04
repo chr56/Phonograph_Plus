@@ -36,6 +36,7 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.media.audiofx.AudioEffect
 import android.os.Binder
+import android.os.Build
 import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
 import android.os.Handler
@@ -406,7 +407,12 @@ class MusicService : MediaBrowserServiceCompat(),
             if (controller.playerState != PlayerState.PLAYING) {
                 when (controller.pauseReason) {
                     PauseReason.PAUSE_BY_MANUAL_ACTION, PauseReason.PAUSE_FOR_QUEUE_ENDED, PauseReason.PAUSE_ERROR,
-                        -> stopForeground(STOP_FOREGROUND_DETACH)
+                        -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        stopForeground(STOP_FOREGROUND_DETACH)
+                    } else {
+                        @Suppress("DEPRECATION")
+                        stopForeground(false)
+                    }
                 }
             }
         }

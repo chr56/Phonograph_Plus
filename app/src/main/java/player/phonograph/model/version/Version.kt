@@ -6,6 +6,7 @@ package player.phonograph.model.version
 
 import androidx.annotation.Keep
 import android.content.res.Resources
+import android.os.Build
 import android.os.Parcelable
 import android.text.Html
 import android.text.Spanned
@@ -41,7 +42,10 @@ data class Version(
         val zh_cn: String = "",
     ) : Parcelable {
         fun parsed(resources: Resources): Spanned {
-            val lang = resources.configuration.locales.get(0)
+            val lang = if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N) {resources.configuration.locales.get(0)} else {
+                @Suppress("DEPRECATION")
+                resources.configuration.locale
+            }
             val source = if (lang.language.lowercase() == "zh") zh_cn else en
             return Html.fromHtml(source, Html.FROM_HTML_MODE_LEGACY)
         }

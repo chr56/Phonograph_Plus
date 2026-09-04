@@ -33,6 +33,8 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.getSystemService
 import android.content.Context
 import android.graphics.drawable.Drawable
+import android.os.Build
+import android.os.Environment
 import android.os.storage.StorageManager
 
 abstract class SongBasicDisplayPresenter(
@@ -274,9 +276,13 @@ abstract class SongCollectionBasicDisplayPresenter(
         }
 
         private val internalStorageRootPath: String by lazy {
-            val storageManager = App.instance.getSystemService<StorageManager>()!!
-            val storageVolume = storageManager.primaryStorageVolume
-            storageVolume.rootDirectory()?.absolutePath ?: ""
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N) {
+                val storageManager = App.instance.getSystemService<StorageManager>()!!
+                storageManager.primaryStorageVolume.rootDirectory()?.absolutePath ?: ""
+            } else {
+                @Suppress("DEPRECATION")
+                Environment.getExternalStorageDirectory().absolutePath
+            }
         }
     }
 }

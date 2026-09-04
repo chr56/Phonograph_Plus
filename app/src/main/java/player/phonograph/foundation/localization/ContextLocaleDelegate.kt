@@ -14,6 +14,7 @@ import android.content.res.Configuration
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.TIRAMISU
 import java.util.Locale
+import android.os.Build
 
 object ContextLocaleDelegate {
 
@@ -50,7 +51,12 @@ object ContextLocaleDelegate {
 
     private fun registerSystemLocale(context: Context) {
         if (firstLocaleInit) {
-            startupLocale = context.resources.configuration.locales[0]
+            startupLocale = if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N) {
+                context.resources.configuration.locales[0]
+            } else {
+                @Suppress("DEPRECATION")
+                context.resources.configuration.locale
+            }
             firstLocaleInit = false
         }
     }
