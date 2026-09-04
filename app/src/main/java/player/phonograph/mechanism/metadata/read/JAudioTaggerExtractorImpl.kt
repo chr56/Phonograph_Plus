@@ -149,7 +149,7 @@ object ID3v2Readers {
                 ID3v24FieldKey.entries.firstOrNull { id == it.frameId }?.name ?: id
 
             override fun queryDescription(id: String): String? =
-                ID3v24Frames.getInstanceOf().idToValueMap?.getOrDefault(id, null)
+                ID3v24Frames.getInstanceOf().idToValueMap?.get(id)
 
             override fun isCustomKey(id: String): Boolean = id == ID3v24Frames.FRAME_ID_USER_DEFINED_INFO
 
@@ -160,7 +160,7 @@ object ID3v2Readers {
                 ID3v23FieldKey.entries.firstOrNull { id == it.frameId }?.name ?: id
 
             override fun queryDescription(id: String): String? =
-                ID3v23Frames.getInstanceOf().idToValueMap?.getOrDefault(id, null)
+                ID3v23Frames.getInstanceOf().idToValueMap?.get(id)
 
             override fun isCustomKey(id: String): Boolean = id == ID3v23Frames.FRAME_ID_V3_USER_DEFINED_INFO
         }
@@ -170,7 +170,7 @@ object ID3v2Readers {
                 ID3v22FieldKey.entries.firstOrNull { id == it.frameId }?.name ?: id
 
             override fun queryDescription(id: String): String? =
-                ID3v22Frames.getInstanceOf().idToValueMap?.getOrDefault(id, null)
+                ID3v22Frames.getInstanceOf().idToValueMap?.get(id)
 
             override fun isCustomKey(id: String): Boolean = id == ID3v22Frames.FRAME_ID_V2_USER_DEFINED_INFO
         }

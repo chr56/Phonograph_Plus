@@ -143,7 +143,7 @@ private fun PlayerControllerButtonFunctions(
         stringResource(R.string.player_controller_function_queue_mode_alternative),
     )
     for ((buttonOrder, buttonId) in AllButtons.withIndex()) {
-        val function = current.buttons.getOrDefault(buttonId, -1)
+        val function = current.buttons[buttonId]?: -1
         val selectedFunction = AllButtonFunctions.indexOf(function).coerceIn(0, AllButtonFunctions.size)
         val title = stringResource(R.string.player_controller_designate_button_functions, buttonNames[buttonOrder])
         val description = buttonDescriptions[buttonOrder]

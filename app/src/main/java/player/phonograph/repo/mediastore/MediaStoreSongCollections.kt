@@ -40,7 +40,7 @@ object MediaStoreSongCollections {
         // convert
         return grouped.map { (folder, songs) ->
             SongCollection(
-                name = shortNames.getOrDefault(folder, "Unknown"),
+                name = shortNames[folder]?: "Unknown",
                 songs = songs,
                 detail = folder
             )

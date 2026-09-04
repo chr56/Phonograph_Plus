@@ -188,7 +188,7 @@ private fun VersionTitle(version: Version, highlight: Boolean = false, modifier:
 }
 
 private fun channelColor(channel: String) =
-    Color(channelColors.getOrDefault(channel, MaterialColor.BlueGrey._700.asColor))
+    Color(channelColors[channel]?: MaterialColor.BlueGrey._700.asColor)
 
 private val channelColors: Map<String, Int>
     get() = mapOf(
