@@ -30,7 +30,7 @@ import player.phonograph.repo.mediastore.MediaStorePlaylists
 import player.phonograph.repo.room.MusicDatabase
 import player.phonograph.repo.room.domain.RoomPlaylists
 import player.phonograph.repo.room.domain.RoomPlaylistsActions
-import player.phonograph.service.queue.MusicPlaybackQueueStore
+import player.phonograph.service.queue.QueueDatabase
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.settings.PathFilterSetting
 import player.phonograph.settings.Settings
@@ -160,9 +160,9 @@ object PathFilterDataBackupItemExecutor : JsonDataBackupItemExecutor() {
 
 object PlayingQueuesDataBackupItemExecutor : JsonDataBackupItemExecutor() {
     override suspend fun export(context: Context): Buffer? {
-        val db = GlobalContext.get().get<MusicPlaybackQueueStore>()
-        val originalPlayingQueue = db.savedOriginalPlayingQueue.map(::exportSong)
-        val playingQueue = db.savedPlayingQueue.map(::exportSong)
+        val db = GlobalContext.get().get<QueueDatabase>()
+        val originalPlayingQueue = db.savedOriginalPlayingQueue().map(::exportSong)
+        val playingQueue = db.savedPlayingQueue().map(::exportSong)
 
         val exported = ExportedPlayingQueue(ExportedPlayingQueue.VERSION, playingQueue, originalPlayingQueue)
         return write(context, ExportedPlayingQueue.serializer(), exported, "PlayingQueues")
@@ -172,13 +172,11 @@ object PlayingQueuesDataBackupItemExecutor : JsonDataBackupItemExecutor() {
         val imported = read(context, ExportedPlayingQueue.serializer(), source, "PlayingQueues")
 
         return if (imported != null) {
-            val db = GlobalContext.get().get<MusicPlaybackQueueStore>()
+            val db = GlobalContext.get().get<QueueDatabase>()
             val playingQueue = imported.playingQueue.mapNotNull { importSong(it, context) }
             val originalPlayingQueue = imported.originalPlayingQueue.mapNotNull { importSong(it, context) }
-            synchronized(db) {
-                db.saveQueues(playingQueue, originalPlayingQueue)
-                GlobalContext.get().get<QueueManager>().reload()
-            }
+            db.saveQueues(playingQueue, originalPlayingQueue)
+            GlobalContext.get().get<QueueManager>().reload()
             true
         } else {
             false

@@ -5,10 +5,10 @@
 package player.phonograph.service
 
 import org.koin.dsl.module
-import player.phonograph.service.queue.MusicPlaybackQueueStore
+import player.phonograph.service.queue.QueueDatabase
 import player.phonograph.service.queue.QueueManager
 
 val moduleQueue = module {
-    single { MusicPlaybackQueueStore(get()) }
+    single { QueueDatabase.instance(get()) }
     single { QueueManager(get()) }
 }

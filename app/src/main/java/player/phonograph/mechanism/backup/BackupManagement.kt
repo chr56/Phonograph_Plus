@@ -19,7 +19,7 @@ import player.phonograph.model.backup.BackupType
 import player.phonograph.repo.database.store.HistoryStore.Companion.HISTORY_DB
 import player.phonograph.repo.database.store.SongPlayCountStore.Companion.SONG_PLAY_COUNT_DB
 import player.phonograph.repo.room.MusicDatabase
-import player.phonograph.service.queue.MusicPlaybackQueueStore.Companion.MUSIC_PLAYBACK_STATE_DB
+
 import player.phonograph.ui.resource.Texts
 import android.content.Context
 import kotlinx.serialization.json.Json
@@ -37,7 +37,7 @@ object Backup {
         BackupItem.MainDatabase          -> RawDatabaseBackupItemExecutor(MusicDatabase.DATABASE_NAME)
         BackupItem.HistoryDatabase       -> RawDatabaseBackupItemExecutor(HISTORY_DB)
         BackupItem.SongPlayCountDatabase -> RawDatabaseBackupItemExecutor(SONG_PLAY_COUNT_DB)
-        BackupItem.PlayingQueuesDatabase -> RawDatabaseBackupItemExecutor(MUSIC_PLAYBACK_STATE_DB)
+        BackupItem.PlayingQueuesDatabase -> PlayingQueuesDatabaseBackupItemExecutor
         // Below are deprecated since 1102 (importing only)
         BackupItem.PathFilter            -> PathFilterDataBackupItemExecutor
         BackupItem.PathFilterDatabase    -> LegacyPathFilterDatabaseBackupItemExecutor

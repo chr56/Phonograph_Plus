@@ -105,7 +105,9 @@ class QueueHolder private constructor(
     }
 
     fun saveQueue(context: Context) = synchronized(persistenceLock) {
-        GlobalContext.get().get<MusicPlaybackQueueStore>().saveQueues(playingQueue, originalPlayingQueue)
+        runBlocking {
+            GlobalContext.get().get<QueueDatabase>().saveQueues(playingQueue, originalPlayingQueue)
+        }
     }
 
     fun saveConfig(context: Context) = synchronized(persistenceLock) {
@@ -149,19 +151,18 @@ class QueueHolder private constructor(
         fun fromPersistence(context: Context): QueueHolder {
             synchronized(persistenceLock) {
 
-                val queueStore = GlobalContext.get().get<MusicPlaybackQueueStore>()
-                val restoredQueue: List<Song> = queueStore.savedPlayingQueue
-                val restoredOriginalQueue: List<Song> = queueStore.savedOriginalPlayingQueue
-
+                val queueDatabase = GlobalContext.get().get<QueueDatabase>()
                 val preferenceManager = QueuePreferenceManager(context)
 
-                return QueueHolder(
-                    restoredQueue,
-                    restoredOriginalQueue,
-                    preferenceManager.currentPosition,
-                    preferenceManager.shuffleMode,
-                    preferenceManager.repeatMode
-                )
+                return runBlocking {
+                    QueueHolder(
+                        queueDatabase.savedPlayingQueue(),
+                        queueDatabase.savedOriginalPlayingQueue(),
+                        preferenceManager.currentPosition,
+                        preferenceManager.shuffleMode,
+                        preferenceManager.repeatMode
+                    )
+                }
             }
         }
 
