@@ -160,7 +160,7 @@ abstract class AbsSlidingMusicPanelActivity :
     private fun setupPlayerFragment(style: NowPlayingScreenStyle) {
         val fragment = buildPlayerFragment(style)
         supportFragmentManager.apply {
-            commit {
+            commit(allowStateLoss = true) {
                 replace(R.id.player_fragment_container, fragment, NOW_PLAYING_FRAGMENT)
             }
             executePendingTransactions()
