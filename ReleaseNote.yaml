@@ -1,28 +1,24 @@
-version: "2.0.1"
-channel: "STABLE"
+version: "2.0.2-dev1"
+channel: "PREVIEW"
 versionCode: 20001
-timestamp: 1787131000
+timestamp: 1790520000
 notes:
   en:
     items:
-      - "Fix: some weird behaviours of statusbar color animations"
-      - "Fix: player theme color flashing to default when resuming from background"
-      - "Fix: top of player conditionally peaking behind navigation bar on Android 15 and later"
-      - "Improve: optimize for square-shaped screens"
-      - "Improve: enlarger playback buttons"
-      - "Remove: shard elements transition animations for albums and artist details"
-      - "New: support the true edge-to-edge display for Android 11 and later (optional, experimental)"
-      - "Development: upgrade Kotlin to 2.4.10, update dependencies"
+      - "New: full-screen image viewer for album artwork"
+      - "Fix: reordering playing queue may fail or cause crashes on some devices"
+      - "Fix: occasional crashes when switching tabs during media scanning under some circumstances"
+      - "Fix: possibly trailing spaces remained in the parsed multiple music tags"
+      - "Improve: add an optional top gradient scrim to the Card player as well, to enhance legibility"
+      - "Development: update dependencies"
   zh:
     items:
-      - "修复 状态栏颜色动画的若干异常表现"
-      - "修复 播放器主题色在回到前台后瞬间显示为默认颜色"
-      - "修复 播放器顶部某些情况下在导航栏后显露（Android 15+）"
-      - "改进 优化方形屏幕适配"
-      - "改进 增加播放控件按钮大小"
-      - "移除 专辑与艺术家详情页的共享元素转场动画"
-      - "新增 针对 Android 11+ 的真正边到边沉浸（可选，实验性支持）"
-      - "开发 更新 Kotlin 至 2.4.10, 更新依赖"
+      - "新增 支持全屏查看专辑封面"
+      - "修复 部分设备上对播放队列重新排序可能失败或导致崩溃"
+      - "修复 特定情况下在媒体扫描期间切换标签页偶发崩溃"
+      - "修复 解析多音乐标签时可能存在末尾空格残留"
+      - "优化 卡片播放器同样添加可选的顶部渐变遮罩，以提升可读性"
+      - "开发 更新依赖"
 
-previousVersion: "2.0.0"
+previousVersion: "2.0.1"
 previousChannel: "STABLE"
