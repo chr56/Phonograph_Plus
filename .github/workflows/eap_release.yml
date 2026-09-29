@@ -21,13 +21,13 @@ jobs:
       RELEASE_KEY_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Set up JDK
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v6
         with:
           java-version: '25'
-          distribution: 'adopt'
+          distribution: 'temurin'
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v5
@@ -73,13 +73,13 @@ jobs:
       contents: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Set up JDK
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v6
         with:
           java-version: '25'
-          distribution: 'adopt'
+          distribution: 'temurin'
           cache: gradle
 
       - name: Set up Gradle
@@ -117,7 +117,7 @@ jobs:
       contents: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Download Artifacts
         uses: actions/download-artifact@v8
