@@ -33,7 +33,7 @@ compose = "1.12.1"
 datastore = "1.1.7"
 documentfile = "1.1.0"
 material = "1.12.0"
-room = "2.8.4"
+room = "2.8.5"
 #### Jetpack End
 
 
