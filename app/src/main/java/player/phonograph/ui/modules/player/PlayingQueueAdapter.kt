@@ -31,10 +31,11 @@ class PlayingQueueAdapter(activity: FragmentActivity) :
         DraggableDisplayAdapter<Song>(activity, PlayingQueuePresenter, allowMultiSelection = false) {
 
     var current: Int = -1
-        @SuppressLint("NotifyDataSetChanged") // number 0 is moving, meaning all items' number is changing
         set(value) {
+            if (field == value) return
             field = value
-            notifyDataSetChanged()
+            @SuppressLint("NotifyDataSetChanged")
+            notifyDataSetChanged() // number 0 is moving, so all item numbers would be shifted!
         }
 
     override fun getItemViewType(position: Int): Int = when {
