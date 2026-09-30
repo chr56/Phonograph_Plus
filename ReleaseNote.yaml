@@ -1,24 +1,28 @@
-version: "2.0.2-dev1"
-channel: "PREVIEW"
-versionCode: 20001
-timestamp: 1790520000
+version: "2.0.2"
+channel: "STABLE"
+versionCode: 20002
+timestamp: 1790760000
 notes:
   en:
     items:
-      - "New: full-screen image viewer for album artwork"
-      - "Fix: reordering playing queue may fail or cause crashes on some devices"
-      - "Fix: occasional crashes when switching tabs during media scanning under some circumstances"
+      - "Fix: reordering playing queue may fail or cause crashes under some circumstances"
+      - "Fix: occasional crashes when switching tabs during media scanning on some devices"
+      - "Fix: crash when toggling system dark mode while the app is in the background on some devices"
       - "Fix: possibly trailing spaces remained in the parsed multiple music tags"
+      - "New: full-screen image viewer for album artwork"
       - "Improve: add an optional top gradient scrim to the Card player as well, to enhance legibility"
-      - "Development: update dependencies"
+      - "Translation: update German (by jande75)"
+      - "Development: build with JDK 25 and Gradle 9.7.1, update dependencies"
   zh:
     items:
-      - "新增 支持全屏查看专辑封面"
-      - "修复 部分设备上对播放队列重新排序可能失败或导致崩溃"
-      - "修复 特定情况下在媒体扫描期间切换标签页偶发崩溃"
+      - "修复 特定情况下对播放队列重新排序可能失败或导致崩溃"
+      - "修复 部分设备上在媒体扫描期间切换标签页偶发崩溃"
+      - "修复 部分设备上应用处于后台时切换系统深色模式导致崩溃"
       - "修复 解析多音乐标签时可能存在末尾空格残留"
+      - "新增 支持全屏查看专辑封面"
       - "优化 卡片播放器同样添加可选的顶部渐变遮罩，以提升可读性"
-      - "开发 更新依赖"
+      - "翻译 更新德语 (jande75)"
+      - "开发 使用 JDK 25 和 Gradle 9.5.1 构建, 更新依赖"
 
 previousVersion: "2.0.1"
 previousChannel: "STABLE"

@@ -1,0 +1,7 @@
+<b>2.0.2(20002) 2026.09.30</b>
+- Fix: reordering playing queue may fail or cause crashes under some circumstances
+- Fix: occasional crashes when switching tabs during media scanning on some devices
+- Fix: crash when toggling system dark mode while the app is in the background on some devices
+- Fix: possibly trailing spaces remained in the parsed multiple music tags
+- New: full-screen image viewer for album artwork
+...(Visit project homepage to see full changelogs)
