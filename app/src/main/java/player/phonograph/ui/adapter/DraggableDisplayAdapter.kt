@@ -57,8 +57,6 @@ abstract class DraggableDisplayAdapter<I>(
     //endregion
 
     override fun getItemId(position: Int): Long = SafeIdentifierGenerator.make(
-        // There are some user crash reports with `dragging target must provide valid ID`.
-        // This may be caused by the broken item id, so we just check and acquire a safe one.
         id = generator.acquire(
             presenter.getItemID(dataset[position])
         ),

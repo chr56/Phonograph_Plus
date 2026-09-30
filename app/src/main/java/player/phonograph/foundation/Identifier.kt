@@ -33,7 +33,7 @@ class SafeIdentifierGenerator(seed: Long) {
 
         /**
          * Generate a new id associated with a position, making it safe to used in some lists allowing duplicated item
-         * @param id the original id, MUST BE UNIQUE AND VALID
+         * @param id the original id, MUST BE UNIQUE AND VALID, and must not use bits 36–55
          * @param position related position
          * @return new id which is safe to used in a list allowing duplicated item
          */
