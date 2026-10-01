@@ -4,6 +4,7 @@
 
 package player.phonograph.foundation.mediastore
 
+import player.phonograph.foundation.normalizeForSort
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Genre
@@ -35,8 +36,8 @@ fun mediastoreSongQuerySortRef(sortRef: SortRef): String = when (sortRef) {
 //region Albums
 fun mediastoreAlbumSortRefKey(sortRef: SortRef): (Album) -> Comparable<*>? =
     when (sortRef) {
-        SortRef.ALBUM_NAME  -> { album: Album -> album.title }
-        SortRef.ARTIST_NAME -> { album: Album -> album.artistName }
+        SortRef.ALBUM_NAME  -> { album: Album -> album.title.normalizeForSort() }
+        SortRef.ARTIST_NAME -> { album: Album -> album.artistName?.normalizeForSort() }
         SortRef.YEAR        -> { album: Album -> album.year }
         SortRef.SONG_COUNT  -> { album: Album -> album.songCount }
         else                -> { album: Album -> null }
@@ -46,7 +47,7 @@ fun mediastoreAlbumSortRefKey(sortRef: SortRef): (Album) -> Comparable<*>? =
 //region Artists
 fun mediastoreArtistSortRefKey(sortRef: SortRef): (Artist) -> Comparable<*>? =
     when (sortRef) {
-        SortRef.ARTIST_NAME -> { artist: Artist -> artist.name }
+        SortRef.ARTIST_NAME -> { artist: Artist -> artist.name.normalizeForSort() }
         SortRef.ALBUM_COUNT -> { artist: Artist -> artist.albumCount }
         SortRef.SONG_COUNT  -> { artist: Artist -> artist.songCount }
         else                -> { artist: Artist -> null }
@@ -56,7 +57,7 @@ fun mediastoreArtistSortRefKey(sortRef: SortRef): (Artist) -> Comparable<*>? =
 //region Genres
 fun mediastoreGenreSortRefKey(sortRef: SortRef): (Genre) -> Comparable<*>? =
     when (sortRef) {
-        SortRef.DISPLAY_NAME -> { genre: Genre -> genre.name }
+        SortRef.DISPLAY_NAME -> { genre: Genre -> genre.name?.normalizeForSort() }
         SortRef.SONG_COUNT   -> { genre: Genre -> genre.songCount }
         else                 -> { genre: Genre -> null }
     }
@@ -65,7 +66,7 @@ fun mediastoreGenreSortRefKey(sortRef: SortRef): (Genre) -> Comparable<*>? =
 //region Playlists
 fun mediastorePlaylistSortRefKey(sortRef: SortRef): (Playlist) -> Comparable<*>? =
     when (sortRef) {
-        SortRef.DISPLAY_NAME  -> { playlist: Playlist -> playlist.name }
+        SortRef.DISPLAY_NAME  -> { playlist: Playlist -> playlist.name.normalizeForSort() }
         SortRef.PATH          -> { playlist: Playlist -> playlist.location }
         SortRef.ADDED_DATE    -> { playlist: Playlist -> playlist.dateAdded }
         SortRef.MODIFIED_DATE -> { playlist: Playlist -> playlist.dateModified }
