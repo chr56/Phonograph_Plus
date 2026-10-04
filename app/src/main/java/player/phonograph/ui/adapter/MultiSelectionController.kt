@@ -7,9 +7,11 @@ package player.phonograph.ui.adapter
 import player.phonograph.R
 import player.phonograph.debug
 import player.phonograph.foundation.error.warning
+import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.ui.PaletteColorProvider
 import player.phonograph.ui.theme.ThemeSettingsDelegate.primaryColor
 import player.phonograph.ui.theme.getTintedDrawable
+import player.phonograph.ui.util.inflateToolbarEntries
 import util.theme.color.darkenColor
 import util.theme.color.isColorLight
 import util.theme.color.lightenColor
@@ -208,7 +210,24 @@ class MultiSelectionController<I>(
 
     private fun ToolbarCab.setupMenu() {
         menuHandler = {
-            inflateMultiSelectionToolbarMenu(it.menu, activity, this@MultiSelectionController)
+            val controller = this@MultiSelectionController
+            val entries = buildList {
+                add(MultiSelectionActionEntries.Play(activity, controller))
+                add(MultiSelectionActionEntries.PlayNext(activity, controller))
+                add(MultiSelectionActionEntries.ShuffleAll(activity, controller))
+                add(MultiSelectionActionEntries.AddToPlayingQueue(activity, controller))
+                add(MultiSelectionActionEntries.AddToPlaylist(activity, controller))
+                add(MultiSelectionActionEntries.TagEditor(activity, controller))
+                add(MultiSelectionActionEntries.DeleteFromDevice(activity, controller))
+                if (selected.any { item -> item is Playlist }) {
+                    add(MultiSelectionActionEntries.SavePlaylists(activity, controller))
+                }
+                add(MultiSelectionActionEntries.SelectAll(activity, controller))
+                add(MultiSelectionActionEntries.InvertSelection(activity, controller))
+                add(MultiSelectionActionEntries.UnselectAll(activity, controller))
+            }
+            inflateToolbarEntries(context = activity, menu = it.menu, iconTint = textColor, entries = entries)
+            true
         }
     }
 
