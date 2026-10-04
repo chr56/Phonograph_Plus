@@ -5,7 +5,6 @@
 package util.phonograph.output
 
 import util.phonograph.formater.MarkdownFormater
-import util.phonograph.model.BuildType
 import util.phonograph.model.OutputFormat
 import util.phonograph.model.ReleaseChannel
 import util.phonograph.model.ReleaseMetadata
@@ -24,7 +23,6 @@ import util.phonograph.model.constants.SIGNING_KEY_WARNING_EN
 import util.phonograph.model.constants.SIGNING_KEY_WARNING_ZH
 import util.phonograph.model.constants.compareLink
 import util.phonograph.model.constants.downloadLink
-import util.phonograph.model.variantQualifierOf
 import util.phonograph.utils.dateString
 import java.io.Writer
 
@@ -40,6 +38,15 @@ class GitHubReleaseMarkdown(private val metadata: ReleaseMetadata) : ReleaseMark
         if (note.notice != null) appendLine(githubAlertBox(note.notice)).append('\n')
         if (note.highlights.isNotEmpty()) appendLine(makeUnorderedList(note.highlights)).append('\n')
         if (note.items.isNotEmpty()) appendLine(makeOrderedList(note.items)).append('\n')
+    }
+
+    private fun contentWarning(): String? {
+        val warning = metadata.warning
+        return if (warning != null) {
+            listOf(warning.en, warning.zh).joinToString("\n")
+        } else {
+            null
+        }
     }
 
     private fun previewWarning(channel: ReleaseChannel): String? =
@@ -67,6 +74,12 @@ class GitHubReleaseMarkdown(private val metadata: ReleaseMetadata) : ReleaseMark
 
         target.append(githubAlertBox("$SIGNING_KEY_WARNING_EN\n$SIGNING_KEY_WARNING_ZH", AlertType.Caution))
         target.append('\n')
+
+        val contentWarning = contentWarning()
+        if (contentWarning != null) {
+            target.append(githubAlertBox(contentWarning, AlertType.Caution))
+            target.append('\n')
+        }
 
         val warning = previewWarning(metadata.channel)
         if (warning != null) {
