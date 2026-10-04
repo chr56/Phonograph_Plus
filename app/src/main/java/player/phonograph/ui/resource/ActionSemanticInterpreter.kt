@@ -46,7 +46,8 @@ data class ConcreteActionSemantic(
 
     override fun text(resources: Resources): String = text ?: resources.getString(textRes)
 
-    override fun icon(resources: Resources): Drawable? = ResourcesCompat.getDrawable(resources, imageRes, null)
+    override fun icon(resources: Resources): Drawable? =
+        if (imageRes != -1) ResourcesCompat.getDrawable(resources, imageRes, null) else null
 
     override fun icon(): ImageVector? = imageVector
 
