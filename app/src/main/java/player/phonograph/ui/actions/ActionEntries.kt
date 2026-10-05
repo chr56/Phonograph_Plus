@@ -20,6 +20,8 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
 import player.phonograph.ui.modules.tag.TagBrowserActivity
 import player.phonograph.ui.resource.ActionSemantics
+import player.phonograph.ui.util.convertToSong
+import player.phonograph.ui.util.convertToSongs
 import androidx.fragment.app.FragmentActivity
 import android.content.Context
 import android.widget.Toast
@@ -173,29 +175,29 @@ object ActionEntries {
     //region FileItem
     fun Play(context: Context, file: FileItem): ActionEntry =
         entry(ActionSemantics.Play) {
-            readSongs(context, file).actionPlayNow()
+            convertToSongs(context, file).actionPlayNow()
         }
 
     fun PlayNext(context: Context, file: FileItem): ActionEntry =
-        PlayNext(context, file, ::readSongs)
+        PlayNext(context, file, ::convertToSongs)
 
     fun AddToPlayingQueue(context: Context, file: FileItem): ActionEntry =
-        AddToPlayingQueue(context, file, ::readSongs)
+        AddToPlayingQueue(context, file, ::convertToSongs)
 
     fun AddToPlaylist(context: Context, file: FileItem): ActionEntry =
-        AddToPlaylist(context, file, ::readSongs)
+        AddToPlaylist(context, file, ::convertToSongs)
 
     fun DeleteFromDevice(context: Context, file: FileItem): ActionEntry =
-        DeleteFromDevice(context, file, ::readSongs)
+        DeleteFromDevice(context, file, ::convertToSongs)
 
     fun Details(context: Context, file: FileItem): ActionEntry =
         entry(ActionSemantics.Details) {
-            withActivity(context) { readSong(context, file)?.actionGotoDetail(it) }
+            withActivity(context) { convertToSong(context, file)?.actionGotoDetail(it) }
         }
 
     fun Share(context: Context, file: FileItem): ActionEntry =
         entry(ActionSemantics.Share) {
-            readSong(context, file)?.actionShare(context)
+            convertToSong(context, file)?.actionShare(context)
         }
 
     fun TagEditor(context: Context, file: FileItem): ActionEntry =
@@ -238,19 +240,5 @@ object ActionEntries {
     private suspend inline fun withActivity(context: Context, block: suspend (FragmentActivity) -> Unit) {
         if (context is FragmentActivity) block(context)
     }
-
-    private suspend fun readSong(context: Context, file: FileItem): Song? =
-        withContext(Dispatchers.IO) {
-            if (file.content is FileItem.SongContent) {
-                file.content.song
-            } else if (file.mediaPath.mediastoreId > 0) {
-                Songs.id(context, file.mediaPath.mediastoreId)
-            } else {
-                Songs.path(context, file.path, withoutPathFilter = true)
-            }
-        }
-
-    private suspend fun readSongs(context: Context, file: FileItem): List<Song> =
-        withContext(Dispatchers.IO) { file.songs(context) }
     //endregion
 }
