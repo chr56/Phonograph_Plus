@@ -37,6 +37,7 @@ import player.phonograph.ui.theme.setUpFastScrollRecyclerViewColor
 import player.phonograph.ui.theme.textColorOn
 import player.phonograph.ui.util.BottomViewWindowInsetsController
 import player.phonograph.ui.util.applyControllableWindowInsetsAsBottomView
+import player.phonograph.ui.util.inflateToolbarEntries
 import player.phonograph.ui.util.menuProvider
 import player.phonograph.ui.util.observe
 import util.theme.color.darkenColor
@@ -114,7 +115,19 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvider
 
     private fun setupMenu(menu: Menu) {
         val iconColor = textColorOn(this, panelViewModel.activityColor.value)
-        inflateAlbumDetailMenu(menu, this, viewModel.album.value, iconColor)
+        val item = viewModel.album.value
+        val entries = listOf(
+            AlbumDetailActionEntries.Play(this, item),
+            AlbumDetailActionEntries.ShuffleAlbum(this, item),
+            AlbumDetailActionEntries.PlayNext(this, item),
+            AlbumDetailActionEntries.AddToPlayingQueue(this, item),
+            AlbumDetailActionEntries.AddToPlaylist(this, item),
+            AlbumDetailActionEntries.GoToArtist(this, item),
+            AlbumDetailActionEntries.TagEditor(this, item),
+            AlbumDetailActionEntries.DeleteFromDevice(this, item),
+            AlbumDetailActionEntries.Wiki(this, item),
+        )
+        inflateToolbarEntries(this, menu, iconColor, entries)
         tintToolbarMenuActionIcons(menu, iconColor)
         tintOverflowButtonColor(this, iconColor)
         tintOverflowMenuItems(viewBinding.toolbar, accentColor())
