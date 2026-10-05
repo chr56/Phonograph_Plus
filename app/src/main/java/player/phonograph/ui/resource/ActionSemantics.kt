@@ -367,6 +367,24 @@ object ActionSemantics {
             imageRes = R.drawable.ic_scan_white_24dp,
         )
 
+    val Wiki: ActionSemantic
+        get() = ConcreteActionSemantic(
+            textRes = R.string.label_wiki,
+            imageRes = R.drawable.ic_info_outline_white_24dp,
+        )
+
+    val Biography: ActionSemantic
+        get() = ConcreteActionSemantic(
+            textRes = R.string.label_biography,
+            imageRes = R.drawable.ic_info_outline_white_24dp,
+        )
+
+    val LastAddedInterval: ActionSemantic
+        get() = ConcreteActionSemantic(
+            textRes = R.string.pref_title_last_added_interval,
+            imageRes = R.drawable.ic_timer_white_24dp,
+        )
+
     val SetAsStartDirectory: ActionSemantic
         get() = ConcreteActionSemantic(
             textRes = R.string.action_set_as_start_directory,
