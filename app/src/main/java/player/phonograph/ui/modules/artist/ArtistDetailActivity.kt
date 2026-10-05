@@ -44,6 +44,7 @@ import player.phonograph.ui.theme.secondaryTextColorOn
 import player.phonograph.ui.theme.textColorOn
 import player.phonograph.ui.util.BottomViewWindowInsetsController
 import player.phonograph.ui.util.applyControllableWindowInsetsAsBottomView
+import player.phonograph.ui.util.inflateToolbarEntries
 import player.phonograph.ui.util.menuProvider
 import player.phonograph.ui.util.observe
 import util.theme.color.darkenColor
@@ -129,7 +130,20 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvide
 
     private fun setupMenu(menu: Menu) {
         val iconColor = textColorOn(this, panelViewModel.activityColor.value)
-        inflateArtistDetailMenu(menu, this, viewModel.artist.value ?: Artist(), iconColor)
+        val item = viewModel.artist.value ?: Artist()
+        val entries = listOf(
+            ArtistDetailActionEntries.Play(this, item),
+            ArtistDetailActionEntries.ShuffleArtist(this, item),
+            ArtistDetailActionEntries.PlayNext(this, item),
+            ArtistDetailActionEntries.AddToPlayingQueue(this, item),
+            ArtistDetailActionEntries.AddToPlaylist(this, item),
+            ArtistDetailActionEntries.SetArtistImage(this, item),
+            ArtistDetailActionEntries.ResetArtistImage(this, item),
+            ArtistDetailActionEntries.TagEditor(this, item),
+            ArtistDetailActionEntries.DeleteFromDevice(this, item),
+            ArtistDetailActionEntries.Biography(this, item),
+        )
+        inflateToolbarEntries(this, menu, iconColor, entries)
         attach(menu) {
             menuItem(title = getString(R.string.label_colored_footers)) {
                 checkable = true
