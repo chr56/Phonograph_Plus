@@ -22,7 +22,10 @@ import player.phonograph.foundation.compat.parcelable
 import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylistLocation
+import player.phonograph.model.playlist.PLAYLIST_TYPE_FAVORITE
+import player.phonograph.model.playlist.PLAYLIST_TYPE_LAST_ADDED
 import player.phonograph.model.playlist.Playlist
+import player.phonograph.model.playlist.VirtualPlaylistLocation
 import player.phonograph.model.ui.UIMode
 import player.phonograph.repo.loader.Playlists
 import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
@@ -37,6 +40,7 @@ import player.phonograph.ui.theme.textColorOn
 import player.phonograph.ui.util.BottomViewWindowInsetsController
 import player.phonograph.ui.util.applyControllableWindowInsetsAsBottomView
 import player.phonograph.ui.util.hideKeyboard
+import player.phonograph.ui.util.inflateToolbarEntries
 import player.phonograph.ui.util.menuProvider
 import player.phonograph.ui.util.observe
 import player.phonograph.ui.util.showKeyboard
@@ -305,7 +309,36 @@ class PlaylistDetailActivity :
 
     private fun setupMenu(menu: Menu) {
         val iconColor = textColorOn(this, panelViewModel.activityColor.value)
-        inflatePlaylistDetailMenu(menu, this, viewModel.playlist, iconColor, ::execute)
+        val item = viewModel.playlist
+        val entries = buildList {
+            add(PlaylistDetailActionEntries.Play(this@PlaylistDetailActivity, item))
+            add(PlaylistDetailActionEntries.ShufflePlaylist(this@PlaylistDetailActivity, item))
+            add(PlaylistDetailActionEntries.PlayNext(this@PlaylistDetailActivity, item))
+            add(PlaylistDetailActionEntries.AddToPlayingQueue(this@PlaylistDetailActivity, item))
+            add(PlaylistDetailActionEntries.AddToPlaylist(this@PlaylistDetailActivity, item))
+            if (!item.isVirtual()) {
+                add(PlaylistDetailActionEntries.Rename(this@PlaylistDetailActivity, item))
+            }
+            add(PlaylistDetailActionEntries.Delete(this@PlaylistDetailActivity, item))
+            add(PlaylistDetailActionEntries.TagEditor(this@PlaylistDetailActivity, item))
+            add(PlaylistDetailActionEntries.SavePlaylist(this@PlaylistDetailActivity, item))
+            add(PlaylistDetailActionEntries.Search(this@PlaylistDetailActivity, ::execute))
+            add(PlaylistDetailActionEntries.Refresh(this@PlaylistDetailActivity, ::execute))
+            if (!item.isVirtual()) {
+                add(PlaylistDetailActionEntries.Edit(this@PlaylistDetailActivity, ::execute))
+            } else {
+                val location = item.location
+                if (location is VirtualPlaylistLocation) {
+                    when (location.type) {
+                        PLAYLIST_TYPE_LAST_ADDED ->
+                            add(PlaylistDetailActionEntries.LastAddedInterval(this@PlaylistDetailActivity, ::execute))
+                        PLAYLIST_TYPE_FAVORITE   ->
+                            add(PlaylistDetailActionEntries.Clean(this@PlaylistDetailActivity, item))
+                    }
+                }
+            }
+        }
+        inflateToolbarEntries(this, menu, iconColor, entries)
         tintToolbarMenuActionIcons(menu, iconColor)
         tintOverflowButtonColor(this, iconColor)
         tintOverflowMenuItems(binding.toolbar, accentColor())
