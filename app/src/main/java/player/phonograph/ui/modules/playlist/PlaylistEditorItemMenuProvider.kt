@@ -4,21 +4,19 @@
 
 package player.phonograph.ui.modules.playlist
 
-import com.github.chr56.android.menu_dsl.attach
-import com.github.chr56.android.menu_dsl.menuItem
-import com.github.chr56.android.menu_dsl.submenu
-import player.phonograph.R
 import player.phonograph.model.QueueSong
+import player.phonograph.model.menu.ActionEntry
 import player.phonograph.ui.actions.ActionMenuProviders.ActionMenuProvider
 import player.phonograph.ui.actions.actionGotoDetail
 import player.phonograph.ui.modules.auxiliary.DeletionDialog
 import player.phonograph.ui.modules.tag.TagBrowserActivity
+import player.phonograph.ui.resource.ActionSemantics
+import player.phonograph.ui.util.inflateMenuEntries
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.lifecycleScope
 import android.content.Context
 import android.view.Menu
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 interface PlaylistEditorAdapterLinage {
@@ -34,87 +32,76 @@ class PlaylistEditorItemMenuProvider(
     private val adapter: PlaylistEditorAdapterLinage,
 ) : ActionMenuProvider<QueueSong> {
     override fun inflateMenu(menu: Menu, context: Context, item: QueueSong, position: Int) {
-        editorItemMenu(menu, context as FragmentActivity, position)
+        inflateMenuEntries(context, menu, editorItemMenu(context as FragmentActivity, position))
     }
 
-    private fun editorItemMenu(menu: Menu, activity: FragmentActivity, bindingAdapterPosition: Int) = attach(activity, menu) {
+    private fun editorItemMenu(activity: FragmentActivity, bindingAdapterPosition: Int): List<ActionEntry> {
         val queueSong = adapter.at(bindingAdapterPosition)
-        menuItem {
-            titleRes(R.string.action_remove_from_playlist)
-            onClick {
-                activity.lifecycleScope.launch(Dispatchers.IO) {
-                    adapter.deleteSong(bindingAdapterPosition)
-                }
-                true
-            }
-        }
-        menuItem {
-            titleRes(R.string.action_move_to_top)
-            onClick {
-                activity.lifecycleScope.launch(Dispatchers.IO) {
-                    adapter.moveSong(bindingAdapterPosition, 0)
-                }
-                true
-            }
-        }
-        menuItem {
-            titleRes(R.string.action_move_up)
-            onClick {
-                if (bindingAdapterPosition != 0) {
-                    activity.lifecycleScope.launch(Dispatchers.IO) {
-                        adapter.moveSong(bindingAdapterPosition, bindingAdapterPosition - 1)
+        return listOf(
+            ActionEntry.ToolbarEntry(
+                semantic = ActionSemantics.RemoveFromPlaylist,
+                action = {
+                    withContext(Dispatchers.IO) {
+                        adapter.deleteSong(bindingAdapterPosition)
                     }
-                    true
-                } else false
-            }
-        }
-        menuItem {
-            titleRes(R.string.action_move_down)
-            onClick {
-                if (bindingAdapterPosition != adapter.size() - 1) {
-                    activity.lifecycleScope.launch(Dispatchers.IO) {
-                        adapter.moveSong(bindingAdapterPosition, bindingAdapterPosition + 1)
+                }
+            ),
+            ActionEntry.ToolbarEntry(
+                semantic = ActionSemantics.MoveToTop,
+                action = {
+                    withContext(Dispatchers.IO) {
+                        adapter.moveSong(bindingAdapterPosition, 0)
                     }
-                    true
-                } else false
-            }
-        }
-        menuItem {
-            titleRes(R.string.action_move_to_bottom)
-            onClick {
-                activity.lifecycleScope.launch(Dispatchers.IO) {
-                    adapter.moveSong(bindingAdapterPosition, adapter.size() - 1)
                 }
-                true
-            }
-        }
-
-        menuItem {
-            titleRes(R.string.action_details)
-            onClick {
-                queueSong.song.actionGotoDetail(activity)
-                true
-            }
-        }
-
-        submenu(
-            context.getString(R.string.action_more)
-        ) {
-            menuItem {
-                titleRes(R.string.action_tag_editor)
-                onClick {
-                    TagBrowserActivity.launch(activity, queueSong.song.data)
-                    true
+            ),
+            ActionEntry.ToolbarEntry(
+                semantic = ActionSemantics.MoveUp,
+                action = {
+                    if (bindingAdapterPosition != 0) {
+                        withContext(Dispatchers.IO) {
+                            adapter.moveSong(bindingAdapterPosition, bindingAdapterPosition - 1)
+                        }
+                    }
                 }
-            }
-            menuItem {
-                titleRes(R.string.action_delete_from_device)
-                onClick {
-                    DeletionDialog.create(arrayListOf(queueSong.song))
-                        .show(activity.supportFragmentManager, "DELETE_SONGS")
-                    true
+            ),
+            ActionEntry.ToolbarEntry(
+                semantic = ActionSemantics.MoveDown,
+                action = {
+                    if (bindingAdapterPosition != adapter.size() - 1) {
+                        withContext(Dispatchers.IO) {
+                            adapter.moveSong(bindingAdapterPosition, bindingAdapterPosition + 1)
+                        }
+                    }
                 }
-            }
-        }
+            ),
+            ActionEntry.ToolbarEntry(
+                semantic = ActionSemantics.MoveToBottom,
+                action = {
+                    withContext(Dispatchers.IO) {
+                        adapter.moveSong(bindingAdapterPosition, adapter.size() - 1)
+                    }
+                }
+            ),
+            ActionEntry.ToolbarEntry(
+                semantic = ActionSemantics.Details,
+                action = { queueSong.song.actionGotoDetail(activity) }
+            ),
+            ActionEntry.GroupedEntries(
+                semantic = ActionSemantics.More,
+                entries = listOf(
+                    ActionEntry.ToolbarEntry(
+                        semantic = ActionSemantics.TagEditor,
+                        action = { TagBrowserActivity.launch(activity, queueSong.song.data) }
+                    ),
+                    ActionEntry.ToolbarEntry(
+                        semantic = ActionSemantics.DeleteFromDevice,
+                        action = {
+                            DeletionDialog.create(arrayListOf(queueSong.song))
+                                .show(activity.supportFragmentManager, "DELETE_SONGS")
+                        }
+                    )
+                )
+            )
+        )
     }
 }
