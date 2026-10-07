@@ -24,10 +24,13 @@ import player.phonograph.model.sort.SortRef
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.model.ui.PaletteColorProvider
 import player.phonograph.repo.loader.Songs
+import player.phonograph.ui.adapter.AlbumArtwork
 import player.phonograph.ui.adapter.AlbumBasicDisplayPresenter
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayPresenter
+import player.phonograph.ui.adapter.ImageryProvider
 import player.phonograph.ui.adapter.MultiSelectionController
+import player.phonograph.ui.adapter.SongArtwork
 import player.phonograph.ui.adapter.SongBasicDisplayPresenter
 import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.resource.Durations
@@ -311,6 +314,8 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvide
 
     class ArtistAlbumDisplayPresenter(override val usePalette: Boolean) : AlbumBasicDisplayPresenter(SortMode(SortRef.YEAR)) {
 
+        override val imageryProvider: ImageryProvider<Album> = AlbumArtwork(usePalette)
+
         override val layoutStyle: ItemLayoutStyle = ItemLayoutStyle.GRID_CARD_HORIZONTAL
 
         override val imageType: Int = DisplayPresenter.IMAGE_TYPE_IMAGE
@@ -321,6 +326,8 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvide
 
 
     object ArtistSongDisplayPresenter : SongBasicDisplayPresenter(SortMode(SortRef.YEAR)) {
+
+        override val imageryProvider: ImageryProvider<Song> = SongArtwork(false)
 
         override val layoutStyle: ItemLayoutStyle = ItemLayoutStyle.LIST
 

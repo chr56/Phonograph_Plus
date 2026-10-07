@@ -21,6 +21,7 @@ import player.phonograph.model.ui.PaletteColorProvider
 import player.phonograph.repo.loader.Songs
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayPresenter
+import player.phonograph.ui.adapter.ImageryProvider
 import player.phonograph.ui.adapter.SongBasicDisplayPresenter
 import player.phonograph.ui.goToArtistDetail
 import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
@@ -235,6 +236,8 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvider
 
 
     object AlbumDetailActivityDisplayAdapters : SongBasicDisplayPresenter(SortMode(SortRef.ID)) {
+
+        override val imageryProvider: ImageryProvider<Song> = ImageryProvider.Text
 
         override val layoutStyle: ItemLayoutStyle = ItemLayoutStyle.LIST
 

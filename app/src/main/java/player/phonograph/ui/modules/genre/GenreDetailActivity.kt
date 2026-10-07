@@ -19,6 +19,8 @@ import player.phonograph.model.sort.SortRef
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayPresenter
+import player.phonograph.ui.adapter.ImageryProvider
+import player.phonograph.ui.adapter.SongArtwork
 import player.phonograph.ui.adapter.SongBasicDisplayPresenter
 import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.theme.ThemeSettingsDelegate.accentColor
@@ -150,6 +152,8 @@ class GenreDetailActivity : AbsSlidingMusicPanelActivity(),
     }
 
     object GenreSongDisplayPresenter : SongBasicDisplayPresenter(SortMode(SortRef.ID)) {
+
+        override val imageryProvider: ImageryProvider<Song> = SongArtwork(false)
 
         override val layoutStyle: ItemLayoutStyle = ItemLayoutStyle.LIST
 

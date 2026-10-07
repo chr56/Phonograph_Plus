@@ -13,9 +13,11 @@ import player.phonograph.repo.loader.Albums
 import player.phonograph.repo.loader.Songs
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
+import player.phonograph.ui.adapter.AlbumArtwork
 import player.phonograph.ui.adapter.AlbumBasicDisplayPresenter
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayPresenter
+import player.phonograph.ui.adapter.ImageryProvider
 import androidx.fragment.app.viewModels
 import android.content.Context
 import kotlinx.coroutines.CoroutineScope
@@ -62,6 +64,8 @@ class AlbumPage : AbsDisplayPage<Album, DisplayAdapter<Album>>() {
         override val usePalette: Boolean,
         override val layoutStyle: ItemLayoutStyle,
     ) : AlbumBasicDisplayPresenter(sortMode) {
+
+        override val imageryProvider: ImageryProvider<Album> = AlbumArtwork(usePalette)
 
         override val imageType: Int = DisplayPresenter.IMAGE_TYPE_IMAGE
 

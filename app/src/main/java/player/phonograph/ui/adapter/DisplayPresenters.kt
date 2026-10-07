@@ -195,6 +195,8 @@ abstract class GenreBasicDisplayPresenter(
     private val sortMode: SortMode,
 ) : DisplayPresenter<Genre> {
 
+    override val imageryProvider: ImageryProvider<Genre> = ImageryProvider.None
+
     override fun getItemID(item: Genre): Long = item.id
     override fun getDisplayTitle(context: Context, item: Genre): CharSequence = item.name ?: "UNKNOWN GENRE ${item.id}"
     override fun getDescription(context: Context, item: Genre): CharSequence = item.infoString(context)
@@ -223,6 +225,8 @@ abstract class GenreBasicDisplayPresenter(
 abstract class PlaylistBasicDisplayPresenter(
     private val sortMode: SortMode,
 ) : DisplayPresenter<Playlist> {
+
+    override val imageryProvider: ImageryProvider<Playlist> = PlaylistIcon
 
     override fun getItemID(item: Playlist): Long = item.id
     override fun getDisplayTitle(context: Context, item: Playlist): CharSequence = item.name
@@ -260,6 +264,8 @@ abstract class PlaylistBasicDisplayPresenter(
 abstract class SongCollectionBasicDisplayPresenter(
     private val sortMode: SortMode,
 ) : DisplayPresenter<SongCollection> {
+
+    override val imageryProvider: ImageryProvider<SongCollection> = ImageryProvider.FixedIcon.FOLDER
 
     override fun getItemID(item: SongCollection): Long = item.hashCode().toLong()
 
@@ -303,6 +309,8 @@ abstract class SongCollectionBasicDisplayPresenter(
 }
 
 abstract class QueueSongBasicDisplayPresenter : DisplayPresenter<QueueSong> {
+    override val imageryProvider: ImageryProvider<QueueSong> = ImageryProvider.Text
+
     override val layoutStyle: ItemLayoutStyle = ItemLayoutStyle.LIST
     override val usePalette: Boolean = false
     override val imageType: Int = DisplayPresenter.IMAGE_TYPE_TEXT

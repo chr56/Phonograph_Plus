@@ -12,6 +12,7 @@ import player.phonograph.ui.actions.ActionMenus
 import player.phonograph.ui.actions.ClickActionProviders
 import player.phonograph.ui.adapter.DisplayPresenter
 import player.phonograph.ui.adapter.DraggableDisplayAdapter
+import player.phonograph.ui.adapter.ImageryProvider
 import player.phonograph.ui.adapter.MultiSelectionController
 import player.phonograph.ui.resource.Layouts
 import player.phonograph.ui.resource.infoString
@@ -93,6 +94,8 @@ class PlayingQueueAdapter(activity: FragmentActivity) :
     }
 
     object PlayingQueuePresenter : DisplayPresenter<Song> {
+
+        override val imageryProvider: ImageryProvider<Song> = ImageryProvider.None
 
         override fun getItemID(item: Song): Long = item.id
 

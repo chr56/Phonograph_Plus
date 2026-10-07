@@ -41,6 +41,8 @@ interface DisplayPresenter<T> {
 
     val layoutStyle: ItemLayoutStyle
 
+    val imageryProvider: ImageryProvider<T>
+
     @ImageType
     val imageType: Int
 

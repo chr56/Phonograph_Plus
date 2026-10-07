@@ -15,6 +15,8 @@ import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.ui.actions.ActionMenus
 import player.phonograph.ui.actions.ClickActionProviders
 import player.phonograph.ui.adapter.DisplayPresenter
+import player.phonograph.ui.adapter.FileItemArtwork
+import player.phonograph.ui.adapter.ImageryProvider
 import player.phonograph.ui.theme.getTintedDrawable
 import player.phonograph.ui.theme.themeIconColor
 import android.content.Context
@@ -27,6 +29,8 @@ class FileItemPresenter(
     override val showMenu: Boolean,
     var loadCover: Boolean = false,
 ) : DisplayPresenter<FileItem> {
+
+    override val imageryProvider: ImageryProvider<FileItem> = FileItemArtwork { loadCover }
 
     override fun menuEntries(context: Context, item: FileItem, position: Int): List<ActionEntry> =
         ActionMenus.FileItem(context, item)

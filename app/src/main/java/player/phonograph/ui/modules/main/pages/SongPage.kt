@@ -13,6 +13,8 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayPresenter
+import player.phonograph.ui.adapter.ImageryProvider
+import player.phonograph.ui.adapter.SongArtwork
 import player.phonograph.ui.adapter.SongBasicDisplayPresenter
 import androidx.fragment.app.viewModels
 import android.content.Context
@@ -60,6 +62,8 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>>() {
         override val usePalette: Boolean,
         override val layoutStyle: ItemLayoutStyle,
     ) : SongBasicDisplayPresenter(sortMode) {
+
+        override val imageryProvider: ImageryProvider<Song> = SongArtwork(usePalette)
 
         override val imageType: Int = DisplayPresenter.IMAGE_TYPE_IMAGE
 

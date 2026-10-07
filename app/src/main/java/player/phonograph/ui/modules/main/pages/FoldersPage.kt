@@ -21,6 +21,8 @@ import player.phonograph.ui.actions.ClickActionProviders
 import player.phonograph.ui.actions.actionPlay
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayPresenter
+import player.phonograph.ui.adapter.ImageryProvider
+import player.phonograph.ui.adapter.SongArtwork
 import player.phonograph.ui.adapter.SongBasicDisplayPresenter
 import player.phonograph.ui.adapter.SongCollectionBasicDisplayPresenter
 import player.phonograph.ui.modules.panel.PanelViewModel
@@ -241,6 +243,8 @@ class FoldersPage : AbsPanelPage() {
         override val usePalette: Boolean,
         override val layoutStyle: ItemLayoutStyle,
     ) : SongBasicDisplayPresenter(sortMode) {
+        override val imageryProvider: ImageryProvider<Song> = SongArtwork(usePalette)
+
         override val imageType: Int = DisplayPresenter.IMAGE_TYPE_IMAGE
     }
 
