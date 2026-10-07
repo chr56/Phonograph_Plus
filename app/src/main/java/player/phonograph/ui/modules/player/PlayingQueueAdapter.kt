@@ -8,7 +8,6 @@ import player.phonograph.model.Song
 import player.phonograph.model.menu.ActionEntry
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.ui.actions.ActionMenuProviders
 import player.phonograph.ui.actions.ActionMenus
 import player.phonograph.ui.actions.ClickActionProviders
 import player.phonograph.ui.adapter.DisplayPresenter
@@ -22,7 +21,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.text.TextUtils
 import android.view.LayoutInflater
-import android.view.Menu
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -123,18 +121,6 @@ class PlayingQueueAdapter(activity: FragmentActivity) :
                 }
             }
 
-        override val menuProvider: ActionMenuProviders.ActionMenuProvider<Song>
-            get() = object : ActionMenuProviders.ActionMenuProvider<Song> {
-                override fun inflateMenu(menu: Menu, context: Context, item: Song, position: Int) {}
-                override fun prepareMenu(
-                    menuButtonView: View,
-                    item: Song,
-                    bindingPosition: Int,
-                ) {
-                    ActionMenuProviders.SongActionMenuProvider(showPlay = false, index = bindingPosition)
-                        .prepareMenu(menuButtonView, item, bindingPosition)
-                }
-            }
     }
 
     //region Draggable

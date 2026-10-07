@@ -12,7 +12,6 @@ import player.phonograph.mechanism.coil.loadImage
 import player.phonograph.model.file.FileItem
 import player.phonograph.model.menu.ActionEntry
 import player.phonograph.model.ui.ItemLayoutStyle
-import player.phonograph.ui.actions.ActionMenuProviders
 import player.phonograph.ui.actions.ActionMenus
 import player.phonograph.ui.actions.ClickActionProviders
 import player.phonograph.ui.adapter.DisplayPresenter
@@ -25,7 +24,6 @@ import android.text.format.Formatter
 
 class FileItemPresenter(
     override var clickActionProvider: ClickActionProviders.ClickActionProvider<FileItem>,
-    override var menuProvider: ActionMenuProviders.ActionMenuProvider<FileItem>?,
     override val showMenu: Boolean,
     var loadCover: Boolean = false,
 ) : DisplayPresenter<FileItem> {

@@ -16,7 +16,6 @@ import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.repo.mediastore.MediaStoreSongCollections
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
-import player.phonograph.ui.actions.ActionMenuProviders
 import player.phonograph.ui.actions.ActionMenus
 import player.phonograph.ui.actions.ClickActionProviders
 import player.phonograph.ui.actions.actionPlay
@@ -271,8 +270,6 @@ class FoldersPage : AbsPanelPage() {
                     imageView: ImageView?,
                 ): Boolean = onClick.invoke(context, position)
             }
-        override val menuProvider: ActionMenuProviders.ActionMenuProvider<SongCollection> =
-            ActionMenuProviders.SongCollectionActionMenuProvider
     }
     //endregion
 

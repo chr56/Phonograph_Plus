@@ -5,7 +5,6 @@
 package player.phonograph.ui.modules.explorer
 
 import player.phonograph.model.file.FileItem
-import player.phonograph.ui.actions.ActionMenuProviders
 import player.phonograph.ui.actions.ClickActionProviders
 import android.content.Context
 import android.os.Bundle
@@ -19,7 +18,6 @@ class FilesChooserExplorerFragment : AbsFilesExplorerFragment() {
     override fun createClickActionProvider(): ClickActionProviders.ClickActionProvider<FileItem> =
         FilesChooserClickActionProvider(::onSwitch)
 
-    override fun createMenuProvider(): ActionMenuProviders.ActionMenuProvider<FileItem>? = null
     override val showMenu: Boolean = false
 
     class FilesChooserClickActionProvider(private val onSwitch: (FileItem) -> Unit) :

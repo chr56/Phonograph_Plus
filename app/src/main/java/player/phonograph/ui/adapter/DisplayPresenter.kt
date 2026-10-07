@@ -9,7 +9,6 @@ import coil.target.Target
 import player.phonograph.model.menu.ActionEntry
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.ui.ItemLayoutStyle
-import player.phonograph.ui.actions.ActionMenuProviders
 import player.phonograph.ui.actions.ClickActionProviders
 import androidx.annotation.IntDef
 import android.content.Context
@@ -26,7 +25,6 @@ interface DisplayPresenter<T> {
     fun getDescription(context: Context, item: T): CharSequence? = null
 
     val clickActionProvider: ClickActionProviders.ClickActionProvider<T>
-    val menuProvider: ActionMenuProviders.ActionMenuProvider<T>? get() = null
 
     val showMenu: Boolean get() = false
     fun menuEntries(context: Context, item: T, position: Int): List<ActionEntry> = emptyList()

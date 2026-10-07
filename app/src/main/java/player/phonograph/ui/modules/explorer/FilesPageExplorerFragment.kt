@@ -7,7 +7,6 @@ package player.phonograph.ui.modules.explorer
 import player.phonograph.model.file.FileItem
 import player.phonograph.settings.Keys
 import player.phonograph.settings.SettingsObserver
-import player.phonograph.ui.actions.ActionMenuProviders
 import player.phonograph.ui.actions.ClickActionProviders
 import player.phonograph.ui.modules.panel.PanelViewModel
 import player.phonograph.ui.util.BottomViewWindowInsetsController
@@ -29,8 +28,6 @@ class FilesPageExplorerFragment : AbsFilesExplorerFragment() {
     override fun createClickActionProvider(): ClickActionProviders.ClickActionProvider<FileItem> =
         FilesPageClickActionProvider(::onSwitch)
 
-    override fun createMenuProvider(): ActionMenuProviders.ActionMenuProvider<FileItem>? =
-        ActionMenuProviders.FileItemActionMenuProvider
     override val showMenu: Boolean = false
 
     class FilesPageClickActionProvider(private val onSwitch: (FileItem) -> Unit) :

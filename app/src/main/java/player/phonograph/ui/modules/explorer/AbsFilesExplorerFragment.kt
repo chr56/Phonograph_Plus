@@ -10,7 +10,6 @@ import player.phonograph.databinding.FragmentFileExploreBinding
 import player.phonograph.mechanism.explorer.MediaPaths
 import player.phonograph.model.file.FileItem
 import player.phonograph.model.file.MediaPath
-import player.phonograph.ui.actions.ActionMenuProviders
 import player.phonograph.ui.actions.ClickActionProviders
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayPresenter
@@ -106,7 +105,6 @@ sealed class AbsFilesExplorerFragment : Fragment() {
         // Recycle View
         presenter = FileItemPresenter(
             clickActionProvider = createClickActionProvider(),
-            menuProvider = createMenuProvider(),
             showMenu = showMenu,
         )
         adapter = DisplayAdapter(
@@ -130,7 +128,6 @@ sealed class AbsFilesExplorerFragment : Fragment() {
 
     abstract val allowMultiSelection: Boolean
     abstract fun createClickActionProvider(): ClickActionProviders.ClickActionProvider<FileItem>
-    abstract fun createMenuProvider(): ActionMenuProviders.ActionMenuProvider<FileItem>?
     abstract val showMenu: Boolean
 
     protected open fun setupObservers() {

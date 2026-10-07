@@ -16,7 +16,6 @@ import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.ui.actions.ActionMenuProviders
 import player.phonograph.ui.actions.ActionMenus
 import player.phonograph.ui.actions.ClickActionProviders
 import player.phonograph.ui.adapter.AlbumBasicDisplayPresenter
@@ -39,7 +38,6 @@ import androidx.recyclerview.widget.RecyclerView
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -238,14 +236,6 @@ class QueueSearchResultPageFragment : SearchResultPageFragment<QueueSong>() {
                 ): Boolean {
                     MusicPlayerRemote.playSongAt(list[position].index)
                     return true
-                }
-            }
-
-        override val menuProvider: ActionMenuProviders.ActionMenuProvider<QueueSong> =
-            object : ActionMenuProviders.ActionMenuProvider<QueueSong> {
-                override fun inflateMenu(menu: Menu, context: Context, item: QueueSong, position: Int) {
-                    ActionMenuProviders.SongActionMenuProvider(showPlay = false, index = item.index)
-                        .inflateMenu(menu, context, item.song, position)
                 }
             }
 

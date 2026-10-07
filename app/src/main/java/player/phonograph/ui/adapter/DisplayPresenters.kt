@@ -24,7 +24,6 @@ import player.phonograph.model.sort.SortRef
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.repo.loader.Genres
 import player.phonograph.repo.loader.Songs
-import player.phonograph.ui.actions.ActionMenuProviders
 import player.phonograph.ui.actions.ActionMenus
 import player.phonograph.ui.actions.ClickActionProviders
 import player.phonograph.ui.resource.Durations
@@ -60,9 +59,6 @@ abstract class SongBasicDisplayPresenter(
 
     override val clickActionProvider: ClickActionProviders.ClickActionProvider<Song> =
         ClickActionProviders.SongClickActionProvider()
-
-    override val menuProvider: ActionMenuProviders.ActionMenuProvider<Song> =
-        ActionMenuProviders.SongActionMenuProvider(showPlay = false)
 
     override fun getIcon(context: Context, item: Song): Drawable? =
         AppCompatResources.getDrawable(context, R.drawable.default_album_art)
@@ -117,9 +113,6 @@ abstract class AlbumBasicDisplayPresenter(
     override val clickActionProvider: ClickActionProviders.ClickActionProvider<Album> =
         ClickActionProviders.AlbumClickActionProvider()
 
-    override val menuProvider: ActionMenuProviders.ActionMenuProvider<Album> =
-        ActionMenuProviders.AlbumActionMenuProvider
-
     override fun getSortOrderKey(context: Context): SortMode = sortMode
 
     override fun getIcon(context: Context, item: Album): Drawable? =
@@ -172,9 +165,6 @@ abstract class ArtistBasicDisplayPresenter(
             withContext(Dispatchers.IO) { Songs.artist(context, artist.id) }
         }
 
-    override val menuProvider: ActionMenuProviders.ActionMenuProvider<Artist> =
-        ActionMenuProviders.ArtistActionMenuProvider
-
     override fun getSortOrderKey(context: Context): SortMode = sortMode
 
     override fun getIcon(context: Context, item: Artist): Drawable? =
@@ -220,9 +210,6 @@ abstract class GenreBasicDisplayPresenter(
     override val clickActionProvider: ClickActionProviders.ClickActionProvider<Genre> =
         ClickActionProviders.GenreClickActionProvider()
 
-    override val menuProvider: ActionMenuProviders.ActionMenuProvider<Genre> =
-        ActionMenuProviders.GenreActionMenuProvider
-
     override fun getSortOrderKey(context: Context): SortMode = sortMode
 
     override fun getSortOrderReference(item: Genre, sortMode: SortMode): String? =
@@ -252,9 +239,6 @@ abstract class PlaylistBasicDisplayPresenter(
 
     override val clickActionProvider: ClickActionProviders.ClickActionProvider<Playlist> =
         ClickActionProviders.PlaylistClickActionProvider()
-
-    override val menuProvider: ActionMenuProviders.ActionMenuProvider<Playlist>?
-        get() = ActionMenuProviders.PlaylistActionMenuProvider
 
 
     override fun getSortOrderKey(context: Context): SortMode = sortMode
