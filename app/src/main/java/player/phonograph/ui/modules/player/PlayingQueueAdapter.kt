@@ -79,7 +79,6 @@ class PlayingQueueAdapter(activity: FragmentActivity) :
 
         override fun loadImage(
             item: Song,
-            imageType: Int,
             imageView: ImageView?,
             presenter: DisplayPresenter<Song>,
         ) {

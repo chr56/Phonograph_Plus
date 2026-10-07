@@ -18,6 +18,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import android.annotation.SuppressLint
 import android.graphics.PorterDuff
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -125,46 +126,55 @@ open class DisplayAdapter<I>(
             }
 
             // Image
-            loadImage(item, presenter.imageType, image, presenter)
+            loadImage(item, image, presenter)
         }
 
         protected open fun loadImage(
             item: I,
-            imageType: Int,
             imageView: ImageView?,
             presenter: DisplayPresenter<I>,
         ) {
-            when (imageType) {
-                DisplayPresenter.IMAGE_TYPE_FIXED_ICON -> {
-                    val icon = presenter.getIcon(itemView.context, item)
-                    if (imageView != null) {
-                        imageView.visibility = View.VISIBLE
-                        imageView.setColorFilter(themeIconColor(itemView.context), PorterDuff.Mode.SRC_IN)
-                        imageView.setImageDrawable(icon)
-                    }
-                }
+            when (val provider = presenter.imageryProvider) {
 
-                DisplayPresenter.IMAGE_TYPE_IMAGE      -> {
+                is ImageryProvider.Artwork      -> {
                     if (imageView != null) {
                         image?.visibility = View.VISIBLE
                         loadJob?.dispose()
-                        loadJob = presenter.startLoadingImage(
+                        loadJob = provider.startLoadingImage(
                             itemView.context, item,
                             PaletteColorViewTarget(
                                 imageView,
                                 ::setPaletteColors,
                                 themeFooterColor(itemView.context),
-                                presenter.usePalette
+                                provider.usePalette
                             )
                         )
                     }
                 }
 
-                DisplayPresenter.IMAGE_TYPE_TEXT       -> {
+                is ImageryProvider.FixedIcon    -> {
+                    setIcon(imageView, provider.getIcon(itemView.context))
+                }
+
+                is ImageryProvider.AdaptiveIcon -> {
+                    setIcon(imageView, provider.getIcon(itemView.context, item))
+                }
+
+                ImageryProvider.Text            -> {
                     val ordinalText = presenter.getRelativeOrdinalText(item) ?: "-"
                     imageText?.visibility = View.VISIBLE
                     imageText?.text = ordinalText
                 }
+
+                ImageryProvider.None            -> Unit
+            }
+        }
+
+        private fun setIcon(imageView: ImageView?, icon: Drawable) {
+            if (imageView != null) {
+                imageView.visibility = View.VISIBLE
+                imageView.setColorFilter(themeIconColor(itemView.context), PorterDuff.Mode.SRC_IN)
+                imageView.setImageDrawable(icon)
             }
         }
 
