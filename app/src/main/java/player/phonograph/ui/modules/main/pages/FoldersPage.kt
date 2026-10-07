@@ -240,12 +240,10 @@ class FoldersPage : AbsPanelPage() {
 
     private class EmbedSongDisplayPresenter(
         sortMode: SortMode,
-        override val usePalette: Boolean,
+        usePalette: Boolean,
         override val layoutStyle: ItemLayoutStyle,
     ) : SongBasicDisplayPresenter(sortMode) {
         override val imageryProvider: ImageryProvider<Song> = SongArtwork(usePalette)
-
-        override val imageType: Int = DisplayPresenter.IMAGE_TYPE_IMAGE
     }
 
     private fun buildFolderDisplayPresenter(lastPosition: Int): DisplayPresenter<SongCollection> =
@@ -259,7 +257,6 @@ class FoldersPage : AbsPanelPage() {
         override val layoutStyle: ItemLayoutStyle,
         val onClick: (Context, Int) -> Boolean,
     ) : SongCollectionBasicDisplayPresenter(sortMode) {
-        override val usePalette: Boolean = false
         override val showMenu: Boolean = true
 
         override fun menuEntries(context: Context, item: SongCollection, position: Int): List<ActionEntry> =

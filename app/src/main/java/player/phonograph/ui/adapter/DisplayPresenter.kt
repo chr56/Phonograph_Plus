@@ -4,15 +4,11 @@
 
 package player.phonograph.ui.adapter
 
-import coil.request.Disposable
-import coil.target.Target
 import player.phonograph.model.menu.ActionEntry
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.ui.actions.ClickActionProviders
-import androidx.annotation.IntDef
 import android.content.Context
-import android.graphics.drawable.Drawable
 
 interface DisplayPresenter<T> {
 
@@ -42,24 +38,4 @@ interface DisplayPresenter<T> {
     val layoutStyle: ItemLayoutStyle
 
     val imageryProvider: ImageryProvider<T>
-
-    @ImageType
-    val imageType: Int
-
-    val usePalette: Boolean
-
-    fun getIcon(context: Context, item: T): Drawable? = null
-
-    fun startLoadingImage(context: Context, item: T, target: Target): Disposable? = null
-
-    companion object {
-        const val IMAGE_TYPE_NONE = 0
-        const val IMAGE_TYPE_FIXED_ICON = 1
-        const val IMAGE_TYPE_IMAGE = 2
-        const val IMAGE_TYPE_TEXT = 4
-
-        @IntDef(IMAGE_TYPE_NONE, IMAGE_TYPE_FIXED_ICON, IMAGE_TYPE_IMAGE, IMAGE_TYPE_TEXT)
-        @Retention(AnnotationRetention.SOURCE)
-        annotation class ImageType
-    }
 }

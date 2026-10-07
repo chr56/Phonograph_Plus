@@ -312,13 +312,11 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvide
     }
 
 
-    class ArtistAlbumDisplayPresenter(override val usePalette: Boolean) : AlbumBasicDisplayPresenter(SortMode(SortRef.YEAR)) {
+    class ArtistAlbumDisplayPresenter(usePalette: Boolean) : AlbumBasicDisplayPresenter(SortMode(SortRef.YEAR)) {
 
         override val imageryProvider: ImageryProvider<Album> = AlbumArtwork(usePalette)
 
         override val layoutStyle: ItemLayoutStyle = ItemLayoutStyle.GRID_CARD_HORIZONTAL
-
-        override val imageType: Int = DisplayPresenter.IMAGE_TYPE_IMAGE
 
         override fun getDescription(context: Context, item: Album): CharSequence =
             buildInfoString(readableYear(item.year), songCountString(context, item.songCount))
@@ -330,10 +328,5 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvide
         override val imageryProvider: ImageryProvider<Song> = SongArtwork(false)
 
         override val layoutStyle: ItemLayoutStyle = ItemLayoutStyle.LIST
-
-        override val usePalette: Boolean get() = false
-
-        override val imageType: Int = DisplayPresenter.IMAGE_TYPE_IMAGE
-
     }
 }

@@ -4,13 +4,9 @@
 
 package player.phonograph.ui.adapter
 
-import coil.request.Disposable
-import coil.target.Target
 import lib.storage.extension.rootDirectory
 import player.phonograph.App
-import player.phonograph.R
 import player.phonograph.foundation.dateTextShortText
-import player.phonograph.mechanism.coil.loadImage
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Genre
@@ -32,10 +28,8 @@ import player.phonograph.ui.resource.albumCountString
 import player.phonograph.ui.resource.infoString
 import player.phonograph.ui.resource.readableYear
 import player.phonograph.ui.resource.songCountString
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.getSystemService
 import android.content.Context
-import android.graphics.drawable.Drawable
 import android.os.storage.StorageManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -60,9 +54,6 @@ abstract class SongBasicDisplayPresenter(
     override val clickActionProvider: ClickActionProviders.ClickActionProvider<Song> =
         ClickActionProviders.SongClickActionProvider()
 
-    override fun getIcon(context: Context, item: Song): Drawable? =
-        AppCompatResources.getDrawable(context, R.drawable.default_album_art)
-
     override fun getSortOrderKey(context: Context): SortMode = sortMode
 
     override fun getSortOrderReference(item: Song, sortMode: SortMode): String? =
@@ -79,16 +70,6 @@ abstract class SongBasicDisplayPresenter(
             else                      -> ""
         }
 
-    override fun startLoadingImage(
-        context: Context,
-        item: Song,
-        target: Target,
-    ): Disposable? = loadImage(context)
-        .from(item)
-        .withPalette()
-        .default(R.drawable.default_album_art)
-        .into(target)
-        .enqueue()
 }
 
 
@@ -115,9 +96,6 @@ abstract class AlbumBasicDisplayPresenter(
 
     override fun getSortOrderKey(context: Context): SortMode = sortMode
 
-    override fun getIcon(context: Context, item: Album): Drawable? =
-        AppCompatResources.getDrawable(context, R.drawable.default_album_art)
-
     override fun getSortOrderReference(item: Album, sortMode: SortMode): String? =
         when (sortMode.sortRef) {
             SortRef.ALBUM_NAME  -> makeSectionName(item.title)
@@ -127,16 +105,6 @@ abstract class AlbumBasicDisplayPresenter(
             else                -> ""
         }
 
-    override fun startLoadingImage(
-        context: Context,
-        item: Album,
-        target: Target,
-    ): Disposable? = loadImage(context)
-        .from(item)
-        .withPalette()
-        .default(R.drawable.default_album_art)
-        .into(target)
-        .enqueue()
 }
 
 abstract class ArtistBasicDisplayPresenter(
@@ -167,9 +135,6 @@ abstract class ArtistBasicDisplayPresenter(
 
     override fun getSortOrderKey(context: Context): SortMode = sortMode
 
-    override fun getIcon(context: Context, item: Artist): Drawable? =
-        AppCompatResources.getDrawable(context, R.drawable.default_artist_image)
-
     override fun getSortOrderReference(item: Artist, sortMode: SortMode): String? =
         when (sortMode.sortRef) {
             SortRef.ARTIST_NAME -> makeSectionName(item.name)
@@ -177,17 +142,6 @@ abstract class ArtistBasicDisplayPresenter(
             SortRef.SONG_COUNT  -> item.songCount.toString()
             else                -> ""
         }
-
-    override fun startLoadingImage(
-        context: Context,
-        item: Artist,
-        target: Target,
-    ): Disposable? = loadImage(context)
-        .from(item)
-        .withPalette()
-        .default(R.drawable.default_artist_image)
-        .into(target)
-        .enqueue()
 
 }
 
@@ -255,10 +209,6 @@ abstract class PlaylistBasicDisplayPresenter(
             else                  -> ""
         }
 
-    override fun getIcon(context: Context, item: Playlist): Drawable? {
-        return AppCompatResources.getDrawable(context, item.iconRes)
-    }
-
 }
 
 abstract class SongCollectionBasicDisplayPresenter(
@@ -288,12 +238,6 @@ abstract class SongCollectionBasicDisplayPresenter(
             else                 -> ""
         }
 
-    override val imageType: Int = DisplayPresenter.IMAGE_TYPE_FIXED_ICON
-
-    override fun getIcon(context: Context, item: SongCollection): Drawable? {
-        return AppCompatResources.getDrawable(context, R.drawable.ic_folder_white_24dp)
-    }
-
     companion object {
 
         private fun stripStorageVolume(str: String): String {
@@ -312,8 +256,6 @@ abstract class QueueSongBasicDisplayPresenter : DisplayPresenter<QueueSong> {
     override val imageryProvider: ImageryProvider<QueueSong> = ImageryProvider.Text
 
     override val layoutStyle: ItemLayoutStyle = ItemLayoutStyle.LIST
-    override val usePalette: Boolean = false
-    override val imageType: Int = DisplayPresenter.IMAGE_TYPE_TEXT
 
     override fun getItemID(item: QueueSong): Long = item.song.id
 

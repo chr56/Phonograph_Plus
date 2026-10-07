@@ -20,7 +20,6 @@ import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.model.ui.PaletteColorProvider
 import player.phonograph.repo.loader.Songs
 import player.phonograph.ui.adapter.DisplayAdapter
-import player.phonograph.ui.adapter.DisplayPresenter
 import player.phonograph.ui.adapter.ImageryProvider
 import player.phonograph.ui.adapter.SongBasicDisplayPresenter
 import player.phonograph.ui.goToArtistDetail
@@ -240,10 +239,6 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvider
         override val imageryProvider: ImageryProvider<Song> = ImageryProvider.Text
 
         override val layoutStyle: ItemLayoutStyle = ItemLayoutStyle.LIST
-
-        override val usePalette: Boolean get() = false
-
-        override val imageType: Int = DisplayPresenter.IMAGE_TYPE_TEXT
 
         override fun getRelativeOrdinalText(item: Song): String = trackNumber(item)
 

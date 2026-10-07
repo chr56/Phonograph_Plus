@@ -23,7 +23,6 @@ import player.phonograph.ui.adapter.AlbumBasicDisplayPresenter
 import player.phonograph.ui.adapter.ArtistArtwork
 import player.phonograph.ui.adapter.ArtistBasicDisplayPresenter
 import player.phonograph.ui.adapter.DisplayAdapter
-import player.phonograph.ui.adapter.DisplayPresenter
 import player.phonograph.ui.adapter.GenreBasicDisplayPresenter
 import player.phonograph.ui.adapter.ImageryProvider
 import player.phonograph.ui.adapter.PlaylistBasicDisplayPresenter
@@ -121,8 +120,6 @@ class SongSearchResultPageFragment : SearchResultPageFragment<Song>() {
         override val imageryProvider: ImageryProvider<Song> = SongArtwork(false)
 
         override val layoutStyle: ItemLayoutStyle = ItemLayoutStyle.LIST
-        override val usePalette: Boolean get() = false
-        override val imageType: Int = DisplayPresenter.IMAGE_TYPE_IMAGE
     }
 }
 
@@ -144,8 +141,6 @@ class AlbumSearchResultPageFragment : SearchResultPageFragment<Album>() {
         override val imageryProvider: ImageryProvider<Album> = AlbumArtwork(false)
 
         override val layoutStyle: ItemLayoutStyle = ItemLayoutStyle.LIST
-        override val usePalette: Boolean get() = false
-        override val imageType: Int = DisplayPresenter.IMAGE_TYPE_IMAGE
     }
 }
 
@@ -166,8 +161,6 @@ class ArtistSearchResultPageFragment : SearchResultPageFragment<Artist>() {
         override val imageryProvider: ImageryProvider<Artist> = ArtistArtwork(false)
 
         override val layoutStyle: ItemLayoutStyle = ItemLayoutStyle.LIST
-        override val usePalette: Boolean get() = false
-        override val imageType: Int = DisplayPresenter.IMAGE_TYPE_IMAGE
     }
 }
 
@@ -188,8 +181,6 @@ class PlaylistSearchResultPageFragment : SearchResultPageFragment<Playlist>() {
 
     object PlaylistSearchResultDisplayPresenter : PlaylistBasicDisplayPresenter(SortMode(SortRef.DISPLAY_NAME)) {
         override val layoutStyle: ItemLayoutStyle = ItemLayoutStyle.LIST
-        override val usePalette: Boolean = false
-        override val imageType: Int = DisplayPresenter.IMAGE_TYPE_FIXED_ICON
     }
 }
 
@@ -210,8 +201,6 @@ class GenreSearchResultPageFragment : SearchResultPageFragment<Genre>() {
 
     object GenreSearchResultDisplayPresenter : GenreBasicDisplayPresenter(SortMode(SortRef.DISPLAY_NAME)) {
         override val layoutStyle: ItemLayoutStyle = ItemLayoutStyle.LIST
-        override val usePalette: Boolean = false
-        override val imageType: Int = DisplayPresenter.IMAGE_TYPE_NONE
     }
 }
 

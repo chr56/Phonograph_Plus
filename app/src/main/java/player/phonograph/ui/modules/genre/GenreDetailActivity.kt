@@ -18,7 +18,6 @@ import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.ui.adapter.DisplayAdapter
-import player.phonograph.ui.adapter.DisplayPresenter
 import player.phonograph.ui.adapter.ImageryProvider
 import player.phonograph.ui.adapter.SongArtwork
 import player.phonograph.ui.adapter.SongBasicDisplayPresenter
@@ -156,10 +155,5 @@ class GenreDetailActivity : AbsSlidingMusicPanelActivity(),
         override val imageryProvider: ImageryProvider<Song> = SongArtwork(false)
 
         override val layoutStyle: ItemLayoutStyle = ItemLayoutStyle.LIST
-
-        override val usePalette: Boolean get() = false
-
-        override val imageType: Int = DisplayPresenter.IMAGE_TYPE_IMAGE
-
     }
 }

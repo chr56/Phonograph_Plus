@@ -98,9 +98,6 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
         override val layoutStyle: ItemLayoutStyle,
     ) : PlaylistBasicDisplayPresenter(sortMode) {
 
-        override val imageType: Int = DisplayPresenter.IMAGE_TYPE_FIXED_ICON
-        override val usePalette: Boolean = false
-
         companion object {
 
             fun from(displayConfig: PageDisplayConfig): PlaylistDisplayPresenter =

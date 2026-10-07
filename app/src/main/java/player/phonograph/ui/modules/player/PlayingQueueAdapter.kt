@@ -105,8 +105,6 @@ class PlayingQueueAdapter(activity: FragmentActivity) :
         override fun getTertiaryText(context: Context, item: Song): CharSequence? = item.artistName
 
         override val layoutStyle: ItemLayoutStyle = ItemLayoutStyle.LIST
-        override val imageType: Int = DisplayPresenter.IMAGE_TYPE_NONE // custom
-        override val usePalette: Boolean = false
 
         override val showMenu: Boolean = true
 
