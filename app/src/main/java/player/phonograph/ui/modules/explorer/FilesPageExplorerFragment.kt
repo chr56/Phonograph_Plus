@@ -31,6 +31,7 @@ class FilesPageExplorerFragment : AbsFilesExplorerFragment() {
 
     override fun createMenuProvider(): ActionMenuProviders.ActionMenuProvider<FileItem>? =
         ActionMenuProviders.FileItemActionMenuProvider
+    override val showMenu: Boolean = false
 
     class FilesPageClickActionProvider(private val onSwitch: (FileItem) -> Unit) :
             ClickActionProviders.ClickActionProvider<FileItem> {

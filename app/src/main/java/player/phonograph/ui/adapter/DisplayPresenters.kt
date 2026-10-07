@@ -17,11 +17,15 @@ import player.phonograph.model.Genre
 import player.phonograph.model.QueueSong
 import player.phonograph.model.Song
 import player.phonograph.model.SongCollection
+import player.phonograph.model.menu.ActionEntry
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.model.ui.ItemLayoutStyle
+import player.phonograph.repo.loader.Genres
+import player.phonograph.repo.loader.Songs
 import player.phonograph.ui.actions.ActionMenuProviders
+import player.phonograph.ui.actions.ActionMenus
 import player.phonograph.ui.actions.ClickActionProviders
 import player.phonograph.ui.resource.Durations
 import player.phonograph.ui.resource.Texts
@@ -34,6 +38,8 @@ import androidx.core.content.getSystemService
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.storage.StorageManager
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 abstract class SongBasicDisplayPresenter(
     private val sortMode: SortMode,
@@ -46,6 +52,11 @@ abstract class SongBasicDisplayPresenter(
     override fun getDescription(context: Context, item: Song): CharSequence = item.infoString()
     override fun getSecondaryText(context: Context, item: Song): CharSequence = item.albumName ?: "N/A"
     override fun getTertiaryText(context: Context, item: Song): CharSequence? = item.artistName
+
+    override val showMenu: Boolean = true
+
+    override fun menuEntries(context: Context, item: Song, position: Int): List<ActionEntry> =
+        ActionMenus.Song(context, item, showPlay = false)
 
     override val clickActionProvider: ClickActionProviders.ClickActionProvider<Song> =
         ClickActionProviders.SongClickActionProvider()
@@ -95,6 +106,13 @@ abstract class AlbumBasicDisplayPresenter(
     override fun getDescription(context: Context, item: Album): CharSequence = item.infoString(context)
     override fun getSecondaryText(context: Context, item: Album): CharSequence = item.artistName ?: "N/A"
     override fun getTertiaryText(context: Context, item: Album): CharSequence = songCountString(context, item.songCount)
+
+    override val showMenu: Boolean = true
+
+    override fun menuEntries(context: Context, item: Album, position: Int): List<ActionEntry> =
+        ActionMenus.Composite(context, item) { context, album ->
+            withContext(Dispatchers.IO) { Songs.album(context, album.id) }
+        }
 
     override val clickActionProvider: ClickActionProviders.ClickActionProvider<Album> =
         ClickActionProviders.AlbumClickActionProvider()
@@ -147,6 +165,13 @@ abstract class ArtistBasicDisplayPresenter(
     override val clickActionProvider: ClickActionProviders.ClickActionProvider<Artist> =
         ClickActionProviders.ArtistClickActionProvider()
 
+    override val showMenu: Boolean = true
+
+    override fun menuEntries(context: Context, item: Artist, position: Int): List<ActionEntry> =
+        ActionMenus.Composite(context, item) { context, artist ->
+            withContext(Dispatchers.IO) { Songs.artist(context, artist.id) }
+        }
+
     override val menuProvider: ActionMenuProviders.ActionMenuProvider<Artist> =
         ActionMenuProviders.ArtistActionMenuProvider
 
@@ -185,6 +210,13 @@ abstract class GenreBasicDisplayPresenter(
     override fun getDescription(context: Context, item: Genre): CharSequence = item.infoString(context)
     override fun getSecondaryText(context: Context, item: Genre): CharSequence = item.infoString(context)
 
+    override val showMenu: Boolean = true
+
+    override fun menuEntries(context: Context, item: Genre, position: Int): List<ActionEntry> =
+        ActionMenus.Composite(context, item) { context, genre ->
+            withContext(Dispatchers.IO) { Genres.songs(context, genre.id) }
+        }
+
     override val clickActionProvider: ClickActionProviders.ClickActionProvider<Genre> =
         ClickActionProviders.GenreClickActionProvider()
 
@@ -212,6 +244,11 @@ abstract class PlaylistBasicDisplayPresenter(
 
     override fun getSecondaryText(context: Context, item: Playlist): CharSequence =
         Texts.playlist(context.resources, item.location)
+
+    override val showMenu: Boolean = true
+
+    override fun menuEntries(context: Context, item: Playlist, position: Int): List<ActionEntry> =
+        ActionMenus.Playlist(context, item)
 
     override val clickActionProvider: ClickActionProviders.ClickActionProvider<Playlist> =
         ClickActionProviders.PlaylistClickActionProvider()

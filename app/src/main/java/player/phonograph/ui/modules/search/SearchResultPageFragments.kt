@@ -10,12 +10,14 @@ import player.phonograph.model.Artist
 import player.phonograph.model.Genre
 import player.phonograph.model.QueueSong
 import player.phonograph.model.Song
+import player.phonograph.model.menu.ActionEntry
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.actions.ActionMenuProviders
+import player.phonograph.ui.actions.ActionMenus
 import player.phonograph.ui.actions.ClickActionProviders
 import player.phonograph.ui.adapter.AlbumBasicDisplayPresenter
 import player.phonograph.ui.adapter.ArtistBasicDisplayPresenter
@@ -220,6 +222,11 @@ class QueueSearchResultPageFragment : SearchResultPageFragment<QueueSong>() {
     }
 
     object PlaylistSearchResultDisplayPresenter : QueueSongBasicDisplayPresenter() {
+
+        override val showMenu: Boolean = true
+
+        override fun menuEntries(context: Context, item: QueueSong, position: Int): List<ActionEntry> =
+            ActionMenus.Song(context, item.song, showPlay = false, index = item.index)
 
         override val clickActionProvider: ClickActionProviders.ClickActionProvider<QueueSong> =
             object : ClickActionProviders.ClickActionProvider<QueueSong> {

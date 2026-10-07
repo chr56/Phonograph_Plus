@@ -10,8 +10,10 @@ import player.phonograph.R
 import player.phonograph.foundation.dateTimeText
 import player.phonograph.mechanism.coil.loadImage
 import player.phonograph.model.file.FileItem
+import player.phonograph.model.menu.ActionEntry
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.ui.actions.ActionMenuProviders
+import player.phonograph.ui.actions.ActionMenus
 import player.phonograph.ui.actions.ClickActionProviders
 import player.phonograph.ui.adapter.DisplayPresenter
 import player.phonograph.ui.theme.getTintedDrawable
@@ -24,8 +26,12 @@ import android.text.format.Formatter
 class FileItemPresenter(
     override var clickActionProvider: ClickActionProviders.ClickActionProvider<FileItem>,
     override var menuProvider: ActionMenuProviders.ActionMenuProvider<FileItem>?,
+    override val showMenu: Boolean,
     var loadCover: Boolean = false,
 ) : DisplayPresenter<FileItem> {
+
+    override fun menuEntries(context: Context, item: FileItem, position: Int): List<ActionEntry> =
+        ActionMenus.FileItem(context, item)
 
     override fun getItemID(item: FileItem): Long =
         item.mediaPath.hashCode().toLong() shl 16 + item.name.hashCode() shl 1 + if (item.isFolder) 1 else 0

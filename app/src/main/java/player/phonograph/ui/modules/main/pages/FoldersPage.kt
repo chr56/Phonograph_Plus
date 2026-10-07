@@ -8,6 +8,7 @@ import com.github.chr56.android.menu_model.MenuContext
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.model.SongCollection
+import player.phonograph.model.menu.ActionEntry
 import player.phonograph.model.service.ShuffleMode
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
@@ -16,6 +17,7 @@ import player.phonograph.repo.mediastore.MediaStoreSongCollections
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
 import player.phonograph.ui.actions.ActionMenuProviders
+import player.phonograph.ui.actions.ActionMenus
 import player.phonograph.ui.actions.ClickActionProviders
 import player.phonograph.ui.actions.actionPlay
 import player.phonograph.ui.adapter.DisplayAdapter
@@ -255,6 +257,10 @@ class FoldersPage : AbsPanelPage() {
         val onClick: (Context, Int) -> Boolean,
     ) : SongCollectionBasicDisplayPresenter(sortMode) {
         override val usePalette: Boolean = false
+        override val showMenu: Boolean = true
+
+        override fun menuEntries(context: Context, item: SongCollection, position: Int): List<ActionEntry> =
+            ActionMenus.Composite(context, item) { _, collection -> collection.songs }
 
         override val clickActionProvider: ClickActionProviders.ClickActionProvider<SongCollection> =
             object : ClickActionProviders.ClickActionProvider<SongCollection> {

@@ -107,6 +107,7 @@ sealed class AbsFilesExplorerFragment : Fragment() {
         presenter = FileItemPresenter(
             clickActionProvider = createClickActionProvider(),
             menuProvider = createMenuProvider(),
+            showMenu = showMenu,
         )
         adapter = DisplayAdapter(
             activity = requireActivity(),
@@ -130,6 +131,7 @@ sealed class AbsFilesExplorerFragment : Fragment() {
     abstract val allowMultiSelection: Boolean
     abstract fun createClickActionProvider(): ClickActionProviders.ClickActionProvider<FileItem>
     abstract fun createMenuProvider(): ActionMenuProviders.ActionMenuProvider<FileItem>?
+    abstract val showMenu: Boolean
 
     protected open fun setupObservers() {
         observe(model.currentPath) { newPath ->

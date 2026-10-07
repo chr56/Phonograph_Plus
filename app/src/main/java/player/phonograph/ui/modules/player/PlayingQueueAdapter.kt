@@ -5,9 +5,11 @@
 package player.phonograph.ui.modules.player
 
 import player.phonograph.model.Song
+import player.phonograph.model.menu.ActionEntry
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.actions.ActionMenuProviders
+import player.phonograph.ui.actions.ActionMenus
 import player.phonograph.ui.actions.ClickActionProviders
 import player.phonograph.ui.adapter.DisplayPresenter
 import player.phonograph.ui.adapter.DraggableDisplayAdapter
@@ -105,6 +107,11 @@ class PlayingQueueAdapter(activity: FragmentActivity) :
         override val layoutStyle: ItemLayoutStyle = ItemLayoutStyle.LIST
         override val imageType: Int = DisplayPresenter.IMAGE_TYPE_NONE // custom
         override val usePalette: Boolean = false
+
+        override val showMenu: Boolean = true
+
+        override fun menuEntries(context: Context, item: Song, position: Int): List<ActionEntry> =
+            ActionMenus.Song(context, item, showPlay = false, index = position)
 
         override val clickActionProvider: ClickActionProviders.ClickActionProvider<Song> =
             object : ClickActionProviders.ClickActionProvider<Song> {

@@ -6,6 +6,7 @@ package player.phonograph.ui.adapter
 
 import coil.request.Disposable
 import coil.target.Target
+import player.phonograph.model.menu.ActionEntry
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.ui.actions.ActionMenuProviders
@@ -26,6 +27,9 @@ interface DisplayPresenter<T> {
 
     val clickActionProvider: ClickActionProviders.ClickActionProvider<T>
     val menuProvider: ActionMenuProviders.ActionMenuProvider<T>? get() = null
+
+    val showMenu: Boolean get() = false
+    fun menuEntries(context: Context, item: T, position: Int): List<ActionEntry> = emptyList()
 
     fun getRelativeOrdinalText(item: T): String? = null
 

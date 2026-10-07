@@ -20,6 +20,7 @@ class FilesChooserExplorerFragment : AbsFilesExplorerFragment() {
         FilesChooserClickActionProvider(::onSwitch)
 
     override fun createMenuProvider(): ActionMenuProviders.ActionMenuProvider<FileItem>? = null
+    override val showMenu: Boolean = false
 
     class FilesChooserClickActionProvider(private val onSwitch: (FileItem) -> Unit) :
             ClickActionProviders.ClickActionProvider<FileItem> {
