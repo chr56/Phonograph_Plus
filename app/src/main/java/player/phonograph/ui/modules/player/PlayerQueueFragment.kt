@@ -21,7 +21,7 @@ import player.phonograph.model.service.ShuffleMode
 import player.phonograph.model.ui.UnarySlidingUpPanelProvider
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.QueueManager
-import player.phonograph.ui.actions.ActionMenuProviders
+import player.phonograph.ui.actions.ActionMenus
 import player.phonograph.ui.modules.panel.AbsMusicServiceFragment
 import player.phonograph.ui.modules.panel.PanelViewModel
 import player.phonograph.ui.modules.player.dialogs.QueueSnapshotsDialog
@@ -40,6 +40,7 @@ import player.phonograph.ui.util.PHONOGRAPH_ANIM_TIME
 import player.phonograph.ui.util.applyWindowInsetsAsBottomView
 import player.phonograph.ui.util.isOrientationLandscape
 import player.phonograph.ui.util.observe
+import player.phonograph.ui.util.preparePopupMenu
 import player.phonograph.ui.util.textColorTransitionAnimator
 import util.theme.color.darkenColor
 import util.theme.color.lightenColor
@@ -258,9 +259,12 @@ class PlayerQueueFragment : AbsMusicServiceFragment() {
             }
             menu.setOnClickListener {
                 val song: Song? = MusicPlayerRemote.currentSong
-                if (song != null)
-                    ActionMenuProviders.SongActionMenuProvider(showPlay = false, index = MusicPlayerRemote.position)
-                        .prepareMenu(it, song)
+                if (song != null) {
+                    preparePopupMenu(
+                        it.context, it,
+                        ActionMenus.Song(it.context, song, showPlay = false, index = MusicPlayerRemote.position)
+                    )
+                }
             }
         }
     }

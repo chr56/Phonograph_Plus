@@ -5,15 +5,15 @@
 package player.phonograph.ui.modules.playlist
 
 import player.phonograph.model.QueueSong
+import player.phonograph.model.menu.ActionEntry
 import player.phonograph.model.ui.UIMode
-import player.phonograph.ui.actions.ActionMenuProviders
+import player.phonograph.ui.actions.ActionMenus
 import player.phonograph.ui.actions.ClickActionProviders
 import player.phonograph.ui.adapter.DraggableDisplayAdapter
 import player.phonograph.ui.adapter.QueueSongBasicDisplayPresenter
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import android.content.Context
-import android.view.Menu
 import android.view.View
 import android.widget.ImageView
 import kotlinx.coroutines.Dispatchers
@@ -27,7 +27,7 @@ class PlaylistSongDisplayAdapter(
 ) : DraggableDisplayAdapter<QueueSong>(activity, presenter) {
 
     class PlaylistSongDisplayPresenter(
-        val accessMenuProvider: () -> ActionMenuProviders.ActionMenuProvider<QueueSong>?,
+        val accessMenuEntries: (Context, QueueSong, Int) -> List<ActionEntry>,
     ) : QueueSongBasicDisplayPresenter() {
         override fun getNonSortOrderReference(item: QueueSong): String? = (item.index + 1).toString()
         override fun getRelativeOrdinalText(item: QueueSong): String? = (item.index + 1).toString()
@@ -42,35 +42,30 @@ class PlaylistSongDisplayAdapter(
                 }
 
             }
-        override val menuProvider: ActionMenuProviders.ActionMenuProvider<QueueSong>? get() = accessMenuProvider()
+        override val showMenu: Boolean = true
+
+        override fun menuEntries(context: Context, item: QueueSong, position: Int): List<ActionEntry> =
+            accessMenuEntries(context, item, position)
     }
 
-    val menuProvider: ActionMenuProviders.ActionMenuProvider<QueueSong> =
-        object : ActionMenuProviders.ActionMenuProvider<QueueSong> {
-            override fun inflateMenu(menu: Menu, context: Context, item: QueueSong, position: Int) {}
-            override fun prepareMenu(menuButtonView: View, item: QueueSong, bindingPosition: Int) {
-                if (viewModel.currentMode.value == UIMode.Editor) {
-                    PlaylistEditorItemMenuProvider(adapterLinage)
-                        .prepareMenu(menuButtonView, item, bindingPosition)
-                } else {
-                    ActionMenuProviders.SongActionMenuProvider(showPlay = false)
-                        .prepareMenu(menuButtonView, item.song, bindingPosition)
-                }
-            }
-
-            private val adapterLinage = object : PlaylistEditorAdapterLinage {
-                override fun at(position: Int): QueueSong = dataset[position]
-
-                override fun size(): Int = dataset.size
-
-                override suspend fun deleteSong(position: Int) =
-                    this@PlaylistSongDisplayAdapter.deleteSong(position)
-
-                override suspend fun moveSong(from: Int, to: Int) =
-                    this@PlaylistSongDisplayAdapter.moveSong(from, to)
-
-            }
+    fun menuEntries(context: Context, item: QueueSong, position: Int): List<ActionEntry> =
+        if (viewModel.currentMode.value == UIMode.Editor) {
+            playlistEditorItemMenuEntries(context as FragmentActivity, position, adapterLinage)
+        } else {
+            ActionMenus.Song(context, item.song, showPlay = false)
         }
+
+    private val adapterLinage = object : PlaylistEditorAdapterConnection {
+        override fun at(position: Int): QueueSong = dataset[position]
+
+        override fun size(): Int = dataset.size
+
+        override suspend fun deleteSong(position: Int) =
+            this@PlaylistSongDisplayAdapter.deleteSong(position)
+
+        override suspend fun moveSong(from: Int, to: Int) =
+            this@PlaylistSongDisplayAdapter.moveSong(from, to)
+    }
 
     override fun onBindViewHolder(holder: DisplayViewHolder<QueueSong>, position: Int) {
         if (viewModel.currentMode.value == UIMode.Editor) {

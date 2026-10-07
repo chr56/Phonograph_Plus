@@ -17,8 +17,16 @@ import android.content.Context
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.View
+import android.widget.PopupMenu
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+
+fun preparePopupMenu(context: Context, view: View, entries: List<ActionEntry>) {
+    PopupMenu(context, view).apply {
+        inflateMenuEntries(context, menu, entries)
+    }.show()
+}
 
 fun inflateMenuEntries(context: Context, menu: Menu, entries: List<ActionEntry>): Unit =
     context.attach(menu) {

@@ -13,6 +13,7 @@ import player.phonograph.ui.theme.secondaryTextColorOn
 import player.phonograph.ui.theme.textColorOn
 import player.phonograph.ui.theme.themeFooterColor
 import player.phonograph.ui.theme.themeIconColor
+import player.phonograph.ui.util.preparePopupMenu
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import android.annotation.SuppressLint
@@ -110,15 +111,16 @@ open class DisplayAdapter<I>(
 
             // Menu
             val menuButtonView = menu
-            val menuProvider = presenter.menuProvider
             if (menuButtonView != null) {
-                if (menuProvider != null) {
+                if (presenter.showMenu) {
                     menuButtonView.visibility = View.VISIBLE
                     menuButtonView.setOnClickListener {
-                        menuProvider.prepareMenu(menuButtonView, item, position)
+                        val context = menuButtonView.context
+                        preparePopupMenu(context, menuButtonView, presenter.menuEntries(context, item, position))
                     }
                 } else {
                     menuButtonView.visibility = View.GONE
+                    menuButtonView.setOnClickListener(null)
                 }
             }
 
