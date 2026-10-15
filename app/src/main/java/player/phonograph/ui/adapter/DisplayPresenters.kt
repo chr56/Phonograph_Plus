@@ -35,7 +35,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 abstract class SongBasicDisplayPresenter(
-    private val sortMode: SortMode,
+    override val sortMode: SortMode,
 ) : DisplayPresenter<Song> {
 
     override fun getItemID(item: Song): Long = item.id
@@ -54,10 +54,8 @@ abstract class SongBasicDisplayPresenter(
     override val clickActionProvider: ClickActionProviders.ClickActionProvider<Song> =
         ClickActionProviders.SongClickActionProvider()
 
-    override fun getSortOrderKey(context: Context): SortMode = sortMode
-
-    override fun getSortOrderReference(item: Song, sortMode: SortMode): String? =
-        when (sortMode.sortRef) {
+    override fun getSectionText(item: Song, sortMode: SortMode?): String? =
+        when (sortMode?.sortRef) {
             SortRef.SONG_NAME         -> makeSectionName(item.title)
             SortRef.ARTIST_NAME       -> makeSectionName(item.artistName)
             SortRef.ALBUM_NAME        -> makeSectionName(item.albumName)
@@ -67,14 +65,14 @@ abstract class SongBasicDisplayPresenter(
             SortRef.DURATION          -> Durations.short(item.duration)
             SortRef.MODIFIED_DATE     -> dateTextShortText(item.dateModified)
             SortRef.ADDED_DATE        -> dateTextShortText(item.dateAdded)
-            else                      -> ""
+            else                      -> null
         }
 
 }
 
 
 abstract class AlbumBasicDisplayPresenter(
-    private val sortMode: SortMode,
+    override val sortMode: SortMode,
 ) : DisplayPresenter<Album> {
     override fun getItemID(item: Album): Long = item.id
 
@@ -94,21 +92,19 @@ abstract class AlbumBasicDisplayPresenter(
     override val clickActionProvider: ClickActionProviders.ClickActionProvider<Album> =
         ClickActionProviders.AlbumClickActionProvider()
 
-    override fun getSortOrderKey(context: Context): SortMode = sortMode
-
-    override fun getSortOrderReference(item: Album, sortMode: SortMode): String? =
-        when (sortMode.sortRef) {
+    override fun getSectionText(item: Album, sortMode: SortMode?): String? =
+        when (sortMode?.sortRef) {
             SortRef.ALBUM_NAME  -> makeSectionName(item.title)
             SortRef.ARTIST_NAME -> makeSectionName(item.artistName)
             SortRef.YEAR        -> readableYear(item.year)
             SortRef.SONG_COUNT  -> item.songCount.toString()
-            else                -> ""
+            else                -> null
         }
 
 }
 
 abstract class ArtistBasicDisplayPresenter(
-    private val sortMode: SortMode,
+    override val sortMode: SortMode,
 ) : DisplayPresenter<Artist> {
 
     override fun getItemID(item: Artist): Long = item.id
@@ -133,20 +129,18 @@ abstract class ArtistBasicDisplayPresenter(
             withContext(Dispatchers.IO) { Songs.artist(context, artist.id) }
         }
 
-    override fun getSortOrderKey(context: Context): SortMode = sortMode
-
-    override fun getSortOrderReference(item: Artist, sortMode: SortMode): String? =
-        when (sortMode.sortRef) {
+    override fun getSectionText(item: Artist, sortMode: SortMode?): String? =
+        when (sortMode?.sortRef) {
             SortRef.ARTIST_NAME -> makeSectionName(item.name)
             SortRef.ALBUM_COUNT -> item.albumCount.toString()
             SortRef.SONG_COUNT  -> item.songCount.toString()
-            else                -> ""
+            else                -> null
         }
 
 }
 
 abstract class GenreBasicDisplayPresenter(
-    private val sortMode: SortMode,
+    override val sortMode: SortMode,
 ) : DisplayPresenter<Genre> {
 
     override val imageryProvider: ImageryProvider<Genre> = ImageryProvider.None
@@ -166,18 +160,16 @@ abstract class GenreBasicDisplayPresenter(
     override val clickActionProvider: ClickActionProviders.ClickActionProvider<Genre> =
         ClickActionProviders.GenreClickActionProvider()
 
-    override fun getSortOrderKey(context: Context): SortMode = sortMode
-
-    override fun getSortOrderReference(item: Genre, sortMode: SortMode): String? =
-        when (sortMode.sortRef) {
+    override fun getSectionText(item: Genre, sortMode: SortMode?): String? =
+        when (sortMode?.sortRef) {
             SortRef.DISPLAY_NAME -> makeSectionName(item.name)
             SortRef.SONG_COUNT   -> item.songCount.toString()
-            else                 -> ""
+            else                 -> null
         }
 }
 
 abstract class PlaylistBasicDisplayPresenter(
-    private val sortMode: SortMode,
+    override val sortMode: SortMode,
 ) : DisplayPresenter<Playlist> {
 
     override val imageryProvider: ImageryProvider<Playlist> = PlaylistIcon
@@ -199,20 +191,18 @@ abstract class PlaylistBasicDisplayPresenter(
         ClickActionProviders.PlaylistClickActionProvider()
 
 
-    override fun getSortOrderKey(context: Context): SortMode = sortMode
-
-    override fun getSortOrderReference(item: Playlist, sortMode: SortMode): String? =
-        when (sortMode.sortRef) {
+    override fun getSectionText(item: Playlist, sortMode: SortMode?): String? =
+        when (sortMode?.sortRef) {
             SortRef.DISPLAY_NAME  -> makeSectionName(item.name)
             SortRef.MODIFIED_DATE -> dateTextShortText(item.dateModified)
             SortRef.ADDED_DATE    -> dateTextShortText(item.dateAdded)
-            else                  -> ""
+            else                  -> null
         }
 
 }
 
 abstract class SongCollectionBasicDisplayPresenter(
-    private val sortMode: SortMode,
+    override val sortMode: SortMode,
 ) : DisplayPresenter<SongCollection> {
 
     override val imageryProvider: ImageryProvider<SongCollection> = ImageryProvider.FixedIcon.FOLDER
@@ -230,12 +220,10 @@ abstract class SongCollectionBasicDisplayPresenter(
     override fun getTertiaryText(context: Context, item: SongCollection): CharSequence? =
         songCountString(context, item.songs.size)
 
-    override fun getSortOrderKey(context: Context): SortMode = sortMode
-
-    override fun getSortOrderReference(item: SongCollection, sortMode: SortMode): String? =
-        when (sortMode.sortRef) {
+    override fun getSectionText(item: SongCollection, sortMode: SortMode?): String? =
+        when (sortMode?.sortRef) {
             SortRef.DISPLAY_NAME -> item.name
-            else                 -> ""
+            else                 -> null
         }
 
     companion object {
@@ -265,8 +253,8 @@ abstract class QueueSongBasicDisplayPresenter : DisplayPresenter<QueueSong> {
     override fun getSecondaryText(context: Context, item: QueueSong) = item.song.albumName ?: "N/A"
     override fun getTertiaryText(context: Context, item: QueueSong) = item.song.artistName
 
-    override fun getNonSortOrderReference(item: QueueSong): String? = item.index.toString()
-    override fun getRelativeOrdinalText(item: QueueSong): String? = item.index.toString()
+    override fun getSectionText(item: QueueSong, sortMode: SortMode?): String? = item.index.toString()
+    override fun getOrdinalText(item: QueueSong, position: Int): String? = item.index.toString()
 }
 
 

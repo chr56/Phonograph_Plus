@@ -67,18 +67,14 @@ open class DisplayAdapter<I>(
     }
 
     override fun getSectionName(position: Int): String =
-        if (presenter.showSectionName) getSectionNameImp(position) else ""
-
-    open fun getSectionNameImp(position: Int): String {
-        val item = dataset[position]
-        val sortMode = presenter.getSortOrderKey(activity)
-        val text = if (sortMode != null) {
-            presenter.getSortOrderReference(item, sortMode)
+        if (presenter.showSectionName) {
+            presenter.getSectionText(
+                item = dataset[position],
+                sortMode = presenter.sortMode,
+            ) ?: "-"
         } else {
-            presenter.getNonSortOrderReference(item)
+            ""
         }
-        return text ?: "-"
-    }
 
     fun setMultiSelectionEnabled(value: Boolean) {
         controller.enable = value
@@ -161,7 +157,7 @@ open class DisplayAdapter<I>(
                 }
 
                 ImageryProvider.Text            -> {
-                    val ordinalText = presenter.getRelativeOrdinalText(item) ?: "-"
+                    val ordinalText = presenter.getOrdinalText(item, bindingAdapterPosition) ?: "-"
                     imageText?.visibility = View.VISIBLE
                     imageText?.text = ordinalText
                 }

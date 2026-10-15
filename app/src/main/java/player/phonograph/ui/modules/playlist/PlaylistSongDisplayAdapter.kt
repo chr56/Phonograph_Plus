@@ -6,6 +6,7 @@ package player.phonograph.ui.modules.playlist
 
 import player.phonograph.model.QueueSong
 import player.phonograph.model.menu.ActionEntry
+import player.phonograph.model.sort.SortMode
 import player.phonograph.model.ui.UIMode
 import player.phonograph.ui.actions.ActionMenus
 import player.phonograph.ui.actions.ClickActionProviders
@@ -29,8 +30,8 @@ class PlaylistSongDisplayAdapter(
     class PlaylistSongDisplayPresenter(
         val accessMenuEntries: (Context, QueueSong, Int) -> List<ActionEntry>,
     ) : QueueSongBasicDisplayPresenter() {
-        override fun getNonSortOrderReference(item: QueueSong): String? = (item.index + 1).toString()
-        override fun getRelativeOrdinalText(item: QueueSong): String? = (item.index + 1).toString()
+        override fun getSectionText(item: QueueSong, sortMode: SortMode?): String = (item.index + 1).toString()
+        override fun getOrdinalText(item: QueueSong, position: Int): String = (item.index + 1).toString()
 
         override val clickActionProvider: ClickActionProviders.ClickActionProvider<QueueSong> =
             object : ClickActionProviders.ClickActionProvider<QueueSong> {

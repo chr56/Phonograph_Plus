@@ -25,17 +25,15 @@ interface DisplayPresenter<T> {
     val showMenu: Boolean get() = false
     fun menuEntries(context: Context, item: T, position: Int): List<ActionEntry> = emptyList()
 
-    fun getRelativeOrdinalText(item: T): String? = null
-
-    val showSectionName: Boolean get() = true
-
-    fun getSortOrderKey(context: Context): SortMode? = null
-
-    fun getSortOrderReference(item: T, sortMode: SortMode): String? = null
-
-    fun getNonSortOrderReference(item: T): String? = null
-
     val layoutStyle: ItemLayoutStyle
 
     val imageryProvider: ImageryProvider<T>
+
+    val showSectionName: Boolean get() = true
+
+    val sortMode: SortMode? get() = null
+
+    fun getSectionText(item: T, sortMode: SortMode?): String? = null
+
+    fun getOrdinalText(item: T, position: Int): String? = null
 }

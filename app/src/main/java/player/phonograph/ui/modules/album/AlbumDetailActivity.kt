@@ -240,11 +240,9 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvider
 
         override val layoutStyle: ItemLayoutStyle = ItemLayoutStyle.LIST
 
-        override fun getRelativeOrdinalText(item: Song): String = trackNumber(item)
+        override fun getSectionText(item: Song, sortMode: SortMode?): String = trackNumber(item)
 
-        override fun getSortOrderReference(item: Song, sortMode: SortMode): String = trackNumber(item)
-
-        override fun getNonSortOrderReference(item: Song): String = trackNumber(item)
+        override fun getOrdinalText(item: Song, position: Int): String = trackNumber(item)
 
         override fun getDescription(context: Context, item: Song): CharSequence =
             buildInfoString(Durations.short(item.duration), item.artistName)
