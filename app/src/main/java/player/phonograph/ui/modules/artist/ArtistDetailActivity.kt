@@ -24,20 +24,16 @@ import player.phonograph.model.sort.SortRef
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.model.ui.PaletteColorProvider
 import player.phonograph.repo.loader.Songs
-import player.phonograph.ui.adapter.AlbumArtwork
-import player.phonograph.ui.adapter.AlbumBasicDisplayPresenter
+import player.phonograph.ui.adapter.ArtistAlbumDisplayPresenter
 import player.phonograph.ui.adapter.DisplayAdapter
+import player.phonograph.ui.adapter.DisplayOptions
 import player.phonograph.ui.adapter.DisplayPresenter
-import player.phonograph.ui.adapter.ImageryProvider
 import player.phonograph.ui.adapter.MultiSelectionController
-import player.phonograph.ui.adapter.SongArtwork
-import player.phonograph.ui.adapter.SongBasicDisplayPresenter
+import player.phonograph.ui.adapter.SongDisplayPresenter
 import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.resource.Durations
 import player.phonograph.ui.resource.Layouts
 import player.phonograph.ui.resource.albumCountString
-import player.phonograph.ui.resource.buildInfoString
-import player.phonograph.ui.resource.readableYear
 import player.phonograph.ui.resource.songCountString
 import player.phonograph.ui.theme.SystemBarsControllerDelegate
 import player.phonograph.ui.theme.ThemeSettingsDelegate.accentColor
@@ -167,13 +163,21 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvide
     private lateinit var bottomViewWindowInsetsController: BottomViewWindowInsetsController
     private fun setUpMainContent() {
 
-        songAdapter = DisplayAdapter(this, ArtistSongDisplayPresenter)
+        songAdapter = DisplayAdapter(
+            this,
+            SongDisplayPresenter(),
+            options = DisplayOptions(ItemLayoutStyle.LIST, SortMode(SortRef.YEAR), false)
+        )
         with(viewBinding.songsRecycleView) {
             adapter = songAdapter
             layoutManager = LinearLayoutManager(this@ArtistDetailActivity, VERTICAL, false)
         }
 
-        albumAdapter = ArtistAlbumDisplayAdapter(this, ArtistAlbumDisplayPresenter(false))
+        albumAdapter = ArtistAlbumDisplayAdapter(
+            this,
+            ArtistAlbumDisplayPresenter(),
+            options = DisplayOptions(ItemLayoutStyle.GRID_CARD_HORIZONTAL, SortMode(SortRef.YEAR), false)
+        )
         with(viewBinding.albumRecycleView) {
             adapter = albumAdapter
             layoutManager = LinearLayoutManager(this@ArtistDetailActivity, HORIZONTAL, false)
@@ -196,7 +200,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvide
         observe(viewModel.songs) { songs -> songAdapter.dataset = songs ?: emptyList() }
         observe(viewModel.paletteColor) { color -> updateColors(color) }
         observe(viewModel.usePaletteColor) {
-            albumAdapter.presenter = ArtistAlbumDisplayPresenter(it)
+            albumAdapter.options = albumAdapter.options.copy(usePalette = it)
             val dataset = albumAdapter.dataset
             synchronized(albumAdapter) {
                 albumAdapter.dataset = emptyList()
@@ -269,8 +273,8 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvide
     }
 
 
-    class ArtistAlbumDisplayAdapter(activity: FragmentActivity, presenter: DisplayPresenter<Album>) :
-            DisplayAdapter<Album>(activity, presenter) {
+    class ArtistAlbumDisplayAdapter(activity: FragmentActivity, presenter: DisplayPresenter<Album>, options: DisplayOptions) :
+            DisplayAdapter<Album>(activity, presenter, options) {
 
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<Album> {
@@ -287,8 +291,9 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvide
                 dataset: List<Album>,
                 presenter: DisplayPresenter<Album>,
                 controller: MultiSelectionController<Album>,
+                options: DisplayOptions,
             ) {
-                super.bind(item, position, dataset, presenter, controller)
+                super.bind(item, position, dataset, presenter, controller, options)
                 // setup margin
                 with(itemView) {
                     val min = resources.getDimensionPixelSize(R.dimen.grid_item_margin_min)
@@ -311,22 +316,4 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvide
         }
     }
 
-
-    class ArtistAlbumDisplayPresenter(usePalette: Boolean) : AlbumBasicDisplayPresenter(SortMode(SortRef.YEAR)) {
-
-        override val imageryProvider: ImageryProvider<Album> = AlbumArtwork(usePalette)
-
-        override val layoutStyle: ItemLayoutStyle = ItemLayoutStyle.GRID_CARD_HORIZONTAL
-
-        override fun getDescription(context: Context, item: Album): CharSequence =
-            buildInfoString(readableYear(item.year), songCountString(context, item.songCount))
-    }
-
-
-    object ArtistSongDisplayPresenter : SongBasicDisplayPresenter(SortMode(SortRef.YEAR)) {
-
-        override val imageryProvider: ImageryProvider<Song> = SongArtwork(false)
-
-        override val layoutStyle: ItemLayoutStyle = ItemLayoutStyle.LIST
-    }
 }

@@ -7,16 +7,13 @@ package player.phonograph.ui.modules.main.pages
 import player.phonograph.R
 import player.phonograph.model.Album
 import player.phonograph.model.Song
-import player.phonograph.model.sort.SortMode
-import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.repo.loader.Albums
 import player.phonograph.repo.loader.Songs
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
-import player.phonograph.ui.adapter.AlbumArtwork
-import player.phonograph.ui.adapter.AlbumBasicDisplayPresenter
+import player.phonograph.ui.adapter.AlbumDisplayPresenter
 import player.phonograph.ui.adapter.DisplayAdapter
-import player.phonograph.ui.adapter.ImageryProvider
+import player.phonograph.ui.adapter.DisplayOptions
 import androidx.fragment.app.viewModels
 import android.content.Context
 import kotlinx.coroutines.CoroutineScope
@@ -42,38 +39,18 @@ class AlbumPage : AbsDisplayPage<Album, DisplayAdapter<Album>>() {
     override val displayConfig: PageDisplayConfig get() = AlbumPageDisplayConfig(requireContext())
 
     override fun createAdapter(): DisplayAdapter<Album> {
-        return DisplayAdapter(requireActivity(), AlbumDisplayPresenter.from(displayConfig))
+        return DisplayAdapter(
+            requireActivity(),
+            AlbumDisplayPresenter(),
+            DisplayOptions(
+                displayConfig.layout,
+                displayConfig.sortMode,
+                displayConfig.colorFooter
+            )
+        )
     }
 
     override fun updateDisplayedItems(items: List<Album>) {
         adapter.dataset = items
     }
-
-    override fun updatePresenterSettings(
-        sortMode: SortMode,
-        usePalette: Boolean,
-        layoutStyle: ItemLayoutStyle,
-    ) {
-        adapter.presenter = AlbumDisplayPresenter.from(sortMode, usePalette, layoutStyle)
-    }
-
-
-    class AlbumDisplayPresenter(
-        sortMode: SortMode,
-        usePalette: Boolean,
-        override val layoutStyle: ItemLayoutStyle,
-    ) : AlbumBasicDisplayPresenter(sortMode) {
-
-        override val imageryProvider: ImageryProvider<Album> = AlbumArtwork(usePalette)
-
-        companion object {
-
-            fun from(displayConfig: PageDisplayConfig): AlbumDisplayPresenter =
-                AlbumDisplayPresenter(displayConfig.sortMode, displayConfig.colorFooter, displayConfig.layout)
-
-            fun from(sortMode: SortMode, usePalette: Boolean, layoutStyle: ItemLayoutStyle): AlbumDisplayPresenter =
-                AlbumDisplayPresenter(sortMode, usePalette, layoutStyle)
-        }
-    }
-
 }

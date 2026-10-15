@@ -8,7 +8,6 @@ import com.github.chr56.android.menu_model.MenuContext
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.model.SongCollection
-import player.phonograph.model.menu.ActionEntry
 import player.phonograph.model.service.ShuffleMode
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
@@ -16,15 +15,12 @@ import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.repo.mediastore.MediaStoreSongCollections
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
-import player.phonograph.ui.actions.ActionMenus
 import player.phonograph.ui.actions.ClickActionProviders
 import player.phonograph.ui.actions.actionPlay
 import player.phonograph.ui.adapter.DisplayAdapter
-import player.phonograph.ui.adapter.DisplayPresenter
-import player.phonograph.ui.adapter.ImageryProvider
-import player.phonograph.ui.adapter.SongArtwork
-import player.phonograph.ui.adapter.SongBasicDisplayPresenter
-import player.phonograph.ui.adapter.SongCollectionBasicDisplayPresenter
+import player.phonograph.ui.adapter.DisplayOptions
+import player.phonograph.ui.adapter.SongCollectionDisplayPresenter
+import player.phonograph.ui.adapter.SongDisplayPresenter
 import player.phonograph.ui.modules.panel.PanelViewModel
 import player.phonograph.ui.theme.ThemeSettingsDelegate.accentColor
 import player.phonograph.ui.theme.setUpFastScrollRecyclerViewColor
@@ -111,11 +107,21 @@ class FoldersPage : AbsPanelPage() {
 
     private fun prepareAdaptersAndData() {
 
-        songCollectionDisplayAdapter = DisplayAdapter(
-            requireActivity(), buildFolderDisplayPresenter(layoutManager.findLastVisibleItemPosition())
+        songCollectionDisplayAdapter = songCollectionDisplayAdapter(
+            DisplayOptions(
+                folderPageDisplayConfig.layout,
+                folderPageDisplayConfig.sortMode,
+                folderPageDisplayConfig.colorFooter,
+            )
         )
 
-        songAdapter = DisplayAdapter(requireActivity(), buildSongDisplayPresenter())
+        songAdapter = songDisplayAdapter(
+            DisplayOptions(
+                songPageDisplayConfig.layout,
+                songPageDisplayConfig.sortMode,
+                songPageDisplayConfig.colorFooter
+            )
+        )
         binding.recyclerView.adapter = songCollectionDisplayAdapter
 
         observe(viewLifecycleOwner.lifecycle, viewModel.folders) { data ->
@@ -184,26 +190,34 @@ class FoldersPage : AbsPanelPage() {
             if (shouldReload) {
                 viewModel.loadFolders(requireContext(), true)
             }
-            val presenter = buildFolderDisplayPresenter(layoutManager.findLastVisibleItemPosition())
+            val options = DisplayOptions(
+                folderPageDisplayConfig.layout,
+                folderPageDisplayConfig.sortMode,
+                folderPageDisplayConfig.colorFooter,
+            )
             if (shouldRecreate) {
-                songCollectionDisplayAdapter = DisplayAdapter(requireActivity(), presenter)
+                songCollectionDisplayAdapter = songCollectionDisplayAdapter(options)
                 songCollectionDisplayAdapter.dataset = viewModel.folders.value
                 binding.recyclerView.adapter = songCollectionDisplayAdapter
             } else {
-                songCollectionDisplayAdapter.presenter = presenter
+                songCollectionDisplayAdapter.options = options
             }
         } else {
             if (shouldReload) {
                 viewModel.loadFolders(requireContext(), false)
                 viewModel.loadSongs(requireContext(), true)
             }
-            val presenter = buildSongDisplayPresenter()
+            val options = DisplayOptions(
+                songPageDisplayConfig.layout,
+                songPageDisplayConfig.sortMode,
+                songPageDisplayConfig.colorFooter,
+            )
             if (shouldRecreate) {
-                songAdapter = DisplayAdapter(requireActivity(), presenter)
+                songAdapter = songDisplayAdapter(options)
                 songAdapter.dataset = viewModel.currentSongs.value
                 binding.recyclerView.adapter = songAdapter
             } else {
-                songAdapter.presenter = presenter
+                songAdapter.options = options
             }
         }
         layoutManager.spanCount = gridSize
@@ -233,45 +247,39 @@ class FoldersPage : AbsPanelPage() {
     //endregion
 
 
-    //region Presenters
+    //region Adapters
 
-    private fun buildSongDisplayPresenter(): DisplayPresenter<Song> =
-        with(songPageDisplayConfig) { EmbedSongDisplayPresenter(sortMode, colorFooter, layout) }
+    private fun songDisplayAdapter(options: DisplayOptions): DisplayAdapter<Song> = DisplayAdapter(
+        requireActivity(),
+        SongDisplayPresenter(),
+        options
+    )
 
-    private class EmbedSongDisplayPresenter(
-        sortMode: SortMode,
-        usePalette: Boolean,
-        override val layoutStyle: ItemLayoutStyle,
-    ) : SongBasicDisplayPresenter(sortMode) {
-        override val imageryProvider: ImageryProvider<Song> = SongArtwork(usePalette)
+    private fun songCollectionDisplayAdapter(options: DisplayOptions): DisplayAdapter<SongCollection> {
+        return DisplayAdapter(
+            requireActivity(),
+            SongCollectionDisplayPresenter(
+                object : ClickActionProviders.ClickActionProvider<SongCollection> {
+                    override fun listClick(
+                        list: List<SongCollection>,
+                        position: Int,
+                        context: Context,
+                        imageView: ImageView?,
+                    ): Boolean = run {
+                        viewModel.browseFolder(
+                            context,
+                            position,
+                            true,
+                            layoutManager.findLastVisibleItemPosition()
+                        )
+                        true
+                    }
+                }
+            ),
+            options
+        )
     }
 
-    private fun buildFolderDisplayPresenter(lastPosition: Int): DisplayPresenter<SongCollection> =
-        FolderDisplayPresenter(folderPageDisplayConfig.sortMode, folderPageDisplayConfig.layout) { context, position ->
-            viewModel.browseFolder(context, position, true, lastPosition)
-            true
-        }
-
-    private class FolderDisplayPresenter(
-        sortMode: SortMode,
-        override val layoutStyle: ItemLayoutStyle,
-        val onClick: (Context, Int) -> Boolean,
-    ) : SongCollectionBasicDisplayPresenter(sortMode) {
-        override val showMenu: Boolean = true
-
-        override fun menuEntries(context: Context, item: SongCollection, position: Int): List<ActionEntry> =
-            ActionMenus.Composite(context, item) { _, collection -> collection.songs }
-
-        override val clickActionProvider: ClickActionProviders.ClickActionProvider<SongCollection> =
-            object : ClickActionProviders.ClickActionProvider<SongCollection> {
-                override fun listClick(
-                    list: List<SongCollection>,
-                    position: Int,
-                    context: Context,
-                    imageView: ImageView?,
-                ): Boolean = onClick.invoke(context, position)
-            }
-    }
     //endregion
 
     class FoldersPageViewModel : ViewModel() {

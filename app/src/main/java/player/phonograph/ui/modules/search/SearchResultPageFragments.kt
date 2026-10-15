@@ -18,17 +18,14 @@ import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.actions.ActionMenus
 import player.phonograph.ui.actions.ClickActionProviders
-import player.phonograph.ui.adapter.AlbumArtwork
-import player.phonograph.ui.adapter.AlbumBasicDisplayPresenter
-import player.phonograph.ui.adapter.ArtistArtwork
-import player.phonograph.ui.adapter.ArtistBasicDisplayPresenter
+import player.phonograph.ui.adapter.AlbumDisplayPresenter
+import player.phonograph.ui.adapter.ArtistDisplayPresenter
 import player.phonograph.ui.adapter.DisplayAdapter
-import player.phonograph.ui.adapter.GenreBasicDisplayPresenter
-import player.phonograph.ui.adapter.ImageryProvider
-import player.phonograph.ui.adapter.PlaylistBasicDisplayPresenter
-import player.phonograph.ui.adapter.QueueSongBasicDisplayPresenter
-import player.phonograph.ui.adapter.SongArtwork
-import player.phonograph.ui.adapter.SongBasicDisplayPresenter
+import player.phonograph.ui.adapter.DisplayOptions
+import player.phonograph.ui.adapter.GenreDisplayPresenter
+import player.phonograph.ui.adapter.PlaylistDisplayPresenter
+import player.phonograph.ui.adapter.QueueSongDisplayPresenter
+import player.phonograph.ui.adapter.SongDisplayPresenter
 import player.phonograph.ui.modules.panel.PanelViewModel
 import player.phonograph.ui.util.BottomViewWindowInsetsController
 import player.phonograph.ui.util.applyControllableWindowInsetsAsBottomView
@@ -108,18 +105,16 @@ class SongSearchResultPageFragment : SearchResultPageFragment<Song>() {
     private val adapter: DisplayAdapter<Song>? get() = actualAdapter as? DisplayAdapter<Song>
 
     override fun createAdapter(activity: AppCompatActivity) =
-        DisplayAdapter(activity, SongSearchResultDisplayPresenter)
+        DisplayAdapter(
+            activity,
+            SongDisplayPresenter(),
+            DisplayOptions(ItemLayoutStyle.LIST, SortMode(SortRef.DISPLAY_NAME), false)
+        )
 
     override fun targetFlow(): StateFlow<List<Song>> = viewModel.songs
 
     override fun updateDataset(newData: List<Song>) {
         adapter?.dataset = newData
-    }
-
-    object SongSearchResultDisplayPresenter : SongBasicDisplayPresenter(SortMode(SortRef.DISPLAY_NAME)) {
-        override val imageryProvider: ImageryProvider<Song> = SongArtwork(false)
-
-        override val layoutStyle: ItemLayoutStyle = ItemLayoutStyle.LIST
     }
 }
 
@@ -129,18 +124,16 @@ class AlbumSearchResultPageFragment : SearchResultPageFragment<Album>() {
     private val adapter: DisplayAdapter<Album>? get() = actualAdapter as? DisplayAdapter<Album>
 
     override fun createAdapter(activity: AppCompatActivity) =
-        DisplayAdapter(activity, AlbumSearchResultDisplayPresenter)
+        DisplayAdapter(
+            activity,
+            AlbumDisplayPresenter(),
+            DisplayOptions(ItemLayoutStyle.LIST, SortMode(SortRef.DISPLAY_NAME), false)
+        )
 
     override fun targetFlow(): StateFlow<List<Album>> = viewModel.albums
 
     override fun updateDataset(newData: List<Album>) {
         adapter?.dataset = newData
-    }
-
-    object AlbumSearchResultDisplayPresenter : AlbumBasicDisplayPresenter(SortMode(SortRef.DISPLAY_NAME)) {
-        override val imageryProvider: ImageryProvider<Album> = AlbumArtwork(false)
-
-        override val layoutStyle: ItemLayoutStyle = ItemLayoutStyle.LIST
     }
 }
 
@@ -149,18 +142,16 @@ class ArtistSearchResultPageFragment : SearchResultPageFragment<Artist>() {
     private val adapter: DisplayAdapter<Artist>? get() = actualAdapter as? DisplayAdapter<Artist>
 
     override fun createAdapter(activity: AppCompatActivity) =
-        DisplayAdapter(activity, ArtistSearchResultDisplayPresenter)
+        DisplayAdapter(
+            activity,
+            ArtistDisplayPresenter(),
+            DisplayOptions(ItemLayoutStyle.LIST, SortMode(SortRef.DISPLAY_NAME), false)
+        )
 
     override fun targetFlow(): StateFlow<List<Artist>> = viewModel.artists
 
     override fun updateDataset(newData: List<Artist>) {
         adapter?.dataset = newData
-    }
-
-    object ArtistSearchResultDisplayPresenter : ArtistBasicDisplayPresenter(SortMode(SortRef.DISPLAY_NAME)) {
-        override val imageryProvider: ImageryProvider<Artist> = ArtistArtwork(false)
-
-        override val layoutStyle: ItemLayoutStyle = ItemLayoutStyle.LIST
     }
 }
 
@@ -170,17 +161,17 @@ class PlaylistSearchResultPageFragment : SearchResultPageFragment<Playlist>() {
     private val adapter: DisplayAdapter<Playlist>? get() = actualAdapter as? DisplayAdapter<Playlist>
 
     override fun createAdapter(activity: AppCompatActivity) =
-        DisplayAdapter(activity, PlaylistSearchResultDisplayPresenter)
+        DisplayAdapter(
+            activity,
+            PlaylistDisplayPresenter(),
+            DisplayOptions(ItemLayoutStyle.LIST, SortMode(SortRef.DISPLAY_NAME), false)
+        )
 
 
     override fun targetFlow(): StateFlow<List<Playlist>> = viewModel.playlists
 
     override fun updateDataset(newData: List<Playlist>) {
         adapter?.dataset = newData
-    }
-
-    object PlaylistSearchResultDisplayPresenter : PlaylistBasicDisplayPresenter(SortMode(SortRef.DISPLAY_NAME)) {
-        override val layoutStyle: ItemLayoutStyle = ItemLayoutStyle.LIST
     }
 }
 
@@ -190,17 +181,17 @@ class GenreSearchResultPageFragment : SearchResultPageFragment<Genre>() {
     private val adapter: DisplayAdapter<Genre>? get() = actualAdapter as? DisplayAdapter<Genre>
 
     override fun createAdapter(activity: AppCompatActivity) =
-        DisplayAdapter(activity, GenreSearchResultDisplayPresenter)
+        DisplayAdapter(
+            activity,
+            GenreDisplayPresenter(),
+            DisplayOptions(ItemLayoutStyle.LIST, SortMode(SortRef.DISPLAY_NAME), false)
+        )
 
 
     override fun targetFlow(): StateFlow<List<Genre>> = viewModel.genres
 
     override fun updateDataset(newData: List<Genre>) {
         adapter?.dataset = newData
-    }
-
-    object GenreSearchResultDisplayPresenter : GenreBasicDisplayPresenter(SortMode(SortRef.DISPLAY_NAME)) {
-        override val layoutStyle: ItemLayoutStyle = ItemLayoutStyle.LIST
     }
 }
 
@@ -210,7 +201,11 @@ class QueueSearchResultPageFragment : SearchResultPageFragment<QueueSong>() {
     private val adapter: DisplayAdapter<QueueSong>? get() = actualAdapter as? DisplayAdapter<QueueSong>
 
     override fun createAdapter(activity: AppCompatActivity): DisplayAdapter<QueueSong> =
-        DisplayAdapter<QueueSong>(activity, PlaylistSearchResultDisplayPresenter)
+        DisplayAdapter(
+            activity,
+            PlaylistSearchResultDisplayPresenter,
+            DisplayOptions(ItemLayoutStyle.LIST, null, true)
+        )
 
     override fun targetFlow(): StateFlow<List<QueueSong>> = viewModel.songsInQueue
 
@@ -218,9 +213,7 @@ class QueueSearchResultPageFragment : SearchResultPageFragment<QueueSong>() {
         adapter?.dataset = newData
     }
 
-    object PlaylistSearchResultDisplayPresenter : QueueSongBasicDisplayPresenter() {
-
-        override val showMenu: Boolean = true
+    object PlaylistSearchResultDisplayPresenter : QueueSongDisplayPresenter() {
 
         override fun menuEntries(context: Context, item: QueueSong, position: Int): List<ActionEntry> =
             ActionMenus.Song(context, item.song, showPlay = false, index = item.index)

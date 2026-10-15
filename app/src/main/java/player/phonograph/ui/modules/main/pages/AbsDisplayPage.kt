@@ -11,6 +11,8 @@ import player.phonograph.model.service.ShuffleMode
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.ui.actions.actionPlay
+import player.phonograph.ui.adapter.DisplayAdapter
+import player.phonograph.ui.adapter.DisplayOptions
 import player.phonograph.ui.modules.main.ScanMediaDialog
 import player.phonograph.ui.modules.panel.PanelViewModel
 import player.phonograph.ui.theme.ThemeSettingsDelegate.accentColor
@@ -23,7 +25,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.content.Context
 import android.view.View
 import kotlin.random.Random
@@ -35,7 +36,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>> : AbsPanelPage() {
+sealed class AbsDisplayPage<IT, A : DisplayAdapter<*>> : AbsPanelPage() {
 
     //region Content
 
@@ -87,7 +88,7 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>> : AbsPanelPage() {
                 binding.mainContentContainer.visibility = View.GONE
                 statusFragment.show(
                     titleRes = R.string.msg_empty,
-                    buttonTextRes= R.string.action_scan_media,
+                    buttonTextRes = R.string.action_scan_media,
                     buttonClickListener = {
                         ScanMediaDialog().show(parentFragmentManager, null)
                     }
@@ -153,11 +154,13 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>> : AbsPanelPage() {
         layoutManager.spanCount = gridSize
     }
 
-    protected abstract fun updatePresenterSettings(
+    protected fun updatePresenterSettings(
         sortMode: SortMode,
         usePalette: Boolean,
         layoutStyle: ItemLayoutStyle,
-    )
+    ) {
+        adapter.options = DisplayOptions(layoutStyle, sortMode, usePalette)
+    }
     //endregion
 
     abstract class AbsDisplayPageViewModel<IT> : ViewModel() {

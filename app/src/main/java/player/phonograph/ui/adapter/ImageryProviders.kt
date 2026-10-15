@@ -19,7 +19,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import android.content.Context
 import android.graphics.drawable.Drawable
 
-class SongArtwork(override val usePalette: Boolean) : ImageryProvider.Artwork<Song> {
+object SongArtwork : ImageryProvider.Artwork<Song> {
 
     override fun startLoadingImage(context: Context, item: Song, target: Target): Disposable? =
         loadImage(context)
@@ -30,7 +30,7 @@ class SongArtwork(override val usePalette: Boolean) : ImageryProvider.Artwork<So
             .enqueue()
 }
 
-class AlbumArtwork(override val usePalette: Boolean) : ImageryProvider.Artwork<Album> {
+object AlbumArtwork : ImageryProvider.Artwork<Album> {
 
     override fun startLoadingImage(context: Context, item: Album, target: Target): Disposable? =
         loadImage(context)
@@ -41,7 +41,7 @@ class AlbumArtwork(override val usePalette: Boolean) : ImageryProvider.Artwork<A
             .enqueue()
 }
 
-class ArtistArtwork(override val usePalette: Boolean) : ImageryProvider.Artwork<Artist> {
+object ArtistArtwork : ImageryProvider.Artwork<Artist> {
 
     override fun startLoadingImage(context: Context, item: Artist, target: Target): Disposable? =
         loadImage(context)

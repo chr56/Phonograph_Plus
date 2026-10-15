@@ -14,13 +14,10 @@ import player.phonograph.databinding.ActivityGenreDetailBinding
 import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.Genre
 import player.phonograph.model.Song
-import player.phonograph.model.sort.SortMode
-import player.phonograph.model.sort.SortRef
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.ui.adapter.DisplayAdapter
-import player.phonograph.ui.adapter.ImageryProvider
-import player.phonograph.ui.adapter.SongArtwork
-import player.phonograph.ui.adapter.SongBasicDisplayPresenter
+import player.phonograph.ui.adapter.DisplayOptions
+import player.phonograph.ui.adapter.SongDisplayPresenter
 import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.theme.ThemeSettingsDelegate.accentColor
 import player.phonograph.ui.theme.ThemeSettingsDelegate.primaryColor
@@ -113,7 +110,11 @@ class GenreDetailActivity : AbsSlidingMusicPanelActivity(),
 
     private lateinit var bottomViewWindowInsetsController: BottomViewWindowInsetsController
     private fun setUpMainContent() {
-        adapter = DisplayAdapter(this, GenreSongDisplayPresenter)
+        adapter = DisplayAdapter(
+            this,
+            SongDisplayPresenter(),
+            DisplayOptions(ItemLayoutStyle.LIST, null, false)
+        )
         viewBinding.recyclerView.apply {
             layoutManager = LinearLayoutManager(this@GenreDetailActivity)
             adapter = this@GenreDetailActivity.adapter
@@ -148,12 +149,5 @@ class GenreDetailActivity : AbsSlidingMusicPanelActivity(),
             }
 
         private fun parseIntent(intent: Intent): Long = intent.extras?.getLong(EXTRA_GENRE_ID) ?: -1
-    }
-
-    object GenreSongDisplayPresenter : SongBasicDisplayPresenter(SortMode(SortRef.ID)) {
-
-        override val imageryProvider: ImageryProvider<Song> = SongArtwork(false)
-
-        override val layoutStyle: ItemLayoutStyle = ItemLayoutStyle.LIST
     }
 }

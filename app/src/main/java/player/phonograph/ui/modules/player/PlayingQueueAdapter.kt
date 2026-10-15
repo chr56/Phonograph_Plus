@@ -10,10 +10,12 @@ import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.actions.ActionMenus
 import player.phonograph.ui.actions.ClickActionProviders
+import player.phonograph.ui.adapter.DisplayOptions
 import player.phonograph.ui.adapter.DisplayPresenter
 import player.phonograph.ui.adapter.DraggableDisplayAdapter
 import player.phonograph.ui.adapter.ImageryProvider
 import player.phonograph.ui.adapter.MultiSelectionController
+import player.phonograph.ui.adapter.SongDisplayPresenter
 import player.phonograph.ui.resource.Layouts
 import player.phonograph.ui.resource.infoString
 import player.phonograph.ui.util.hitTest
@@ -29,7 +31,12 @@ import android.view.ViewGroup
 import android.widget.ImageView
 
 class PlayingQueueAdapter(activity: FragmentActivity) :
-        DraggableDisplayAdapter<Song>(activity, PlayingQueuePresenter, allowMultiSelection = false) {
+        DraggableDisplayAdapter<Song>(
+            activity,
+            PlayingQueuePresenter,
+            DisplayOptions(ItemLayoutStyle.LIST, null, false),
+            allowMultiSelection = false
+        ) {
 
     var current: Int = -1
         set(value) {
@@ -59,10 +66,11 @@ class PlayingQueueAdapter(activity: FragmentActivity) :
             dataset: List<Song>,
             presenter: DisplayPresenter<Song>,
             controller: MultiSelectionController<Song>,
+            options: DisplayOptions,
         ) {
             title?.ellipsize = TextUtils.TruncateAt.MIDDLE
             text?.ellipsize = TextUtils.TruncateAt.MIDDLE
-            super.bind(item, position, dataset, presenter, controller)
+            super.bind(item, position, dataset, presenter, controller, options)
 
             shortSeparator?.visibility = if (bindingAdapterPosition == dataset.size - 1) GONE else VISIBLE
 
@@ -81,6 +89,7 @@ class PlayingQueueAdapter(activity: FragmentActivity) :
             item: Song,
             imageView: ImageView?,
             presenter: DisplayPresenter<Song>,
+            usePalette: Boolean,
         ) {
             image?.visibility = GONE
             imageText?.visibility = VISIBLE
@@ -92,21 +101,7 @@ class PlayingQueueAdapter(activity: FragmentActivity) :
         override fun isSelected(item: Song, controller: MultiSelectionController<Song>): Boolean = false
     }
 
-    object PlayingQueuePresenter : DisplayPresenter<Song> {
-
-        override val imageryProvider: ImageryProvider<Song> = ImageryProvider.None
-
-        override fun getItemID(item: Song): Long = item.id
-
-        override fun getDisplayTitle(context: Context, item: Song): CharSequence = item.title
-
-        override fun getDescription(context: Context, item: Song): CharSequence = item.infoString()
-        override fun getSecondaryText(context: Context, item: Song): CharSequence = item.albumName ?: "N/A"
-        override fun getTertiaryText(context: Context, item: Song): CharSequence? = item.artistName
-
-        override val layoutStyle: ItemLayoutStyle = ItemLayoutStyle.LIST
-
-        override val showMenu: Boolean = true
+    object PlayingQueuePresenter : SongDisplayPresenter() {
 
         override fun menuEntries(context: Context, item: Song, position: Int): List<ActionEntry> =
             ActionMenus.Song(context, item, showPlay = false, index = position)
@@ -120,6 +115,8 @@ class PlayingQueueAdapter(activity: FragmentActivity) :
                     return true
                 }
             }
+
+        override val imageryProvider: ImageryProvider<Song> = ImageryProvider.None
 
     }
 

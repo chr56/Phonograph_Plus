@@ -28,6 +28,7 @@ import android.widget.ImageView
 open class DisplayAdapter<I>(
     val activity: FragmentActivity,
     var presenter: DisplayPresenter<I>,
+    var options: DisplayOptions,
     allowMultiSelection: Boolean = true,
     stableId: Boolean = true,
 ) : RecyclerView.Adapter<DisplayAdapter.DisplayViewHolder<I>>(),
@@ -54,7 +55,7 @@ open class DisplayAdapter<I>(
 
     override fun getItemCount(): Int = dataset.size
 
-    override fun getItemViewType(position: Int): Int = presenter.layoutStyle.ordinal
+    override fun getItemViewType(position: Int): Int = options.layoutStyle.ordinal
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<I> {
         val itemLayout = Layouts.itemLayoutStyle(ItemLayoutStyle.from(viewType))
         val view = LayoutInflater.from(activity).inflate(itemLayout, parent, false)
@@ -63,14 +64,13 @@ open class DisplayAdapter<I>(
 
 
     override fun onBindViewHolder(holder: DisplayViewHolder<I>, position: Int) {
-        holder.bind(dataset[position], position, dataset, presenter, controller)
+        holder.bind(dataset[position], position, dataset, presenter, controller, options)
     }
 
     override fun getSectionName(position: Int): String =
-        if (presenter.showSectionName) {
+        if (options.showSectionName) {
             presenter.getSectionText(
-                item = dataset[position],
-                sortMode = presenter.sortMode,
+                dataset[position], options.sortMode,
             ) ?: "-"
         } else {
             ""
@@ -88,6 +88,7 @@ open class DisplayAdapter<I>(
             dataset: List<I>,
             presenter: DisplayPresenter<I>,
             controller: MultiSelectionController<I>,
+            options: DisplayOptions,
         ) {
 
             // Text
@@ -109,7 +110,7 @@ open class DisplayAdapter<I>(
             // Menu
             val menuButtonView = menu
             if (menuButtonView != null) {
-                if (presenter.showMenu) {
+                if (options.showMenu) {
                     menuButtonView.visibility = View.VISIBLE
                     menuButtonView.setOnClickListener {
                         val context = menuButtonView.context
@@ -122,13 +123,14 @@ open class DisplayAdapter<I>(
             }
 
             // Image
-            loadImage(item, image, presenter)
+            loadImage(item, image, presenter, options.usePalette)
         }
 
         protected open fun loadImage(
             item: I,
             imageView: ImageView?,
             presenter: DisplayPresenter<I>,
+            usePalette: Boolean,
         ) {
             when (val provider = presenter.imageryProvider) {
 
@@ -142,8 +144,8 @@ open class DisplayAdapter<I>(
                                 imageView,
                                 ::setPaletteColors,
                                 themeFooterColor(itemView.context),
-                                provider.usePalette
-                            )
+                                usePalette
+                            ),
                         )
                     }
                 }

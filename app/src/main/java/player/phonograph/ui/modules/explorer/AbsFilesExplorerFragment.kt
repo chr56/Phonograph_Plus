@@ -10,9 +10,10 @@ import player.phonograph.databinding.FragmentFileExploreBinding
 import player.phonograph.mechanism.explorer.MediaPaths
 import player.phonograph.model.file.FileItem
 import player.phonograph.model.file.MediaPath
+import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.ui.actions.ClickActionProviders
 import player.phonograph.ui.adapter.DisplayAdapter
-import player.phonograph.ui.adapter.DisplayPresenter
+import player.phonograph.ui.adapter.DisplayOptions
 import player.phonograph.ui.theme.ThemeSettingsDelegate.accentColor
 import player.phonograph.ui.theme.getTintedDrawableOnBackground
 import player.phonograph.ui.theme.setUpFastScrollRecyclerViewColor
@@ -43,7 +44,6 @@ sealed class AbsFilesExplorerFragment : Fragment() {
     protected val model: FileExplorerViewModel by viewModels({ requireActivity() })
     // adapter
     protected lateinit var adapter: DisplayAdapter<FileItem>
-    protected lateinit var presenter: DisplayPresenter<FileItem>
     protected lateinit var layoutManager: LinearLayoutManager
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -103,13 +103,10 @@ sealed class AbsFilesExplorerFragment : Fragment() {
         }
 
         // Recycle View
-        presenter = FileItemPresenter(
-            clickActionProvider = createClickActionProvider(),
-            showMenu = showMenu,
-        )
         adapter = DisplayAdapter(
             activity = requireActivity(),
-            presenter = presenter,
+            presenter = FileItemPresenter(createClickActionProvider()),
+            options = DisplayOptions(ItemLayoutStyle.LIST, null, false, showMenu),
             allowMultiSelection = allowMultiSelection,
             stableId = false,
         )

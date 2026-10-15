@@ -14,18 +14,15 @@ import player.phonograph.databinding.ActivityAlbumDetailBinding
 import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.Album
 import player.phonograph.model.Song
-import player.phonograph.model.sort.SortMode
-import player.phonograph.model.sort.SortRef
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.model.ui.PaletteColorProvider
 import player.phonograph.repo.loader.Songs
+import player.phonograph.ui.adapter.AlbumSongDisplayPresenter
 import player.phonograph.ui.adapter.DisplayAdapter
-import player.phonograph.ui.adapter.ImageryProvider
-import player.phonograph.ui.adapter.SongBasicDisplayPresenter
+import player.phonograph.ui.adapter.DisplayOptions
 import player.phonograph.ui.goToArtistDetail
 import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.resource.Durations
-import player.phonograph.ui.resource.buildInfoString
 import player.phonograph.ui.resource.readableYear
 import player.phonograph.ui.resource.songCountString
 import player.phonograph.ui.theme.SystemBarsControllerDelegate
@@ -136,7 +133,11 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvider
     private lateinit var bottomViewWindowInsetsController: BottomViewWindowInsetsController
     private fun setUpMainContent() {
 
-        songAdapter = DisplayAdapter(this, AlbumSongDisplayPresenter)
+        songAdapter = DisplayAdapter(
+            this,
+            AlbumSongDisplayPresenter(),
+            options = DisplayOptions(ItemLayoutStyle.LIST, null, false)
+        )
         linearLayoutManager = LinearLayoutManager(this@AlbumDetailActivity)
         with(viewBinding.recyclerView) {
             layoutManager = linearLayoutManager
@@ -234,23 +235,4 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvider
     }
 
 
-    object AlbumSongDisplayPresenter : SongBasicDisplayPresenter(SortMode(SortRef.ID)) {
-
-        override val imageryProvider: ImageryProvider<Song> = ImageryProvider.Text
-
-        override val layoutStyle: ItemLayoutStyle = ItemLayoutStyle.LIST
-
-        override fun getSectionText(item: Song, sortMode: SortMode?): String = trackNumber(item)
-
-        override fun getOrdinalText(item: Song, position: Int): String = trackNumber(item)
-
-        override fun getDescription(context: Context, item: Song): CharSequence =
-            buildInfoString(Durations.short(item.duration), item.artistName)
-
-        private fun trackNumber(item: Song): String {
-            // iTunes uses for example 1002 for track 2 CD1 or 3011 for track 11 CD3.
-            val num = item.trackNumber % 1000
-            return if (num > 0) num.toString() else "-"
-        }
-    }
 }

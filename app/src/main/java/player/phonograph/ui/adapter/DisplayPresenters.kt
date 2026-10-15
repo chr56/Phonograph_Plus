@@ -17,7 +17,6 @@ import player.phonograph.model.menu.ActionEntry
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
-import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.repo.loader.Genres
 import player.phonograph.repo.loader.Songs
 import player.phonograph.ui.actions.ActionMenus
@@ -25,6 +24,7 @@ import player.phonograph.ui.actions.ClickActionProviders
 import player.phonograph.ui.resource.Durations
 import player.phonograph.ui.resource.Texts
 import player.phonograph.ui.resource.albumCountString
+import player.phonograph.ui.resource.buildInfoString
 import player.phonograph.ui.resource.infoString
 import player.phonograph.ui.resource.readableYear
 import player.phonograph.ui.resource.songCountString
@@ -34,9 +34,7 @@ import android.os.storage.StorageManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-abstract class SongBasicDisplayPresenter(
-    override val sortMode: SortMode,
-) : DisplayPresenter<Song> {
+open class SongDisplayPresenter : DisplayPresenter<Song> {
 
     override fun getItemID(item: Song): Long = item.id
 
@@ -45,8 +43,6 @@ abstract class SongBasicDisplayPresenter(
     override fun getDescription(context: Context, item: Song): CharSequence = item.infoString()
     override fun getSecondaryText(context: Context, item: Song): CharSequence = item.albumName ?: "N/A"
     override fun getTertiaryText(context: Context, item: Song): CharSequence? = item.artistName
-
-    override val showMenu: Boolean = true
 
     override fun menuEntries(context: Context, item: Song, position: Int): List<ActionEntry> =
         ActionMenus.Song(context, item, showPlay = false)
@@ -68,12 +64,29 @@ abstract class SongBasicDisplayPresenter(
             else                      -> null
         }
 
+    override val imageryProvider: ImageryProvider<Song> = SongArtwork
+
 }
 
+open class AlbumSongDisplayPresenter : SongDisplayPresenter() {
 
-abstract class AlbumBasicDisplayPresenter(
-    override val sortMode: SortMode,
-) : DisplayPresenter<Album> {
+    override val imageryProvider: ImageryProvider<Song> = ImageryProvider.Text
+
+    override fun getSectionText(item: Song, sortMode: SortMode?): String = trackNumber(item)
+
+    override fun getOrdinalText(item: Song, position: Int): String = trackNumber(item)
+
+    override fun getDescription(context: Context, item: Song): CharSequence =
+        buildInfoString(Durations.short(item.duration), item.artistName)
+
+    private fun trackNumber(item: Song): String {
+        // iTunes uses for example 1002 for track 2 CD1 or 3011 for track 11 CD3.
+        val num = item.trackNumber % 1000
+        return if (num > 0) num.toString() else "-"
+    }
+}
+
+open class AlbumDisplayPresenter : DisplayPresenter<Album> {
     override fun getItemID(item: Album): Long = item.id
 
     override fun getDisplayTitle(context: Context, item: Album): CharSequence = item.title
@@ -81,8 +94,6 @@ abstract class AlbumBasicDisplayPresenter(
     override fun getDescription(context: Context, item: Album): CharSequence = item.infoString(context)
     override fun getSecondaryText(context: Context, item: Album): CharSequence = item.artistName ?: "N/A"
     override fun getTertiaryText(context: Context, item: Album): CharSequence = songCountString(context, item.songCount)
-
-    override val showMenu: Boolean = true
 
     override fun menuEntries(context: Context, item: Album, position: Int): List<ActionEntry> =
         ActionMenus.Composite(context, item) { context, album ->
@@ -101,11 +112,15 @@ abstract class AlbumBasicDisplayPresenter(
             else                -> null
         }
 
+    override val imageryProvider: ImageryProvider<Album> = AlbumArtwork
 }
 
-abstract class ArtistBasicDisplayPresenter(
-    override val sortMode: SortMode,
-) : DisplayPresenter<Artist> {
+open class ArtistAlbumDisplayPresenter : AlbumDisplayPresenter() {
+    override fun getDescription(context: Context, item: Album): CharSequence =
+        buildInfoString(readableYear(item.year), songCountString(context, item.songCount))
+}
+
+open class ArtistDisplayPresenter : DisplayPresenter<Artist> {
 
     override fun getItemID(item: Artist): Long = item.id
 
@@ -122,8 +137,6 @@ abstract class ArtistBasicDisplayPresenter(
     override val clickActionProvider: ClickActionProviders.ClickActionProvider<Artist> =
         ClickActionProviders.ArtistClickActionProvider()
 
-    override val showMenu: Boolean = true
-
     override fun menuEntries(context: Context, item: Artist, position: Int): List<ActionEntry> =
         ActionMenus.Composite(context, item) { context, artist ->
             withContext(Dispatchers.IO) { Songs.artist(context, artist.id) }
@@ -137,20 +150,16 @@ abstract class ArtistBasicDisplayPresenter(
             else                -> null
         }
 
+    override val imageryProvider: ImageryProvider<Artist> = ArtistArtwork
+
 }
 
-abstract class GenreBasicDisplayPresenter(
-    override val sortMode: SortMode,
-) : DisplayPresenter<Genre> {
-
-    override val imageryProvider: ImageryProvider<Genre> = ImageryProvider.None
+open class GenreDisplayPresenter : DisplayPresenter<Genre> {
 
     override fun getItemID(item: Genre): Long = item.id
     override fun getDisplayTitle(context: Context, item: Genre): CharSequence = item.name ?: "UNKNOWN GENRE ${item.id}"
     override fun getDescription(context: Context, item: Genre): CharSequence = item.infoString(context)
     override fun getSecondaryText(context: Context, item: Genre): CharSequence = item.infoString(context)
-
-    override val showMenu: Boolean = true
 
     override fun menuEntries(context: Context, item: Genre, position: Int): List<ActionEntry> =
         ActionMenus.Composite(context, item) { context, genre ->
@@ -166,13 +175,11 @@ abstract class GenreBasicDisplayPresenter(
             SortRef.SONG_COUNT   -> item.songCount.toString()
             else                 -> null
         }
+
+    override val imageryProvider: ImageryProvider<Genre> = ImageryProvider.None
 }
 
-abstract class PlaylistBasicDisplayPresenter(
-    override val sortMode: SortMode,
-) : DisplayPresenter<Playlist> {
-
-    override val imageryProvider: ImageryProvider<Playlist> = PlaylistIcon
+open class PlaylistDisplayPresenter : DisplayPresenter<Playlist> {
 
     override fun getItemID(item: Playlist): Long = item.id
     override fun getDisplayTitle(context: Context, item: Playlist): CharSequence = item.name
@@ -181,8 +188,6 @@ abstract class PlaylistBasicDisplayPresenter(
 
     override fun getSecondaryText(context: Context, item: Playlist): CharSequence =
         Texts.playlist(context.resources, item.location)
-
-    override val showMenu: Boolean = true
 
     override fun menuEntries(context: Context, item: Playlist, position: Int): List<ActionEntry> =
         ActionMenus.Playlist(context, item)
@@ -199,13 +204,11 @@ abstract class PlaylistBasicDisplayPresenter(
             else                  -> null
         }
 
+    override val imageryProvider: ImageryProvider<Playlist> = PlaylistIcon
+
 }
 
-abstract class SongCollectionBasicDisplayPresenter(
-    override val sortMode: SortMode,
-) : DisplayPresenter<SongCollection> {
-
-    override val imageryProvider: ImageryProvider<SongCollection> = ImageryProvider.FixedIcon.FOLDER
+open class SongCollectionDisplayPresenter(override val clickActionProvider: ClickActionProviders.ClickActionProvider<SongCollection>) : DisplayPresenter<SongCollection> {
 
     override fun getItemID(item: SongCollection): Long = item.hashCode().toLong()
 
@@ -226,6 +229,11 @@ abstract class SongCollectionBasicDisplayPresenter(
             else                 -> null
         }
 
+    override fun menuEntries(context: Context, item: SongCollection, position: Int): List<ActionEntry> =
+        ActionMenus.Composite(context, item) { _, collection -> collection.songs }
+
+    override val imageryProvider: ImageryProvider<SongCollection> = ImageryProvider.FixedIcon.FOLDER
+
     companion object {
 
         private fun stripStorageVolume(str: String): String {
@@ -240,10 +248,7 @@ abstract class SongCollectionBasicDisplayPresenter(
     }
 }
 
-abstract class QueueSongBasicDisplayPresenter : DisplayPresenter<QueueSong> {
-    override val imageryProvider: ImageryProvider<QueueSong> = ImageryProvider.Text
-
-    override val layoutStyle: ItemLayoutStyle = ItemLayoutStyle.LIST
+abstract class QueueSongDisplayPresenter : DisplayPresenter<QueueSong> {
 
     override fun getItemID(item: QueueSong): Long = item.song.id
 
@@ -255,6 +260,8 @@ abstract class QueueSongBasicDisplayPresenter : DisplayPresenter<QueueSong> {
 
     override fun getSectionText(item: QueueSong, sortMode: SortMode?): String? = item.index.toString()
     override fun getOrdinalText(item: QueueSong, position: Int): String? = item.index.toString()
+
+    override val imageryProvider: ImageryProvider<QueueSong> = ImageryProvider.Text
 }
 
 
@@ -263,8 +270,8 @@ private fun makeSectionName(reference: String?): String {
     var str = reference.trim { it <= ' ' }.lowercase()
     str = when {
         str.startsWith("the ") -> str.substring(4)
-        str.startsWith("a ") -> str.substring(2)
-        else -> str
+        str.startsWith("a ")   -> str.substring(2)
+        else                   -> str
     }
     return if (str.isEmpty()) "" else str[0].uppercase()
 }

@@ -7,11 +7,13 @@ package player.phonograph.ui.modules.playlist
 import player.phonograph.model.QueueSong
 import player.phonograph.model.menu.ActionEntry
 import player.phonograph.model.sort.SortMode
+import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.model.ui.UIMode
 import player.phonograph.ui.actions.ActionMenus
 import player.phonograph.ui.actions.ClickActionProviders
+import player.phonograph.ui.adapter.DisplayOptions
 import player.phonograph.ui.adapter.DraggableDisplayAdapter
-import player.phonograph.ui.adapter.QueueSongBasicDisplayPresenter
+import player.phonograph.ui.adapter.QueueSongDisplayPresenter
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import android.content.Context
@@ -25,11 +27,13 @@ class PlaylistSongDisplayAdapter(
     activity: FragmentActivity,
     val viewModel: PlaylistDetailViewModel,
     presenter: PlaylistSongDisplayPresenter,
-) : DraggableDisplayAdapter<QueueSong>(activity, presenter) {
+) : DraggableDisplayAdapter<QueueSong>(
+    activity, presenter, DisplayOptions(ItemLayoutStyle.LIST, null, false)
+) {
 
     class PlaylistSongDisplayPresenter(
         val accessMenuEntries: (Context, QueueSong, Int) -> List<ActionEntry>,
-    ) : QueueSongBasicDisplayPresenter() {
+    ) : QueueSongDisplayPresenter() {
         override fun getSectionText(item: QueueSong, sortMode: SortMode?): String = (item.index + 1).toString()
         override fun getOrdinalText(item: QueueSong, position: Int): String = (item.index + 1).toString()
 
@@ -43,7 +47,6 @@ class PlaylistSongDisplayAdapter(
                 }
 
             }
-        override val showMenu: Boolean = true
 
         override fun menuEntries(context: Context, item: QueueSong, position: Int): List<ActionEntry> =
             accessMenuEntries(context, item, position)

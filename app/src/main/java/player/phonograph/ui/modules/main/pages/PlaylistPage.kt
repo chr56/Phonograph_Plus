@@ -10,15 +10,15 @@ import player.phonograph.mechanism.playlist.DynamicPlaylists
 import player.phonograph.mechanism.playlist.PlaylistSongsActions
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist
-import player.phonograph.model.sort.SortMode
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.repo.loader.PinedPlaylists
 import player.phonograph.repo.loader.Playlists
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
 import player.phonograph.ui.adapter.DisplayAdapter
+import player.phonograph.ui.adapter.DisplayOptions
 import player.phonograph.ui.adapter.DisplayPresenter
-import player.phonograph.ui.adapter.PlaylistBasicDisplayPresenter
+import player.phonograph.ui.adapter.PlaylistDisplayPresenter
 import player.phonograph.ui.modules.playlist.dialogs.CreatePlaylistDialogActivity
 import player.phonograph.ui.resource.Layouts
 import player.phonograph.ui.theme.ThemeSettingsDelegate.accentColor
@@ -77,39 +77,26 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
     override val displayConfig: PageDisplayConfig get() = PlaylistPageDisplayConfig(requireContext())
 
     override fun createAdapter(): DisplayAdapter<Playlist> {
-        return PlaylistAdapter(requireActivity(), PlaylistDisplayPresenter.from(displayConfig))
+        return PlaylistAdapter(
+            requireActivity(),
+            PlaylistDisplayPresenter(),
+            DisplayOptions(
+                displayConfig.layout,
+                displayConfig.sortMode,
+                displayConfig.colorFooter
+            )
+        )
     }
 
     override fun updateDisplayedItems(items: List<Playlist>) {
         adapter.dataset = items
     }
 
-    override fun updatePresenterSettings(
-        sortMode: SortMode,
-        usePalette: Boolean,
-        layoutStyle: ItemLayoutStyle,
-    ) {
-        adapter.presenter = PlaylistDisplayPresenter.from(sortMode, layoutStyle)
-    }
-
-
-    class PlaylistDisplayPresenter(
-        sortMode: SortMode,
-        override val layoutStyle: ItemLayoutStyle,
-    ) : PlaylistBasicDisplayPresenter(sortMode) {
-
-        companion object {
-
-            fun from(displayConfig: PageDisplayConfig): PlaylistDisplayPresenter =
-                PlaylistDisplayPresenter(displayConfig.sortMode, displayConfig.layout)
-
-            fun from(sortMode: SortMode, layoutStyle: ItemLayoutStyle): PlaylistDisplayPresenter =
-                PlaylistDisplayPresenter(sortMode, layoutStyle)
-        }
-    }
-
-    private class PlaylistAdapter(activity: FragmentActivity, presenter: DisplayPresenter<Playlist>) :
-            DisplayAdapter<Playlist>(activity, presenter) {
+    private class PlaylistAdapter(
+        activity: FragmentActivity,
+        presenter: DisplayPresenter<Playlist>,
+        options: DisplayOptions,
+    ) : DisplayAdapter<Playlist>(activity, presenter, options) {
 
         override fun getItemViewType(position: Int): Int =
             if (dataset[position].isVirtual()) DYNAMIC_PLAYLIST else DEFAULT_PLAYLIST

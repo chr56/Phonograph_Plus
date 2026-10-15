@@ -8,7 +8,6 @@ import player.phonograph.R
 import player.phonograph.foundation.dateTimeText
 import player.phonograph.model.file.FileItem
 import player.phonograph.model.menu.ActionEntry
-import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.ui.actions.ActionMenus
 import player.phonograph.ui.actions.ClickActionProviders
 import player.phonograph.ui.adapter.DisplayPresenter
@@ -20,7 +19,6 @@ import android.text.format.Formatter
 
 class FileItemPresenter(
     override var clickActionProvider: ClickActionProviders.ClickActionProvider<FileItem>,
-    override val showMenu: Boolean,
     var loadCover: Boolean = false,
 ) : DisplayPresenter<FileItem> {
 
@@ -46,8 +44,6 @@ class FileItemPresenter(
 
     override fun getDescription(context: Context, item: FileItem): CharSequence? =
         getSecondaryText(context, item)
-
-    override val layoutStyle: ItemLayoutStyle = ItemLayoutStyle.LIST
 
     private fun songCountString(resources: Resources, songCount: Int): String {
         return if (songCount >= 0) {
