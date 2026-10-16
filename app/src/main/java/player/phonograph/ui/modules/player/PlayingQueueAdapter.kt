@@ -9,7 +9,7 @@ import player.phonograph.model.menu.ActionEntry
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.actions.ActionMenus
-import player.phonograph.ui.actions.ClickActionProviders
+import player.phonograph.ui.actions.ItemClickActions
 import player.phonograph.ui.adapter.DisplayOptions
 import player.phonograph.ui.adapter.DisplayPresenter
 import player.phonograph.ui.adapter.DraggableDisplayAdapter
@@ -102,18 +102,11 @@ class PlayingQueueAdapter(activity: FragmentActivity) :
 
     object PlayingQueuePresenter : SongDisplayPresenter() {
 
+        override fun clickAction(context: Context, item: Song, position: Int, list: List<Song>): ActionEntry? =
+            ItemClickActions.PlayingQueue(position)
+
         override fun menuEntries(context: Context, item: Song, position: Int): List<ActionEntry> =
             ActionMenus.Song(context, item, showPlay = false, index = position)
-
-        override val clickActionProvider: ClickActionProviders.ClickActionProvider<Song> =
-            object : ClickActionProviders.ClickActionProvider<Song> {
-                override fun listClick(
-                    context: Context, list: List<Song>, position: Int,
-                ): Boolean {
-                    MusicPlayerRemote.playSongAt(position)
-                    return true
-                }
-            }
 
         override val imageryProvider: ImageryProvider<Song> = ImageryProvider.None
 

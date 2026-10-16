@@ -6,6 +6,7 @@ package player.phonograph.ui.adapter
 
 import coil.request.Disposable
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
+import player.phonograph.foundation.concurrent.lifecycleScopeOrNewOne
 import player.phonograph.mechanism.coil.palette.PaletteColorViewTarget
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.ui.resource.Layouts
@@ -23,6 +24,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 open class DisplayAdapter<I>(
@@ -102,9 +105,15 @@ open class DisplayAdapter<I>(
             itemView.isActivated = isSelected(item, controller)
 
             // Click
-            val clickActionProvider = presenter.clickActionProvider
             controller.registerClicking(itemView, position) {
-                clickActionProvider.listClick(itemView.context, dataset, position)
+                val context = itemView.context
+                val entry = presenter.clickAction(context, item, position, dataset)
+                if (entry != null) {
+                    context.lifecycleScopeOrNewOne().launch(Dispatchers.Main.immediate) {
+                        entry.action()
+                    }
+                }
+                entry != null
             }
 
             // Menu

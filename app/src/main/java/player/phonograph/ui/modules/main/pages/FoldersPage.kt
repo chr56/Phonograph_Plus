@@ -8,6 +8,7 @@ import com.github.chr56.android.menu_model.MenuContext
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.model.SongCollection
+import player.phonograph.model.menu.ActionEntry
 import player.phonograph.model.service.ShuffleMode
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
@@ -15,13 +16,13 @@ import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.repo.mediastore.MediaStoreSongCollections
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
-import player.phonograph.ui.actions.ClickActionProviders
 import player.phonograph.ui.actions.actionPlay
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayOptions
 import player.phonograph.ui.adapter.SongCollectionDisplayPresenter
 import player.phonograph.ui.adapter.SongDisplayPresenter
 import player.phonograph.ui.modules.panel.PanelViewModel
+import player.phonograph.ui.resource.ActionSemantics
 import player.phonograph.ui.theme.ThemeSettingsDelegate.accentColor
 import player.phonograph.ui.theme.setUpFastScrollRecyclerViewColor
 import player.phonograph.ui.util.BottomViewWindowInsetsController
@@ -258,21 +259,20 @@ class FoldersPage : AbsPanelPage() {
         return DisplayAdapter(
             requireActivity(),
             SongCollectionDisplayPresenter(
-                object : ClickActionProviders.ClickActionProvider<SongCollection> {
-                    override fun listClick(
-                        context: Context,
-                        list: List<SongCollection>,
-                        position: Int,
-                    ): Boolean = run {
-                        viewModel.browseFolder(
-                            context,
-                            position,
-                            true,
-                            layoutManager.findLastVisibleItemPosition()
-                        )
-                        true
-                    }
-                }
+                onClick = { context, _, position, _ ->
+                    ActionEntry.ToolbarEntry(
+                        semantic = ActionSemantics.ViewExternalFiles,
+                        visibility = ActionEntry.ToolbarEntry.NEVER,
+                        action = {
+                            viewModel.browseFolder(
+                                context,
+                                position,
+                                true,
+                                layoutManager.findLastVisibleItemPosition()
+                            )
+                        },
+                    )
+                },
             ),
             options
         )

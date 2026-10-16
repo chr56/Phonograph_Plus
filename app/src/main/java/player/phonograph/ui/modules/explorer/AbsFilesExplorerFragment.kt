@@ -10,8 +10,8 @@ import player.phonograph.databinding.FragmentFileExploreBinding
 import player.phonograph.mechanism.explorer.MediaPaths
 import player.phonograph.model.file.FileItem
 import player.phonograph.model.file.MediaPath
+import player.phonograph.model.menu.ActionEntry
 import player.phonograph.model.ui.ItemLayoutStyle
-import player.phonograph.ui.actions.ClickActionProviders
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayOptions
 import player.phonograph.ui.theme.ThemeSettingsDelegate.accentColor
@@ -29,6 +29,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.withStateAtLeast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -105,7 +106,7 @@ sealed class AbsFilesExplorerFragment : Fragment() {
         // Recycle View
         adapter = DisplayAdapter(
             activity = requireActivity(),
-            presenter = FileItemPresenter(createClickActionProvider()),
+            presenter = FileItemPresenter(::clickAction),
             options = DisplayOptions(ItemLayoutStyle.LIST, null, false, showMenu),
             allowMultiSelection = allowMultiSelection,
             stableId = false,
@@ -124,7 +125,7 @@ sealed class AbsFilesExplorerFragment : Fragment() {
     }
 
     abstract val allowMultiSelection: Boolean
-    abstract fun createClickActionProvider(): ClickActionProviders.ClickActionProvider<FileItem>
+    abstract fun clickAction(context: Context, item: FileItem, position: Int, list: List<FileItem>): ActionEntry?
     abstract val showMenu: Boolean
 
     protected open fun setupObservers() {

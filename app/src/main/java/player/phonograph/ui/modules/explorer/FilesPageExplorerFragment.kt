@@ -5,9 +5,10 @@
 package player.phonograph.ui.modules.explorer
 
 import player.phonograph.model.file.FileItem
+import player.phonograph.model.menu.ActionEntry
 import player.phonograph.settings.Keys
 import player.phonograph.settings.SettingsObserver
-import player.phonograph.ui.actions.ClickActionProviders
+import player.phonograph.ui.actions.ItemClickActions
 import player.phonograph.ui.modules.panel.PanelViewModel
 import player.phonograph.ui.util.BottomViewWindowInsetsController
 import player.phonograph.ui.util.applyControllableWindowInsetsAsBottomView
@@ -24,29 +25,14 @@ class FilesPageExplorerFragment : AbsFilesExplorerFragment() {
 
     override val allowMultiSelection: Boolean = true
 
-    override fun createClickActionProvider(): ClickActionProviders.ClickActionProvider<FileItem> =
-        FilesPageClickActionProvider(::onSwitch)
+    override fun clickAction(context: Context, item: FileItem, position: Int, list: List<FileItem>): ActionEntry? =
+        if (item.isFolder) {
+            ItemClickActions.Folder(item, ::onSwitch)
+        } else {
+            ItemClickActions.File(context, item, position, list)
+        }
 
     override val showMenu: Boolean = false
-
-    class FilesPageClickActionProvider(private val onSwitch: (FileItem) -> Unit) :
-            ClickActionProviders.ClickActionProvider<FileItem> {
-
-        private val provider = ClickActionProviders.FileEntityClickActionProvider()
-
-        override fun listClick(
-            context: Context,
-            list: List<FileItem>,
-            position: Int,
-        ): Boolean {
-            val item = list[position]
-            when {
-                item.isFolder -> onSwitch(item)
-                else          -> provider.listClick(context, list, position)
-            }
-            return true
-        }
-    }
 
     //region WindowInsets
     private val panelViewModel: PanelViewModel by viewModels(ownerProducer = { requireActivity() })

@@ -10,7 +10,7 @@ import player.phonograph.model.sort.SortMode
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.model.ui.UIMode
 import player.phonograph.ui.actions.ActionMenus
-import player.phonograph.ui.actions.ClickActionProviders
+import player.phonograph.ui.actions.ItemClickActions
 import player.phonograph.ui.adapter.DisplayOptions
 import player.phonograph.ui.adapter.DraggableDisplayAdapter
 import player.phonograph.ui.adapter.QueueSongDisplayPresenter
@@ -36,16 +36,8 @@ class PlaylistSongDisplayAdapter(
         override fun getSectionText(item: QueueSong, sortMode: SortMode?): String = (item.index + 1).toString()
         override fun getOrdinalText(item: QueueSong, position: Int): String = (item.index + 1).toString()
 
-        override val clickActionProvider: ClickActionProviders.ClickActionProvider<QueueSong> =
-            object : ClickActionProviders.ClickActionProvider<QueueSong> {
-                override fun listClick(
-                    context: Context, list: List<QueueSong>, position: Int,
-                ): Boolean {
-                    return ClickActionProviders.SongClickActionProvider()
-                        .listClick(context, list.map { it.song }, position)
-                }
-
-            }
+        override fun clickAction(context: Context, item: QueueSong, position: Int, list: List<QueueSong>): ActionEntry? =
+            ItemClickActions.Song(context, item.song, position, list.map { it.song })
 
         override fun menuEntries(context: Context, item: QueueSong, position: Int): List<ActionEntry> =
             accessMenuEntries(context, item, position)

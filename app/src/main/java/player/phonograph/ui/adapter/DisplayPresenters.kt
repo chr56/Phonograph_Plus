@@ -20,7 +20,7 @@ import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.loader.Genres
 import player.phonograph.repo.loader.Songs
 import player.phonograph.ui.actions.ActionMenus
-import player.phonograph.ui.actions.ClickActionProviders
+import player.phonograph.ui.actions.ItemClickActions
 import player.phonograph.ui.resource.Durations
 import player.phonograph.ui.resource.Texts
 import player.phonograph.ui.resource.albumCountString
@@ -47,8 +47,8 @@ open class SongDisplayPresenter : DisplayPresenter<Song> {
     override fun menuEntries(context: Context, item: Song, position: Int): List<ActionEntry> =
         ActionMenus.Song(context, item, showPlay = false)
 
-    override val clickActionProvider: ClickActionProviders.ClickActionProvider<Song> =
-        ClickActionProviders.SongClickActionProvider()
+    override fun clickAction(context: Context, item: Song, position: Int, list: List<Song>): ActionEntry? =
+        ItemClickActions.Song(context, item, position, list)
 
     override fun getSectionText(item: Song, sortMode: SortMode?): String? =
         when (sortMode?.sortRef) {
@@ -100,8 +100,8 @@ open class AlbumDisplayPresenter : DisplayPresenter<Album> {
             withContext(Dispatchers.IO) { Songs.album(context, album.id) }
         }
 
-    override val clickActionProvider: ClickActionProviders.ClickActionProvider<Album> =
-        ClickActionProviders.AlbumClickActionProvider()
+    override fun clickAction(context: Context, item: Album, position: Int, list: List<Album>): ActionEntry? =
+        ItemClickActions.Album(context, item)
 
     override fun getSectionText(item: Album, sortMode: SortMode?): String? =
         when (sortMode?.sortRef) {
@@ -134,8 +134,8 @@ open class ArtistDisplayPresenter : DisplayPresenter<Artist> {
     override fun getTertiaryText(context: Context, item: Artist): CharSequence =
         songCountString(context, item.songCount)
 
-    override val clickActionProvider: ClickActionProviders.ClickActionProvider<Artist> =
-        ClickActionProviders.ArtistClickActionProvider()
+    override fun clickAction(context: Context, item: Artist, position: Int, list: List<Artist>): ActionEntry? =
+        ItemClickActions.Artist(context, item)
 
     override fun menuEntries(context: Context, item: Artist, position: Int): List<ActionEntry> =
         ActionMenus.Composite(context, item) { context, artist ->
@@ -166,8 +166,8 @@ open class GenreDisplayPresenter : DisplayPresenter<Genre> {
             withContext(Dispatchers.IO) { Genres.songs(context, genre.id) }
         }
 
-    override val clickActionProvider: ClickActionProviders.ClickActionProvider<Genre> =
-        ClickActionProviders.GenreClickActionProvider()
+    override fun clickAction(context: Context, item: Genre, position: Int, list: List<Genre>): ActionEntry? =
+        ItemClickActions.Genre(context, item)
 
     override fun getSectionText(item: Genre, sortMode: SortMode?): String? =
         when (sortMode?.sortRef) {
@@ -192,8 +192,8 @@ open class PlaylistDisplayPresenter : DisplayPresenter<Playlist> {
     override fun menuEntries(context: Context, item: Playlist, position: Int): List<ActionEntry> =
         ActionMenus.Playlist(context, item)
 
-    override val clickActionProvider: ClickActionProviders.ClickActionProvider<Playlist> =
-        ClickActionProviders.PlaylistClickActionProvider()
+    override fun clickAction(context: Context, item: Playlist, position: Int, list: List<Playlist>): ActionEntry? =
+        ItemClickActions.Playlist(context, item)
 
 
     override fun getSectionText(item: Playlist, sortMode: SortMode?): String? =
@@ -208,7 +208,13 @@ open class PlaylistDisplayPresenter : DisplayPresenter<Playlist> {
 
 }
 
-open class SongCollectionDisplayPresenter(override val clickActionProvider: ClickActionProviders.ClickActionProvider<SongCollection>) : DisplayPresenter<SongCollection> {
+open class SongCollectionDisplayPresenter(
+    private val onClick: (Context, SongCollection, Int, List<SongCollection>) -> ActionEntry?,
+) : DisplayPresenter<SongCollection> {
+
+    override fun clickAction(
+        context: Context, item: SongCollection, position: Int, list: List<SongCollection>,
+    ): ActionEntry? = onClick(context, item, position, list)
 
     override fun getItemID(item: SongCollection): Long = item.hashCode().toLong()
 

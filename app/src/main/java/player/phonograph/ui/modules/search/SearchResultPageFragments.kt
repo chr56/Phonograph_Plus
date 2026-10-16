@@ -15,9 +15,8 @@ import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.model.ui.ItemLayoutStyle
-import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.actions.ActionMenus
-import player.phonograph.ui.actions.ClickActionProviders
+import player.phonograph.ui.actions.ItemClickActions
 import player.phonograph.ui.adapter.AlbumDisplayPresenter
 import player.phonograph.ui.adapter.ArtistDisplayPresenter
 import player.phonograph.ui.adapter.DisplayAdapter
@@ -214,20 +213,11 @@ class QueueSearchResultPageFragment : SearchResultPageFragment<QueueSong>() {
 
     object PlaylistSearchResultDisplayPresenter : QueueSongDisplayPresenter() {
 
+        override fun clickAction(context: Context, item: QueueSong, position: Int, list: List<QueueSong>): ActionEntry? =
+            ItemClickActions.PlayingQueue(item.index)
+
         override fun menuEntries(context: Context, item: QueueSong, position: Int): List<ActionEntry> =
             ActionMenus.Song(context, item.song, showPlay = false, index = item.index)
-
-        override val clickActionProvider: ClickActionProviders.ClickActionProvider<QueueSong> =
-            object : ClickActionProviders.ClickActionProvider<QueueSong> {
-                override fun listClick(
-                    context: Context,
-                    list: List<QueueSong>,
-                    position: Int,
-                ): Boolean {
-                    MusicPlayerRemote.playSongAt(list[position].index)
-                    return true
-                }
-            }
 
     }
 

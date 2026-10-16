@@ -6,7 +6,6 @@ package player.phonograph.ui.adapter
 
 import player.phonograph.model.menu.ActionEntry
 import player.phonograph.model.sort.SortMode
-import player.phonograph.ui.actions.ClickActionProviders
 import android.content.Context
 
 interface DisplayPresenter<T> {
@@ -19,7 +18,7 @@ interface DisplayPresenter<T> {
 
     fun getDescription(context: Context, item: T): CharSequence? = null
 
-    val clickActionProvider: ClickActionProviders.ClickActionProvider<T>
+    fun clickAction(context: Context, item: T, position: Int, list: List<T>): ActionEntry?
 
     fun menuEntries(context: Context, item: T, position: Int): List<ActionEntry> = emptyList()
 

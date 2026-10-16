@@ -9,7 +9,6 @@ import player.phonograph.foundation.dateTimeText
 import player.phonograph.model.file.FileItem
 import player.phonograph.model.menu.ActionEntry
 import player.phonograph.ui.actions.ActionMenus
-import player.phonograph.ui.actions.ClickActionProviders
 import player.phonograph.ui.adapter.DisplayPresenter
 import player.phonograph.ui.adapter.FileItemArtwork
 import player.phonograph.ui.adapter.ImageryProvider
@@ -18,9 +17,12 @@ import android.content.res.Resources
 import android.text.format.Formatter
 
 class FileItemPresenter(
-    override var clickActionProvider: ClickActionProviders.ClickActionProvider<FileItem>,
+    private val accessClickAction: (Context, FileItem, Int, List<FileItem>) -> ActionEntry?,
     var loadCover: Boolean = false,
 ) : DisplayPresenter<FileItem> {
+
+    override fun clickAction(context: Context, item: FileItem, position: Int, list: List<FileItem>): ActionEntry? =
+        accessClickAction(context, item, position, list)
 
     override val imageryProvider: ImageryProvider<FileItem> = FileItemArtwork { loadCover }
 
