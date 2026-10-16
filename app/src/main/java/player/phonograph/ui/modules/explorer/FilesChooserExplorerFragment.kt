@@ -9,7 +9,6 @@ import player.phonograph.ui.actions.ClickActionProviders
 import android.content.Context
 import android.os.Bundle
 import android.view.View
-import android.widget.ImageView
 
 class FilesChooserExplorerFragment : AbsFilesExplorerFragment() {
 
@@ -23,10 +22,9 @@ class FilesChooserExplorerFragment : AbsFilesExplorerFragment() {
     class FilesChooserClickActionProvider(private val onSwitch: (FileItem) -> Unit) :
             ClickActionProviders.ClickActionProvider<FileItem> {
         override fun listClick(
+            context: Context,
             list: List<FileItem>,
             position: Int,
-            context: Context,
-            imageView: ImageView?,
         ): Boolean {
             val item = list[position]
             when {

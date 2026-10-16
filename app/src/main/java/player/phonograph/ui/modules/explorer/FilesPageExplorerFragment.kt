@@ -18,7 +18,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.View
-import android.widget.ImageView
 import kotlinx.coroutines.Job
 
 class FilesPageExplorerFragment : AbsFilesExplorerFragment() {
@@ -36,15 +35,14 @@ class FilesPageExplorerFragment : AbsFilesExplorerFragment() {
         private val provider = ClickActionProviders.FileEntityClickActionProvider()
 
         override fun listClick(
+            context: Context,
             list: List<FileItem>,
             position: Int,
-            context: Context,
-            imageView: ImageView?,
         ): Boolean {
             val item = list[position]
             when {
                 item.isFolder -> onSwitch(item)
-                else          -> provider.listClick(list, position, context, imageView)
+                else          -> provider.listClick(context, list, position)
             }
             return true
         }

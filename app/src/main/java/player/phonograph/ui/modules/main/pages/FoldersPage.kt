@@ -37,7 +37,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.GridLayoutManager
 import android.content.Context
 import android.util.SparseIntArray
-import android.widget.ImageView
 import kotlin.random.Random
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -261,10 +260,9 @@ class FoldersPage : AbsPanelPage() {
             SongCollectionDisplayPresenter(
                 object : ClickActionProviders.ClickActionProvider<SongCollection> {
                     override fun listClick(
+                        context: Context,
                         list: List<SongCollection>,
                         position: Int,
-                        context: Context,
-                        imageView: ImageView?,
                     ): Boolean = run {
                         viewModel.browseFolder(
                             context,

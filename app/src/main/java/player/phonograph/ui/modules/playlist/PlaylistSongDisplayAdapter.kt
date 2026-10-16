@@ -18,7 +18,6 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import android.content.Context
 import android.view.View
-import android.widget.ImageView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -40,10 +39,10 @@ class PlaylistSongDisplayAdapter(
         override val clickActionProvider: ClickActionProviders.ClickActionProvider<QueueSong> =
             object : ClickActionProviders.ClickActionProvider<QueueSong> {
                 override fun listClick(
-                    list: List<QueueSong>, position: Int, context: Context, imageView: ImageView?,
+                    context: Context, list: List<QueueSong>, position: Int,
                 ): Boolean {
                     return ClickActionProviders.SongClickActionProvider()
-                        .listClick(list.map { it.song }, position, context, imageView)
+                        .listClick(context, list.map { it.song }, position)
                 }
 
             }

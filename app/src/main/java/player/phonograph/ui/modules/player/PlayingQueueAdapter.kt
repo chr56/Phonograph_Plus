@@ -17,7 +17,6 @@ import player.phonograph.ui.adapter.ImageryProvider
 import player.phonograph.ui.adapter.MultiSelectionController
 import player.phonograph.ui.adapter.SongDisplayPresenter
 import player.phonograph.ui.resource.Layouts
-import player.phonograph.ui.resource.infoString
 import player.phonograph.ui.util.hitTest
 import androidx.fragment.app.FragmentActivity
 import android.annotation.SuppressLint
@@ -109,7 +108,7 @@ class PlayingQueueAdapter(activity: FragmentActivity) :
         override val clickActionProvider: ClickActionProviders.ClickActionProvider<Song> =
             object : ClickActionProviders.ClickActionProvider<Song> {
                 override fun listClick(
-                    list: List<Song>, position: Int, context: Context, imageView: ImageView?,
+                    context: Context, list: List<Song>, position: Int,
                 ): Boolean {
                     MusicPlayerRemote.playSongAt(position)
                     return true

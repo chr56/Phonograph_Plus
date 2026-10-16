@@ -34,27 +34,24 @@ import player.phonograph.ui.goToArtistDetail
 import player.phonograph.ui.goToGenreDetail
 import player.phonograph.ui.goToPlaylistDetail
 import android.content.Context
-import android.widget.ImageView
 import kotlin.random.Random
 import kotlinx.coroutines.runBlocking
 
 object ClickActionProviders {
 
-    object EmptyClickActionProvider : ClickActionProvider<Any> {
+    object EmptyClickActionProvider : ClickActionProvider<Any?> {
         override fun listClick(
-            list: List<Any>,
-            position: Int,
             context: Context,
-            imageView: ImageView?,
+            list: List<Any?>,
+            position: Int,
         ): Boolean = true
     }
 
     class SongClickActionProvider : ClickActionProvider<Song> {
         override fun listClick(
+            context: Context,
             list: List<Song>,
             position: Int,
-            context: Context,
-            imageView: ImageView?,
         ): Boolean {
             val settings = Settings(context)
             val base = settings[Keys.songItemClickMode].data
@@ -115,10 +112,9 @@ object ClickActionProviders {
 
     class AlbumClickActionProvider : ClickActionProvider<Album> {
         override fun listClick(
+            context: Context,
             list: List<Album>,
             position: Int,
-            context: Context,
-            imageView: ImageView?,
         ): Boolean {
             goToAlbumDetail(context, list[position].id)
             return true
@@ -128,10 +124,9 @@ object ClickActionProviders {
 
     class ArtistClickActionProvider : ClickActionProvider<Artist> {
         override fun listClick(
+            context: Context,
             list: List<Artist>,
             position: Int,
-            context: Context,
-            imageView: ImageView?,
         ): Boolean {
             val artist = list[position]
             goToArtistDetail(context, artist.id)
@@ -142,10 +137,9 @@ object ClickActionProviders {
 
     class PlaylistClickActionProvider : ClickActionProvider<Playlist> {
         override fun listClick(
+            context: Context,
             list: List<Playlist>,
             position: Int,
-            context: Context,
-            imageView: ImageView?,
         ): Boolean {
             goToPlaylistDetail(context, list[position])
             return true
@@ -154,10 +148,9 @@ object ClickActionProviders {
 
     class GenreClickActionProvider : ClickActionProvider<Genre> {
         override fun listClick(
+            context: Context,
             list: List<Genre>,
             position: Int,
-            context: Context,
-            imageView: ImageView?,
         ): Boolean {
             goToGenreDetail(context, list[position])
             return true
@@ -167,10 +160,9 @@ object ClickActionProviders {
 
     class FileEntityClickActionProvider : ClickActionProvider<FileItem> {
         override fun listClick(
+            context: Context,
             list: List<FileItem>,
             position: Int,
-            context: Context,
-            imageView: ImageView?,
         ): Boolean {
             val settings = Settings(context)
             val base = settings[Keys.songItemClickMode].data
@@ -282,14 +274,12 @@ object ClickActionProviders {
          * @param list      a list that this Displayable is among
          * @param position  position where selected
          * @param context  relative context
-         * @param imageView (optional) image view used for ShardElementsTransitionAnimation
          * @return true if action have been processed
          */
         fun listClick(
+            context: Context,
             list: List<T>,
             position: Int,
-            context: Context,
-            imageView: ImageView?,
         ): Boolean
     }
 }

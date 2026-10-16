@@ -40,7 +40,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import kotlinx.coroutines.flow.StateFlow
 
 /**
@@ -221,10 +220,9 @@ class QueueSearchResultPageFragment : SearchResultPageFragment<QueueSong>() {
         override val clickActionProvider: ClickActionProviders.ClickActionProvider<QueueSong> =
             object : ClickActionProviders.ClickActionProvider<QueueSong> {
                 override fun listClick(
+                    context: Context,
                     list: List<QueueSong>,
                     position: Int,
-                    context: Context,
-                    imageView: ImageView?,
                 ): Boolean {
                     MusicPlayerRemote.playSongAt(list[position].index)
                     return true

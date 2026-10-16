@@ -104,7 +104,7 @@ open class DisplayAdapter<I>(
             // Click
             val clickActionProvider = presenter.clickActionProvider
             controller.registerClicking(itemView, position) {
-                clickActionProvider.listClick(dataset, position, itemView.context, image)
+                clickActionProvider.listClick(itemView.context, dataset, position)
             }
 
             // Menu
