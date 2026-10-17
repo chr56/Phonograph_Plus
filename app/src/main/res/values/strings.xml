@@ -226,6 +226,7 @@
     <string name="option_delete_with_saf">Delete with SAF</string>
     <string name="option_lyrics_following">Lyrics Following</string>
     <string name="option_use_legacy_list_Files">Use legacy way to read files</string>
+    <string name="option_album_artists_only">Album artists only</string>
     <string name="option_load_images_for_files">Load images for files</string>
     <string name="option_delete_with_lyrics">Delete with lyrics</string>
     <string name="tips_not_available_now">Not available now</string>

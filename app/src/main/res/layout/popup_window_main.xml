@@ -332,6 +332,14 @@
             android:visibility="gone" />
 
         <CheckBox
+            android:id="@+id/action_album_artists_only"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:checked="false"
+            android:text="@string/option_album_artists_only"
+            android:visibility="gone" />
+
+        <CheckBox
             android:id="@+id/show_file_imagines"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

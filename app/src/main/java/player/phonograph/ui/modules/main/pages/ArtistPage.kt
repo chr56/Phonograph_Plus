@@ -16,6 +16,7 @@ import player.phonograph.settings.Settings
 import player.phonograph.ui.adapter.ArtistBasicDisplayPresenter
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayPresenter
+import player.phonograph.ui.modules.popup.ListOptionsPopup
 import androidx.fragment.app.viewModels
 import android.content.Context
 import kotlinx.coroutines.CoroutineScope
@@ -28,7 +29,13 @@ class ArtistPage : AbsDisplayPage<Artist, DisplayAdapter<Artist>>() {
 
     class ArtistPageViewModel : AbsDisplayPageViewModel<Artist>() {
         override suspend fun loadDataSetImpl(context: Context, scope: CoroutineScope): Collection<Artist> {
-            return Artists.all(context, Settings(context)[Keys.artistSortMode].read())
+            val settings = Settings(context)
+            val sortMode = settings[Keys.artistSortMode].read()
+            return if (settings[Keys.artistPageAlbumArtistsOnly].read()) {
+                Artists.allAlbumArtists(context, sortMode)
+            } else {
+                Artists.all(context, sortMode)
+            }
         }
 
         override suspend fun collectAllSongs(context: Context): List<Song> =
@@ -39,6 +46,27 @@ class ArtistPage : AbsDisplayPage<Artist, DisplayAdapter<Artist>>() {
 
 
     override val displayConfig: PageDisplayConfig get() = ArtistPageDisplayConfig(requireContext())
+
+    override fun preparePopup(popup: ListOptionsPopup) {
+        super.preparePopup(popup)
+        popup.albumArtistsOnlyVisibility = true
+        popup.albumArtistsOnly = albumArtistsOnly
+    }
+
+    override fun dismissPopup(popup: ListOptionsPopup) {
+        val selected = popup.albumArtistsOnly
+        if (selected != albumArtistsOnly) {
+            albumArtistsOnly = selected
+            viewModel.loadDataset(requireContext())
+        }
+        super.dismissPopup(popup)
+    }
+
+    private var albumArtistsOnly: Boolean
+        get() = Settings(requireContext())[Keys.artistPageAlbumArtistsOnly].data
+        set(value) {
+            Settings(requireContext())[Keys.artistPageAlbumArtistsOnly].data = value
+        }
 
     override fun createAdapter(): DisplayAdapter<Artist> {
         return DisplayAdapter(requireActivity(), ArtistDisplayPresenter.from(displayConfig))

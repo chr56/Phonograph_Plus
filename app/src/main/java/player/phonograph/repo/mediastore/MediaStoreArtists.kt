@@ -27,6 +27,17 @@ object MediaStoreArtists : IArtists {
         return if (songs.isEmpty()) emptyList() else generateArtists(context, songs, sortMode)
     }
 
+    override suspend fun allAlbumArtists(context: Context, sortMode: SortMode): List<Artist> {
+        val songs = MediaStoreSongs.querySongs(context, sortOrder = null).intoSongs()
+        if (songs.isEmpty()) return emptyList()
+        // same rule as album cataloging: album artist tag, or track artist if absent
+        val albumArtistNames: Set<String> = songs.groupBy { it.albumId }.values.mapNotNullTo(HashSet()) { albumSongs ->
+            albumSongs.firstOrNull { !it.albumArtistName.isNullOrEmpty() }?.albumArtistName
+                ?: albumSongs.firstOrNull { !it.artistName.isNullOrEmpty() }?.artistName
+        }
+        return generateArtists(context, songs, sortMode).filter { it.name in albumArtistNames }
+    }
+
     override suspend fun id(context: Context, id: Long): Artist {
         val songs = MediaStoreSongs.artist(context, id)
         val albums = MediaStoreAlbums.artist(context, id)

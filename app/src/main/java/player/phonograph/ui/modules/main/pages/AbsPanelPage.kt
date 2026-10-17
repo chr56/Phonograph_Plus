@@ -220,7 +220,7 @@ sealed class AbsPanelPage : AbsPage() {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    protected fun dismissPopup(popup: ListOptionsPopup) {
+    protected open fun dismissPopup(popup: ListOptionsPopup) {
         val currentDisplayConfig = displayConfig
         var shouldUpdate = false
         var shouldRecreate = false

@@ -66,6 +66,7 @@ class ListOptionsPopup private constructor(
             titleGridSize.visibility = GONE
 
             actionColoredFooters.visibility = GONE
+            actionAlbumArtistsOnly.visibility = GONE
         }
     }
 
@@ -83,6 +84,7 @@ class ListOptionsPopup private constructor(
             this.titleSortOrderRef.setTextColor(accentColor)
             // checkbox color
             this.actionColoredFooters.buttonTintList = widgetColor
+            this.actionAlbumArtistsOnly.buttonTintList = widgetColor
             this.useLegacyListFiles.buttonTintList = widgetColor
             this.showFileImagines.buttonTintList = widgetColor
             // radioButton
@@ -226,6 +228,18 @@ class ListOptionsPopup private constructor(
         get() = viewBinding.actionColoredFooters.isEnabled
         set(value) {
             viewBinding.actionColoredFooters.isEnabled = value
+        }
+
+    var albumArtistsOnly: Boolean
+        get() = viewBinding.actionAlbumArtistsOnly.isChecked
+        set(value) {
+            viewBinding.actionAlbumArtistsOnly.isChecked = value
+        }
+
+    var albumArtistsOnlyVisibility: Boolean
+        get() = viewBinding.actionAlbumArtistsOnly.visibility == VISIBLE
+        set(value) {
+            viewBinding.actionAlbumArtistsOnly.visibility = if (value) VISIBLE else GONE
         }
 
     var useLegacyListFiles: Boolean
