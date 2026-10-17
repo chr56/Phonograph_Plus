@@ -14,6 +14,12 @@ interface IArtists : Endpoint {
 
     suspend fun all(context: Context, sortMode: SortMode): List<Artist>
 
+    /**
+     * @return artists who are the album artist of at least one album
+     * (falling back to the track artist for albums without an album artist tag)
+     */
+    suspend fun allAlbumArtists(context: Context, sortMode: SortMode): List<Artist>
+
     suspend fun id(context: Context, id: Long): Artist
 
     suspend fun searchByName(context: Context, query: String): List<Artist>

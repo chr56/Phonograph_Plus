@@ -310,6 +310,11 @@ object Keys {
         get() = PrimitiveKey<Boolean>(booleanPK("artist_colored_footers")) { true }
     //</editor-fold>
 
+    //<editor-fold desc="ArtistPage">
+    val artistPageAlbumArtistsOnly
+        get() = PrimitiveKey<Boolean>(booleanPK("artist_page_album_artists_only")) { false }
+    //</editor-fold>
+
     //<editor-fold desc="File Related">
     val showFileImages
         get() = PrimitiveKey<Boolean>(booleanPK("show_file_imagines")) { false }

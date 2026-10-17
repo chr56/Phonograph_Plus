@@ -18,6 +18,9 @@ object RoomArtists : RoomLoader(), IArtists {
     override suspend fun all(context: Context, sortMode: SortMode): List<Artist> =
         db.ArtistQueryDao().all(sortMode).map(EntityConverter::toArtistModel)
 
+    override suspend fun allAlbumArtists(context: Context, sortMode: SortMode): List<Artist> =
+        db.ArtistQueryDao().albumArtists(sortMode).map(EntityConverter::toArtistModel)
+
     override suspend fun id(context: Context, id: Long): Artist =
         db.ArtistQueryDao().id(id)?.let(EntityConverter::toArtistModel) ?: Artist()
 
