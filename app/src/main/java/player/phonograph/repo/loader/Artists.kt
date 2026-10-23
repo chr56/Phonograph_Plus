@@ -31,6 +31,9 @@ object Artists : IArtists, Delegated<IArtists>() {
     override suspend fun all(context: Context, sortMode: SortMode): List<Artist> =
         delegate(context).all(context, sortMode)
 
+    override suspend fun allAlbumArtists(context: Context, sortMode: SortMode): List<Artist> =
+        delegate(context).allAlbumArtists(context, sortMode)
+
     override suspend fun id(context: Context, id: Long): Artist =
         delegate(context).id(context, id)
 

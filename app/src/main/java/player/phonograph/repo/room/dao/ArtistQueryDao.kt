@@ -13,8 +13,10 @@ import player.phonograph.repo.room.entity.Columns.ALBUM_ID
 import player.phonograph.repo.room.entity.Columns.ARTIST
 import player.phonograph.repo.room.entity.Columns.ARTIST_ID
 import player.phonograph.repo.room.entity.Columns.MEDIASTORE_ID
+import player.phonograph.repo.room.entity.Columns.ROLE
 import player.phonograph.repo.room.entity.Columns.TRACK
 import player.phonograph.repo.room.entity.Columns.YEAR
+import player.phonograph.repo.room.entity.LinkageSongAndArtist.Companion.ROLE_ALBUM_ARTIST
 import player.phonograph.repo.room.entity.MediastoreSongEntity
 import player.phonograph.repo.room.entity.Tables.ALBUMS
 import player.phonograph.repo.room.entity.Tables.ARTISTS
@@ -36,6 +38,17 @@ abstract class ArtistQueryDao {
 
     suspend fun all(sortMode: SortMode): List<ArtistEntity> = query(
         SimpleSQLiteQuery("SELECT * from $ARTISTS order by ${roomArtistQuerySortOrder(sortMode)}")
+    )
+
+    /**
+     * artists who are the (effective) album artist of some album, or credited as album artist of some song
+     */
+    suspend fun albumArtists(sortMode: SortMode): List<ArtistEntity> = query(
+        SimpleSQLiteQuery(
+            "SELECT * from $ARTISTS where $ARTIST_ID in (SELECT $ARTIST_ID from $ALBUMS) " +
+                    "or $ARTIST_ID in (SELECT $ARTIST_ID from $LINKAGE_ARTIST_SONG where $ROLE = $ROLE_ALBUM_ARTIST) " +
+                    "order by ${roomArtistQuerySortOrder(sortMode)}"
+        )
     )
 
     @Query("SELECT * from $ARTISTS where $ARTIST_ID = :id")
