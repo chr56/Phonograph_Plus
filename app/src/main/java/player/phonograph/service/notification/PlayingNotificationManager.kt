@@ -43,7 +43,6 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Build
-import android.os.Build.VERSION.SDK_INT
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
@@ -232,14 +231,16 @@ class PlayingNotificationManager : ServiceComponent {
                 status = status,
             )
 
-            if (SDK_INT < VERSION_SET_COVER_USING_METADATA && cachedSong == song) {
+            // Always set the artwork as the notification large icon as well. AOSP reads it from
+            // the MediaSession metadata on API 30+, but some OEM system UIs only use largeIcon.
+            if (cachedSong == song) {
                 prepareNotificationImages(notificationBuilder, cachedBitmap, cachedPaletteColor)
             }
 
             postNotification(notificationBuilder.build())
 
             request?.dispose()
-            if (SDK_INT < VERSION_SET_COVER_USING_METADATA && cachedSong != song) {
+            if (cachedSong != song) {
                 request = service.coverLoader.load(song) { bitmap: Bitmap?, paletteColor: Int ->
                     if (bitmap != null) {
                         prepareNotificationImages(notificationBuilder, bitmap, paletteColor)
