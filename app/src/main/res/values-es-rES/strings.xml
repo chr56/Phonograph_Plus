@@ -48,7 +48,7 @@
     <string name="action_next">Siguiente</string>
     <string name="action_add_to_playing_queue">Añadir a cola de reproducción</string>
     <string name="action_remove_from_playing_queue">Eliminar de la cola de reproducción</string>
-    <string name="action_add_to_playlist">Añadir a la lista de reproducción…</string>
+    <string name="action_add_to_playlist">Añadir a la lista de reproducción...</string>
     <string name="action_tag_editor">Editor de información</string>
     <string name="action_delete_from_device">Eliminar del dispositivo</string>
     <string name="action_details">Detalles</string>
@@ -58,7 +58,7 @@
     <string name="action_set_as_start_directory">Establecer como carpeta de inicio</string>
     <string name="action_add_to_black_list">Añadir a la lista negra</string>
     <string name="action_item_layout">Diseño del Ítem</string>
-    <string name="action_new_playlist">Nueva lista de reproducción…</string>
+    <string name="action_new_playlist">Nueva lista de reproducción...</string>
     <string name="action_change_now_playing_screen">Mostrar en pantalla de reproducción actual</string>
     <string name="action_go_to_artist">Ir al artista</string>
     <string name="action_go_to_album">Ir al álbum</string>
@@ -214,8 +214,8 @@
     <string name="title_new_playlist">Nueva lista de reproducción</string>
     <string name="title_rename_playlist">Renombrar lista de reproducción</string>
     <string name="title_add_playlist">Añadir a lista de reproducción</string>
-    <string name="state_saving_changes">Guardando cambios…</string>
-    <string name="state_updating">Actualizando…</string>
+    <string name="state_saving_changes">Guardando cambios...</string>
+    <string name="state_updating">Actualizando...</string>
     <string name="state_loading">Cargando</string>
     <string name="state_completed">Completado</string>
     <string name="state_process">Procesando…</string>
@@ -231,7 +231,7 @@
     <string name="tips_service_disconnected">[¡El servicio está desconectado!]</string>
     <string name="tips_are_you_sure">¿Estás seguro?</string>
     <string name="tips_playlist_name_placeholder">Nombre de la lista de reproducción</string>
-    <string name="tips_search_hint">Buscar en la biblioteca…</string>
+    <string name="tips_search_hint">Buscar en la biblioteca...</string>
     <string name="tips_x_selected">%1$d seleccionado</string>
     <string name="tips_choose_at_least_one">Por favor elija al menos uno</string>
     <string name="tips_select_at_least_one_category">Debes seleccionar al menos una categoría.</string>
@@ -260,6 +260,7 @@
     <string name="msg_empty_playlist">Lista de reproducción vacía</string>
     <string name="msg_empty">Vacío</string>
     <string name="msg_unknown">Desconocido</string>
+    <string name="msg_not_available">N/A</string>
     <string name="msg_binary">Binario</string>
     <string name="msg_added_title_to_playing_queue">1 canción añadida a la cola de reproducción.</string>
     <string name="msg_added_x_titles_to_playing_queue">%1$d canciones añadidas a la cola de reproducción.</string>
@@ -388,6 +389,7 @@
     <string name="pref_summary_audio_ducking">Notificaciones, navegación etc.</string>
     <string name="pref_summary_auto_check_for_updates">Envía una notificación cuando haya una nueva versión disponible.</string>
     <string name="pref_summary_auto_check_for_updates_extra_description">La aplicación buscará las últimas versiones de fuentes públicas en el almacén de GitHub o similar.</string>
+    <string name="pref_summary_broadcast_current_player_state"></string>
     <string name="pref_summary_check_for_updates_interval">Intervalo de tiempo para la comprobación automática de actualizaciones</string>
     <string name="pref_summary_classic_notification">Utilizar el diseño clásico de notificación.</string>
     <string name="pref_summary_click_behavior">Define lo que el reproductor debe hacer cuando haces clic en una canción de una lista.</string>
