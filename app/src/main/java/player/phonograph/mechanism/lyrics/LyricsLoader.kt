@@ -27,14 +27,18 @@ object LyricsLoader {
      */
     fun parse(raw: String, lyricsSource: LyricsSource = LyricsSource.Unknown): AbsLyrics {
         val rawLength = raw.length
-        val sampleLineCount = max(rawLength / 100, 10)
-        val sampleLength = max(min(rawLength / 8, 480), 60)
+        val sampleLineCount = max(min(rawLength / 100, 100), 10)
 
-        val lines = raw.take(sampleLength).splitToSequence("\r\n", "\n", "\r", limit = sampleLineCount)
-        @Suppress("RegExpRedundantEscape") val regex = Regex("""(\[.+\])+\s*.*""")
+        val lines = raw.splitToSequence("\r\n", "\n", "\r", limit = sampleLineCount)
+        val lrcLineRegex = Regex("""\s*(?:\[\d+:\d{2}(?:\.\d+)?\])+.*""")
+        val enhancedLineRegex = Regex("""\s*(?:<\d+:\d{2}(?:\.\d+)?>).*""")
+        val metadataRegex = Regex("""\s*\[[A-Za-z]+:[^\]]*]\s*""")
 
         var score = 0
-        for (line in lines) score += if (regex.matches(line)) 1 else -1
+        for (line in lines) {
+            if (line.isBlank() || metadataRegex.matches(line)) continue
+            score += if (lrcLineRegex.matches(line) || enhancedLineRegex.matches(line)) 1 else -1
+        }
 
         return if (score > 1) ActualLrcLyrics.from(raw, lyricsSource) else ActualTextLyrics.from(raw, lyricsSource)
     }

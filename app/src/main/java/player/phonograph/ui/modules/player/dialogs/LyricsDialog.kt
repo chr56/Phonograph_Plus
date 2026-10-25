@@ -14,6 +14,7 @@ import player.phonograph.foundation.lyricsTimestamp
 import player.phonograph.mechanism.lyrics.ActualTextLyrics
 import player.phonograph.model.lyrics.AbsLyrics
 import player.phonograph.model.lyrics.LrcLyrics
+import player.phonograph.model.lyrics.LrcWord
 import player.phonograph.model.lyrics.LyricsInfo
 import player.phonograph.model.lyrics.TextLyrics
 import player.phonograph.service.MusicPlayerRemote
@@ -41,6 +42,9 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Typeface
 import android.os.Bundle
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -52,7 +56,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.regex.Pattern
 
 /**
  * Large Dialog to show Lyrics.
@@ -100,7 +103,7 @@ class LyricsDialog : DialogFragment() {
                 updateTitle(info)
                 updateChips(info)
                 updateRecycleView(info)
-                lastHighlightPosition = -1
+                lyricsAdapter.clearHighlight()
             }
         }
         observe(viewLifecycleOwner.lifecycle, viewModel.requireLyricsFollowing) { following ->
@@ -223,7 +226,8 @@ class LyricsDialog : DialogFragment() {
         lyricsAdapter = LyricsAdapter(
             context,
             lyrics,
-            settings = LyricsAdapter.DisplaySettings.read(context)
+            settings = LyricsAdapter.DisplaySettings.read(context),
+            highlightColor = primaryColor(),
         ) { dialog?.dismiss() }
         binding.recyclerViewLyrics.apply {
             layoutManager = this@LyricsDialog.linearLayoutManager
@@ -281,7 +285,7 @@ class LyricsDialog : DialogFragment() {
         val lrcLyrics = lyrics as? LrcLyrics ?: return
         val position = lrcLyrics.getLineNumber(progress)
         if (lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
-            updateHighlight(position)
+            lyricsAdapter.updateHighlight(position, progress)
             if (viewModel.requireLyricsFollowing.value) {
                 scrollingTo(position)
             }
@@ -321,22 +325,6 @@ class LyricsDialog : DialogFragment() {
         }
     }
 
-    private var lastHighlightPosition = -1
-    private fun updateHighlight(position: Int) {
-        if (lastHighlightPosition >= 0) {
-            // cancel last
-            val lastViewHolder =
-                binding.recyclerViewLyrics.findViewHolderForAdapterPosition(lastHighlightPosition) as? LyricsAdapter.ViewHolder
-            lastViewHolder?.highlight(false)
-        }
-        if (position >= 0) {
-            val viewHolder =
-                binding.recyclerViewLyrics.findViewHolderForAdapterPosition(position) as? LyricsAdapter.ViewHolder
-            viewHolder?.highlight(true)
-            lastHighlightPosition = position
-        }
-    }
-
     //endregion
 
 
@@ -359,18 +347,47 @@ private class LyricsAdapter(
     private val context: Context,
     private var lyric: AbsLyrics,
     private var settings: DisplaySettings,
+    private val highlightColor: Int,
     private val dismiss: (() -> Unit)?,
 ) : RecyclerView.Adapter<LyricsAdapter.ViewHolder>() {
 
     private var lyricLines: Array<String> = lyric.lyricsLineArray
     private var lyricTimestamps: IntArray = lyric.lyricsTimeArray
+    private var highlightedPosition: Int = -1
+    private var highlightedWordIndex: Int = -1
 
     @SuppressLint("NotifyDataSetChanged")
     fun update(newLyric: AbsLyrics) {
         lyric = newLyric
         lyricLines = newLyric.lyricsLineArray
         lyricTimestamps = newLyric.lyricsTimeArray
+        highlightedPosition = -1
+        highlightedWordIndex = -1
         notifyDataSetChanged()
+    }
+
+    fun updateHighlight(position: Int, progress: Int) {
+        val lrcLyrics = lyric as? LrcLyrics
+        val wordIndex = if (position >= 0 && lrcLyrics != null) {
+            lrcLyrics.getWordIndex(position, progress)
+        } else {
+            -1
+        }
+        if (position == highlightedPosition && wordIndex == highlightedWordIndex) return
+
+        val previousPosition = highlightedPosition
+        highlightedPosition = position
+        highlightedWordIndex = wordIndex
+
+        if (previousPosition >= 0 && previousPosition != position) notifyItemChanged(previousPosition)
+        if (position >= 0) notifyItemChanged(position)
+    }
+
+    fun clearHighlight() {
+        val previousPosition = highlightedPosition
+        highlightedPosition = -1
+        highlightedWordIndex = -1
+        if (previousPosition >= 0) notifyItemChanged(previousPosition)
     }
 
     class ViewHolder private constructor(itemView: View, val settings: DisplaySettings) :
@@ -379,17 +396,23 @@ private class LyricsAdapter(
         val textLine: TextView = itemView.findViewById(R.id.dialog_lyrics_line)
         val textTime: TextView = itemView.findViewById(R.id.dialog_lyrics_times)
 
-        fun bindImpl(line: String, showTimestamp: Boolean, timestamp: Int, dismiss: (() -> Unit)?) {
-
-            // parse line feed
-            val actual = StringBuffer()
-            line.split(Pattern.compile("\\\\[nNrR]")).forEach {
-                actual.append(it).appendLine()
-            }
-
+        fun bind(
+            line: String,
+            timestamp: Int,
+            dismiss: (() -> Unit)?,
+            showTimestamp: Boolean = settings.enableTimestamp,
+            highlighted: Boolean = false,
+            words: List<LrcWord> = emptyList(),
+            highlightedWordIndex: Int = -1,
+            highlightColor: Int = 0,
+        ) {
             // Text Line
-            textLine.text = actual.trim().toString()
-            textLine.typeface = Typeface.DEFAULT
+            textLine.text = if (highlighted && words.isNotEmpty() && highlightedWordIndex >= 0) {
+                buildHighlightedLine(words, highlightedWordIndex, highlightColor)
+            } else {
+                formatLineFeed(line).trim()
+            }
+            textLine.typeface = if (highlighted) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
             textLine.textSize = settings.fontSize
             textLine.setOnLongClickListener {
                 if (timestamp >= 0) {
@@ -402,7 +425,7 @@ private class LyricsAdapter(
             // Text Timestamp
             if (showTimestamp) {
                 textTime.text = lyricsTimestamp(timestamp)
-                textTime.typeface = Typeface.DEFAULT
+                textTime.typeface = if (highlighted) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
                 textTime.textSize = max(settings.fontSize - 4, 6f)
                 textTime.visibility = View.VISIBLE
             } else {
@@ -410,18 +433,40 @@ private class LyricsAdapter(
             }
         }
 
-        fun bind(line: String, dismiss: (() -> Unit)?) =
-            bindImpl(line, false, -1, dismiss)
+        private fun formatLineFeed(line: String): String =
+            line.replace(LINE_FEED_PATTERN, "\n")
 
-        fun bind(line: String, timestamp: Int, dismiss: (() -> Unit)?) =
-            bindImpl(line, settings.enableTimestamp, timestamp, dismiss)
+        private fun buildHighlightedLine(
+            words: List<LrcWord>,
+            highlightedWordIndex: Int,
+            highlightColor: Int,
+        ): CharSequence {
+            val builder = SpannableStringBuilder()
+            words.forEachIndexed { index, word ->
+                val start = builder.length
+                builder.append(formatLineFeed(word.text))
+                if (index <= highlightedWordIndex && builder.length > start) {
+                    builder.setSpan(
+                        ForegroundColorSpan(highlightColor),
+                        start,
+                        builder.length,
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                }
+            }
 
-        fun highlight(highlight: Boolean) {
-            textLine.typeface = if (highlight) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
-            textTime.typeface = if (highlight) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
+            var start = 0
+            while (start < builder.length && builder[start].isWhitespace()) start++
+            var end = builder.length
+            while (end > start && builder[end - 1].isWhitespace()) end--
+            if (end < builder.length) builder.delete(end, builder.length)
+            if (start > 0) builder.delete(0, start)
+            return builder
         }
 
         companion object {
+            private val LINE_FEED_PATTERN = Regex("""\\[nNrR]""")
+
             fun inflate(context: Context, parent: ViewGroup, settings: DisplaySettings) =
                 ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_lyrics, parent, false), settings)
         }
@@ -447,10 +492,25 @@ private class LyricsAdapter(
         ViewHolder.inflate(context, parent, settings)
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        if (lyric is LrcLyrics) {
-            holder.bind(lyricLines[position], lyricTimestamps[position], dismiss)
+        val lrcLyrics = lyric as? LrcLyrics
+        if (lrcLyrics != null) {
+            val highlighted = position == highlightedPosition
+            holder.bind(
+                line = lyricLines[position],
+                timestamp = lyricTimestamps[position],
+                dismiss = dismiss,
+                highlighted = highlighted,
+                words = if (highlighted) lrcLyrics.getLineWords(position) else emptyList(),
+                highlightedWordIndex = if (highlighted) highlightedWordIndex else -1,
+                highlightColor = highlightColor,
+            )
         } else if (lyric is TextLyrics) {
-            holder.bind(lyricLines[position], dismiss)
+            holder.bind(
+                line = lyricLines[position],
+                timestamp = -1,
+                dismiss = dismiss,
+                showTimestamp = false,
+            )
         }
     }
 

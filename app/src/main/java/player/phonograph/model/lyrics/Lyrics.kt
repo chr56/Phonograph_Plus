@@ -6,6 +6,7 @@ package player.phonograph.model.lyrics
 
 import androidx.annotation.IntDef
 import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
 sealed interface AbsLyrics : Parcelable {
     @LyricsType
@@ -56,7 +57,35 @@ interface LrcLyrics : AbsLyrics {
      */
     fun getLineNumber(timestamp: Int): Int
 
+    /**
+     * get timed words of an enhanced LRC line
+     * @param lineIndex line index in current lyrics
+     * @return timed words; empty for ordinary LRC lines
+     */
+    fun getLineWords(lineIndex: Int): List<LrcWord> = emptyList()
+
+    /**
+     * get index of the last word that should be highlighted at [timestamp]
+     * @param lineIndex line index in current lyrics
+     * @param timestamp target timestamp in millisecond
+     * @return word index, or -1 when the line has no word timings or no word has started yet
+     */
+    fun getWordIndex(lineIndex: Int, timestamp: Int): Int = -1
+
 }
+
+@Parcelize
+data class LrcWord(
+    val text: String,
+    val startTime: Int,
+    val endTime: Int,
+) : Parcelable
+
+@Parcelize
+data class LrcLine(
+    val text: String,
+    val words: List<LrcWord> = emptyList(),
+) : Parcelable
 
 @IntDef(LyricsType.TXT, LyricsType.LRC)
 annotation class LyricsType {
