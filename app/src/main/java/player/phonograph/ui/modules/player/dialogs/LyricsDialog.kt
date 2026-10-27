@@ -81,8 +81,6 @@ class LyricsDialog : DialogFragment() {
         binding.ok.setOnClickListener { requireDialog().dismiss() }
         binding.viewStub.setOnClickListener { requireDialog().dismiss() }
 
-        scroller = LyricsSmoothScroller(view.context)
-
         val lyricsInfo: LyricsInfo? = viewModel.lyricsInfo.value
         if (lyricsInfo == null) {
             dismissNow()
@@ -101,10 +99,12 @@ class LyricsDialog : DialogFragment() {
                 updateChips(info)
                 updateRecycleView(info)
                 lastHighlightPosition = -1
+                lastScrolledPosition = RecyclerView.NO_POSITION
             }
         }
         observe(viewLifecycleOwner.lifecycle, viewModel.requireLyricsFollowing) { following ->
             binding.lyricsFollowing.isChecked = following
+            if (following) lastScrolledPosition = RecyclerView.NO_POSITION
         }
     }
 
@@ -228,6 +228,14 @@ class LyricsDialog : DialogFragment() {
         binding.recyclerViewLyrics.apply {
             layoutManager = this@LyricsDialog.linearLayoutManager
             adapter = this@LyricsDialog.lyricsAdapter
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    // Let manual scrolling take over until the next progress update.
+                    if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                        lastScrolledPosition = RecyclerView.NO_POSITION
+                    }
+                }
+            })
         }
     }
 
@@ -288,8 +296,6 @@ class LyricsDialog : DialogFragment() {
         }
     }
 
-    private lateinit var scroller: LyricsSmoothScroller
-
     class LyricsSmoothScroller(context: Context) : LinearSmoothScroller(context) {
 
         private val densityDpi = context.resources.displayMetrics.densityDpi
@@ -299,30 +305,51 @@ class LyricsDialog : DialogFragment() {
         override fun onTargetFound(targetView: View, state: RecyclerView.State, action: Action) {
             val dyStart = calculateDyToMakeVisible(targetView, SNAP_TO_START)
             val dyEnd = calculateDyToMakeVisible(targetView, SNAP_TO_END)
-            var dy = (dyEnd + dyStart) / 2
-            if (abs(dy) < minDeviation) dy = 0  // omit slight deviation
-            dy -= offset // slightly upper
+            var dy = (dyEnd + dyStart) / 2 - offset // slightly upper
+            // Check the final scroll distance, otherwise the "omit slight deviation" branch
+            // would drop the offset and leave different lines at different heights.
+            if (abs(dy) < minDeviation) dy = 0
             // debug { Log.v("SmoothScroller", "dy:$dy dyStart:$dyStart dyEnd:$dyEnd") }
-            val time = calculateTimeForDeceleration(dy)
+            // LinearSmoothScroller's default speed makes a one-line scroll finish in only a
+            // couple of frames, which looks like a jump. Keep the animation visible.
+            val time = if (dy == 0) 0 else max(MIN_SCROLL_DURATION_MS, calculateTimeForDeceleration(dy))
             if (time > 0) {
                 action.update(0, -dy, time, mDecelerateInterpolator)
             }
         }
+
+        companion object {
+            private const val MIN_SCROLL_DURATION_MS = 300
+        }
     }
 
+    private var lastScrolledPosition = RecyclerView.NO_POSITION
+
     private fun scrollingTo(position: Int) {
+        // Progress is updated periodically; scroll only once when the current line changes.
+        if (position < 0 || position == lastScrolledPosition) return
+        // Wait until the list has been laid out, then retry on the next progress update.
+        if (binding.recyclerViewLyrics.childCount == 0) return
         try {
-            if (position >= 0) {
-                scroller.targetPosition = position
-                linearLayoutManager.startSmoothScroll(scroller)
-            }
+            lastScrolledPosition = position
+            val scroller = LyricsSmoothScroller(requireContext()).apply { targetPosition = position }
+            linearLayoutManager.startSmoothScroll(scroller)
         } catch (e: Exception) {
+            lastScrolledPosition = RecyclerView.NO_POSITION
             warning(requireContext(), "LyricsScroll", "Failed to scroll to $position", e)
         }
     }
 
     private var lastHighlightPosition = -1
     private fun updateHighlight(position: Int) {
+        if (position == lastHighlightPosition) {
+            if (position < 0) return
+            val holder = binding.recyclerViewLyrics.findViewHolderForAdapterPosition(position)
+                    as? LyricsAdapter.ViewHolder
+            if (holder == null || holder.isHighlighted) return
+            holder.highlight(true)
+            return
+        }
         if (lastHighlightPosition >= 0) {
             // cancel last
             val lastViewHolder =
@@ -333,8 +360,8 @@ class LyricsDialog : DialogFragment() {
             val viewHolder =
                 binding.recyclerViewLyrics.findViewHolderForAdapterPosition(position) as? LyricsAdapter.ViewHolder
             viewHolder?.highlight(true)
-            lastHighlightPosition = position
         }
+        lastHighlightPosition = position
     }
 
     //endregion
@@ -379,6 +406,9 @@ private class LyricsAdapter(
         val textLine: TextView = itemView.findViewById(R.id.dialog_lyrics_line)
         val textTime: TextView = itemView.findViewById(R.id.dialog_lyrics_times)
 
+        var isHighlighted: Boolean = false
+            private set
+
         fun bindImpl(line: String, showTimestamp: Boolean, timestamp: Int, dismiss: (() -> Unit)?) {
 
             // parse line feed
@@ -390,6 +420,7 @@ private class LyricsAdapter(
             // Text Line
             textLine.text = actual.trim().toString()
             textLine.typeface = Typeface.DEFAULT
+            isHighlighted = false
             textLine.textSize = settings.fontSize
             textLine.setOnLongClickListener {
                 if (timestamp >= 0) {
@@ -417,6 +448,7 @@ private class LyricsAdapter(
             bindImpl(line, settings.enableTimestamp, timestamp, dismiss)
 
         fun highlight(highlight: Boolean) {
+            isHighlighted = highlight
             textLine.typeface = if (highlight) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
             textTime.typeface = if (highlight) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
         }
