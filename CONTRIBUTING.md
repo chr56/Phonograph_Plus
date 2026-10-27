@@ -1,21 +1,21 @@
-# Guide to make a contribution
+# Contribution Guide
 
 Thank you for taking the time and making an effort to contribute!
 
 ------
 
 
-If you want to report a bug or propose some ideas, **just open a new issue** on GitHub and use the specific template with detailed guildance. 
+If you want to report a bug or propose an idea, **please open a new issue** on GitHub and use the relevant issue template with detailed guidance.
 
-If you are willing to translate it into other languages, please check Crowdin project in README. It is not suggested to make a raw PR on source codes directly.  
+If you want to translate it into other languages, please check Crowdin project links in README. Please do not submit translation changes directly as a pull request.
 
 If you want to contribute to the source code, we have provided various documents to help you get started:
 
 - [Build Instructions](./docs/Build_Instructions.md): A rough guide about building it from source.
 - [Developer Guide](./docs/Developer_Guide.md): A short overview of the project for developers.
-- [Git Commit Rules](./docs/Git_Commit_Rules.md): Guideline on how to make commits in this project. 
+- [Git Commit Rules](./docs/Git_Commit_Rules.md): Guidelines on how to make commits in this project.
 
-You are supposed to read them first before making a contribution to source code.
+You should read them before contributing to the source code.
 
 
 ## Checklist before opening a PR
@@ -32,9 +32,9 @@ That's it! Thank you very much for keeping this project tidy and organized.
 
 ## LLM / AI Policy
 
-#### AI/LLM-generated code is **broadly acceptable but subject to strict limitations**.
+AI/LLM-generated code is **broadly acceptable** but subject to **strict limitations**.
 
-We value **quality** over contribution volume and community. We are open to AI/LLM-assisted contribution, however, we will not lower the quality standard to accommodate it.
+For our community, we value **quality** over contribution volume. We are open to AI/LLM-assisted contributions; however, we will not lower the quality standard to accommodate them.
 
 - By submitting a PR or patch, you **guarantee its quality and maintainability**. If you cannot stand behind every line, do _not_ open the PR.
 - Every AI/LLM-generated line must be **seriously and deeply reviewed by a human.** This can take a long time, and that cost is yours to bear.
