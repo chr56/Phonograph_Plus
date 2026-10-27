@@ -136,7 +136,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvider
     private lateinit var bottomViewWindowInsetsController: BottomViewWindowInsetsController
     private fun setUpMainContent() {
 
-        songAdapter = DisplayAdapter(this, AlbumDetailActivityDisplayAdapters)
+        songAdapter = DisplayAdapter(this, AlbumSongDisplayPresenter)
         linearLayoutManager = LinearLayoutManager(this@AlbumDetailActivity)
         with(viewBinding.recyclerView) {
             layoutManager = linearLayoutManager
@@ -234,7 +234,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvider
     }
 
 
-    object AlbumDetailActivityDisplayAdapters : SongBasicDisplayPresenter(SortMode(SortRef.ID)) {
+    object AlbumSongDisplayPresenter : SongBasicDisplayPresenter(SortMode(SortRef.ID)) {
 
         override val imageryProvider: ImageryProvider<Song> = ImageryProvider.Text
 
