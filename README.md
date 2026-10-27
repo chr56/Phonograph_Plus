@@ -93,15 +93,15 @@ We have removed Bulgarian, Croatian, Swedish and Norwegian Nynorsk translations 
 
 [Trouble Shooting & FAQ](docs/FAQ.md)
 
-## **Development**
+## **Development & Contributing**
 
-### Build & Development
+For vibe contributors, please check our [AI/LLM policy](./CONTRIBUTING.md#llm--ai-policy).
 
-[Build_Instructions.md](docs/Build_Instructions.md)
+[Contributing](./CONTRIBUTING.md)
+
+[Build Instructions](docs/Build_Instructions.md)
 
 [Developer Guide](docs/Developer_Guide.md)
-
-### Development Plan
 
 [Road Map](docs/Road_Map.md)
 

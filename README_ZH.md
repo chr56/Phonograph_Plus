@@ -90,17 +90,17 @@ Phonograph Plus 继承了原版 Phonograph 的所有功能，并进行了扩展�
 ## **常见问题**
 见 [Trouble Shooting & FAQ](docs/FAQ.md)
 
-## **开发**
+## **开发与贡献**
 
-### 构建与开发
+有关 AI/LLM 辅助生成的代码的接纳，请务必参考[此处](./CONTRIBUTING.md#llm--ai-policy).
 
-[Build_Instructions.md](docs/Build_Instructions.md)
+[Contributing](./CONTRIBUTING.md)
+
+[Build Instructions](docs/Build_Instructions.md)
 
 [Developer Guide](docs/Developer_Guide.md)
 
-### 开发计划
-
-见 [路线图](docs/Road_Map_ZH.md) 或 [Road Map](docs/Road_Map.md)。
+[路线图](docs/Road_Map_ZH.md) / [Road Map](docs/Road_Map.md)
 
 ## **仓库镜像**
 
