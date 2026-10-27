@@ -9,9 +9,9 @@ The commit message must use one of these formats:
 - `[topic] subject: summary`
 
 Notes:
-- Do not use action verbs in `topic` or `subject`.
-  - Words such as `fix`, `new`, `add`, or `refactor` are not allowed in `topic` or `subject`. 
-  - But action verbs can be presented in `summary`.
+- Do not use action-oriented words in `topic` or `subject`.
+  - Verbs such as `fix`, `new`, `add`, or `refactor` are not allowed in `topic` or `subject`.
+  - Verbs may appear in `summary`.
 - `topic` is a short, stable area/aspect, not a meta category.
   - Not allowed: meta categories such as `features`, `chores`.
   - Examples of allowed topics:
@@ -19,7 +19,7 @@ Notes:
     - specific in code: `*-ui`, `settings`, `mediastore`, `room`, `action`.
     - build system: `dependency`, `build`, `toolchain`.
     - release: `changelog`, `release`, `preview`.
-    - misc : `docs`, `scripts`, `ci`.
+    - miscellaneous: `docs`, `scripts`, `ci`.
     - ...
 - `subject` is _optional_ and names the concrete subject of the commit.
   - Prefer short, symbolic, referable entities such as a class name.
@@ -33,22 +33,22 @@ Notes:
 The content of a commit must be **CLEAN**:
 
 - **C — Compilable**. Every commit must **build**.
-  - A commit should be complete and whole, that can pass the project’s build.
-    - Run the relevant build, lint before committing.
+  - A commit should be complete and "whole", and pass the project’s build.
+    - Run the Gradle build before committing.
     - If a logical change cannot build when split, keep it as one _atomic_ commit.
-  - Do not include a commit that cannot pass the build.
+  - Do not create a commit that cannot pass the build.
 
 - **L — Logical**. Commits record **logical** development history.
-  - Order commits by components dependency so it can be understood from the bottom up.
-    - Do not commit a development diary, remove trial-and-error noise.
-    - Commits should be bottom to top, order by dependency other than chronicle.
-  - Do not preserve twisted paths or design failures in the final history.
+  - Order commits by component dependencies so the history can be understood from the bottom up.
+    - Do not commit a development diary: rebase to remove trial-and-error noise.
+    - Arrange commits in dependency order rather than chronological development order.
+  - Do not preserve detours or abandoned design revisions in the final history.
 
 - **E — Encapsulated**. Commits should be self-contained and **merge-friendly**.
   - A commit should be orthogonal and understandable without another unmerged commit.
-    - Keep rebase, cherry-pick, and merge conflicts small and local.
-    - Separate moves, renames, or formatting from logic changes.
-    - Make sure diffs focused and easy to review.
+    - Structure commits to keep _rebases_, _cherry-picks_, and _merges_ producing few local conflicts.
+    - If possible, separate moves, renames, and formatting from logic changes.
+    - Make sure diffs are focused and easy to review.
   - Do not mix unrelated "by-the-way" changes into the commit.
 
 - **A — Atomic**. One commit should serve **one** job or goal.
@@ -59,9 +59,9 @@ The content of a commit must be **CLEAN**:
 
 - **N — Neat**. Keep each commit **minimal** and **clean**.
   - Neat commits change as _few_ files and lines as possible within their atomic purpose.
-    - A commit should change the fewest lines and files.
-    - If it cannot, split it into _atomic_ commits.
-  - Never make large commits that change million of files and lines.
+    - A commit should change the minimum necessary lines and files.
+    - If it can be split safely, split it into _atomic_ commits.
+  - Avoid large commits that change millions of files or lines.
     - Exception: reorganizing the file/package hierarchy.
     - Exception: renaming a symbol leading to changes in imports.
     - Exception: unavoidable refactoring that changes interfaces.
