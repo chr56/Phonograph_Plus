@@ -11,9 +11,9 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.actions.ActionMenus
 import player.phonograph.ui.actions.ItemClickActions
 import player.phonograph.ui.adapter.DisplayOptions
+import player.phonograph.ui.adapter.DisplayOptions.Companion.ImageryType
 import player.phonograph.ui.adapter.DisplayPresenter
 import player.phonograph.ui.adapter.DraggableDisplayAdapter
-import player.phonograph.ui.adapter.ImageryProvider
 import player.phonograph.ui.adapter.MultiSelectionController
 import player.phonograph.ui.adapter.SongDisplayPresenter
 import player.phonograph.ui.resource.Layouts
@@ -28,12 +28,13 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 
 class PlayingQueueAdapter(activity: FragmentActivity) :
         DraggableDisplayAdapter<Song>(
             activity,
             PlayingQueuePresenter,
-            DisplayOptions(ItemLayoutStyle.LIST, null, false),
+            DisplayOptions(ItemLayoutStyle.LIST, null, false, imageryType = DisplayOptions.ORDINAL_TEXT),
             allowMultiSelection = false
         ) {
 
@@ -87,8 +88,9 @@ class PlayingQueueAdapter(activity: FragmentActivity) :
         override fun loadImage(
             item: Song,
             imageView: ImageView?,
+            imageText: TextView?,
             presenter: DisplayPresenter<Song>,
-            usePalette: Boolean,
+            options: DisplayOptions,
         ) {
             image?.visibility = GONE
             imageText?.visibility = VISIBLE
@@ -107,8 +109,6 @@ class PlayingQueueAdapter(activity: FragmentActivity) :
 
         override fun menuEntries(context: Context, item: Song, position: Int): List<ActionEntry> =
             ActionMenus.Song(context, item, showPlay = false, index = position)
-
-        override val imageryProvider: ImageryProvider<Song> = ImageryProvider.None
 
     }
 

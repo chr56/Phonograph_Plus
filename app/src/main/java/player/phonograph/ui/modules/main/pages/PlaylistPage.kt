@@ -83,7 +83,8 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
             DisplayOptions(
                 displayConfig.layout,
                 displayConfig.sortMode,
-                displayConfig.colorFooter
+                displayConfig.colorFooter,
+                imageryType = DisplayOptions.ICON,
             )
         )
     }

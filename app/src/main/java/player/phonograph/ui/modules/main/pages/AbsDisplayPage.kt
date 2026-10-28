@@ -12,7 +12,6 @@ import player.phonograph.model.sort.SortMode
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.ui.actions.actionPlay
 import player.phonograph.ui.adapter.DisplayAdapter
-import player.phonograph.ui.adapter.DisplayOptions
 import player.phonograph.ui.modules.main.ScanMediaDialog
 import player.phonograph.ui.modules.panel.PanelViewModel
 import player.phonograph.ui.theme.ThemeSettingsDelegate.accentColor
@@ -159,7 +158,9 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<*>> : AbsPanelPage() {
         usePalette: Boolean,
         layoutStyle: ItemLayoutStyle,
     ) {
-        adapter.options = DisplayOptions(layoutStyle, sortMode, usePalette)
+        adapter.options = adapter.options.copy(
+            layoutStyle = layoutStyle, sortMode = sortMode, usePalette = usePalette
+        )
     }
     //endregion
 

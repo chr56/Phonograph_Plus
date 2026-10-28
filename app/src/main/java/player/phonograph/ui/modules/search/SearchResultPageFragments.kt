@@ -162,7 +162,10 @@ class PlaylistSearchResultPageFragment : SearchResultPageFragment<Playlist>() {
         DisplayAdapter(
             activity,
             PlaylistDisplayPresenter(),
-            DisplayOptions(ItemLayoutStyle.LIST, SortMode(SortRef.DISPLAY_NAME), false)
+            DisplayOptions(
+                ItemLayoutStyle.LIST, SortMode(SortRef.DISPLAY_NAME), false,
+                imageryType = DisplayOptions.ICON,
+            )
         )
 
 
@@ -182,7 +185,10 @@ class GenreSearchResultPageFragment : SearchResultPageFragment<Genre>() {
         DisplayAdapter(
             activity,
             GenreDisplayPresenter(),
-            DisplayOptions(ItemLayoutStyle.LIST, SortMode(SortRef.DISPLAY_NAME), false)
+            DisplayOptions(
+                ItemLayoutStyle.LIST, SortMode(SortRef.DISPLAY_NAME), false,
+                imageryType = DisplayOptions.NONE,
+            )
         )
 
 
@@ -202,7 +208,7 @@ class QueueSearchResultPageFragment : SearchResultPageFragment<QueueSong>() {
         DisplayAdapter(
             activity,
             PlaylistSearchResultDisplayPresenter,
-            DisplayOptions(ItemLayoutStyle.LIST, null, true)
+            DisplayOptions(ItemLayoutStyle.LIST, null, true, imageryType = DisplayOptions.ORDINAL_TEXT)
         )
 
     override fun targetFlow(): StateFlow<List<QueueSong>> = viewModel.songsInQueue

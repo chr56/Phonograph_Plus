@@ -136,7 +136,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvider
         songAdapter = DisplayAdapter(
             this,
             AlbumSongDisplayPresenter(),
-            options = DisplayOptions(ItemLayoutStyle.LIST, null, false)
+            options = DisplayOptions(ItemLayoutStyle.LIST, null, false, imageryType = DisplayOptions.ORDINAL_TEXT)
         )
         linearLayoutManager = LinearLayoutManager(this@AlbumDetailActivity)
         with(viewBinding.recyclerView) {

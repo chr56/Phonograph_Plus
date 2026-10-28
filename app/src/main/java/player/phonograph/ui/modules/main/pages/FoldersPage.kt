@@ -112,6 +112,7 @@ class FoldersPage : AbsPanelPage() {
                 folderPageDisplayConfig.layout,
                 folderPageDisplayConfig.sortMode,
                 folderPageDisplayConfig.colorFooter,
+                imageryType = DisplayOptions.ICON,
             )
         )
 
@@ -194,6 +195,7 @@ class FoldersPage : AbsPanelPage() {
                 folderPageDisplayConfig.layout,
                 folderPageDisplayConfig.sortMode,
                 folderPageDisplayConfig.colorFooter,
+                imageryType = DisplayOptions.ICON,
             )
             if (shouldRecreate) {
                 songCollectionDisplayAdapter = songCollectionDisplayAdapter(options)

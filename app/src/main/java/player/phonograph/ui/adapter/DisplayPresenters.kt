@@ -4,9 +4,13 @@
 
 package player.phonograph.ui.adapter
 
+import coil.request.Disposable
+import coil.target.Target
 import lib.storage.extension.rootDirectory
 import player.phonograph.App
+import player.phonograph.R
 import player.phonograph.foundation.dateTextShortText
+import player.phonograph.mechanism.coil.loadImage
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Genre
@@ -28,8 +32,10 @@ import player.phonograph.ui.resource.buildInfoString
 import player.phonograph.ui.resource.infoString
 import player.phonograph.ui.resource.readableYear
 import player.phonograph.ui.resource.songCountString
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.getSystemService
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.os.storage.StorageManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -64,13 +70,17 @@ open class SongDisplayPresenter : DisplayPresenter<Song> {
             else                      -> null
         }
 
-    override val imageryProvider: ImageryProvider<Song> = SongArtwork
+    override fun loadImageInto(context: Context, item: Song, target: Target): Disposable? =
+        loadImage(context)
+            .from(item)
+            .withPalette()
+            .default(getIcon(context, item) ?: AppCompatResources.getDrawable(context, R.drawable.default_album_art))
+            .into(target)
+            .enqueue()
 
 }
 
 open class AlbumSongDisplayPresenter : SongDisplayPresenter() {
-
-    override val imageryProvider: ImageryProvider<Song> = ImageryProvider.Text
 
     override fun getSectionText(item: Song, sortMode: SortMode?): String = trackNumber(item)
 
@@ -112,7 +122,13 @@ open class AlbumDisplayPresenter : DisplayPresenter<Album> {
             else                -> null
         }
 
-    override val imageryProvider: ImageryProvider<Album> = AlbumArtwork
+    override fun loadImageInto(context: Context, item: Album, target: Target): Disposable? =
+        loadImage(context)
+            .from(item)
+            .withPalette()
+            .default(getIcon(context, item) ?: AppCompatResources.getDrawable(context, R.drawable.default_album_art))
+            .into(target)
+            .enqueue()
 }
 
 open class ArtistAlbumDisplayPresenter : AlbumDisplayPresenter() {
@@ -150,7 +166,13 @@ open class ArtistDisplayPresenter : DisplayPresenter<Artist> {
             else                -> null
         }
 
-    override val imageryProvider: ImageryProvider<Artist> = ArtistArtwork
+    override fun loadImageInto(context: Context, item: Artist, target: Target): Disposable? =
+        loadImage(context)
+            .from(item)
+            .withPalette()
+            .default(getIcon(context, item) ?: AppCompatResources.getDrawable(context, R.drawable.default_artist_image))
+            .into(target)
+            .enqueue()
 
 }
 
@@ -176,7 +198,6 @@ open class GenreDisplayPresenter : DisplayPresenter<Genre> {
             else                 -> null
         }
 
-    override val imageryProvider: ImageryProvider<Genre> = ImageryProvider.None
 }
 
 open class PlaylistDisplayPresenter : DisplayPresenter<Playlist> {
@@ -204,7 +225,8 @@ open class PlaylistDisplayPresenter : DisplayPresenter<Playlist> {
             else                  -> null
         }
 
-    override val imageryProvider: ImageryProvider<Playlist> = PlaylistIcon
+    override fun getIcon(context: Context, item: Playlist): Drawable? =
+        AppCompatResources.getDrawable(context, item.iconRes)
 
 }
 
@@ -238,7 +260,8 @@ open class SongCollectionDisplayPresenter(
     override fun menuEntries(context: Context, item: SongCollection, position: Int): List<ActionEntry> =
         ActionMenus.Composite(context, item) { _, collection -> collection.songs }
 
-    override val imageryProvider: ImageryProvider<SongCollection> = ImageryProvider.FixedIcon.FOLDER
+    override fun getIcon(context: Context, item: SongCollection): Drawable? =
+        AppCompatResources.getDrawable(context, R.drawable.ic_folder_white_24dp)
 
     companion object {
 
@@ -267,7 +290,6 @@ abstract class QueueSongDisplayPresenter : DisplayPresenter<QueueSong> {
     override fun getSectionText(item: QueueSong, sortMode: SortMode?): String? = item.index.toString()
     override fun getOrdinalText(item: QueueSong, position: Int): String? = item.index.toString()
 
-    override val imageryProvider: ImageryProvider<QueueSong> = ImageryProvider.Text
 }
 
 

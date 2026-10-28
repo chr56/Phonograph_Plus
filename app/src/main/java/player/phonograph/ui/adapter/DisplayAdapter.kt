@@ -6,24 +6,30 @@ package player.phonograph.ui.adapter
 
 import coil.request.Disposable
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
+import player.phonograph.R
 import player.phonograph.foundation.concurrent.lifecycleScopeOrNewOne
 import player.phonograph.mechanism.coil.palette.PaletteColorViewTarget
 import player.phonograph.model.ui.ItemLayoutStyle
+import player.phonograph.ui.adapter.DisplayOptions.Companion.ICON
+import player.phonograph.ui.adapter.DisplayOptions.Companion.IMAGE
+import player.phonograph.ui.adapter.DisplayOptions.Companion.NONE
+import player.phonograph.ui.adapter.DisplayOptions.Companion.ORDINAL_TEXT
 import player.phonograph.ui.resource.Layouts
 import player.phonograph.ui.theme.secondaryTextColorOn
 import player.phonograph.ui.theme.textColorOn
 import player.phonograph.ui.theme.themeFooterColor
 import player.phonograph.ui.theme.themeIconColor
 import player.phonograph.ui.util.preparePopupMenu
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import android.annotation.SuppressLint
 import android.graphics.PorterDuff
-import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -132,56 +138,63 @@ open class DisplayAdapter<I>(
             }
 
             // Image
-            loadImage(item, image, presenter, options.usePalette)
+            loadImage(
+                item, image, imageText,
+                presenter, options,
+            )
         }
 
         protected open fun loadImage(
             item: I,
             imageView: ImageView?,
+            imageText: TextView?,
             presenter: DisplayPresenter<I>,
-            usePalette: Boolean,
+            options: DisplayOptions,
         ) {
-            when (val provider = presenter.imageryProvider) {
+            loadJob?.dispose()
+            loadJob = null
+            imageView?.setImageDrawable(null)
+            imageView?.visibility = View.GONE
+            imageText?.visibility = View.GONE
 
-                is ImageryProvider.Artwork      -> {
+            when (options.imageryType) {
+                IMAGE        -> {
                     if (imageView != null) {
-                        image?.visibility = View.VISIBLE
-                        loadJob?.dispose()
-                        loadJob = provider.startLoadingImage(
-                            itemView.context, item,
-                            PaletteColorViewTarget(
-                                imageView,
-                                ::setPaletteColors,
-                                themeFooterColor(itemView.context),
-                                usePalette
-                            ),
+                        val context = itemView.context
+                        imageView.visibility = View.VISIBLE
+                        imageView.clearColorFilter()
+                        val target = PaletteColorViewTarget(
+                            imageView,
+                            ::setPaletteColors,
+                            themeFooterColor(context),
+                            options.usePalette,
                         )
+                        val icon = presenter.getIcon(context, item)
+                        target.onStart(
+                            icon ?: AppCompatResources.getDrawable(context, R.drawable.default_album_art)
+                        )
+                        loadJob = presenter.loadImageInto(context, item, target)
                     }
                 }
 
-                is ImageryProvider.FixedIcon    -> {
-                    setIcon(imageView, provider.getIcon(itemView.context))
+                ICON         -> {
+                    val icon = presenter.getIcon(itemView.context, item)
+                    if (imageView != null && icon != null) {
+                        imageView.visibility = View.VISIBLE
+                        imageView.setColorFilter(themeIconColor(itemView.context), PorterDuff.Mode.SRC_IN)
+                        imageView.setImageDrawable(icon)
+                    }
                 }
 
-                is ImageryProvider.AdaptiveIcon -> {
-                    setIcon(imageView, provider.getIcon(itemView.context, item))
-                }
-
-                ImageryProvider.Text            -> {
+                ORDINAL_TEXT -> {
                     val ordinalText = presenter.getOrdinalText(item, bindingAdapterPosition) ?: "-"
-                    imageText?.visibility = View.VISIBLE
-                    imageText?.text = ordinalText
+                    if (imageText != null) {
+                        imageText.visibility = View.VISIBLE
+                        imageText.text = ordinalText
+                    }
                 }
 
-                ImageryProvider.None            -> Unit
-            }
-        }
-
-        private fun setIcon(imageView: ImageView?, icon: Drawable) {
-            if (imageView != null) {
-                imageView.visibility = View.VISIBLE
-                imageView.setColorFilter(themeIconColor(itemView.context), PorterDuff.Mode.SRC_IN)
-                imageView.setImageDrawable(icon)
+                NONE         -> {}
             }
         }
 

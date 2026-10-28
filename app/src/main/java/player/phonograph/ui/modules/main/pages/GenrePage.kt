@@ -44,7 +44,8 @@ class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>>() {
             DisplayOptions(
                 displayConfig.layout,
                 displayConfig.sortMode,
-                displayConfig.colorFooter
+                displayConfig.colorFooter,
+                imageryType = DisplayOptions.NONE,
             )
         )
     }

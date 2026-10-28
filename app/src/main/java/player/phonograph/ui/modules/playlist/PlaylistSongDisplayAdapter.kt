@@ -27,7 +27,7 @@ class PlaylistSongDisplayAdapter(
     val viewModel: PlaylistDetailViewModel,
     presenter: PlaylistSongDisplayPresenter,
 ) : DraggableDisplayAdapter<QueueSong>(
-    activity, presenter, DisplayOptions(ItemLayoutStyle.LIST, null, false)
+    activity, presenter, DisplayOptions(ItemLayoutStyle.LIST, null, false, imageryType = DisplayOptions.ORDINAL_TEXT)
 ) {
 
     class PlaylistSongDisplayPresenter(
