@@ -277,7 +277,7 @@ open class SongCollectionDisplayPresenter(
     }
 }
 
-abstract class QueueSongDisplayPresenter : DisplayPresenter<QueueSong> {
+open class QueueSongDisplayPresenter : DisplayPresenter<QueueSong> {
 
     override fun getItemID(item: QueueSong): Long = item.song.id
 

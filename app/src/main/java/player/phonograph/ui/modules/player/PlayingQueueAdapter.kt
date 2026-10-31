@@ -85,7 +85,7 @@ class PlayingQueueAdapter(activity: FragmentActivity) :
             paletteColorContainer?.alpha = alpha
         }
 
-        override fun loadImage(
+        override fun setupImage(
             item: Song,
             imageView: ImageView?,
             imageText: TextView?,

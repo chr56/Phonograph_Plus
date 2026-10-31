@@ -18,6 +18,7 @@ import util.theme.color.lightenColor
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.ColorInt
+import android.content.Context
 import android.graphics.Color
 import android.util.Log
 import android.view.View
@@ -231,17 +232,17 @@ class MultiSelectionController<I>(
         }
     }
 
-    fun registerClicking(itemView: View, bindingAdapterPosition: Int, normalClick: () -> Boolean) {
+    fun registerClicking(itemView: View, bindingAdapterPosition: Int, normalClick: (Context) -> Unit) {
         registerOnClickListener(itemView, bindingAdapterPosition, normalClick)
         registerOnLongClickListener(itemView, bindingAdapterPosition)
     }
 
-    fun registerOnClickListener(itemView: View, bindingAdapterPosition: Int, normalClick: () -> Boolean) {
+    fun registerOnClickListener(itemView: View, bindingAdapterPosition: Int, normalClick: (Context) -> Unit) {
         itemView.setOnClickListener {
             if (this.isInQuickSelectMode) {
                 this.toggle(bindingAdapterPosition)
             } else {
-                normalClick()
+                normalClick(it.context)
             }
         }
     }

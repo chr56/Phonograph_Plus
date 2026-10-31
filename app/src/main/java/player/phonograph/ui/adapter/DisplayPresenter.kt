@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022~2025 chr_56
+ *  Copyright (c) 2022~2026 chr_56
  */
 
 package player.phonograph.ui.adapter
@@ -21,15 +21,12 @@ interface DisplayPresenter<T> {
 
     fun getDescription(context: Context, item: T): CharSequence? = null
 
-    fun clickAction(context: Context, item: T, position: Int, list: List<T>): ActionEntry?
+    fun getSectionText(item: T, sortMode: SortMode?): String? = null
+    fun getOrdinalText(item: T, position: Int): String? = null
 
+    fun clickAction(context: Context, item: T, position: Int, list: List<T>): ActionEntry? = null
     fun menuEntries(context: Context, item: T, position: Int): List<ActionEntry> = emptyList()
 
     fun getIcon(context: Context, item: T): Drawable? = null
-
     fun loadImageInto(context: Context, item: T, target: Target): Disposable? = null
-
-    fun getSectionText(item: T, sortMode: SortMode?): String? = null
-
-    fun getOrdinalText(item: T, position: Int): String? = null
 }

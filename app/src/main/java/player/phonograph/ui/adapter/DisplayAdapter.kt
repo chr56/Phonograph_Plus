@@ -25,6 +25,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import android.annotation.SuppressLint
 import android.graphics.PorterDuff
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -99,27 +100,25 @@ open class DisplayAdapter<I>(
             controller: MultiSelectionController<I>,
             options: DisplayOptions,
         ) {
-
+            val context = itemView.context
             // Text
-            title?.text = presenter.getDisplayTitle(itemView.context, item)
-            text?.text = presenter.getDescription(itemView.context, item)
-            textSecondary?.text = presenter.getSecondaryText(itemView.context, item)
-            textTertiary?.text = presenter.getTertiaryText(itemView.context, item)
+            title?.text = presenter.getDisplayTitle(context, item)
+            text?.text = presenter.getDescription(context, item)
+            textSecondary?.text = presenter.getSecondaryText(context, item)
+            textTertiary?.text = presenter.getTertiaryText(context, item)
 
             // Decorations
             shortSeparator?.visibility = View.VISIBLE
             itemView.isActivated = isSelected(item, controller)
 
             // Click
-            controller.registerClicking(itemView, position) {
-                val context = itemView.context
+            controller.registerClicking(itemView, position) { context ->
                 val entry = presenter.clickAction(context, item, position, dataset)
                 if (entry != null) {
                     context.lifecycleScopeOrNewOne().launch(Dispatchers.Main.immediate) {
                         entry.action()
                     }
                 }
-                entry != null
             }
 
             // Menu
@@ -138,21 +137,19 @@ open class DisplayAdapter<I>(
             }
 
             // Image
-            loadImage(
+            setupImage(
                 item, image, imageText,
                 presenter, options,
             )
         }
 
-        protected open fun loadImage(
+        protected open fun setupImage(
             item: I,
             imageView: ImageView?,
             imageText: TextView?,
             presenter: DisplayPresenter<I>,
             options: DisplayOptions,
         ) {
-            loadJob?.dispose()
-            loadJob = null
             imageView?.setImageDrawable(null)
             imageView?.visibility = View.GONE
             imageText?.visibility = View.GONE
@@ -160,42 +157,50 @@ open class DisplayAdapter<I>(
             when (options.imageryType) {
                 IMAGE        -> {
                     if (imageView != null) {
-                        val context = itemView.context
-                        imageView.visibility = View.VISIBLE
-                        imageView.clearColorFilter()
-                        val target = PaletteColorViewTarget(
-                            imageView,
-                            ::setPaletteColors,
-                            themeFooterColor(context),
-                            options.usePalette,
-                        )
-                        val icon = presenter.getIcon(context, item)
-                        target.onStart(
-                            icon ?: AppCompatResources.getDrawable(context, R.drawable.default_album_art)
-                        )
-                        loadJob = presenter.loadImageInto(context, item, target)
+                        loadJob?.dispose()
+                        loadJob = null
+                        loadJob = loadImage(imageView, item, presenter, options.usePalette)
                     }
                 }
 
                 ICON         -> {
                     val icon = presenter.getIcon(itemView.context, item)
                     if (imageView != null && icon != null) {
-                        imageView.visibility = View.VISIBLE
-                        imageView.setColorFilter(themeIconColor(itemView.context), PorterDuff.Mode.SRC_IN)
-                        imageView.setImageDrawable(icon)
+                        setImageIcon(imageView, icon)
                     }
                 }
 
                 ORDINAL_TEXT -> {
                     val ordinalText = presenter.getOrdinalText(item, bindingAdapterPosition) ?: "-"
                     if (imageText != null) {
-                        imageText.visibility = View.VISIBLE
-                        imageText.text = ordinalText
+                        setImageText(imageText, ordinalText)
                     }
                 }
 
                 NONE         -> {}
             }
+        }
+
+        protected fun loadImage(
+            imageView: ImageView,
+            item: I,
+            presenter: DisplayPresenter<I>,
+            usePalette: Boolean,
+        ): Disposable? {
+            val context = imageView.context
+            imageView.visibility = View.VISIBLE
+            imageView.clearColorFilter()
+            val target = PaletteColorViewTarget(
+                imageView,
+                ::setPaletteColors,
+                themeFooterColor(context),
+                usePalette,
+            )
+            val icon = presenter.getIcon(context, item)
+            target.onStart(
+                icon ?: AppCompatResources.getDrawable(context, R.drawable.default_album_art)
+            )
+            return presenter.loadImageInto(context, item, target)
         }
 
         protected open fun setPaletteColors(color: Int) {
@@ -209,6 +214,17 @@ open class DisplayAdapter<I>(
                 textSecondary?.setTextColor(secondaryTextColor)
                 textTertiary?.setTextColor(secondaryTextColor)
             }
+        }
+
+        protected fun setImageIcon(imageView: ImageView, icon: Drawable) {
+            imageView.visibility = View.VISIBLE
+            imageView.setColorFilter(themeIconColor(itemView.context), PorterDuff.Mode.SRC_IN)
+            imageView.setImageDrawable(icon)
+        }
+
+        protected fun setImageText(imageText: TextView, text: String) {
+            imageText.visibility = View.VISIBLE
+            imageText.text = text
         }
 
         open fun isSelected(item: I, controller: MultiSelectionController<I>): Boolean = controller.isSelected(item)
