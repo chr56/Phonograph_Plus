@@ -18,11 +18,12 @@ data class DisplayOptions(
 ) {
     companion object {
         const val NONE = 0
-        const val ORDINAL_TEXT = 1
-        const val ICON = 2
-        const val IMAGE = 3
+        const val ICON = 1
+        const val IMAGE = 2
+        const val ORDINAL_TEXT = 5
+        const val CUSTOM_TEXT = 6
 
-        @IntDef(NONE, ORDINAL_TEXT, ICON, IMAGE)
+        @IntDef(NONE, ICON, IMAGE, ORDINAL_TEXT, CUSTOM_TEXT)
         @Retention(AnnotationRetention.SOURCE)
         annotation class ImageryType
     }

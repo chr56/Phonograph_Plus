@@ -34,7 +34,10 @@ class PlayingQueueAdapter(activity: FragmentActivity) :
         DraggableDisplayAdapter<Song>(
             activity,
             PlayingQueuePresenter,
-            DisplayOptions(ItemLayoutStyle.LIST, null, false, imageryType = DisplayOptions.ORDINAL_TEXT),
+            DisplayOptions(
+                ItemLayoutStyle.LIST, null, false,
+                imageryType = DisplayOptions.CUSTOM_TEXT,
+            ),
             allowMultiSelection = false
         ) {
 
@@ -85,19 +88,8 @@ class PlayingQueueAdapter(activity: FragmentActivity) :
             paletteColorContainer?.alpha = alpha
         }
 
-        override fun setupImage(
-            item: Song,
-            imageView: ImageView?,
-            imageText: TextView?,
-            presenter: DisplayPresenter<Song>,
-            options: DisplayOptions,
-        ) {
-            image?.visibility = GONE
-            imageText?.visibility = VISIBLE
-            imageText?.text = String.format(null, "%d", bindingAdapterPosition - current)
-            imageText?.isSingleLine = false
-            imageText?.maxLines = 2
-        }
+        override fun customText(): String =
+            String.format(null, "%d", bindingAdapterPosition - current)
 
         override fun isSelected(item: Song, controller: MultiSelectionController<Song>): Boolean = false
     }

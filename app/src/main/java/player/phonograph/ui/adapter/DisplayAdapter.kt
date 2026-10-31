@@ -10,6 +10,7 @@ import player.phonograph.R
 import player.phonograph.foundation.concurrent.lifecycleScopeOrNewOne
 import player.phonograph.mechanism.coil.palette.PaletteColorViewTarget
 import player.phonograph.model.ui.ItemLayoutStyle
+import player.phonograph.ui.adapter.DisplayOptions.Companion.CUSTOM_TEXT
 import player.phonograph.ui.adapter.DisplayOptions.Companion.ICON
 import player.phonograph.ui.adapter.DisplayOptions.Companion.IMAGE
 import player.phonograph.ui.adapter.DisplayOptions.Companion.NONE
@@ -143,7 +144,7 @@ open class DisplayAdapter<I>(
             )
         }
 
-        protected open fun setupImage(
+        protected fun setupImage(
             item: I,
             imageView: ImageView?,
             imageText: TextView?,
@@ -174,6 +175,13 @@ open class DisplayAdapter<I>(
                     val ordinalText = presenter.getOrdinalText(item, bindingAdapterPosition) ?: "-"
                     if (imageText != null) {
                         setImageText(imageText, ordinalText)
+                    }
+                }
+
+                CUSTOM_TEXT  -> {
+                    val customText = customText() ?: "-"
+                    if (imageText != null) {
+                        setImageText(imageText, customText)
                     }
                 }
 
@@ -226,6 +234,8 @@ open class DisplayAdapter<I>(
             imageText.visibility = View.VISIBLE
             imageText.text = text
         }
+
+        protected open fun customText(): String? = null
 
         open fun isSelected(item: I, controller: MultiSelectionController<I>): Boolean = controller.isSelected(item)
 
