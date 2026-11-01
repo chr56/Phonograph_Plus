@@ -113,6 +113,7 @@ class PlaylistDetailActivity :
 
     private fun observeData() {
         observe(viewModel.items) { songs ->
+            if (songs != adapter.dataset) adapter.clearSelection()
             adapter.dataset = songs
             binding.empty.visibility = if (songs.isEmpty()) VISIBLE else GONE
         }

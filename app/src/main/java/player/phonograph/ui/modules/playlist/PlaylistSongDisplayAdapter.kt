@@ -31,6 +31,10 @@ class PlaylistSongDisplayAdapter(
     )
 ) {
 
+    fun clearSelection() {
+        if (controller.selected.isNotEmpty()) controller.unselectedAll()
+    }
+
     class PlaylistSongDisplayPresenter(
         private val viewModel: PlaylistDetailViewModel,
     ) : QueueSongDisplayPresenter() {
