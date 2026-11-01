@@ -49,7 +49,7 @@ class FilesPageExplorerFragment : AbsFilesExplorerFragment() {
 
         SettingsObserver(view.context, lifecycleScope).apply {
             jobs += collect(Keys.showFileImages) { value ->
-                (adapter.presenter as? FileItemPresenter)?.loadCover = value
+                adapter.options = adapter.options.copy(disableImage = !value)
                 @SuppressLint("NotifyDataSetChanged")
                 adapter.notifyDataSetChanged()
             }

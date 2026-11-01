@@ -22,7 +22,6 @@ import android.text.format.Formatter
 
 class FileItemPresenter(
     private val accessClickAction: (Context, FileItem, Int, List<FileItem>) -> ActionEntry?,
-    var loadCover: Boolean = false,
 ) : DisplayPresenter<FileItem> {
 
     override fun clickAction(context: Context, item: FileItem, position: Int, list: List<FileItem>): ActionEntry? =
@@ -35,7 +34,7 @@ class FileItemPresenter(
         )!!
 
     override fun loadImageInto(context: Context, item: FileItem, target: Target): Disposable? =
-        if (item.content is FileItem.SongContent && loadCover) {
+        if (item.content is FileItem.SongContent) {
             loadImage(context)
                 .from(item)
                 .default(getIcon(context, item))
