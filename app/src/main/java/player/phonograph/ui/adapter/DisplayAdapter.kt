@@ -160,7 +160,7 @@ open class DisplayAdapter<I>(
                     if (imageView != null) {
                         loadJob?.dispose()
                         loadJob = null
-                        loadJob = loadImage(imageView, item, presenter, options.usePalette)
+                        loadJob = loadImage(imageView, item, presenter, options.usePalette, options.disableImage)
                     }
                 }
 
@@ -194,6 +194,7 @@ open class DisplayAdapter<I>(
             item: I,
             presenter: DisplayPresenter<I>,
             usePalette: Boolean,
+            disableImage: Boolean,
         ): Disposable? {
             val context = imageView.context
             imageView.visibility = View.VISIBLE
@@ -208,7 +209,11 @@ open class DisplayAdapter<I>(
             target.onStart(
                 icon ?: AppCompatResources.getDrawable(context, R.drawable.default_album_art)
             )
-            return presenter.loadImageInto(context, item, target)
+            return if (!disableImage) {
+                presenter.loadImageInto(context, item, target)
+            } else {
+                null
+            }
         }
 
         protected open fun setPaletteColors(color: Int) {

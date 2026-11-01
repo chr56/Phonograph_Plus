@@ -14,6 +14,7 @@ data class DisplayOptions(
     val usePalette: Boolean,
     val showMenu: Boolean = true,
     val showSectionName: Boolean = true,
+    val disableImage: Boolean = false,
     @ImageryType val imageryType: Int = IMAGE,
 ) {
     companion object {
