@@ -11,68 +11,46 @@ import player.phonograph.ui.modules.auxiliary.DeletionDialog
 import player.phonograph.ui.modules.tag.TagBrowserActivity
 import player.phonograph.ui.resource.ActionSemantics
 import androidx.fragment.app.FragmentActivity
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-
-
-interface PlaylistEditorAdapterConnection {
-
-    fun at(position: Int): QueueSong
-    fun size(): Int
-
-    suspend fun deleteSong(position: Int)
-    suspend fun moveSong(from: Int, to: Int)
-}
 
 fun playlistEditorItemMenuEntries(
     activity: FragmentActivity,
+    queueSong: QueueSong,
     position: Int,
-    adapter: PlaylistEditorAdapterConnection,
+    viewModel: PlaylistDetailViewModel,
 ): List<ActionEntry> {
-    val queueSong = adapter.at(position)
     return listOf(
         ActionEntry.ToolbarEntry(
             semantic = ActionSemantics.RemoveFromPlaylist,
             action = {
-                withContext(Dispatchers.IO) {
-                    adapter.deleteSong(position)
-                }
+                viewModel.execute(activity, EditAction.Delete(queueSong.song, position))
             }
         ),
         ActionEntry.ToolbarEntry(
             semantic = ActionSemantics.MoveToTop,
             action = {
-                withContext(Dispatchers.IO) {
-                    adapter.moveSong(position, 0)
-                }
+                viewModel.execute(activity, EditAction.Move(position, 0))
             }
         ),
         ActionEntry.ToolbarEntry(
             semantic = ActionSemantics.MoveUp,
             action = {
                 if (position != 0) {
-                    withContext(Dispatchers.IO) {
-                        adapter.moveSong(position, position - 1)
-                    }
+                    viewModel.execute(activity, EditAction.Move(position, position - 1))
                 }
             }
         ),
         ActionEntry.ToolbarEntry(
             semantic = ActionSemantics.MoveDown,
             action = {
-                if (position != adapter.size() - 1) {
-                    withContext(Dispatchers.IO) {
-                        adapter.moveSong(position, position + 1)
-                    }
+                if (position != viewModel.songs.value.lastIndex) {
+                    viewModel.execute(activity, EditAction.Move(position, position + 1))
                 }
             }
         ),
         ActionEntry.ToolbarEntry(
             semantic = ActionSemantics.MoveToBottom,
             action = {
-                withContext(Dispatchers.IO) {
-                    adapter.moveSong(position, adapter.size() - 1)
-                }
+                viewModel.execute(activity, EditAction.Move(position, viewModel.songs.value.lastIndex))
             }
         ),
         ActionEntry.ToolbarEntry(

@@ -168,12 +168,7 @@ class PlaylistDetailActivity :
             }
         )
         // Adapter
-        adapter = PlaylistSongDisplayAdapter(
-            this, viewModel,
-            PlaylistSongDisplayAdapter.PlaylistSongDisplayPresenter { context, item, position ->
-                adapter.menuEntries(context, item, position)
-            }
-        )
+        adapter = PlaylistSongDisplayAdapter(this, viewModel)
         // DragDropAdapter
         binding.recyclerView.also { recyclerView ->
             recyclerViewDragDropManager = RecyclerViewDragDropManager().apply {

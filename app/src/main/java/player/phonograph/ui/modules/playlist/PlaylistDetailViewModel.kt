@@ -20,6 +20,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 
 @Suppress("LocalVariableName")
@@ -47,6 +49,8 @@ class PlaylistDetailViewModel(_playlist: Playlist, _songs: List<QueueSong>) : Vi
     val totalCount: Flow<Int> = songs.map { it.size }
     val totalDuration: Flow<Long> = songs.map { it.fold(0L) { acc: Long, queueSong -> acc + queueSong.song.duration } }
 
+    private val mutex = Mutex()
+
     suspend fun execute(context: Context, action: PlaylistAction): Boolean = when (action) {
         is Fetch      -> fetch(context)
         is Refresh    -> refresh(context, action.fetch)
@@ -62,9 +66,9 @@ class PlaylistDetailViewModel(_playlist: Playlist, _songs: List<QueueSong>) : Vi
     }
 
     private suspend fun fetch(context: Context): Boolean = withContext(Dispatchers.IO) {
-        _songs.emit(
-            QueueSong.fromQueue(reader.allSongs(context))
-        )
+        mutex.withLock {
+            _songs.value = QueueSong.fromQueue(reader.allSongs(context))
+        }
         true
     }
 
@@ -79,17 +83,34 @@ class PlaylistDetailViewModel(_playlist: Playlist, _songs: List<QueueSong>) : Vi
     }
 
     private suspend fun edit(context: Context, action: EditAction): Boolean = withContext(Dispatchers.IO) {
-        when (action) {
-            is EditAction.Delete -> deleteItem(context, action.song, action.position)
-            is EditAction.Move   -> moveItem(context, action.from, action.to)
+        mutex.withLock {
+            when (action) {
+                is EditAction.Delete -> deleteItem(context, action.song, action.position)
+                is EditAction.Move   -> moveItem(context, action.from, action.to)
+            }
         }
     }
 
-    suspend fun deleteItem(context: Context, song: Song, position: Int): Boolean =
-        writer?.removeSong(context, song, position.toLong()) == true
+    private suspend fun deleteItem(context: Context, song: Song, position: Int): Boolean {
+        val currentSongs = _songs.value
+        if (currentSongs.getOrNull(position)?.song != song) return false
+        if (writer?.removeSong(context, song, position.toLong()) != true) return false
 
-    suspend fun moveItem(context: Context, fromPosition: Int, toPosition: Int): Boolean =
-        writer?.moveSong(context, fromPosition, toPosition) == true
+        val newSongs = currentSongs.map { it.song }.toMutableList()
+        newSongs.removeAt(position)
+        _songs.value = QueueSong.fromQueue(newSongs)
+        return true
+    }
 
+    private suspend fun moveItem(context: Context, fromPosition: Int, toPosition: Int): Boolean {
+        val currentSongs = _songs.value
+        if (fromPosition !in currentSongs.indices || toPosition !in currentSongs.indices) return false
+        if (fromPosition == toPosition) return true
+        if (writer?.moveSong(context, fromPosition, toPosition) != true) return false
 
+        val newSongs = currentSongs.map { it.song }.toMutableList()
+        newSongs.add(toPosition, newSongs.removeAt(fromPosition))
+        _songs.value = QueueSong.fromQueue(newSongs)
+        return true
+    }
 }
