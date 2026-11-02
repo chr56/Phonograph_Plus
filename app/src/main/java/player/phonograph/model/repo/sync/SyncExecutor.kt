@@ -4,6 +4,7 @@
 
 package player.phonograph.model.repo.sync
 
+import player.phonograph.model.ui.ProgressConnection
 import android.content.Context
 
 interface SyncExecutor {

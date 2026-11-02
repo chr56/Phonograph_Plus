@@ -6,7 +6,7 @@ package player.phonograph.mechanism.migrate
 
 import player.phonograph.foundation.error.warning
 import player.phonograph.model.migration.VersionMigrationRule
-import player.phonograph.model.repo.sync.ProgressConnection
+import player.phonograph.model.ui.ProgressConnection
 import player.phonograph.settings.Settings
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey

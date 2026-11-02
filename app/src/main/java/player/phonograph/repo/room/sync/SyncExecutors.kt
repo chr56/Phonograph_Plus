@@ -5,9 +5,9 @@
 package player.phonograph.repo.room.sync
 
 import player.phonograph.mechanism.metadata.RelationshipResolver
-import player.phonograph.model.repo.sync.ProgressConnection
 import player.phonograph.model.repo.sync.SyncExecutor
 import player.phonograph.model.repo.sync.SyncReport
+import player.phonograph.model.ui.ProgressConnection
 import player.phonograph.repo.mediastore.MediaStoreSongs
 import player.phonograph.repo.room.MusicDatabase
 import player.phonograph.repo.room.converter.EntityConverter
