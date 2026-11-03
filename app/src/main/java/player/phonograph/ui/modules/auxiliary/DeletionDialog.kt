@@ -9,24 +9,21 @@ import com.vanpra.composematerialdialogs.title
 import player.phonograph.R
 import player.phonograph.foundation.compat.parcelableArrayList
 import player.phonograph.foundation.concurrent.runOnMainHandler
-import player.phonograph.foundation.concurrent.withLooper
 import player.phonograph.foundation.mediastore.mediaStoreUriSongExternal
 import player.phonograph.foundation.permission.StoragePermissionChecker
 import player.phonograph.mechanism.lyrics.LyricsLoader
 import player.phonograph.model.Song
 import player.phonograph.repo.mediastore.MediaStoreSongsActions
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.ui.navigateToStorageSetting
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
-import player.phonograph.ui.theme.accentColoredButtonStyle
+import player.phonograph.ui.navigateToStorageSetting
 import player.phonograph.ui.util.alertDialog
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -47,6 +44,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -72,7 +70,12 @@ class DeletionDialog : ComposeViewDialogFragment() {
     @Composable
     override fun Content() {
         val context = LocalContext.current
-        MainContent(context, songs, ::dismiss)
+        val executor = remember(context) { DeletionExecutor(context) }
+        MainContent(
+            executor = executor,
+            songs = songs,
+            dismiss = ::dismiss,
+        )
     }
 
     companion object {
@@ -89,18 +92,28 @@ class DeletionDialog : ComposeViewDialogFragment() {
 }
 
 @Composable
-private fun MainContent(context: Context, songs: List<Song>, dismiss: () -> Unit) {
+private fun MainContent(
+    executor: DeletionExecutor,
+    songs: List<Song>,
+    dismiss: () -> Unit,
+) {
+    val context = LocalContext.current
+    val resources = LocalResources.current
     PhonographTheme {
-        var withLyrics: Boolean by remember { mutableStateOf(false) }
-        var withQueueItem: Boolean by remember { mutableStateOf(true) }
-        val hasPermission: Boolean = remember { StoragePermissionChecker.hasStorageWritePermission(context) }
         MaterialDialog(
             dialogState = rememberMaterialDialogState(true),
             onCloseRequest = { dismiss() },
             buttons = {
+                positiveButton(
+                    res = R.string.action_delete,
+                    textStyle = MaterialTheme.typography.button.copy(color = Color(200, 9, 9))
+                ) {
+                    dismiss()
+                    showDeletionResult(context, executor.delete(songs))
+                }
                 negativeButton(
                     res = android.R.string.cancel,
-                    textStyle = accentColoredButtonStyle()
+                    textStyle = MaterialTheme.typography.button.copy(color = Color(33, 139, 130))
                 ) { dismiss() }
             }
         ) {
@@ -110,22 +123,21 @@ private fun MainContent(context: Context, songs: List<Song>, dismiss: () -> Unit
                 Column(
                     Modifier
                         .verticalScroll(rememberScrollState())
-                        .padding(horizontal = 16.dp)
+                        .padding(horizontal = 24.dp)
                 ) {
 
-                    if (!hasPermission) {
+                    if (!executor.hasPermission) {
                         Card(elevation = 3.dp) {
                             NoPermissionTips { navigateToStorageSetting(context) }
                         }
                     }
 
                     Text(
-                        context.resources.getQuantityString(
+                        resources.getQuantityString(
                             R.plurals.msg_header_delete_items,
                             songs.size,
                             songs.size
                         ),
-                        Modifier.padding(vertical = 12.dp),
                         fontWeight = FontWeight.Bold
                     )
 
@@ -136,12 +148,7 @@ private fun MainContent(context: Context, songs: List<Song>, dismiss: () -> Unit
                             .verticalScroll(rememberScrollState())
                     ) {
                         for (song in songs) {
-                            Column(Modifier.padding(vertical = 4.dp, horizontal = 4.dp)) {
-                                Text(song.title)
-                                SelectionContainer {
-                                    Text(song.data, color = Color.Gray, fontSize = 12.sp)
-                                }
-                            }
+                            TargetItem(song)
                         }
                     }
 
@@ -152,52 +159,54 @@ private fun MainContent(context: Context, songs: List<Song>, dismiss: () -> Unit
                         fontWeight = FontWeight.Bold
                     )
 
-                    Row(
-                        Modifier.clickable { withQueueItem = !withQueueItem },
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Checkbox(withQueueItem, null, Modifier.align(Alignment.CenterVertically))
-                        Text(
-                            stringResource(R.string.action_remove_from_playing_queue),
-                            Modifier
-                                .align(Alignment.CenterVertically)
-                                .padding(horizontal = 4.dp, vertical = 12.dp),
-                            style = MaterialTheme.typography.button
-                        )
-                    }
+                    DeleteOption(
+                        stringResource(R.string.action_remove_from_playing_queue),
+                        executor.withQueueItem,
+                        { executor.withQueueItem = !executor.withQueueItem }
+                    )
 
-                    Row(
-                        Modifier.clickable { withLyrics = !withLyrics },
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Checkbox(withLyrics, null, Modifier.align(Alignment.CenterVertically))
-                        Text(
-                            stringResource(R.string.option_delete_with_lyrics),
-                            Modifier
-                                .align(Alignment.CenterVertically)
-                                .padding(horizontal = 4.dp, vertical = 12.dp),
-                            style = MaterialTheme.typography.button
-                        )
-                        Spacer(Modifier.weight(1f))
-                        TextButton(
-                            onClick = {
-                                dismiss()
-                                executeDeletion(context, songs, withLyrics, withQueueItem)
-                            },
-                            Modifier.align(Alignment.CenterVertically)
-                        ) {
-                            Text(
-                                stringResource(R.string.action_delete).uppercase(),
-                                style = MaterialTheme.typography.button,
-                                color = Color.Red,
-                            )
-                        }
-                    }
-
-
+                    DeleteOption(
+                        stringResource(R.string.option_delete_with_lyrics),
+                        executor.withLyrics,
+                        { executor.withLyrics = !executor.withLyrics }
+                    )
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun TargetItem(song: Song) {
+    Column(Modifier.padding(vertical = 4.dp, horizontal = 4.dp)) {
+        Text(song.title)
+        SelectionContainer {
+            Text(song.data, color = Color.Gray, fontSize = 12.sp)
+        }
+    }
+}
+
+@Composable
+private fun DeleteOption(
+    text: String,
+    checked: Boolean,
+    invert: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        Modifier
+            .clickable(onClick = invert)
+            .then(modifier),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Checkbox(checked, null, Modifier.align(Alignment.CenterVertically))
+        Text(
+            text,
+            Modifier
+                .align(Alignment.CenterVertically)
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            style = MaterialTheme.typography.button
+        )
     }
 }
 
@@ -222,53 +231,26 @@ private fun NoPermissionTips(navigateToStorageSetting: () -> Unit) {
     }
 }
 
-private fun executeDeletion(context: Context, songs: List<Song>, withLyrics: Boolean, withQueueItem: Boolean) {
-    if (withQueueItem) {
-        val queueManager = MusicPlayerRemote.queueManager
-        queueManager.playingQueue
-            .filter { queuedSong -> songs.any { it.data == queuedSong.data } }
-            .forEach { queueManager.removeSong(it) }
+private fun showDeletionResult(context: Context, result: DeletionResult) {
+    for (fails in result.failedLyricsBySong) {
+        runOnMainHandler {
+            Toast.makeText(
+                context,
+                context.getString(R.string.err_failed_to_delete) + fails.fold("") { a, n -> "$a,$n" },
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
-    if (withLyrics) deleteLyrics(context, songs)
-    delete(context, songs)
-}
 
-private fun delete(context: Context, songs: List<Song>) {
-    val total = songs.size
-    val fails = MediaStoreSongsActions.delete(context, songs)
-
-    val msg: String = context.resources.getQuantityString(
-        R.plurals.msg_deletion_result,
-        total,
-        total - fails.size,
-        total
-    )
-
-    if (fails.isNotEmpty()) runOnMainHandler {
-        // handle fail , report and try again
-        showFailDialog(context, msg, fails)
+    if (result.failedSongs.isNotEmpty()) runOnMainHandler {
+        val msg: String = context.resources.getQuantityString(
+            R.plurals.msg_deletion_result,
+            result.total,
+            result.total - result.failedSongs.size,
+            result.total
+        )
+        showFailDialog(context, msg, result.failedSongs)
         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
-    }
-}
-
-private fun deleteLyrics(activity: Context, songs: Collection<Song>) {
-    for (song in songs) {
-        val file = File(song.data)
-        val preciseFiles = LyricsLoader.searchExternalPreciseLyricsFiles(file)
-        val fails = mutableListOf<String>()
-        preciseFiles.forEach {
-            val result = it.delete()
-            if (!result) fails.add(it.name)
-        }
-        if (fails.isNotEmpty()) {
-            withLooper {
-                Toast.makeText(
-                    activity,
-                    activity.getString(R.string.err_failed_to_delete) + fails.fold("") { a, n -> "$a,$n" },
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        }
     }
 }
 
@@ -302,4 +284,42 @@ private fun showFailDialog(context: Context, msg: String, failList: Collection<S
             }
         }
     }.show()
+}
+
+private data class DeletionResult(
+    val total: Int,
+    val failedSongs: List<Song>,
+    val failedLyricsBySong: List<List<String>>,
+)
+
+private class DeletionExecutor(context: Context) {
+
+    private val applicationContext = context.applicationContext
+
+    val hasPermission: Boolean get() = StoragePermissionChecker.hasStorageWritePermission(applicationContext)
+    var withLyrics: Boolean by mutableStateOf(false)
+    var withQueueItem: Boolean by mutableStateOf(true)
+
+    fun delete(songs: List<Song>): DeletionResult {
+        if (withQueueItem) {
+            val queueManager = MusicPlayerRemote.queueManager
+            queueManager.playingQueue
+                .filter { queuedSong -> songs.any { it.data == queuedSong.data } }
+                .forEach { queueManager.removeSong(it) }
+        }
+        val failedLyricsBySong = if (withLyrics) deleteLyrics(songs) else emptyList()
+        val failedSongs = MediaStoreSongsActions.delete(applicationContext, songs)
+        return DeletionResult(songs.size, failedSongs, failedLyricsBySong)
+    }
+
+    private fun deleteLyrics(songs: List<Song>): List<List<String>> =
+        songs.mapNotNull { song ->
+            val file = File(song.data)
+            val preciseFiles = LyricsLoader.searchExternalPreciseLyricsFiles(file)
+            val fails = mutableListOf<String>()
+            preciseFiles.forEach {
+                if (!it.delete()) fails.add(it.name)
+            }
+            fails.takeIf { it.isNotEmpty() }
+        }
 }
