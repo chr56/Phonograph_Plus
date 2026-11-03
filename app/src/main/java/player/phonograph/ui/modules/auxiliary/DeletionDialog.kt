@@ -15,6 +15,7 @@ import player.phonograph.foundation.permission.StoragePermissionChecker
 import player.phonograph.mechanism.lyrics.LyricsLoader
 import player.phonograph.model.Song
 import player.phonograph.repo.mediastore.MediaStoreSongsActions
+import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.navigateToStorageSetting
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
@@ -91,6 +92,7 @@ class DeletionDialog : ComposeViewDialogFragment() {
 private fun MainContent(context: Context, songs: List<Song>, dismiss: () -> Unit) {
     PhonographTheme {
         var withLyrics: Boolean by remember { mutableStateOf(false) }
+        var withQueueItem: Boolean by remember { mutableStateOf(true) }
         val hasPermission: Boolean = remember { StoragePermissionChecker.hasStorageWritePermission(context) }
         MaterialDialog(
             dialogState = rememberMaterialDialogState(true),
@@ -151,6 +153,20 @@ private fun MainContent(context: Context, songs: List<Song>, dismiss: () -> Unit
                     )
 
                     Row(
+                        Modifier.clickable { withQueueItem = !withQueueItem },
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Checkbox(withQueueItem, null, Modifier.align(Alignment.CenterVertically))
+                        Text(
+                            stringResource(R.string.action_remove_from_playing_queue),
+                            Modifier
+                                .align(Alignment.CenterVertically)
+                                .padding(horizontal = 4.dp, vertical = 12.dp),
+                            style = MaterialTheme.typography.button
+                        )
+                    }
+
+                    Row(
                         Modifier.clickable { withLyrics = !withLyrics },
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
@@ -166,7 +182,7 @@ private fun MainContent(context: Context, songs: List<Song>, dismiss: () -> Unit
                         TextButton(
                             onClick = {
                                 dismiss()
-                                executeDeletion(context, songs, withLyrics)
+                                executeDeletion(context, songs, withLyrics, withQueueItem)
                             },
                             Modifier.align(Alignment.CenterVertically)
                         ) {
@@ -206,7 +222,13 @@ private fun NoPermissionTips(navigateToStorageSetting: () -> Unit) {
     }
 }
 
-private fun executeDeletion(context: Context, songs: List<Song>, withLyrics: Boolean) {
+private fun executeDeletion(context: Context, songs: List<Song>, withLyrics: Boolean, withQueueItem: Boolean) {
+    if (withQueueItem) {
+        val queueManager = MusicPlayerRemote.queueManager
+        queueManager.playingQueue
+            .filter { queuedSong -> songs.any { it.data == queuedSong.data } }
+            .forEach { queueManager.removeSong(it) }
+    }
     if (withLyrics) deleteLyrics(context, songs)
     delete(context, songs)
 }
