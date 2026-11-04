@@ -12,6 +12,7 @@ import player.phonograph.foundation.file.audioFileFilter
 import player.phonograph.foundation.file.listPaths
 import player.phonograph.foundation.notification.ProgressNotificationConnection
 import player.phonograph.mechanism.scanner.MediaStoreScanner
+import player.phonograph.model.notification.NOTIFICATION_CHANNEL_ID_BACKGROUND_TASKS
 import player.phonograph.model.notification.NOTIFICATION_CHANNEL_ID_DATABASE_SYNC
 import player.phonograph.repo.room.DatabaseActions
 import player.phonograph.repo.room.MusicDatabase
@@ -144,7 +145,13 @@ class ScanMediaDialog : ComposeViewDialogFragment() {
         contractTool?.launch(null) { path ->
             if (path != null) {
                 fragmentActivity.lifecycleScope.launch {
-                    val mediaStoreScanner = MediaStoreScanner(fragmentActivity)
+                    val mediaStoreScanner = MediaStoreScanner(
+                        fragmentActivity,
+                        ProgressNotificationConnection(
+                            fragmentActivity, R.string.notification_background_name,
+                            channel = NOTIFICATION_CHANNEL_ID_BACKGROUND_TASKS,
+                        ),
+                    )
                     try {
                         val paths = listPaths(path, filter = audioFileFilter)
                         if (paths.isNotEmpty()) {

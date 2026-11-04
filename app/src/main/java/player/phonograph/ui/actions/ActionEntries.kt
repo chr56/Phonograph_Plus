@@ -5,12 +5,14 @@
 package player.phonograph.ui.actions
 
 import player.phonograph.R
+import player.phonograph.foundation.notification.ProgressNotificationConnection
 import player.phonograph.mechanism.event.EventHub
 import player.phonograph.mechanism.scanner.MediaStoreScanner
 import player.phonograph.model.Song
 import player.phonograph.model.file.FileItem
 import player.phonograph.model.menu.ActionEntry
 import player.phonograph.model.menu.ActionSemantic
+import player.phonograph.model.notification.NOTIFICATION_CHANNEL_ID_BACKGROUND_TASKS
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.service.ShuffleMode
 import player.phonograph.repo.loader.PinedPlaylists
@@ -210,7 +212,13 @@ object ActionEntries {
             withContext(Dispatchers.IO) {
                 val files = File(dir.path).listFiles() ?: return@withContext
                 val paths = Array(files.size) { files[it].path }
-                MediaStoreScanner(context).scan(paths)
+                MediaStoreScanner(
+                    context,
+                    ProgressNotificationConnection(
+                        context, R.string.notification_background_name,
+                        channel = NOTIFICATION_CHANNEL_ID_BACKGROUND_TASKS,
+                    ),
+                ).scan(paths)
             }
         }
 

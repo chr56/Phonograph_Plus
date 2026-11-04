@@ -6,7 +6,7 @@ package player.phonograph.mechanism.scanner
 
 import player.phonograph.R
 import player.phonograph.debug
-import player.phonograph.foundation.notification.Notifications
+import player.phonograph.model.ui.ProgressConnection
 import android.content.Context
 import android.media.MediaScannerConnection
 import android.net.Uri
@@ -15,20 +15,11 @@ import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 
-class MediaStoreScanner(val context: Context) : MediaScannerConnection.MediaScannerConnectionClient {
-
-    private val scannerConnection = MediaScannerConnection(context, this)
-    private val notifications = Notifications.BackgroundTasks.Default
-
-    class Task(
-        val target: Array<String>,
-        var failed: MutableList<String> = mutableListOf(),
-        var succeed: Int = 0,
-    ) {
-        val id = System.currentTimeMillis().mod(1 shl 12)
-    }
-
-    private val queue: ArrayDeque<Task> = ArrayDeque(0)
+class MediaStoreScanner(
+    private val context: Context,
+    private val progress: ProgressConnection? = null,
+    private val reportResult: Boolean = true,
+) : MediaScannerConnection.MediaScannerConnectionClient {
 
     fun scan(path: String) = scan(arrayOf(path))
 
@@ -52,6 +43,18 @@ class MediaStoreScanner(val context: Context) : MediaScannerConnection.MediaScan
         }
     }
 
+    class Task(
+        val target: Array<String>,
+        val failed: MutableList<String> = mutableListOf(),
+        var succeed: Int = 0,
+    ) {
+        val id = System.currentTimeMillis().mod(1 shl 12)
+    }
+
+    private val scannerConnection = MediaScannerConnection(context, this)
+
+    private val queue: ArrayDeque<Task> = ArrayDeque(0)
+
     override fun onMediaScannerConnected() {
         Log.i(TAG, "MediaScannerConnected!")
 
@@ -62,14 +65,19 @@ class MediaStoreScanner(val context: Context) : MediaScannerConnection.MediaScan
     private fun executeTask(task: Task) {
 
         val paths: Array<String> = task.target
+        val total = paths.size
 
-        Log.i(TAG, "Start scan task (${task.id})")
-        reportProcess(0, paths, task.id)
+        progress?.onStart(task.id)
+        reportProcess(0, total)
         for ((index, path) in paths.withIndex()) {
             scannerConnection.scanFile(path, null)
-            if (index % 17 == 0) reportProcess(index, paths, task.id)
+            if (index % 17 == 0) reportProcess(index, total)
         }
-        notifications.cancel(context, task.id)
+        progress?.onCompleted()
+    }
+
+    private fun reportProcess(current: Int, total: Int) {
+        progress?.onProcessUpdate(current, total, String.format(scannedFiles, current, total))
     }
 
 
@@ -90,7 +98,7 @@ class MediaStoreScanner(val context: Context) : MediaScannerConnection.MediaScan
                 synchronized(queue) {
                     // remove and report
                     val completed = queue.removeFirst()
-                    reportResult(completed)
+                    if (reportResult) reportResult(completed)
                     Log.i(TAG, "Scan completed for task (${completed.id})!")
                     // execute next task
                     val next = queue.firstOrNull() ?: return
@@ -99,17 +107,6 @@ class MediaStoreScanner(val context: Context) : MediaScannerConnection.MediaScan
             }
 
         }
-    }
-
-    private fun reportProcess(current: Int, all: Array<String>, id: Int) {
-        notifications.post(
-            context,
-            title = title,
-            msg = String.format(scannedFiles, current, all.size),
-            id = id,
-            process = current,
-            maxProcess = all.size
-        )
     }
 
     private fun reportResult(task: Task) {
@@ -126,9 +123,6 @@ class MediaStoreScanner(val context: Context) : MediaScannerConnection.MediaScan
 
     private val scannedFiles = context.getString(R.string.msg_scanned_files)
     private val couldNotScanFiles = context.getString(R.string.err_could_not_scan_files)
-
-
-    private val title = context.getString(R.string.notification_background_name)
 
     companion object {
         private const val TAG = "MediaScanner"
