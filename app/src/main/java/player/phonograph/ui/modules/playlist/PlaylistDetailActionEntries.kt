@@ -108,17 +108,17 @@ object PlaylistDetailActionEntries {
 
     fun Search(context: ComponentActivity, onAction: (PlaylistAction) -> Boolean): ActionEntry =
         entry(ActionSemantics.Search) {
-            onAction(UpdateMode(UIMode.Search))
+            onAction(PlaylistAction.UpdateMode(UIMode.Search))
         }
 
     fun Refresh(context: ComponentActivity, onAction: (PlaylistAction) -> Boolean): ActionEntry =
         entry(ActionSemantics.Refresh) {
-            onAction(Refresh(fetch = true))
+            onAction(PlaylistAction.Load(scan = true))
         }
 
     fun Edit(context: ComponentActivity, onAction: (PlaylistAction) -> Boolean): ActionEntry =
         entry(ActionSemantics.Edit, visibility = NEVER) {
-            onAction(UpdateMode(UIMode.Editor))
+            onAction(PlaylistAction.UpdateMode(UIMode.Editor))
         }
 
     fun LastAddedInterval(context: ComponentActivity, onAction: (PlaylistAction) -> Boolean): ActionEntry =
@@ -128,7 +128,7 @@ object PlaylistDetailActionEntries {
                 dialog.show(context.supportFragmentManager, "LAST_ADDED")
                 dialog.lifecycle.addObserver(object : DefaultLifecycleObserver {
                     override fun onDestroy(owner: LifecycleOwner) {
-                        onAction(Refresh(fetch = true))
+                        onAction(PlaylistAction.Load())
                     }
                 })
             }

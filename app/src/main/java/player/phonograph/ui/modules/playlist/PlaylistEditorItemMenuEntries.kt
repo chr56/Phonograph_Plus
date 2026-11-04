@@ -22,20 +22,20 @@ fun playlistEditorItemMenuEntries(
         ActionEntry.ToolbarEntry(
             semantic = ActionSemantics.RemoveFromPlaylist,
             action = {
-                viewModel.execute(activity, EditAction.Delete(queueSong.song, position))
+                viewModel.execute(activity, PlaylistAction.Edit.Delete(queueSong.song, position))
             }
         ),
         ActionEntry.ToolbarEntry(
             semantic = ActionSemantics.MoveToTop,
             action = {
-                viewModel.execute(activity, EditAction.Move(position, 0))
+                viewModel.execute(activity, PlaylistAction.Edit.Move(position, 0))
             }
         ),
         ActionEntry.ToolbarEntry(
             semantic = ActionSemantics.MoveUp,
             action = {
                 if (position != 0) {
-                    viewModel.execute(activity, EditAction.Move(position, position - 1))
+                    viewModel.execute(activity, PlaylistAction.Edit.Move(position, position - 1))
                 }
             }
         ),
@@ -43,14 +43,14 @@ fun playlistEditorItemMenuEntries(
             semantic = ActionSemantics.MoveDown,
             action = {
                 if (position != viewModel.songs.value.lastIndex) {
-                    viewModel.execute(activity, EditAction.Move(position, position + 1))
+                    viewModel.execute(activity, PlaylistAction.Edit.Move(position, position + 1))
                 }
             }
         ),
         ActionEntry.ToolbarEntry(
             semantic = ActionSemantics.MoveToBottom,
             action = {
-                viewModel.execute(activity, EditAction.Move(position, viewModel.songs.value.lastIndex))
+                viewModel.execute(activity, PlaylistAction.Edit.Move(position, viewModel.songs.value.lastIndex))
             }
         ),
         ActionEntry.ToolbarEntry(

@@ -62,7 +62,7 @@ class PlaylistSongDisplayAdapter(
 
     override fun onMoveItem(fromPosition: Int, toPosition: Int) {
         activity.lifecycleScope.launch {
-            viewModel.execute(activity, EditAction.Move(fromPosition, toPosition))
+            viewModel.execute(activity, PlaylistAction.Edit.Move(fromPosition, toPosition))
         }
     }
     //endregion
