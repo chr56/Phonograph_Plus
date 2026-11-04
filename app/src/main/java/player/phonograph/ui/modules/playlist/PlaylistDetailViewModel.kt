@@ -5,8 +5,10 @@
 package player.phonograph.ui.modules.playlist
 
 import player.phonograph.mechanism.playlist.PlaylistSongsActions
+import player.phonograph.mechanism.scanner.MediaStoreScanner
 import player.phonograph.model.QueueSong
 import player.phonograph.model.Song
+import player.phonograph.model.playlist.FilePlaylistLocation
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.PlaylistReader
 import player.phonograph.model.playlist.PlaylistWriter
@@ -20,6 +22,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
@@ -62,6 +65,10 @@ class PlaylistDetailViewModel(_playlist: Playlist, _songs: List<QueueSong>) : Vi
     private suspend fun refresh(context: Context, fetch: Boolean): Boolean = withContext(Dispatchers.IO) {
         reader.refresh(context)
         if (fetch) fetch(context)
+        val location = playlist.location
+        if (location is FilePlaylistLocation) launch {
+            MediaStoreScanner(context).scan(location.path)
+        }
         true
     }
 
