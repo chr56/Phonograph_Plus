@@ -1,7 +1,7 @@
 version: "2.0.3-dev1"
-channel: "STABLE"
+channel: "PREVIEW"
 versionCode: 20002
-timestamp: 1791100000
+timestamp: 1795000000
 
 warning:
   en: |
@@ -14,10 +14,14 @@ warning:
 notes:
   en:
     items:
+      - "Improve: support deleting files with their items in playing queue"
+      - "Improve: rescan the playlist on entering Playlist Detail"
       - "Development: build with AGP 9.4.1, update dependencies"
   zh:
     items:
-      - "开发 使用 AGP 9.2.1 构建, 更新依赖"
+      - "改进 支持删除文件时连同对应播放队列中条目一并删除"
+      - "改进 进入播放列表详情时扫描检查一次播放列表"
+      - "开发 使用 AGP 9.4.1 构建, 更新依赖"
 
 previousVersion: "2.0.2"
 previousChannel: "STABLE"
