@@ -1,197 +1,133 @@
 # **Development Road Map** & **TO-DO list**
 
-_Last Update: 2026.01.29_
+_Last Update: 2026.11.06_
 
 ------
 
-## Standalone Music Library Database
+## Primary Milestones
 
-This part is currently work-in-progress, as next major feature.
+### Playlist Enhancement
 
-See branch `room-database`
+- [ ] Redesign Playlist Details.
 
-#### Stage 1 MediaStore Cache/Mirror
+- [ ] Support display options in Playlist Details.
 
-_(Completed!)_
+- [ ] Parsing and writing M3U8 files directly.
 
-#### Stage 2 Database Playlist
+- [ ] Switch Mediastore Playlist Backend between Standalone Backend.
 
-_(Completed!)_
 
-#### Stage 3 Database Favorites
+### Music Service Migration
 
-_(Completed!)_
+#### Persistence Database
 
-#### Stage 4 Solving Complex Relationship for Artists/Albums
+- [ ] New PlayingQueue modeling with Room database.
 
-_(Completed!)_
+- [ ] Support playing other source other than MediaStore, such as content Uris.
 
-#### Stage 5 Enhanced Genres
+- [ ] Integrate PlayingQueue, History, Song Play Count into one database.
 
-_(Completed!)_
+#### Migrate MusicService to Media3 (Exoplayer)
 
-#### Stage 6 Independent from MediaStore & Relative Enhancement
+- [ ] Replace implementation with Exoplayer, as an independent PlayerController.
 
-Scan media files manually without any existed metadata from Mediastore; use JAudioTagger to read tags and parse more data.
+- [ ] Integrate Media3 framework.
 
-- [ ] Multiple tag source (Android MediaStore & JAudioTagger Parse) and manual scan implementation.
 
-- [ ] Metadata enhancement: united Genre and Style from tag fields
+### Search Enhancement
 
-- [ ] Metadata enhancement: read and store Replay-Gain tag
+- [ ] Rewrite Search user-interface with Jetpack Compose.
+   - [x] Prepare Compose functions for various items.
+   - [ ] Display systems for Compose.
+   - [ ] Implement new Search user-interface.
 
-- [ ] Player: use parsed Replay-Gain tag
-
-#### Stage 7 Artwork Cache (Tentative)
-
-Cache artwork information in database, for quicker lookup.
-
-- [ ] Table for artwork locations for Artists/Albums
-
-- [ ] Sync logic implementation
-
-- [ ] Update relative coil components to enable new implementation
-
-#### Stage 8 More Enhancement
-
-- [ ] Enhanced Search
+- [ ] FullTextSearch support.
+   - [ ] FTS in music database.
+   - [ ] Update Search user-interface.
 
 ------
 
-## Player Refactor
+## Minor Milestones
 
-This part is currently work-in-progress.
+## Enhance Main Player User-Interface
 
-#### Refactor Playings Queue
+- [ ] Better Edge-to-Edge support.
 
-- [ ] integrate PlayingQueue, History, Song Play Count into one Database
+- [ ] Adaptive screen-size support: tablet, watch and desktop support.
 
-- [ ] enhance PlayingQueue with player, support playing other source beside MediaStore, like content uri
+- [ ] More Now Playing Screen styles. (_Tentative_)
 
-- [ ] update UI etc
+- [ ] Customizable SlidingMusicBar. (_Tentative_)
 
-#### Migrate to Exoplayer (Media3)
 
-Migrate player backend to `Exoplayer`/ `Jetpack Media3`
+## Enhance Desktop User Experience
 
-- [x] Implementation as an independent `PlayerController`
+- [ ] Adaptive screen-size support.
 
-- [ ] Integrate as an opt-in experimental feature
+- [ ] Keyboard shortcut. (_Tentative_)
 
-- [ ] Drop legacy Implementation
-
-- [ ] Refactor architecture for `Exoplayer`
-
-- [ ] support state of "buffing"
-
-#### Native Player Decoder (Tentative, possibly canceled)
-
-Integrate with native decoder like `ffmpeg` or `Symphonia`.
-
-- [x] Test for NDK Cross Compile
-
-##### Exoplayer with `ffmpeg` backend
-
-- [ ] Migrate to Exoplayer first
-
-- [ ] Build its `ffmpeg` decoder library
-
-- [ ] Integrate native decoder
-
-- [ ] Reproducible Builds
-
-##### Full native route (possibly canceled)
-
-- [ ] Build the native decoder
-
-- [ ] Player support in JVM side.
-
-- [ ] Glue and logical code in Native side.
-
-- [ ] Reproducible Builds
-
-#### Online Player (Tentative, possibly canceled)
-
-- [ ] (Tentative and Planing) Extend player, support Samba/NFS/SFTP
-
-- [ ] (Tentative and Planing) Refactor File relative UI
-
-- [ ] ...
+- [ ] Drag-and-drop. (_Tentative_)
 
 ------
 
-## Enhance Main Player UI
+## Long-term Goals
 
-- [ ] better tablet support and landscape layout enhancement
+### Metadata Enhancement
 
-- [ ] more Now Playing Screen styles (Tentative)
+- [ ] Database: united Genre and Style from tag fields.
 
-- [ ] enhance SlidingMusicBar (Tentative, possibly canceled)
+- [ ] Database: read and store Replay-Gain tag.
 
-------
+- [ ] Player: respect parsed Replay-Gain tag from databases.
 
-## Modularize
+- [ ] Database: cache artwork information in database, for quicker lookup. (_Tentative_)
 
-Disassemble project into multiple small Gradle modules. It's in staging.
 
-- [ ] extract base module `api`
+### Native Decoder for Music Service (_Tentative_)
 
-- [ ] split ui and mechanism logic as modules
+- [ ] Migrate to Exoplayer first.
 
-- [ ] further split mechanism logic by aspect/facet
+- [ ] Configure and build `ffmpeg` with NDK.
 
-- [ ] further split ui
+- [ ] Implement native decoder for Exoplayer.
 
-- [ ] create light weight variant by removing non-essential modules (Tentative)
+- [ ] Integrate native decoder.
 
-------
+- [ ] Ensure reproducible Builds.
 
-## Migrate Settings to Protobuf Datastore
+### Streaming Player (_Tentative_)
 
-Migrate current settings backend from Preference Datastore to Protobuf Datastore:
+- [ ] Player streaming support.
 
-- [ ] prepare infrastructure
+- [ ] Remote source items support for Queue Database.
 
-- [ ] partial migrate all Json based settings with custom datatype
+- [ ] Support streaming via Samba/NFS/SFTP.
 
-- [ ] earlier stage backup and backward compatibility support
+- [ ] Enhance File user-interface and infrastructures for remote source.
 
-- [ ] migrate path filter, and remove its legacy database implementation
-
-- [ ] full migrate
-
-- [ ] full backup and backward compatibility support
 
 ------
 
-## Unit Tests
+## Miscellaneous Staging Goals
 
-Write unit tests for core mechanism / logic.
 
-(Waiting for detailed road map)
+### Modularization & Plugin Systems
 
-------
+- [ ] Disassemble project into multiple small Gradle modules.
+  - [ ] base modules `api` or `core`.
+  - [ ] bottom modules `ui` or `app`.
+  - [ ] remaining module.
+  - [ ] build flavors.
 
-## Redesign _Album Detail_  and _Artist Detail_ (Tentative, possibly canceled)
+- [ ] Plugin systems. (_Tentative_)
 
-Redesign them for a more appealing appearance, and enhance their efficiency and maintainability.
 
-(Waiting for detailed road map)
+### Migrate Settings to Protobuf Datastore (_Tentative_)
 
-------
+### Redesign _Album Detail_ and _Artist Detail_ (_Tentative_)
 
-## Playlist Detail Enhancement (Tentative, possibly canceled)
+### Improve App Intro (_Tentative_)
 
-- [ ] Handling intent of open (playlist) file
-
-- [ ] Enhance search support
-
-- [ ] Better way to modify playlist
+### Enhance Lyrics System (_Tentative_)
 
 ------
-
-## Misc Development Plan
-
-- [ ] Improve App Intro (Tentative, possibly canceled)
-
-- [ ] Support some Android's StatusBar lyrics, such as FlyMe / EvolutionX

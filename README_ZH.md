@@ -100,7 +100,7 @@ Phonograph Plus 继承了原版 Phonograph 的所有功能，并进行了扩展�
 
 [Developer Guide](docs/Developer_Guide.md)
 
-[路线图](docs/Road_Map_ZH.md) / [Road Map](docs/Road_Map.md)
+[Road Map](docs/Road_Map.md)
 
 ## **仓库镜像**
 
