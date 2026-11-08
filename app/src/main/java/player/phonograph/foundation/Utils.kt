@@ -7,6 +7,7 @@ package player.phonograph.foundation
 import androidx.fragment.app.FragmentActivity
 import android.app.Activity
 import android.content.Context
+import java.text.Normalizer
 
 
 //
@@ -30,6 +31,13 @@ inline fun fragmentActivity(context: Context, block: (FragmentActivity) -> Boole
 //
 // Sort
 //
+
+private val combiningMarksRegex = "\\p{Mn}+".toRegex()
+
+fun String.normalizeForSort(): String =
+    Normalizer.normalize(this, Normalizer.Form.NFD)
+        .replace(combiningMarksRegex, "")
+        .lowercase()
 
 inline fun <T> List<T>.sort(
     revert: Boolean,
