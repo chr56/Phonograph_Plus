@@ -4,13 +4,10 @@
 
 package player.phonograph.ui.adapter
 
-import coil.request.Disposable
-import coil.target.Target
 import lib.storage.extension.rootDirectory
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.foundation.dateTextShortText
-import player.phonograph.mechanism.coil.loadImage
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Genre
@@ -32,10 +29,8 @@ import player.phonograph.ui.resource.buildInfoString
 import player.phonograph.ui.resource.infoString
 import player.phonograph.ui.resource.readableYear
 import player.phonograph.ui.resource.songCountString
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.getSystemService
 import android.content.Context
-import android.graphics.drawable.Drawable
 import android.os.storage.StorageManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -49,6 +44,9 @@ open class SongDisplayPresenter : DisplayPresenter<Song> {
     override fun getDescription(context: Context, item: Song): CharSequence = item.infoString()
     override fun getSecondaryText(context: Context, item: Song): CharSequence = item.albumName ?: "N/A"
     override fun getTertiaryText(context: Context, item: Song): CharSequence? = item.artistName
+
+    override fun hasArtwork(item: Song): Boolean = true
+    override fun getDefaultArtwork(item: Song): Int = R.drawable.default_album_art
 
     override fun menuEntries(context: Context, item: Song, position: Int): List<ActionEntry> =
         ActionMenus.Song(context, item, showPlay = false)
@@ -69,14 +67,6 @@ open class SongDisplayPresenter : DisplayPresenter<Song> {
             SortRef.ADDED_DATE        -> dateTextShortText(item.dateAdded)
             else                      -> null
         }
-
-    override fun loadImageInto(context: Context, item: Song, target: Target): Disposable? =
-        loadImage(context)
-            .from(item)
-            .withPalette()
-            .default(getIcon(context, item) ?: AppCompatResources.getDrawable(context, R.drawable.default_album_art))
-            .into(target)
-            .enqueue()
 
 }
 
@@ -105,6 +95,9 @@ open class AlbumDisplayPresenter : DisplayPresenter<Album> {
     override fun getSecondaryText(context: Context, item: Album): CharSequence = item.artistName ?: "N/A"
     override fun getTertiaryText(context: Context, item: Album): CharSequence = songCountString(context, item.songCount)
 
+    override fun hasArtwork(item: Album): Boolean = true
+    override fun getDefaultArtwork(item: Album): Int = R.drawable.default_album_art
+
     override fun menuEntries(context: Context, item: Album, position: Int): List<ActionEntry> =
         ActionMenus.Composite(context, item) { context, album ->
             withContext(Dispatchers.IO) { Songs.album(context, album.id) }
@@ -122,13 +115,6 @@ open class AlbumDisplayPresenter : DisplayPresenter<Album> {
             else                -> null
         }
 
-    override fun loadImageInto(context: Context, item: Album, target: Target): Disposable? =
-        loadImage(context)
-            .from(item)
-            .withPalette()
-            .default(getIcon(context, item) ?: AppCompatResources.getDrawable(context, R.drawable.default_album_art))
-            .into(target)
-            .enqueue()
 }
 
 open class ArtistAlbumDisplayPresenter : AlbumDisplayPresenter() {
@@ -150,6 +136,9 @@ open class ArtistDisplayPresenter : DisplayPresenter<Artist> {
     override fun getTertiaryText(context: Context, item: Artist): CharSequence =
         songCountString(context, item.songCount)
 
+    override fun hasArtwork(item: Artist): Boolean = true
+    override fun getDefaultArtwork(item: Artist): Int = R.drawable.default_artist_image
+
     override fun clickAction(context: Context, item: Artist, position: Int, list: List<Artist>): ActionEntry? =
         ItemClickActions.Artist(context, item)
 
@@ -165,14 +154,6 @@ open class ArtistDisplayPresenter : DisplayPresenter<Artist> {
             SortRef.SONG_COUNT  -> item.songCount.toString()
             else                -> null
         }
-
-    override fun loadImageInto(context: Context, item: Artist, target: Target): Disposable? =
-        loadImage(context)
-            .from(item)
-            .withPalette()
-            .default(getIcon(context, item) ?: AppCompatResources.getDrawable(context, R.drawable.default_artist_image))
-            .into(target)
-            .enqueue()
 
 }
 
@@ -210,6 +191,8 @@ open class PlaylistDisplayPresenter : DisplayPresenter<Playlist> {
     override fun getSecondaryText(context: Context, item: Playlist): CharSequence =
         Texts.playlist(context.resources, item.location)
 
+    override fun getDefaultArtwork(item: Playlist): Int = item.iconRes
+
     override fun menuEntries(context: Context, item: Playlist, position: Int): List<ActionEntry> =
         ActionMenus.Playlist(context, item)
 
@@ -224,9 +207,6 @@ open class PlaylistDisplayPresenter : DisplayPresenter<Playlist> {
             SortRef.ADDED_DATE    -> dateTextShortText(item.dateAdded)
             else                  -> null
         }
-
-    override fun getIcon(context: Context, item: Playlist): Drawable? =
-        AppCompatResources.getDrawable(context, item.iconRes)
 
 }
 
@@ -251,6 +231,8 @@ open class SongCollectionDisplayPresenter(
     override fun getTertiaryText(context: Context, item: SongCollection): CharSequence? =
         songCountString(context, item.songs.size)
 
+    override fun getDefaultArtwork(item: SongCollection): Int = R.drawable.ic_folder_white_24dp
+
     override fun getSectionText(item: SongCollection, sortMode: SortMode?): String? =
         when (sortMode?.sortRef) {
             SortRef.DISPLAY_NAME -> item.name
@@ -259,9 +241,6 @@ open class SongCollectionDisplayPresenter(
 
     override fun menuEntries(context: Context, item: SongCollection, position: Int): List<ActionEntry> =
         ActionMenus.Composite(context, item) { _, collection -> collection.songs }
-
-    override fun getIcon(context: Context, item: SongCollection): Drawable? =
-        AppCompatResources.getDrawable(context, R.drawable.ic_folder_white_24dp)
 
     companion object {
 

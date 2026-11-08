@@ -4,20 +4,14 @@
 
 package player.phonograph.ui.modules.explorer
 
-import coil.request.Disposable
-import coil.target.Target
 import player.phonograph.R
 import player.phonograph.foundation.dateTimeText
-import player.phonograph.mechanism.coil.loadImage
 import player.phonograph.model.file.FileItem
 import player.phonograph.model.menu.ActionEntry
 import player.phonograph.ui.actions.ActionMenus
 import player.phonograph.ui.adapter.DisplayPresenter
-import player.phonograph.ui.theme.getTintedDrawable
-import player.phonograph.ui.theme.themeIconColor
 import android.content.Context
 import android.content.res.Resources
-import android.graphics.drawable.Drawable
 import android.text.format.Formatter
 
 class FileItemPresenter(
@@ -27,23 +21,9 @@ class FileItemPresenter(
     override fun clickAction(context: Context, item: FileItem, position: Int, list: List<FileItem>): ActionEntry? =
         accessClickAction(context, item, position, list)
 
-    override fun getIcon(context: Context, item: FileItem): Drawable =
-        context.getTintedDrawable(
-            if (item.isFolder) R.drawable.ic_folder_white_24dp else R.drawable.ic_file_music_white_24dp,
-            themeIconColor(context),
-        )!!
-
-    override fun loadImageInto(context: Context, item: FileItem, target: Target): Disposable? =
-        if (item.content is FileItem.SongContent) {
-            loadImage(context)
-                .from(item)
-                .default(getIcon(context, item))
-                .into(target)
-                .enqueue()
-        } else {
-            target.onSuccess(getIcon(context, item))
-            null
-        }
+    override fun hasArtwork(item: FileItem): Boolean = !item.isFolder
+    override fun getDefaultArtwork(item: FileItem): Int =
+        if (item.isFolder) R.drawable.ic_folder_white_24dp else R.drawable.ic_file_music_white_24dp
 
     override fun menuEntries(context: Context, item: FileItem, position: Int): List<ActionEntry> =
         ActionMenus.FileItem(context, item)

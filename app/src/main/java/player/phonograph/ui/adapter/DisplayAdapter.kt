@@ -8,6 +8,7 @@ import coil.request.Disposable
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import player.phonograph.R
 import player.phonograph.foundation.concurrent.lifecycleScopeOrNewOne
+import player.phonograph.mechanism.coil.loadImage
 import player.phonograph.mechanism.coil.palette.PaletteColorViewTarget
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.ui.adapter.DisplayOptions.Companion.CUSTOM_TEXT
@@ -20,12 +21,15 @@ import player.phonograph.ui.theme.secondaryTextColorOn
 import player.phonograph.ui.theme.textColorOn
 import player.phonograph.ui.theme.themeFooterColor
 import player.phonograph.ui.theme.themeIconColor
+import player.phonograph.ui.theme.withColorFilter
 import player.phonograph.ui.util.preparePopupMenu
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.PorterDuff
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
@@ -160,12 +164,12 @@ open class DisplayAdapter<I>(
                     if (imageView != null) {
                         loadJob?.dispose()
                         loadJob = null
-                        loadJob = loadImage(imageView, item, presenter, options.usePalette, options.disableImage)
+                        loadJob = startLoadImageOnDemand(imageView, item, presenter, options.usePalette, options.disableImage)
                     }
                 }
 
                 ICON         -> {
-                    val icon = presenter.getIcon(itemView.context, item)
+                    val icon = getDefaultArtwork(itemView.context, item, presenter)
                     if (imageView != null && icon != null) {
                         setImageIcon(imageView, icon)
                     }
@@ -189,7 +193,7 @@ open class DisplayAdapter<I>(
             }
         }
 
-        protected fun loadImage(
+        protected fun startLoadImageOnDemand(
             imageView: ImageView,
             item: I,
             presenter: DisplayPresenter<I>,
@@ -205,15 +209,32 @@ open class DisplayAdapter<I>(
                 themeFooterColor(context),
                 usePalette,
             )
-            val icon = presenter.getIcon(context, item)
-            target.onStart(
-                icon ?: AppCompatResources.getDrawable(context, R.drawable.default_album_art)
-            )
-            return if (!disableImage) {
-                presenter.loadImageInto(context, item, target)
+            val default = getDefaultArtwork(context, item, presenter)?.let {
+                it as? BitmapDrawable ?: it.withColorFilter(themeIconColor(context))
+            }
+
+            return if (!disableImage && presenter.hasArtwork(item)) {
+                loadImage(context)
+                    .from(item)
+                    .withPalette()
+                    .default(default)
+                    .into(target)
+                    .enqueue()
             } else {
+                target.onStart(
+                    default ?: AppCompatResources.getDrawable(context, R.drawable.default_album_art)
+                )
                 null
             }
+        }
+
+        private fun getDefaultArtwork(
+            context: Context,
+            item: I,
+            presenter: DisplayPresenter<I>,
+        ): Drawable? {
+            val res = presenter.getDefaultArtwork(item)
+            return if (res > 0) AppCompatResources.getDrawable(context, res) else null
         }
 
         protected open fun setPaletteColors(color: Int) {
