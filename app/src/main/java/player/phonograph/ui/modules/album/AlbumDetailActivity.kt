@@ -20,6 +20,7 @@ import player.phonograph.repo.loader.Songs
 import player.phonograph.ui.adapter.AlbumSongDisplayPresenter
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayOptions
+import player.phonograph.ui.adapter.IMAGERY_ORDINAL_TEXT
 import player.phonograph.ui.goToArtistDetail
 import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.resource.Durations
@@ -136,7 +137,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvider
         songAdapter = DisplayAdapter(
             this,
             AlbumSongDisplayPresenter(),
-            options = DisplayOptions(ItemLayoutStyle.LIST, null, false, imageryType = DisplayOptions.ORDINAL_TEXT)
+            options = DisplayOptions(ItemLayoutStyle.LIST, null, false, imageryType = IMAGERY_ORDINAL_TEXT)
         )
         linearLayoutManager = LinearLayoutManager(this@AlbumDetailActivity)
         with(viewBinding.recyclerView) {

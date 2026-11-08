@@ -13,6 +13,7 @@ import player.phonograph.settings.Settings
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayOptions
 import player.phonograph.ui.adapter.GenreDisplayPresenter
+import player.phonograph.ui.adapter.IMAGERY_NONE
 import androidx.fragment.app.viewModels
 import android.content.Context
 import kotlinx.coroutines.CoroutineScope
@@ -45,7 +46,7 @@ class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>>() {
                 displayConfig.layout,
                 displayConfig.sortMode,
                 displayConfig.colorFooter,
-                imageryType = DisplayOptions.NONE,
+                imageryType = IMAGERY_NONE,
             )
         )
     }

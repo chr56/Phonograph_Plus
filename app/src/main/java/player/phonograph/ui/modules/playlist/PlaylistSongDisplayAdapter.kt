@@ -13,6 +13,7 @@ import player.phonograph.ui.actions.ActionMenus
 import player.phonograph.ui.actions.ItemClickActions
 import player.phonograph.ui.adapter.DisplayOptions
 import player.phonograph.ui.adapter.DraggableDisplayAdapter
+import player.phonograph.ui.adapter.IMAGERY_ORDINAL_TEXT
 import player.phonograph.ui.adapter.QueueSongDisplayPresenter
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
@@ -27,7 +28,7 @@ class PlaylistSongDisplayAdapter(
     activity,
     PlaylistSongDisplayPresenter(viewModel),
     DisplayOptions(
-        ItemLayoutStyle.LIST, null, false, imageryType = DisplayOptions.ORDINAL_TEXT
+        ItemLayoutStyle.LIST, null, false, imageryType = IMAGERY_ORDINAL_TEXT
     )
 ) {
 

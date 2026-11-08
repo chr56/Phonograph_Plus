@@ -18,6 +18,7 @@ import player.phonograph.settings.Settings
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayOptions
 import player.phonograph.ui.adapter.DisplayPresenter
+import player.phonograph.ui.adapter.IMAGERY_ICON
 import player.phonograph.ui.adapter.PlaylistDisplayPresenter
 import player.phonograph.ui.modules.playlist.dialogs.CreatePlaylistDialogActivity
 import player.phonograph.ui.resource.Layouts
@@ -84,7 +85,7 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
                 displayConfig.layout,
                 displayConfig.sortMode,
                 displayConfig.colorFooter,
-                imageryType = DisplayOptions.ICON,
+                imageryType = IMAGERY_ICON,
             )
         )
     }

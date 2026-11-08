@@ -11,11 +11,6 @@ import player.phonograph.foundation.concurrent.lifecycleScopeOrNewOne
 import player.phonograph.mechanism.coil.loadImage
 import player.phonograph.mechanism.coil.palette.PaletteColorViewTarget
 import player.phonograph.model.ui.ItemLayoutStyle
-import player.phonograph.ui.adapter.DisplayOptions.Companion.CUSTOM_TEXT
-import player.phonograph.ui.adapter.DisplayOptions.Companion.ICON
-import player.phonograph.ui.adapter.DisplayOptions.Companion.IMAGE
-import player.phonograph.ui.adapter.DisplayOptions.Companion.NONE
-import player.phonograph.ui.adapter.DisplayOptions.Companion.ORDINAL_TEXT
 import player.phonograph.ui.resource.Layouts
 import player.phonograph.ui.theme.secondaryTextColorOn
 import player.phonograph.ui.theme.textColorOn
@@ -160,7 +155,7 @@ open class DisplayAdapter<I>(
             imageText?.visibility = View.GONE
 
             when (options.imageryType) {
-                IMAGE        -> {
+                IMAGERY_IMAGE        -> {
                     if (imageView != null) {
                         loadJob?.dispose()
                         loadJob = null
@@ -168,28 +163,28 @@ open class DisplayAdapter<I>(
                     }
                 }
 
-                ICON         -> {
+                IMAGERY_ICON         -> {
                     val icon = getDefaultArtwork(itemView.context, item, presenter)
                     if (imageView != null && icon != null) {
                         setImageIcon(imageView, icon)
                     }
                 }
 
-                ORDINAL_TEXT -> {
+                IMAGERY_ORDINAL_TEXT -> {
                     val ordinalText = presenter.getOrdinalText(item, bindingAdapterPosition) ?: "-"
                     if (imageText != null) {
                         setImageText(imageText, ordinalText)
                     }
                 }
 
-                CUSTOM_TEXT  -> {
+                IMAGERY_CUSTOM_TEXT  -> {
                     val customText = customText() ?: "-"
                     if (imageText != null) {
                         setImageText(imageText, customText)
                     }
                 }
 
-                NONE         -> {}
+                IMAGERY_NONE         -> {}
             }
         }
 

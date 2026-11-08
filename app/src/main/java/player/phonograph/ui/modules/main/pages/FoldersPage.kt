@@ -19,6 +19,7 @@ import player.phonograph.settings.Settings
 import player.phonograph.ui.actions.actionPlay
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayOptions
+import player.phonograph.ui.adapter.IMAGERY_ICON
 import player.phonograph.ui.adapter.SongCollectionDisplayPresenter
 import player.phonograph.ui.adapter.SongDisplayPresenter
 import player.phonograph.ui.modules.panel.PanelViewModel
@@ -112,7 +113,7 @@ class FoldersPage : AbsPanelPage() {
                 folderPageDisplayConfig.layout,
                 folderPageDisplayConfig.sortMode,
                 folderPageDisplayConfig.colorFooter,
-                imageryType = DisplayOptions.ICON,
+                imageryType = IMAGERY_ICON,
             )
         )
 
@@ -195,7 +196,7 @@ class FoldersPage : AbsPanelPage() {
                 folderPageDisplayConfig.layout,
                 folderPageDisplayConfig.sortMode,
                 folderPageDisplayConfig.colorFooter,
-                imageryType = DisplayOptions.ICON,
+                imageryType = IMAGERY_ICON,
             )
             if (shouldRecreate) {
                 songCollectionDisplayAdapter = songCollectionDisplayAdapter(options)

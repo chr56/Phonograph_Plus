@@ -22,6 +22,9 @@ import player.phonograph.ui.adapter.ArtistDisplayPresenter
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayOptions
 import player.phonograph.ui.adapter.GenreDisplayPresenter
+import player.phonograph.ui.adapter.IMAGERY_ICON
+import player.phonograph.ui.adapter.IMAGERY_NONE
+import player.phonograph.ui.adapter.IMAGERY_ORDINAL_TEXT
 import player.phonograph.ui.adapter.PlaylistDisplayPresenter
 import player.phonograph.ui.adapter.QueueSongDisplayPresenter
 import player.phonograph.ui.adapter.SongDisplayPresenter
@@ -164,7 +167,7 @@ class PlaylistSearchResultPageFragment : SearchResultPageFragment<Playlist>() {
             PlaylistDisplayPresenter(),
             DisplayOptions(
                 ItemLayoutStyle.LIST, SortMode(SortRef.DISPLAY_NAME), false,
-                imageryType = DisplayOptions.ICON,
+                imageryType = IMAGERY_ICON,
             )
         )
 
@@ -187,7 +190,7 @@ class GenreSearchResultPageFragment : SearchResultPageFragment<Genre>() {
             GenreDisplayPresenter(),
             DisplayOptions(
                 ItemLayoutStyle.LIST, SortMode(SortRef.DISPLAY_NAME), false,
-                imageryType = DisplayOptions.NONE,
+                imageryType = IMAGERY_NONE,
             )
         )
 
@@ -208,7 +211,7 @@ class QueueSearchResultPageFragment : SearchResultPageFragment<QueueSong>() {
         DisplayAdapter(
             activity,
             PlaylistSearchResultDisplayPresenter,
-            DisplayOptions(ItemLayoutStyle.LIST, null, true, imageryType = DisplayOptions.ORDINAL_TEXT)
+            DisplayOptions(ItemLayoutStyle.LIST, null, true, imageryType = IMAGERY_ORDINAL_TEXT)
         )
 
     override fun targetFlow(): StateFlow<List<QueueSong>> = viewModel.songsInQueue

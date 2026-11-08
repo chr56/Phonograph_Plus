@@ -11,9 +11,10 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.actions.ActionMenus
 import player.phonograph.ui.actions.ItemClickActions
 import player.phonograph.ui.adapter.DisplayOptions
-import player.phonograph.ui.adapter.DisplayOptions.Companion.ImageryType
 import player.phonograph.ui.adapter.DisplayPresenter
 import player.phonograph.ui.adapter.DraggableDisplayAdapter
+import player.phonograph.ui.adapter.IMAGERY_CUSTOM_TEXT
+import player.phonograph.ui.adapter.ImageryType
 import player.phonograph.ui.adapter.MultiSelectionController
 import player.phonograph.ui.adapter.SongDisplayPresenter
 import player.phonograph.ui.resource.Layouts
@@ -36,7 +37,7 @@ class PlayingQueueAdapter(activity: FragmentActivity) :
             PlayingQueuePresenter,
             DisplayOptions(
                 ItemLayoutStyle.LIST, null, false,
-                imageryType = DisplayOptions.CUSTOM_TEXT,
+                imageryType = IMAGERY_CUSTOM_TEXT,
             ),
             allowMultiSelection = false
         ) {
