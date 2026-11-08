@@ -147,8 +147,21 @@ class VanillaAudioPlayer(private val context: Context, override var gaplessPlayb
         }
 
     override fun stop() {
-        currentMediaPlayer.reset()
+        // Drop initialized state before reset so a failed reset cannot leave playback looking live.
         isInitialized = false
+        try {
+            currentMediaPlayer.reset()
+        } catch (e: IllegalStateException) {
+            Log.e(TAG, "Failed to reset current media player", e)
+            currentMediaPlayer.release()
+            nextMediaPlayer?.let {
+                it.release()
+                nextMediaPlayer = null
+            }
+            currentMediaPlayer = MediaPlayer().also { player ->
+                player.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK)
+            }
+        }
     }
 
     override fun release() {
