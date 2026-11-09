@@ -22,11 +22,13 @@ import player.phonograph.service.queue.QueueManager
 import androidx.activity.ComponentActivity
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.withStarted
+import android.app.BackgroundServiceStartNotAllowedException
 import android.content.ComponentName
 import android.content.Context
 import android.content.Context.BIND_AUTO_CREATE
 import android.content.ContextWrapper
 import android.content.Intent
+import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES
 import android.os.Handler
 import android.os.HandlerThread
@@ -65,7 +67,11 @@ object MusicPlayerRemote {
                 // start service
                 contextWrapper.startService(Intent(contextWrapper, MusicService::class.java))
             } catch (e: Exception) {
-                warning(activity, TAG, "Failed to start service", e)
+                if (SDK_INT >= VERSION_CODES.S && e is BackgroundServiceStartNotAllowedException) {
+                    Log.w(TAG, "Failed to launch from background: $e", e)
+                } else {
+                    warning(activity, TAG, "Failed to start service", e)
+                }
             }
 
             val serviceConnection = MusicServiceConnectionImpl(callback)
@@ -264,7 +270,7 @@ object MusicPlayerRemote {
         musicService?.seek(millis)
     }
 
-    fun fastForward() : Boolean = musicService?.fastForward() == true
+    fun fastForward(): Boolean = musicService?.fastForward() == true
 
     fun fastRewind(): Boolean = musicService?.fastRewind() == true
 
