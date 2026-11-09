@@ -13,6 +13,7 @@ import player.phonograph.ui.theme.themeDividerColor
 import player.phonograph.ui.theme.themeFooterColor
 import player.phonograph.ui.theme.themeIconColor
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
@@ -23,6 +24,26 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import android.content.Context
+
+@Immutable
+data class ListLayoutStyle(
+    val height: Dp,
+    val contentStartPadding: Dp,
+    val contentEndPadding: Dp,
+    val menuWidth: Dp,
+    val titleLines: Int,
+    val secondaryLines: Int,
+)
+
+@Immutable
+data class ItemColors(
+    val title: Color,
+    val secondaryText: Color,
+    val icon: Color,
+    val divider: Color,
+    val selection: Color,
+    val background: Color,
+)
 
 // fixme: replace view system functions from `.ui.theme.*`. It is better to create a new one for Compose system
 

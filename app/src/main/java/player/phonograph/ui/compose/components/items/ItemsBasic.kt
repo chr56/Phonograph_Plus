@@ -6,21 +6,29 @@ package player.phonograph.ui.compose.components.items
 
 import player.phonograph.R
 import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Icon
 import androidx.compose.material.Text
+import androidx.compose.material.ripple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+
+//region List
 
 @Composable
 fun ListItemWithLeading(
@@ -69,7 +77,7 @@ fun ListItemWithLeading(
                     .padding(start = style.contentStartPadding, end = style.contentEndPadding),
             )
             if (onMenuClick != null) {
-                ListItemMenu(style.menuWidth, colors.icon, onMenuClick)
+                ItemMenuButton(style.menuWidth, colors.icon, onMenuClick)
             }
         }
     }
@@ -111,7 +119,7 @@ fun ListItemWithoutLeading(
                     .padding(start = style.contentStartPadding, end = style.contentEndPadding),
             )
             if (onMenuClick != null) {
-                ListItemMenu(style.menuWidth, colors.icon, onMenuClick)
+                ItemMenuButton(style.menuWidth, colors.icon, onMenuClick)
             }
         }
     }
@@ -159,29 +167,6 @@ private fun ListItemFrame(
 }
 
 @Composable
-private fun DragHandle(
-    modifier: Modifier,
-    iconPainter: Painter,
-    iconColor: Color,
-) {
-    Box(
-        modifier = Modifier
-            .offset(x = (-8).dp)
-            .width(24.dp)
-            .fillMaxHeight()
-            .then(modifier),
-        contentAlignment = Alignment.Center,
-    ) {
-        Icon(
-            iconPainter,
-            contentDescription = null,
-            modifier = Modifier.size(24.dp),
-            tint = iconColor,
-        )
-    }
-}
-
-@Composable
 private fun ListItemText(
     title: String,
     secondary: List<String?>,
@@ -221,3 +206,125 @@ private fun ListItemText(
         }
     }
 }
+//endregion
+
+
+//region Grid
+
+@Composable
+fun ItemGrid(
+    title: String,
+    description: String?,
+    modifier: Modifier,
+    artwork: @Composable BoxScope.() -> Unit,
+    colors: ItemColors,
+    selected: Boolean,
+    contentAlpha: Float,
+    titleOverflow: TextOverflow,
+    descriptionOverflow: TextOverflow,
+    onClick: (() -> Unit)?,
+    onLongClick: (() -> Unit)?,
+    footerHeight: Dp,
+    textPadding: Dp,
+    titleStyle: TextStyle,
+    descriptionTextStyle: TextStyle,
+) {
+    Column(
+        modifier
+            .clipToBounds()
+            .itemInteraction(selected, colors.selection, onClick, onLongClick)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(1f)
+                .alpha(contentAlpha),
+        ) {
+            artwork()
+        }
+        GridItemFooter(
+            title, description, colors, contentAlpha, titleOverflow, descriptionOverflow,
+            footerHeight, textPadding, titleStyle, descriptionTextStyle
+        )
+    }
+}
+
+@Composable
+private fun GridItemFooter(
+    title: String,
+    description: String?,
+    colors: ItemColors,
+    contentAlpha: Float,
+    titleOverflow: TextOverflow,
+    descriptionOverflow: TextOverflow,
+    footerHeight: Dp,
+    textPadding: Dp,
+    titleTextStyle: TextStyle,
+    descriptionTextStyle: TextStyle,
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(footerHeight)
+            .background(colors.background)
+            .padding(horizontal = textPadding)
+            .clipToBounds(),
+        contentAlignment = Alignment.CenterStart,
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight(unbounded = true)
+                .alpha(contentAlpha),
+            verticalArrangement = Arrangement.Center,
+        ) {
+            Text(
+                title,
+                style = titleTextStyle,
+                color = colors.title,
+                maxLines = 1,
+                softWrap = false,
+                overflow = titleOverflow,
+            )
+            Text(
+                description.orEmpty(),
+                style = descriptionTextStyle,
+                color = colors.secondaryText,
+                maxLines = 1,
+                softWrap = false,
+                overflow = descriptionOverflow,
+            )
+        }
+    }
+}
+
+//endregion
+
+//region Util
+
+@Composable
+fun Modifier.itemInteraction(
+    selected: Boolean,
+    selectionColor: Color,
+    onClick: (() -> Unit)?,
+    onLongClick: (() -> Unit)?,
+): Modifier {
+    val interactionSource = remember { MutableInteractionSource() }
+    val clicking = if (onClick != null || onLongClick != null) {
+        Modifier.combinedClickable(
+            interactionSource = interactionSource,
+            indication = ripple(color = selectionColor.copy(alpha = 1f)),
+            role = if (onClick != null) Role.Button else null,
+            onClick = onClick ?: {},
+            onLongClick = onLongClick,
+        )
+    } else Modifier
+    return this
+        .semantics { this.selected = selected }
+        .then(clicking)
+        .drawWithContent {
+            drawContent()
+            if (selected) drawRect(selectionColor)
+        }
+}
+//endregion
