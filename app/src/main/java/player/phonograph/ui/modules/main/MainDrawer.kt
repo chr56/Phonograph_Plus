@@ -23,13 +23,13 @@ import player.phonograph.repo.loader.Songs
 import player.phonograph.service.MusicService
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
-import player.phonograph.ui.navigateToAppDetailSetting
-import player.phonograph.ui.navigateToStorageSetting
-import player.phonograph.ui.actions.actionPlay
+import player.phonograph.ui.actions.ItemActions
 import player.phonograph.ui.modules.auxiliary.AboutActivity
 import player.phonograph.ui.modules.auxiliary.DatabaseMaintenanceDialog
 import player.phonograph.ui.modules.setting.SettingsActivity
 import player.phonograph.ui.modules.web.WebSearchLauncher
+import player.phonograph.ui.navigateToAppDetailSetting
+import player.phonograph.ui.navigateToStorageSetting
 import player.phonograph.ui.resource.Icons
 import player.phonograph.ui.resource.Texts
 import player.phonograph.ui.theme.getTintedDrawable
@@ -113,7 +113,7 @@ fun setupDrawerMenu(
                 closeDrawer()
                 lifecycleScope.launch(Dispatchers.IO) {
                     val songs = Songs.all(activity)
-                    if (songs.isNotEmpty()) songs.actionPlay(ShuffleMode.SHUFFLE, Random.nextInt(songs.size))
+                    if (songs.isNotEmpty()) ItemActions.play(activity, songs, ShuffleMode.SHUFFLE, Random.nextInt(songs.size))
                 }
                 true
             }

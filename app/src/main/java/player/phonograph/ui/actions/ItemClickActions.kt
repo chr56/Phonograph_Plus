@@ -112,16 +112,17 @@ object ItemClickActions {
 
         // base mode
         when (base) {
-            SONG_PLAY_NEXT            -> item.actionPlayNext()
-            SONG_PLAY_NOW             -> item.actionPlayNow()
-            SONG_APPEND_QUEUE         -> item.actionEnqueue()
-            SONG_SINGLE_PLAY          -> listOf(item).actionPlay(null, 0)
-            QUEUE_PLAY_NOW            -> list.actionPlayNow()
-            QUEUE_PLAY_NEXT           -> list.actionPlayNext()
-            QUEUE_APPEND_QUEUE        -> list.actionEnqueue()
-            QUEUE_SWITCH_TO_BEGINNING -> list.actionPlay(ShuffleMode.NONE, 0)
-            QUEUE_SWITCH_TO_POSITION  -> list.actionPlay(ShuffleMode.NONE, position)
-            QUEUE_SHUFFLE             -> list.actionPlay(
+            SONG_PLAY_NEXT            -> ItemActions.playNext(context, item)
+            SONG_PLAY_NOW             -> ItemActions.playNow(context, item)
+            SONG_APPEND_QUEUE         -> ItemActions.enqueue(context, item)
+            SONG_SINGLE_PLAY          -> ItemActions.play(context, listOf(item), null, 0)
+            QUEUE_PLAY_NOW            -> ItemActions.playNow(context, list)
+            QUEUE_PLAY_NEXT           -> ItemActions.playNext(context, list)
+            QUEUE_APPEND_QUEUE        -> ItemActions.enqueue(context, list)
+            QUEUE_SWITCH_TO_BEGINNING -> ItemActions.play(context, list, ShuffleMode.NONE, 0)
+            QUEUE_SWITCH_TO_POSITION  -> ItemActions.play(context, list, ShuffleMode.NONE, position)
+            QUEUE_SHUFFLE             -> ItemActions.play(
+                context, list,
                 ShuffleMode.SHUFFLE,
                 Random.nextInt(list.size)
             )
@@ -176,10 +177,10 @@ object ItemClickActions {
                     else                    -> null
                 } ?: return
                 when (base) {
-                    SONG_PLAY_NEXT    -> song.actionPlayNext()
-                    SONG_PLAY_NOW     -> song.actionPlayNow()
-                    SONG_APPEND_QUEUE -> song.actionEnqueue()
-                    SONG_SINGLE_PLAY  -> listOf(song).actionPlay(null, 0)
+                    SONG_PLAY_NEXT    -> ItemActions.playNext(context, song)
+                    SONG_PLAY_NOW     -> ItemActions.playNow(context, song)
+                    SONG_APPEND_QUEUE -> ItemActions.enqueue(context, song)
+                    SONG_SINGLE_PLAY  -> ItemActions.play(context, listOf(song), null, 0)
                 }
             }
 
@@ -195,13 +196,15 @@ object ItemClickActions {
                 val actualPosition = songRequest.position
 
                 when (base) {
-                    QUEUE_PLAY_NOW            -> songs.actionPlayNow()
-                    QUEUE_PLAY_NEXT           -> songs.actionPlayNext()
-                    QUEUE_APPEND_QUEUE        -> songs.actionEnqueue()
-                    QUEUE_SWITCH_TO_BEGINNING -> songs.actionPlay(ShuffleMode.NONE, 0)
-                    QUEUE_SWITCH_TO_POSITION  -> songs.actionPlay(ShuffleMode.NONE, actualPosition)
+                    QUEUE_PLAY_NOW            -> ItemActions.playNow(context, songs)
+                    QUEUE_PLAY_NEXT           -> ItemActions.playNext(context, songs)
+                    QUEUE_APPEND_QUEUE        -> ItemActions.enqueue(context, songs)
+                    QUEUE_SWITCH_TO_BEGINNING -> ItemActions.play(context, songs, ShuffleMode.NONE, 0)
+                    QUEUE_SWITCH_TO_POSITION  -> ItemActions.play(context, songs, ShuffleMode.NONE, actualPosition)
                     QUEUE_SHUFFLE             ->
-                        if (songs.isNotEmpty()) songs.actionPlay(ShuffleMode.SHUFFLE, Random.nextInt(songs.size))
+                        if (songs.isNotEmpty()) {
+                            ItemActions.play(context, songs, ShuffleMode.SHUFFLE, Random.nextInt(songs.size))
+                        }
                 }
             }
 

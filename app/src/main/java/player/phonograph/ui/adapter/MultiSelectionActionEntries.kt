@@ -8,13 +8,7 @@ import player.phonograph.model.menu.ActionEntry
 import player.phonograph.model.menu.ActionSemantic
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.service.ShuffleMode
-import player.phonograph.ui.actions.actionAddToPlaylist
-import player.phonograph.ui.actions.actionDelete
-import player.phonograph.ui.actions.actionDeletePlaylists
-import player.phonograph.ui.actions.actionEnqueue
-import player.phonograph.ui.actions.actionPlay
-import player.phonograph.ui.actions.actionPlayNext
-import player.phonograph.ui.actions.actionSavePlaylists
+import player.phonograph.ui.actions.ItemActions
 import player.phonograph.ui.goToSongDetail
 import player.phonograph.ui.resource.ActionSemantics
 import player.phonograph.ui.util.convertToSongs
@@ -42,28 +36,28 @@ object MultiSelectionActionEntries {
 
     fun <I> Play(context: Context, controller: MultiSelectionController<I>): ActionEntry =
         entry(ActionSemantics.Play, controller) {
-            convertToSongs(context, it).actionPlay(ShuffleMode.NONE, 0)
+            ItemActions.play(context, convertToSongs(context, it), ShuffleMode.NONE, 0)
         }
 
     fun <I> PlayNext(context: Context, controller: MultiSelectionController<I>): ActionEntry =
         entry(ActionSemantics.PlayNext, controller) {
-            convertToSongs(context, it).actionPlayNext()
+            ItemActions.playNext(context, convertToSongs(context, it))
         }
 
     fun <I> ShuffleAll(context: Context, controller: MultiSelectionController<I>): ActionEntry =
         entry(ActionSemantics.ShuffleAll, controller) {
             val songs = convertToSongs(context, it)
-            songs.actionPlay(ShuffleMode.SHUFFLE, Random().nextInt(songs.size))
+            ItemActions.play(context, songs, ShuffleMode.SHUFFLE, Random().nextInt(songs.size))
         }
 
     fun <I> AddToPlayingQueue(context: Context, controller: MultiSelectionController<I>): ActionEntry =
         entry(ActionSemantics.AddToPlayingQueue, controller) {
-            convertToSongs(context, it).actionEnqueue()
+            ItemActions.enqueue(context, convertToSongs(context, it))
         }
 
     fun <I> AddToPlaylist(context: Context, controller: MultiSelectionController<I>): ActionEntry =
         entry(ActionSemantics.AddToPlaylist, controller) {
-            convertToSongs(context, it).actionAddToPlaylist(context)
+            ItemActions.addToPlaylist(context, convertToSongs(context, it))
         }
 
     fun <I> TagEditor(context: Context, controller: MultiSelectionController<I>): ActionEntry =
@@ -81,15 +75,15 @@ object MultiSelectionActionEntries {
             val playlists = it.filterIsInstance<Playlist>()
             // Delete playlists instead of their songs when playlists are selected.
             if (playlists.isEmpty()) {
-                convertToSongs(context, it).actionDelete(context)
+                ItemActions.delete(context, convertToSongs(context, it))
             } else {
-                playlists.actionDeletePlaylists(context)
+                ItemActions.deletePlaylists(context, playlists)
             }
         }
 
     fun <I> SavePlaylists(context: Context, controller: MultiSelectionController<I>): ActionEntry =
         entry(ActionSemantics.SavePlaylists, controller) {
-            it.filterIsInstance<Playlist>().actionSavePlaylists(context)
+            ItemActions.savePlaylists(context, it.filterIsInstance<Playlist>())
         }
 
     fun <I> SelectAll(context: Context, controller: MultiSelectionController<I>): ActionEntry =

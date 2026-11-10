@@ -15,14 +15,7 @@ import player.phonograph.model.menu.ActionSemantic
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.ui.UIMode
 import player.phonograph.repo.loader.FavoriteTracks
-import player.phonograph.ui.actions.actionAddToCurrentQueue
-import player.phonograph.ui.actions.actionAddToPlaylist
-import player.phonograph.ui.actions.actionDeletePlaylist
-import player.phonograph.ui.actions.actionPlay
-import player.phonograph.ui.actions.actionPlayNext
-import player.phonograph.ui.actions.actionRenamePlaylist
-import player.phonograph.ui.actions.actionSavePlaylist
-import player.phonograph.ui.actions.actionShuffleAndPlay
+import player.phonograph.ui.actions.ItemActions
 import player.phonograph.ui.goToSongDetail
 import player.phonograph.ui.modules.setting.dialog.LastAddedPlaylistIntervalDialog
 import player.phonograph.ui.resource.ActionSemantics
@@ -48,42 +41,42 @@ object PlaylistDetailActionEntries {
 
     fun Play(context: ComponentActivity, item: Playlist): ActionEntry =
         entry(ActionSemantics.Play, visibility = ALWAYS) {
-            item.actionPlay(context)
+            ItemActions.play(context, item)
         }
 
     fun ShufflePlaylist(context: ComponentActivity, item: Playlist): ActionEntry =
         entry(ActionSemantics.ShufflePlaylist, visibility = ALWAYS) {
-            item.actionShuffleAndPlay(context)
+            ItemActions.shuffleAndPlay(context, item)
         }
 
     fun PlayNext(context: ComponentActivity, item: Playlist): ActionEntry =
         entry(ActionSemantics.PlayNext) {
-            item.actionPlayNext(context)
+            ItemActions.playNext(context, item)
         }
 
     fun AddToPlayingQueue(context: ComponentActivity, item: Playlist): ActionEntry =
         entry(ActionSemantics.AddToPlayingQueue) {
-            item.actionAddToCurrentQueue(context)
+            ItemActions.addToCurrentQueue(context, item)
         }
 
     fun AddToPlaylist(context: ComponentActivity, item: Playlist): ActionEntry =
         entry(ActionSemantics.AddToPlaylist) {
             if (context is FragmentActivity) {
-                item.actionAddToPlaylist(context)
+                ItemActions.addToPlaylist(context, item)
             }
         }
 
     fun Rename(context: ComponentActivity, item: Playlist): ActionEntry =
         entry(ActionSemantics.Rename) {
             if (context is FragmentActivity) {
-                item.actionRenamePlaylist(context)
+                ItemActions.renamePlaylist(context, item)
             }
         }
 
     fun SavePlaylist(context: ComponentActivity, item: Playlist): ActionEntry =
         entry(ActionSemantics.SavePlaylist, visibility = NEVER) {
             if (context is FragmentActivity) {
-                item.actionSavePlaylist(context)
+                ItemActions.savePlaylist(context, item)
             }
         }
 
@@ -94,7 +87,7 @@ object PlaylistDetailActionEntries {
             dangerous = true,
         ) {
             if (context is FragmentActivity) {
-                item.actionDeletePlaylist(context)
+                ItemActions.deletePlaylist(context, item)
             }
         }
 

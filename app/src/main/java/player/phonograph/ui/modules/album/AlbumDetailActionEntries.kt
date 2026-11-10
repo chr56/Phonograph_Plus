@@ -12,11 +12,7 @@ import player.phonograph.model.menu.ActionEntry.ToolbarEntry.Companion.NEVER
 import player.phonograph.model.menu.ActionSemantic
 import player.phonograph.model.service.ShuffleMode
 import player.phonograph.repo.loader.Songs
-import player.phonograph.ui.actions.actionAddToPlaylist
-import player.phonograph.ui.actions.actionDelete
-import player.phonograph.ui.actions.actionEnqueue
-import player.phonograph.ui.actions.actionPlay
-import player.phonograph.ui.actions.actionPlayNext
+import player.phonograph.ui.actions.ItemActions
 import player.phonograph.ui.goToArtistDetail
 import player.phonograph.ui.goToSongDetail
 import player.phonograph.ui.modules.web.LastFmDialog
@@ -40,28 +36,28 @@ object AlbumDetailActionEntries {
 
     fun Play(context: ComponentActivity, item: Album): ActionEntry =
         entry(ActionSemantics.Play, visibility = ALWAYS) {
-            item.allSongs(context).actionPlay(ShuffleMode.NONE, 0)
+            ItemActions.play(context, item.allSongs(context), ShuffleMode.NONE, 0)
         }
 
     fun ShuffleAlbum(context: ComponentActivity, item: Album): ActionEntry =
         entry(ActionSemantics.ShuffleAlbum, visibility = ALWAYS) {
             val songs = item.allSongs(context)
-            songs.actionPlay(ShuffleMode.SHUFFLE, Random.nextInt(songs.size))
+            ItemActions.play(context, songs, ShuffleMode.SHUFFLE, Random.nextInt(songs.size))
         }
 
     fun PlayNext(context: ComponentActivity, item: Album): ActionEntry =
         entry(ActionSemantics.PlayNext) {
-            item.allSongs(context).actionPlayNext()
+            ItemActions.playNext(context, item.allSongs(context))
         }
 
     fun AddToPlayingQueue(context: ComponentActivity, item: Album): ActionEntry =
         entry(ActionSemantics.AddToPlayingQueue) {
-            item.allSongs(context).actionEnqueue()
+            ItemActions.enqueue(context, item.allSongs(context))
         }
 
     fun AddToPlaylist(context: ComponentActivity, item: Album): ActionEntry =
         entry(ActionSemantics.AddToPlaylist) {
-            item.allSongs(context).actionAddToPlaylist(context)
+            ItemActions.addToPlaylist(context, item.allSongs(context))
         }
 
     fun GoToArtist(context: ComponentActivity, item: Album): ActionEntry =
@@ -78,7 +74,7 @@ object AlbumDetailActionEntries {
     fun DeleteFromDevice(context: ComponentActivity, item: Album): ActionEntry =
         entry(ActionSemantics.DeleteFromDevice, visibility = NEVER, dangerous = true) {
             if (context is FragmentActivity) {
-                item.allSongs(context).actionDelete(context)
+                ItemActions.delete(context, item.allSongs(context))
             }
         }
 

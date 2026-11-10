@@ -16,7 +16,7 @@ import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.repo.mediastore.MediaStoreSongCollections
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
-import player.phonograph.ui.actions.actionPlay
+import player.phonograph.ui.actions.ItemActions
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayOptions
 import player.phonograph.ui.adapter.IMAGERY_ICON
@@ -156,14 +156,19 @@ class FoldersPage : AbsPanelPage() {
         onPlay = {
             lifecycleScope.launch(Dispatchers.IO) {
                 val allSongs = viewModel.currentSongs.value
-                if (allSongs.isNotEmpty()) allSongs.actionPlay(ShuffleMode.NONE, 0)
+                if (allSongs.isNotEmpty()) ItemActions.play(menuContext.context, allSongs, ShuffleMode.NONE, 0)
             }
             true
         },
         onShuffle = {
             lifecycleScope.launch(Dispatchers.IO) {
                 val allSongs = viewModel.currentSongs.value
-                if (allSongs.isNotEmpty()) allSongs.actionPlay(ShuffleMode.SHUFFLE, Random.nextInt(allSongs.size))
+                if (allSongs.isNotEmpty()) ItemActions.play(
+                    menuContext.context,
+                    allSongs,
+                    ShuffleMode.SHUFFLE,
+                    Random.nextInt(allSongs.size)
+                )
             }
             true
         }

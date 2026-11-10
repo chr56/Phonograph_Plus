@@ -9,13 +9,7 @@ import player.phonograph.model.menu.ActionEntry
 import player.phonograph.model.menu.ActionSemantic
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.service.ShuffleMode
-import player.phonograph.ui.actions.actionAddToPlaylist
-import player.phonograph.ui.actions.actionDelete
-import player.phonograph.ui.actions.actionDeletePlaylists
-import player.phonograph.ui.actions.actionEnqueue
-import player.phonograph.ui.actions.actionPlay
-import player.phonograph.ui.actions.actionPlayNext
-import player.phonograph.ui.actions.actionSavePlaylists
+import player.phonograph.ui.actions.ItemActions
 import player.phonograph.ui.goToSongDetail
 import player.phonograph.ui.resource.ActionSemantics
 import player.phonograph.ui.util.convertToSongs
@@ -92,7 +86,7 @@ object MultiSelectionActionEntries {
         value: (T) -> Any? = { it },
     ): ActionEntry.ToolbarEntry =
         songEntry(context, ActionSemantics.Play, state, value, visibility) {
-            it.actionPlay(ShuffleMode.NONE, 0)
+            ItemActions.play(context, it, ShuffleMode.NONE, 0)
         }
 
     fun <T> PlayNext(
@@ -102,7 +96,7 @@ object MultiSelectionActionEntries {
         value: (T) -> Any? = { it },
     ): ActionEntry.ToolbarEntry =
         songEntry(context, ActionSemantics.PlayNext, state, value, visibility) {
-            it.actionPlayNext()
+            ItemActions.playNext(context, it)
         }
 
     fun <T> ShuffleAll(
@@ -112,7 +106,7 @@ object MultiSelectionActionEntries {
         value: (T) -> Any? = { it },
     ): ActionEntry.ToolbarEntry =
         songEntry(context, ActionSemantics.ShuffleAll, state, value, visibility) {
-            it.actionPlay(ShuffleMode.SHUFFLE, Random.nextInt(it.size))
+            ItemActions.play(context, it, ShuffleMode.SHUFFLE, Random.nextInt(it.size))
         }
 
     fun <T> AddToPlayingQueue(
@@ -122,7 +116,7 @@ object MultiSelectionActionEntries {
         value: (T) -> Any? = { it },
     ): ActionEntry.ToolbarEntry =
         songEntry(context, ActionSemantics.AddToPlayingQueue, state, value, visibility) {
-            it.actionEnqueue()
+            ItemActions.enqueue(context, it)
         }
 
     fun <T> AddToPlaylist(
@@ -132,7 +126,7 @@ object MultiSelectionActionEntries {
         value: (T) -> Any? = { it },
     ): ActionEntry.ToolbarEntry =
         songEntry(context, ActionSemantics.AddToPlaylist, state, value, visibility) {
-            it.actionAddToPlaylist(context)
+            ItemActions.addToPlaylist(context, it)
         }
 
     fun <T> TagEditor(
@@ -159,10 +153,10 @@ object MultiSelectionActionEntries {
             val playlists = it.filterIsInstance<Playlist>()
             // Delete playlists instead of their songs when playlists are selected.
             if (playlists.isNotEmpty()) {
-                playlists.actionDeletePlaylists(context)
+                ItemActions.deletePlaylists(context, playlists)
             } else {
                 val songs = songs(context, it)
-                if (songs.isNotEmpty()) songs.actionDelete(context)
+                if (songs.isNotEmpty()) ItemActions.delete(context, songs)
             }
         }
 
@@ -174,7 +168,7 @@ object MultiSelectionActionEntries {
     ): ActionEntry.ToolbarEntry =
         entry(ActionSemantics.SavePlaylists, state, value, visibility) {
             val playlists = it.filterIsInstance<Playlist>()
-            if (playlists.isNotEmpty()) playlists.actionSavePlaylists(context)
+            if (playlists.isNotEmpty()) ItemActions.savePlaylists(context, playlists)
         }
 
     fun <T> SelectAll(

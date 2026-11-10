@@ -10,7 +10,7 @@ import player.phonograph.model.Song
 import player.phonograph.model.service.ShuffleMode
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.ui.ItemLayoutStyle
-import player.phonograph.ui.actions.actionPlay
+import player.phonograph.ui.actions.ItemActions
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.modules.main.ScanMediaDialog
 import player.phonograph.ui.modules.panel.PanelViewModel
@@ -116,14 +116,14 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<*>> : AbsPanelPage() {
         onPlay = {
             lifecycleScope.launch(Dispatchers.IO) {
                 val allSongs = viewModel.collectAllSongs(menuContext.context)
-                allSongs.actionPlay(ShuffleMode.NONE, 0)
+                ItemActions.play(menuContext.context, allSongs, ShuffleMode.NONE, 0)
             }
             true
         },
         onShuffle = {
             lifecycleScope.launch(Dispatchers.IO) {
                 val allSongs = viewModel.collectAllSongs(menuContext.context)
-                allSongs.actionPlay(ShuffleMode.SHUFFLE, Random.nextInt(allSongs.size))
+                ItemActions.play(menuContext.context, allSongs, ShuffleMode.SHUFFLE, Random.nextInt(allSongs.size))
             }
             true
         }

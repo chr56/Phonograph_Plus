@@ -6,7 +6,7 @@ package player.phonograph.ui.modules.playlist
 
 import player.phonograph.model.QueueSong
 import player.phonograph.model.menu.ActionEntry
-import player.phonograph.ui.actions.actionGotoDetail
+import player.phonograph.ui.actions.ItemActions
 import player.phonograph.ui.goToSongDetail
 import player.phonograph.ui.modules.auxiliary.DeletionDialog
 import player.phonograph.ui.resource.ActionSemantics
@@ -55,7 +55,7 @@ fun playlistEditorItemMenuEntries(
         ),
         ActionEntry.ToolbarEntry(
             semantic = ActionSemantics.Details,
-            action = { queueSong.song.actionGotoDetail(activity) }
+            action = { ItemActions.gotoDetail(activity, queueSong.song) }
         ),
         ActionEntry.GroupedEntries(
             semantic = ActionSemantics.More,
