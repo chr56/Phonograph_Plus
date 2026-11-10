@@ -18,10 +18,7 @@ import player.phonograph.ui.modules.genre.GenreDetailActivity
 import player.phonograph.ui.modules.playlist.PlaylistDetailActivity
 import player.phonograph.ui.theme.tintButtons
 import androidx.appcompat.app.AlertDialog
-import androidx.core.app.ActivityOptionsCompat
-import androidx.core.util.Pair
 import androidx.fragment.app.FragmentActivity
-import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
@@ -29,36 +26,14 @@ import android.net.Uri
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES
 import android.provider.Settings
-import android.view.View
 import android.widget.Toast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-suspend fun goToArtistDetail(context: Context, album: Album, sharedElements: Array<Pair<View, String>>? = null) {
-    if (!album.artistName.isNullOrEmpty()) {
-        val artists: List<Artist> = findArtists(context, listOf(album.artistName)).toList()
-        goToArtistDetail(context, artists, sharedElements)
-    } else {
-        goToArtistDetail(context, album.artistId, sharedElements)
-    }
-}
+fun goToArtistDetail(context: Context, artistId: Long) =
+    context.startActivity(ArtistDetailActivity.launchIntent(context.applicationContext, artistId))
 
-suspend fun goToArtistDetail(context: Context, song: Song, sharedElements: Array<Pair<View, String>>? = null) {
-    val relationship = RelationshipResolver.fromSettings(context).solve(song)
-    val artists: List<Artist> = findArtists(context, relationship.artists).toList()
-    if (artists.isNotEmpty()) {
-        goToArtistDetail(context, artists, sharedElements)
-    } else {
-        goToArtistDetail(context, song.artistId, sharedElements)
-    }
-}
-
-private suspend fun findArtists(context: Context, names: Collection<String>): Set<Artist> =
-    withContext(Dispatchers.IO) {
-        names.flatMap { Artists.searchByName(context, it) }.toSet()
-    }
-
-fun goToArtistDetail(context: Context, artists: List<Artist>, sharedElements: Array<Pair<View, String>>? = null) {
+fun goToArtistDetail(context: Context, artists: List<Artist>) {
     if (artists.isEmpty()) return
     if (artists.size > 1 && context is FragmentActivity) {
         AlertDialog.Builder(context)
@@ -67,53 +42,51 @@ fun goToArtistDetail(context: Context, artists: List<Artist>, sharedElements: Ar
                 dialog.dismiss()
             }
             .setSingleChoiceItems(artists.map { it.name }.toTypedArray(), -1) { dialog, selected ->
-                goToArtistDetail(context, artists[selected].id, sharedElements)
+                goToArtistDetail(context, artists[selected].id)
                 dialog.dismiss()
             }
             .show().tintButtons()
     } else {
-        goToArtistDetail(context, artists.first().id, sharedElements)
+        goToArtistDetail(context, artists.first().id)
     }
 }
 
-fun goToArtistDetail(context: Context, artistId: Long, sharedElements: Array<Pair<View, String>>? = null) {
-    val intent = ArtistDetailActivity.launchIntent(context.applicationContext, artistId)
-    if (!sharedElements.isNullOrEmpty() && context is Activity) {
-        context.startActivity(
-            intent,
-            ActivityOptionsCompat
-                .makeSceneTransitionAnimation(context, *sharedElements)
-                .toBundle()
-        )
+private suspend fun findArtists(context: Context, names: Collection<String>): Set<Artist> =
+    withContext(Dispatchers.IO) {
+        names.flatMap { Artists.searchByName(context, it) }.toSet()
+    }
+
+suspend fun goToArtistDetail(context: Context, album: Album) {
+    if (!album.artistName.isNullOrEmpty()) {
+        val artists: List<Artist> = findArtists(context, listOf(album.artistName)).toList()
+        goToArtistDetail(context, artists)
     } else {
-        context.startActivity(intent)
+        goToArtistDetail(context, album.artistId)
     }
 }
 
-fun goToAlbumDetail(context: Context, albumId: Long, sharedElements: Array<Pair<View, String>>? = null) {
-    val intent = AlbumDetailActivity.launchIntent(context.applicationContext, albumId)
-    if (context is Activity && !sharedElements.isNullOrEmpty()) {
-        context.startActivity(
-            intent,
-            ActivityOptionsCompat
-                .makeSceneTransitionAnimation(context, *sharedElements)
-                .toBundle()
-        )
+suspend fun goToArtistDetail(context: Context, song: Song) {
+    val relationship = RelationshipResolver.fromSettings(context).solve(song)
+    val artists: List<Artist> = findArtists(context, relationship.artists).toList()
+    if (artists.isNotEmpty()) {
+        goToArtistDetail(context, artists)
     } else {
-        context.startActivity(intent)
+        goToArtistDetail(context, song.artistId)
     }
 }
 
-fun goToGenreDetail(context: Context, genre: Genre, sharedElements: Array<Pair<View, String>>? = null) =
-    context.startActivity(GenreDetailActivity.launchIntent(context, genre))
+fun goToAlbumDetail(context: Context, albumId: Long) =
+    context.startActivity(AlbumDetailActivity.launchIntent(context.applicationContext, albumId))
 
-fun goToPlaylistDetail(context: Context, playlist: Playlist, sharedElements: Array<Pair<View, String>>? = null) =
-    context.startActivity(PlaylistDetailActivity.launchIntent(context, playlist))
+fun goToGenreDetail(context: Context, genre: Genre) =
+    context.startActivity(GenreDetailActivity.launchIntent(context.applicationContext, genre))
+
+fun goToPlaylistDetail(context: Context, playlist: Playlist) =
+    context.startActivity(PlaylistDetailActivity.launchIntent(context.applicationContext, playlist))
 
 fun navigateToStorageSetting(context: Context) {
     val uri = Uri.fromParts("package", context.packageName, null)
-    val intent = Intent()
-    intent.apply {
+    val intent = Intent().apply {
         if (SDK_INT >= VERSION_CODES.R) {
             action = Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION
             data = uri
