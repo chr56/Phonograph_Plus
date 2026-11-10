@@ -31,6 +31,7 @@ import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM_ART
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM_ARTIST
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ART
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ARTIST
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_DURATION
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_NUM_TRACKS
@@ -244,6 +245,7 @@ class MediaSessionController : ServiceComponent {
             putString(METADATA_KEY_ARTIST, song.artistName)
             putString(METADATA_KEY_ALBUM_ARTIST, song.artistName)
             putLong(METADATA_KEY_YEAR, song.year.toLong())
+            putBitmap(METADATA_KEY_ART, bitmap)
             putBitmap(METADATA_KEY_ALBUM_ART, bitmap)
             putLong(METADATA_KEY_TRACK_NUMBER, pos)
             putLong(METADATA_KEY_NUM_TRACKS, total)
