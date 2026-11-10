@@ -16,6 +16,8 @@ import player.phonograph.ui.modules.album.AlbumDetailActivity
 import player.phonograph.ui.modules.artist.ArtistDetailActivity
 import player.phonograph.ui.modules.genre.GenreDetailActivity
 import player.phonograph.ui.modules.playlist.PlaylistDetailActivity
+import player.phonograph.ui.modules.tag.MultiTagBrowserActivity
+import player.phonograph.ui.modules.tag.TagBrowserActivity
 import player.phonograph.ui.theme.tintButtons
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentActivity
@@ -83,6 +85,12 @@ fun goToGenreDetail(context: Context, genre: Genre) =
 
 fun goToPlaylistDetail(context: Context, playlist: Playlist) =
     context.startActivity(PlaylistDetailActivity.launchIntent(context.applicationContext, playlist))
+
+fun goToSongDetail(context: Context, path: String) =
+    context.startActivity(TagBrowserActivity.launchIntent(context.applicationContext, path))
+
+fun goToSongDetail(context: Context, paths: ArrayList<String>) =
+    context.startActivity(MultiTagBrowserActivity.launchIntent(context.applicationContext, paths))
 
 fun navigateToStorageSetting(context: Context) {
     val uri = Uri.fromParts("package", context.packageName, null)

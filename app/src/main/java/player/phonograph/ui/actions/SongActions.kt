@@ -17,9 +17,9 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.PathFilterSetting
 import player.phonograph.ui.goToAlbumDetail
 import player.phonograph.ui.goToArtistDetail
+import player.phonograph.ui.goToSongDetail
 import player.phonograph.ui.modules.auxiliary.DeletionDialog
 import player.phonograph.ui.modules.playlist.dialogs.AddToPlaylistDialogActivity
-import player.phonograph.ui.modules.tag.TagBrowserActivity
 import player.phonograph.ui.theme.tintButtons
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.FileProvider
@@ -66,7 +66,7 @@ fun List<Song>.actionEnqueue(): Boolean =
 
 
 fun Song.actionGotoDetail(activity: FragmentActivity): Boolean {
-    TagBrowserActivity.launch(activity, data)
+    goToSongDetail(activity, data)
     return true
 }
 
@@ -113,7 +113,7 @@ fun Song.actionAddToBlacklist(context: Context): Boolean {
 }
 
 fun Song.actionTagEditor(context: Context): Boolean {
-    TagBrowserActivity.launch(context, data)
+    goToSongDetail(context, data)
     return true
 }
 

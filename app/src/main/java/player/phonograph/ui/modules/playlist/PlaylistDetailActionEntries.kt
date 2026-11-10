@@ -23,8 +23,8 @@ import player.phonograph.ui.actions.actionPlayNext
 import player.phonograph.ui.actions.actionRenamePlaylist
 import player.phonograph.ui.actions.actionSavePlaylist
 import player.phonograph.ui.actions.actionShuffleAndPlay
+import player.phonograph.ui.goToSongDetail
 import player.phonograph.ui.modules.setting.dialog.LastAddedPlaylistIntervalDialog
-import player.phonograph.ui.modules.tag.MultiTagBrowserActivity
 import player.phonograph.ui.resource.ActionSemantics
 import player.phonograph.ui.theme.tintButtons
 import androidx.activity.ComponentActivity
@@ -103,7 +103,7 @@ object PlaylistDetailActionEntries {
             val paths = withContext(Dispatchers.IO) {
                 PlaylistSongsActions.reader(item).allSongs(context).map { it.data }
             }
-            MultiTagBrowserActivity.launch(context, ArrayList(paths))
+            goToSongDetail(context, ArrayList(paths))
         }
 
     fun Search(context: ComponentActivity, onAction: (PlaylistAction) -> Boolean): ActionEntry =

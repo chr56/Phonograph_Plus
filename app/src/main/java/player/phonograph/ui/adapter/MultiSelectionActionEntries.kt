@@ -15,8 +15,7 @@ import player.phonograph.ui.actions.actionEnqueue
 import player.phonograph.ui.actions.actionPlay
 import player.phonograph.ui.actions.actionPlayNext
 import player.phonograph.ui.actions.actionSavePlaylists
-import player.phonograph.ui.modules.tag.MultiTagBrowserActivity
-import player.phonograph.ui.modules.tag.TagBrowserActivity
+import player.phonograph.ui.goToSongDetail
 import player.phonograph.ui.resource.ActionSemantics
 import player.phonograph.ui.util.convertToSongs
 import android.content.Context
@@ -71,9 +70,9 @@ object MultiSelectionActionEntries {
         entry(ActionSemantics.TagEditor, controller) {
             val songs = convertToSongs(context, it)
             if (songs.size > 1) {
-                MultiTagBrowserActivity.launch(context, ArrayList(songs.map { song -> song.data }))
+                goToSongDetail(context, ArrayList(songs.map { song -> song.data }))
             } else if (songs.size == 1) {
-                TagBrowserActivity.launch(context, songs.first().data)
+                goToSongDetail(context, songs.first().data)
             }
         }
 

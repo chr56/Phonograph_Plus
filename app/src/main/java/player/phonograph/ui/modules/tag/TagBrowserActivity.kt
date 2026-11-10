@@ -100,18 +100,17 @@ class TagBrowserActivity :
     companion object {
 
         private const val PATH = "PATH"
+
+        fun launchIntent(context: Context, path: String): Intent =
+            Intent(context, TagBrowserActivity::class.java).apply {
+                putExtra(PATH, path)
+            }
+
         private fun parseIntent(context: Context, intent: Intent): Song? {
             val path = intent.extras?.getString(PATH) ?: return null
             return runBlocking { Songs.path(context, path) }
         }
 
-        fun launch(context: Context, path: String) {
-            context.startActivity(
-                Intent(context, TagBrowserActivity::class.java).apply {
-                    putExtra(PATH, path)
-                }
-            )
-        }
     }
 }
 

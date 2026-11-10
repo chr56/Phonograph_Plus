@@ -16,11 +16,10 @@ import player.phonograph.model.notification.NOTIFICATION_CHANNEL_ID_BACKGROUND_T
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.service.ShuffleMode
 import player.phonograph.repo.loader.PinedPlaylists
-import player.phonograph.repo.loader.Songs
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
-import player.phonograph.ui.modules.tag.TagBrowserActivity
+import player.phonograph.ui.goToSongDetail
 import player.phonograph.ui.resource.ActionSemantics
 import player.phonograph.ui.util.convertToSong
 import player.phonograph.ui.util.convertToSongs
@@ -204,7 +203,7 @@ object ActionEntries {
 
     fun TagEditor(context: Context, file: FileItem): ActionEntry =
         entry(ActionSemantics.TagEditor, ActionEntry.ToolbarEntry.IF_ROOM) {
-            TagBrowserActivity.launch(context, file.path)
+            goToSongDetail(context, file.path)
         }
 
     fun Scan(context: Context, dir: FileItem): ActionEntry =

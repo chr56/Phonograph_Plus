@@ -18,7 +18,7 @@ import player.phonograph.ui.actions.actionEnqueue
 import player.phonograph.ui.actions.actionPlay
 import player.phonograph.ui.actions.actionPlayNext
 import player.phonograph.ui.goToArtistDetail
-import player.phonograph.ui.modules.tag.MultiTagBrowserActivity
+import player.phonograph.ui.goToSongDetail
 import player.phonograph.ui.modules.web.LastFmDialog
 import player.phonograph.ui.resource.ActionSemantics
 import androidx.activity.ComponentActivity
@@ -72,7 +72,7 @@ object AlbumDetailActionEntries {
     fun TagEditor(context: ComponentActivity, item: Album): ActionEntry =
         entry(ActionSemantics.TagEditor, visibility = NEVER) {
             val songs = item.allSongs(context)
-            MultiTagBrowserActivity.launch(context, ArrayList(songs.map { it.data }))
+            goToSongDetail(context, ArrayList(songs.map { it.data }))
         }
 
     fun DeleteFromDevice(context: ComponentActivity, item: Album): ActionEntry =

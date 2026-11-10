@@ -7,8 +7,8 @@ package player.phonograph.ui.modules.playlist
 import player.phonograph.model.QueueSong
 import player.phonograph.model.menu.ActionEntry
 import player.phonograph.ui.actions.actionGotoDetail
+import player.phonograph.ui.goToSongDetail
 import player.phonograph.ui.modules.auxiliary.DeletionDialog
-import player.phonograph.ui.modules.tag.TagBrowserActivity
 import player.phonograph.ui.resource.ActionSemantics
 import androidx.fragment.app.FragmentActivity
 
@@ -62,7 +62,7 @@ fun playlistEditorItemMenuEntries(
             entries = listOf(
                 ActionEntry.ToolbarEntry(
                     semantic = ActionSemantics.TagEditor,
-                    action = { TagBrowserActivity.launch(activity, queueSong.song.data) }
+                    action = { goToSongDetail(activity, queueSong.song.data) }
                 ),
                 ActionEntry.ToolbarEntry(
                     semantic = ActionSemantics.DeleteFromDevice,
