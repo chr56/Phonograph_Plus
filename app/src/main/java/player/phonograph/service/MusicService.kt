@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2021~2026 chr_56, Karim Abou Zeid (kabouzeid), Andrew Neal
  */
 
 package player.phonograph.service
@@ -48,11 +48,9 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-/**
- * @author Karim Abou Zeid (kabouzeid), Andrew Neal
- */
-class MusicService : MediaBrowserServiceCompat(),
-                     QueueObserver, PlayerStateObserver {
+class MusicService :
+        MediaBrowserServiceCompat(),
+        QueueObserver, PlayerStateObserver {
 
     val queueManager: QueueManager = get()
 
@@ -64,14 +62,29 @@ class MusicService : MediaBrowserServiceCompat(),
 
     private lateinit var throttledTimer: ThrottledTimer
 
-    lateinit var coverLoader: CoverLoader
-
     val coroutineScope get() = _coroutineScope!!
     private var _coroutineScope: CoroutineScope? = null
 
-    private var enableHistory: Boolean = false
+    lateinit var coverLoader: CoverLoader
 
-    private val songPlayCountHelper = SongPlayCountHelper()
+    var isDestroyed = false
+        private set
+
+    //////////////////
+
+    override fun attachBaseContext(base: Context?) {
+        // Localization
+        super.attachBaseContext(
+            ContextLocaleDelegate.attachBaseContext(base)
+        )
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        // Localization
+        super.onConfigurationChanged(
+            ContextLocaleDelegate.onConfigurationChanged(this, newConfig)
+        )
+    }
 
     override fun onCreate() {
 
@@ -99,22 +112,7 @@ class MusicService : MediaBrowserServiceCompat(),
         throttledTimer = ThrottledTimer(controller.handler)
 
         // settings
-        val settingsObserver = SettingsObserver(this, coroutineScope)
-        settingsObserver.collect(Keys.broadcastCurrentPlayerState) { broadcastCurrentPlayerState ->
-            throttledTimer.broadcastCurrentPlayerState = broadcastCurrentPlayerState
-        }
-        settingsObserver.collect(Keys.alwaysUseMediaSessionToDisplayCover) { alwaysUseMediaSessionToDisplayCover ->
-            couldPutCover = SDK_INT >= VERSION_SET_COVER_USING_METADATA || alwaysUseMediaSessionToDisplayCover
-        }
-        settingsObserver.collect(Keys.seekJumpInterval) { interval ->
-            seekJumpInterval = (interval * 1000).toInt()
-        }
-        settingsObserver.collect(Keys.enableHistory) { state ->
-            enableHistory = state
-        }
-        settingsObserver.collect(Keys.stopOnTaskRemoved) { state ->
-            stopOnTaskRemoved = state
-        }
+        readSettings()
         // misc
         AppWidgetUpdateReceiver.register(this)
         sendBroadcast(Intent("player.phonograph.PHONOGRAPH_MUSIC_SERVICE_CREATED"))
@@ -146,43 +144,6 @@ class MusicService : MediaBrowserServiceCompat(),
             ACTION_CONNECT_WIDGETS       -> AppWidgetUpdateReceiver.connect(this)
         }
     }
-
-    private fun exitOrStop() {
-        log("serviceUsedInForeground: $serviceUsedInForeground", false)
-        if (serviceUsedInForeground > 0) {
-            pause()
-            MusicPlayerRemote.unbindAllFromService()
-            log("All service bindings are removed", false)
-            controller.handler.post {
-                stopSelf()
-            }
-        } else {
-            stopSelf()
-        }
-    }
-
-
-    private fun toggleFavorite(song: Song?): Boolean {
-        return if (song != null) runBlocking { FavoriteTracks.toggleState(this@MusicService, song) } else false
-    }
-
-
-    fun addPlayerStateObserver(observer: PlayerStateObserver) {
-        controller.addObserver(observer)
-    }
-
-    fun removePlayerStateObserver(observer: PlayerStateObserver) {
-        controller.removeObserver(observer)
-    }
-
-    val playerState get() = controller.playerState
-
-    val isPlaying: Boolean get() = controller.isPlaying
-
-    var isDestroyed = false
-        private set
-
-    private var stopOnTaskRemoved: Boolean = false
 
     override fun onTaskRemoved(rootIntent: Intent?) {
         if (stopOnTaskRemoved) {
@@ -222,14 +183,76 @@ class MusicService : MediaBrowserServiceCompat(),
         )
     }
 
-    fun playAt(position: Int) = controller.playAt(position)
-    fun pause() = controller.pause(releaseResource = true, reason = PauseReason.PAUSE_BY_MANUAL_ACTION)
+
+    //////////////////
+
+    //region Settings
+    private var couldPutCover: Boolean = true
+
+    private var seekJumpInterval: Int = 5_000
+
+    private var stopOnTaskRemoved: Boolean = false
+
+    private var enableHistory: Boolean = false
+
+    private val songPlayCountHelper = SongPlayCountHelper()
+
+    private fun readSettings() {
+        val settingsObserver = SettingsObserver(this, coroutineScope)
+        settingsObserver.collect(Keys.broadcastCurrentPlayerState) { broadcastCurrentPlayerState ->
+            throttledTimer.broadcastCurrentPlayerState = broadcastCurrentPlayerState
+        }
+        settingsObserver.collect(Keys.alwaysUseMediaSessionToDisplayCover) { alwaysUseMediaSessionToDisplayCover ->
+            couldPutCover = SDK_INT >= VERSION_SET_COVER_USING_METADATA || alwaysUseMediaSessionToDisplayCover
+        }
+        settingsObserver.collect(Keys.seekJumpInterval) { interval ->
+            seekJumpInterval = (interval * 1000).toInt()
+        }
+        settingsObserver.collect(Keys.stopOnTaskRemoved) { state ->
+            stopOnTaskRemoved = state
+        }
+        settingsObserver.collect(Keys.enableHistory) { state ->
+            enableHistory = state
+        }
+    }
+    //endregion
+
+    fun addPlayerStateObserver(observer: PlayerStateObserver) {
+        controller.addObserver(observer)
+    }
+
+    fun removePlayerStateObserver(observer: PlayerStateObserver) {
+        controller.removeObserver(observer)
+    }
+
+
+    //////////////////
+
+    val audioSessionId: Int get() = controller.audioSessionId
+    val mediaSession get() = mediaSessionController.mediaSession
+
+    val playerState get() = controller.playerState
+
+    val isPlaying: Boolean get() = controller.isPlaying
+
+    val statusForNotification: MusicServiceStatus
+        get() = MusicServiceStatus(
+            isPlaying,
+            queueManager.shuffleMode,
+            queueManager.repeatMode
+        )
+
+    val songProgressMillis: Int get() = controller.songProgressMillis
+    val songDurationMillis: Int get() = controller.songDurationMillis
+
     fun play() = controller.play()
+    fun pause() = controller.pause(releaseResource = true, reason = PauseReason.PAUSE_BY_MANUAL_ACTION)
+
+    fun playAt(position: Int) = controller.playAt(position)
+
     fun playPreviousSong(force: Boolean) = controller.jumpBackward(force)
     fun back(force: Boolean) = controller.back(force)
     fun playNextSong(force: Boolean) = controller.jumpForward(force)
-    val songProgressMillis: Int get() = controller.songProgressMillis
-    val songDurationMillis: Int get() = controller.songDurationMillis
 
     fun seek(targetMilli: Int): Boolean = try {
         if (targetMilli in 0..controller.songDurationMillis) {
@@ -244,37 +267,45 @@ class MusicService : MediaBrowserServiceCompat(),
         false
     }
 
-
-    private var seekJumpInterval: Int = 5_000
-
     fun fastForward(millis: Int = seekJumpInterval) = seek(songProgressMillis + millis)
     fun fastRewind(millis: Int = seekJumpInterval) = seek(songProgressMillis - millis)
 
     val speed: Float get() = controller.playerSpeed
     fun setSpeed(speed: Float): Unit = controller.setPlayerSpeed(speed)
 
-    val audioSessionId: Int get() = controller.audioSessionId
-    val mediaSession get() = mediaSessionController.mediaSession
-
-    override fun onPlayerStateChanged(oldState: PlayerState, newState: PlayerState) {
-        // update playing notification & widgets
-        updateNotificationAndMediaSession()
-        AppWidgetUpdateReceiver.notifyWidgets(this, isPlaying)
-
-        // save state
-        if (!isPlaying && songProgressMillis > 0) {
-            controller.saveCurrentMills()
+    fun exitOrStop() {
+        log("serviceUsedInForeground: $serviceUsedInForeground", false)
+        if (serviceUsedInForeground > 0) {
+            pause()
+            MusicPlayerRemote.unbindAllFromService()
+            log("All service bindings are removed", false)
+            controller.handler.post {
+                stopSelf()
+            }
+        } else {
+            stopSelf()
         }
+    }
 
-        songPlayCountHelper.notifyPlayStateChanged(isPlaying)
+    fun replaceLyrics(lyrics: LrcLyrics?) = controller.replaceLyrics(lyrics)
 
-        if (!playNotificationManager.persistent) {
-            // wait for seconds and try to stop foreground notification
-            throttledTimer.setCancelableNotificationTimer(5_000)
-        }
+    fun toggleFavorite(song: Song?): Boolean {
+        return song != null && runBlocking { FavoriteTracks.toggleState(this@MusicService, song) }
+    }
 
-        sendInternalIntent(EVENT_PLAY_STATE_CHANGED)
-        MusicServiceUtil.sendPublicIntent(this, EVENT_PLAY_STATE_CHANGED)
+    //////////////////
+
+    private fun updateNotificationAndMediaSession() {
+        val currentSong = queueManager.currentSong
+        val serviceStatus = statusForNotification
+        playNotificationManager.updateNotification(currentSong, serviceStatus)
+        mediaSessionController.updateMetaData(
+            currentSong,
+            (queueManager.currentSongPosition + 1).toLong(),
+            queueManager.playingQueue.size.toLong(),
+            couldPutCover
+        )
+        mediaSessionController.updatePlaybackState(serviceStatus)
     }
 
     private fun onCurrentPlayingChanged() {
@@ -300,6 +331,27 @@ class MusicService : MediaBrowserServiceCompat(),
 
         sendInternalIntent(EVENT_META_CHANGED)
         MusicServiceUtil.sendPublicIntent(this, EVENT_META_CHANGED)
+    }
+
+    override fun onPlayerStateChanged(oldState: PlayerState, newState: PlayerState) {
+        // update playing notification & widgets
+        updateNotificationAndMediaSession()
+        AppWidgetUpdateReceiver.notifyWidgets(this, isPlaying)
+
+        // save state
+        if (!isPlaying && songProgressMillis > 0) {
+            controller.saveCurrentMills()
+        }
+
+        songPlayCountHelper.notifyPlayStateChanged(isPlaying)
+
+        if (!playNotificationManager.persistent) {
+            // wait for seconds and try to stop foreground notification
+            throttledTimer.setCancelableNotificationTimer(5_000)
+        }
+
+        sendInternalIntent(EVENT_PLAY_STATE_CHANGED)
+        MusicServiceUtil.sendPublicIntent(this, EVENT_PLAY_STATE_CHANGED)
     }
 
     override fun onCurrentPositionChanged(newPosition: Int) {
@@ -356,27 +408,44 @@ class MusicService : MediaBrowserServiceCompat(),
         controller.prepareNext()
     }
 
+    //////////////////
+
+    fun requireRefreshMediaSessionState() {
+        mediaSessionController.updatePlaybackState(statusForNotification)
+    }
+
     private fun sendInternalIntent(what: String) {
         sendBroadcast(Intent(what).apply { `package` = ACTUAL_PACKAGE_NAME })
     }
 
-    private fun updateNotificationAndMediaSession() {
-        val currentSong = queueManager.currentSong
-        val serviceStatus = statusForNotification
-        playNotificationManager.updateNotification(currentSong, serviceStatus)
-        mediaSessionController.updateMetaData(
-            currentSong,
-            (queueManager.currentSongPosition + 1).toLong(),
-            queueManager.playingQueue.size.toLong(),
-            couldPutCover
-        )
-        mediaSessionController.updatePlaybackState(serviceStatus)
+    //region MediaBrowser
+    override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?): BrowserRoot? {
+        log("onGetRoot() clientPackageName: $clientPackageName, clientUid: $clientUid", false)
+        log("onGetRoot() rootHints: ${rootHints?.toString()}", false)
+        return try {
+            MediaBrowserDelegate.onGetRoot(this, clientPackageName, clientUid, rootHints)
+        } catch (e: Throwable) {
+            record(this, e, javaClass.name)
+            null
+        }
     }
 
-    private var couldPutCover: Boolean = true
+    override fun onLoadChildren(parentId: String, result: Result<MutableList<MediaBrowserCompat.MediaItem>>) {
+        log("onLoadChildren(): parentId $parentId", false)
+        runBlocking {
+            val context = this@MusicService
+            val mediaItems = try {
+                MediaBrowserDelegate.listChildren(parentId, context)
+            } catch (e: Throwable) {
+                record(context, e, javaClass.name)
+                MediaBrowserDelegate.error(context)
+            }
+            result.sendResult(ArrayList(mediaItems))
+        }
+    }
+    //endregion
 
-    fun replaceLyrics(lyrics: LrcLyrics?) = controller.replaceLyrics(lyrics)
-
+    //region ThrottledTimer
     private inner class ThrottledTimer(private val mHandler: Handler) : Runnable {
         var broadcastCurrentPlayerState: Boolean = false
         fun notifySeek() {
@@ -415,67 +484,9 @@ class MusicService : MediaBrowserServiceCompat(),
             }
         }
     }
+    //endregion
 
-    val statusForNotification: MusicServiceStatus
-        get() = MusicServiceStatus(
-            isPlaying,
-            queueManager.shuffleMode,
-            queueManager.repeatMode
-        )
-
-    internal fun requireRefreshMediaSessionState() {
-        mediaSessionController.updatePlaybackState(statusForNotification)
-    }
-
-    override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?): BrowserRoot? {
-        log("onGetRoot() clientPackageName: $clientPackageName, clientUid: $clientUid", false)
-        log("onGetRoot() rootHints: ${rootHints?.toString()}", false)
-        return try {
-            MediaBrowserDelegate.onGetRoot(this, clientPackageName, clientUid, rootHints)
-        } catch (e: Throwable) {
-            record(this, e, javaClass.name)
-            null
-        }
-    }
-
-    override fun onLoadChildren(parentId: String, result: Result<MutableList<MediaBrowserCompat.MediaItem>>) {
-        log("onLoadChildren(): parentId $parentId", false)
-        runBlocking {
-            val context = this@MusicService
-            val mediaItems = try {
-                MediaBrowserDelegate.listChildren(parentId, context)
-            } catch (e: Throwable) {
-                record(context, e, javaClass.name)
-                MediaBrowserDelegate.error(context)
-            }
-            result.sendResult(ArrayList(mediaItems))
-        }
-    }
-
-
-    override fun attachBaseContext(base: Context?) {
-        // Localization
-        super.attachBaseContext(
-            ContextLocaleDelegate.attachBaseContext(base)
-        )
-    }
-
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        // Localization
-        super.onConfigurationChanged(
-            ContextLocaleDelegate.onConfigurationChanged(this, newConfig)
-        )
-    }
-
-    companion object {
-        private const val THROTTLE: Long = 500
-
-        fun log(msg: String, force: Boolean) {
-            if (force || BuildConfig.DEBUG) Log.i("MusicServiceDebug", msg)
-        }
-
-    }
-
+    //region Binding
     private var serviceUsedInForeground: Int = 0
     override fun onBind(intent: Intent): IBinder {
         serviceUsedInForeground++
@@ -498,5 +509,14 @@ class MusicService : MediaBrowserServiceCompat(),
 
     inner class MusicBinder : Binder() {
         val service: MusicService get() = this@MusicService
+    }
+    //endregion
+
+    companion object {
+        private const val THROTTLE: Long = 500
+
+        fun log(msg: String, force: Boolean) {
+            if (force || BuildConfig.DEBUG) Log.i("MusicServiceDebug", msg)
+        }
     }
 }
