@@ -69,6 +69,10 @@ class MusicService : MediaBrowserServiceCompat(),
     val coroutineScope get() = _coroutineScope!!
     private var _coroutineScope: CoroutineScope? = null
 
+    private var enableHistory: Boolean = false
+
+    private val songPlayCountHelper = SongPlayCountHelper()
+
     override fun onCreate() {
 
         _coroutineScope = CoroutineScope(Dispatchers.IO)
@@ -78,8 +82,8 @@ class MusicService : MediaBrowserServiceCompat(),
         controller.onCreate(this)
 
         // observers & messages
-        sendChangeInternal(EVENT_META_CHANGED) // notify manually for first setting up queueManager
-        sendChangeInternal(EVENT_QUEUE_CHANGED) // notify manually for first setting up queueManager
+        sendInternalIntent(EVENT_META_CHANGED) // notify manually for first setting up queueManager
+        sendInternalIntent(EVENT_QUEUE_CHANGED) // notify manually for first setting up queueManager
         queueManager.addObserver(this)
         controller.addObserver(this)
 
@@ -253,124 +257,107 @@ class MusicService : MediaBrowserServiceCompat(),
     val mediaSession get() = mediaSessionController.mediaSession
 
     override fun onPlayerStateChanged(oldState: PlayerState, newState: PlayerState) {
-        notifyChange(EVENT_PLAY_STATE_CHANGED)
+        // update playing notification & widgets
+        updateNotificationAndMediaSession()
+        AppWidgetUpdateReceiver.notifyWidgets(this, isPlaying)
+
+        // save state
+        if (!isPlaying && songProgressMillis > 0) {
+            controller.saveCurrentMills()
+        }
+
+        songPlayCountHelper.notifyPlayStateChanged(isPlaying)
+
+        if (!playNotificationManager.persistent) {
+            // wait for seconds and try to stop foreground notification
+            throttledTimer.setCancelableNotificationTimer(5_000)
+        }
+
+        sendInternalIntent(EVENT_PLAY_STATE_CHANGED)
+        MusicServiceUtil.sendPublicIntent(this, EVENT_PLAY_STATE_CHANGED)
+    }
+
+    private fun onCurrentPlayingChanged() {
+        // update playing notification & widgets
+        updateNotificationAndMediaSession()
+        AppWidgetUpdateReceiver.notifyWidgets(this, isPlaying)
+
+        val currentSong = queueManager.currentSong
+        if (currentSong != null) {
+            // save state
+            queueManager.post(MSG_SAVE_CFG)
+            controller.saveCurrentMills()
+
+            // add to history
+            if (enableHistory) coroutineScope.launch(Dispatchers.IO) {
+                DynamicTracks.RecentTracks.add(currentSong.id)
+            }
+
+            // check for bumping
+            if (enableHistory) songPlayCountHelper.checkForBumpingPlayCount(coroutineScope) // old
+            songPlayCountHelper.songMonitored = queueManager.currentSong // new
+        }
+
+        sendInternalIntent(EVENT_META_CHANGED)
+        MusicServiceUtil.sendPublicIntent(this, EVENT_META_CHANGED)
     }
 
     override fun onCurrentPositionChanged(newPosition: Int) {
-        notifyChange(EVENT_META_CHANGED)
+        onCurrentPlayingChanged()
         controller.prepareNext()
     }
 
     override fun onCurrentSongChanged(newSong: Song?) {
-        notifyChange(EVENT_META_CHANGED)
+        onCurrentPlayingChanged()
         controller.prepareNext()
     }
 
     override fun onQueueChanged(newPlayingQueue: List<Song>) {
-        handleAndSendChangeInternal(EVENT_QUEUE_CHANGED)
-        notifyChange(EVENT_META_CHANGED)
+        // update playing notification
+        mediaSessionController.updateMetaData(
+            queueManager.currentSong,
+            (queueManager.currentSongPosition + 1).toLong(),
+            queueManager.playingQueue.size.toLong(),
+            couldPutCover
+        )
+        // because playing queue size might have changed
+
+        // save state
+        queueManager.post(MSG_SAVE_QUEUE)
+        queueManager.post(MSG_SAVE_CFG)
+
+        // notify controller
+        if (queueManager.playingQueue.isNotEmpty()) {
+            controller.prepareNext()
+        } else {
+            controller.stop()
+            playNotificationManager.cancelNotification()
+        }
+
+        sendInternalIntent(EVENT_QUEUE_CHANGED)
+        onCurrentPlayingChanged()
         controller.prepareNext()
     }
 
     override fun onShuffleModeChanged(newMode: ShuffleMode) {
-        handleAndSendChangeInternal(EVENT_SHUFFLE_MODE_CHANGED)
+        // update playing notification & widgets
+        updateNotificationAndMediaSession()
+        AppWidgetUpdateReceiver.notifyWidgets(this, isPlaying)
+
+        sendInternalIntent(EVENT_SHUFFLE_MODE_CHANGED)
     }
 
     override fun onRepeatModeChanged(newMode: RepeatMode) {
-        handleAndSendChangeInternal(EVENT_REPEAT_MODE_CHANGED)
+        // update playing notification & widgets
+        updateNotificationAndMediaSession()
+        AppWidgetUpdateReceiver.notifyWidgets(this, isPlaying)
+
+        sendInternalIntent(EVENT_REPEAT_MODE_CHANGED)
         controller.prepareNext()
     }
 
-    private fun notifyChange(what: String) {
-        handleAndSendChangeInternal(what)
-        MusicServiceUtil.sendPublicIntent(this, what)
-    }
-
-    private fun handleAndSendChangeInternal(what: String) {
-        handleChangeInternal(what)
-        sendChangeInternal(what)
-    }
-
-    private fun sendChangeInternal(what: String) {
+    private fun sendInternalIntent(what: String) {
         sendBroadcast(Intent(what).apply { `package` = ACTUAL_PACKAGE_NAME })
-    }
-
-    private var enableHistory: Boolean = false
-
-    private val songPlayCountHelper = SongPlayCountHelper()
-
-    private fun handleChangeInternal(what: String) {
-        when (what) {
-
-            EVENT_PLAY_STATE_CHANGED                              -> {
-                // update playing notification & widgets
-                updateNotificationAndMediaSession()
-                AppWidgetUpdateReceiver.notifyWidgets(this, isPlaying)
-
-                // save state
-                if (!isPlaying && songProgressMillis > 0) {
-                    controller.saveCurrentMills()
-                }
-
-                songPlayCountHelper.notifyPlayStateChanged(isPlaying)
-
-                if (!playNotificationManager.persistent) {
-                    // wait for seconds and try to stop foreground notification
-                    throttledTimer.setCancelableNotificationTimer(5_000)
-                }
-            }
-
-            EVENT_REPEAT_MODE_CHANGED, EVENT_SHUFFLE_MODE_CHANGED -> {
-                // just update playing notification & widgets
-                updateNotificationAndMediaSession()
-                AppWidgetUpdateReceiver.notifyWidgets(this, isPlaying)
-            }
-
-            EVENT_META_CHANGED                                    -> {
-                // update playing notification & widgets
-                updateNotificationAndMediaSession()
-                AppWidgetUpdateReceiver.notifyWidgets(this, isPlaying)
-
-                val currentSong = queueManager.currentSong
-                if (currentSong != null) {
-                    // save state
-                    queueManager.post(MSG_SAVE_CFG)
-                    controller.saveCurrentMills()
-
-                    // add to history
-                    if (enableHistory) coroutineScope.launch(Dispatchers.IO) {
-                        DynamicTracks.RecentTracks.add(currentSong.id)
-                    }
-
-                    // check for bumping
-                    if (enableHistory) songPlayCountHelper.checkForBumpingPlayCount(coroutineScope) // old
-                    songPlayCountHelper.songMonitored = queueManager.currentSong // new
-                }
-            }
-
-            EVENT_QUEUE_CHANGED                                   -> {
-                // update playing notification
-                mediaSessionController.updateMetaData(
-                    queueManager.currentSong,
-                    (queueManager.currentSongPosition + 1).toLong(),
-                    queueManager.playingQueue.size.toLong(),
-                    couldPutCover
-                )
-                // because playing queue size might have changed
-
-                // save state
-                queueManager.post(MSG_SAVE_QUEUE)
-                queueManager.post(MSG_SAVE_CFG)
-
-                // notify controller
-                if (queueManager.playingQueue.isNotEmpty()) {
-                    controller.prepareNext()
-                } else {
-                    controller.stop()
-                    playNotificationManager.cancelNotification()
-                }
-            }
-        }
     }
 
     private fun updateNotificationAndMediaSession() {
