@@ -427,11 +427,13 @@ class PlayerController : ServiceComponent, Controller {
             }
         }
 
-        override var playerSpeed
-            get() = audioPlayer.speed
-            set(speed) = handler.request {
+        override val playerSpeed: Float get() = audioPlayer.speed
+
+        override fun setPlayerSpeed(speed: Float) {
+            handler.request {
                 audioPlayer.speed = speed
             }
+        }
 
         override fun setVolume(vol: Float) {
             audioPlayer.setVolume(vol)
@@ -756,11 +758,12 @@ class PlayerController : ServiceComponent, Controller {
 
     override val songDurationMillis: Int get() = impl.songDurationMillis
 
-    override var playerSpeed
+    override val playerSpeed
         get() = impl.playerSpeed
-        set(speed) = handler.request {
-            impl.playerSpeed = speed
-        }
+
+    override fun setPlayerSpeed(speed: Float) {
+        handler.request { impl.setPlayerSpeed(speed) }
+    }
 
     private fun broadcastStopLyric() = StatusBarLyric.stopLyric()
     fun replaceLyrics(lyrics: LrcLyrics?) {

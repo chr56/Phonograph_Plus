@@ -163,7 +163,7 @@ class MediaSessionController : ServiceComponent {
             }
 
             override fun onSetPlaybackSpeed(speed: Float) {
-                service.speed = speed
+                service.setSpeed(speed)
             }
 
             override fun onMediaButtonEvent(mediaButtonEvent: Intent): Boolean {
@@ -191,15 +191,15 @@ class MediaSessionController : ServiceComponent {
             private fun processRequest(request: PlayRequest) {
                 when (request) {
                     PlayRequest.EmptyRequest     -> {}
-                    is PlayRequest.PlayAtRequest -> service.playSongAt(request.position)
+                    is PlayRequest.PlayAtRequest -> service.playAt(request.position)
                     is PlayRequest.SongRequest   -> {
                         queueManager.addSong(request.song, queueManager.currentSongPosition, false)
-                        service.playSongAt(queueManager.currentSongPosition)
+                        service.playAt(queueManager.currentSongPosition)
                     }
 
                     is PlayRequest.SongsRequest  -> {
                         queueManager.swapQueue(request.songs, request.position, false)
-                        service.playSongAt(0)
+                        service.playAt(0)
                     }
                 }
             }

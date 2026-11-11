@@ -26,20 +26,17 @@ class SpeedControlDialog : DialogFragment() {
     private var _binding: DialogSpeedControlBinding? = null
     private val binding: DialogSpeedControlBinding get() = _binding!!
 
-    private val speedData: MutableStateFlow<Float> = MutableStateFlow(-1f)
+    private val _speed: MutableStateFlow<Float> = MutableStateFlow(-1f)
     private fun applySpeed() {
-        val service = MusicPlayerRemote.accessMusicService() ?: return
-        val currentSpeed = service.speed
-        val targetSpeed = speedData.value
-        if (targetSpeed > 0f && targetSpeed != currentSpeed)
-            service.speed = targetSpeed
+        val current = MusicPlayerRemote.speed
+        val target = _speed.value
+        if (target > 0f && target != current)
+            MusicPlayerRemote.setSpeed(target)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
-        val service: MusicService? = MusicPlayerRemote.accessMusicService()
-
-        if (service == null) {
+        if (!MusicPlayerRemote.isServiceConnected) {
             Log.e(TAG, "Service unavailable!")
             return AlertDialog.Builder(requireContext())
                 .setMessage(R.string.tips_service_disconnected)
@@ -51,8 +48,8 @@ class SpeedControlDialog : DialogFragment() {
         setup()
 
 
-        speedData.value = service.speed // init
-        observe(lifecycle, speedData) { speed ->
+        _speed.value = MusicPlayerRemote.speed // init
+        observe(lifecycle, _speed) { speed ->
             binding.speedSeeker.progress = calculateProcess(speed)
             binding.speed.setText(String.format(null, "%.2f", speed))
         }
@@ -65,7 +62,7 @@ class SpeedControlDialog : DialogFragment() {
                 applySpeed()
             }
             .setNegativeButton(R.string.action_reset) { _, _: Int ->
-                speedData.value = 1.0f
+                _speed.value = 1.0f
                 applySpeed()
             }
             .create().tintButtons()
@@ -89,7 +86,7 @@ class SpeedControlDialog : DialogFragment() {
                 override fun onStartTrackingTouch(seekBar: SeekBar?) {}
 
                 override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                    if (currentProcess > -1) speedData.value = calculateSpeed(currentProcess)
+                    if (currentProcess > -1) _speed.value = calculateSpeed(currentProcess)
                 }
             }
         )
@@ -99,7 +96,7 @@ class SpeedControlDialog : DialogFragment() {
                 val text = binding.speed.text?.toString()
                 if (text != null) {
                     val newValue = text.toFloatOrNull()
-                    if (newValue != null) speedData.value = newValue
+                    if (newValue != null) _speed.value = newValue
                     true
                 } else {
                     false

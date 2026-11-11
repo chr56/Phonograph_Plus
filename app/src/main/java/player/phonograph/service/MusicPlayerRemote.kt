@@ -22,6 +22,7 @@ import player.phonograph.service.queue.QueueManager
 import androidx.activity.ComponentActivity
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.withStarted
+import android.annotation.SuppressLint
 import android.app.BackgroundServiceStartNotAllowedException
 import android.content.ComponentName
 import android.content.Context
@@ -50,7 +51,6 @@ object MusicPlayerRemote {
     //region Service
 
     private var musicService: MusicService? = null
-    fun accessMusicService(): MusicService? = musicService
 
     private val mConnectionMap = WeakHashMap<Context, MusicServiceConnection>()
 
@@ -103,7 +103,6 @@ object MusicPlayerRemote {
 
         mContextWrapper.unbindService(mBinder)
 
-        @Suppress("UsePropertyAccessSyntax")
         if (mConnectionMap.isEmpty()) {
             musicService = null
         }
@@ -143,6 +142,7 @@ object MusicPlayerRemote {
             musicService = null
         }
 
+        @SuppressLint("ObsoleteSdkInt")
         @RequiresApi(VERSION_CODES.O)
         override fun onBindingDied(name: ComponentName?) {
             mCallback?.onBindingDied(name)
@@ -162,14 +162,12 @@ object MusicPlayerRemote {
 
     val isServiceConnected: Boolean get() = musicService != null
 
-    val isPlaying: Boolean get() = musicService != null && musicService!!.isPlaying
-
     val audioSessionId: Int get() = musicService?.audioSessionId ?: -1
 
-    val songProgressMillis: Int
-        get() = musicService?.songProgressMillis ?: -1
-    val songDurationMillis: Int
-        get() = musicService?.songDurationMillis ?: -1
+    val songProgressMillis: Int get() = musicService?.songProgressMillis ?: -1
+    val songDurationMillis: Int get() = musicService?.songDurationMillis ?: -1
+
+    val isPlaying: Boolean get() = musicService != null && musicService!!.isPlaying
 
     private val _currentState: MutableStateFlow<PlayerState> = MutableStateFlow(PlayerState.PREPARING)
     val currentState: StateFlow<PlayerState> = _currentState.asStateFlow()
@@ -179,7 +177,6 @@ object MusicPlayerRemote {
             _currentState.update { newState }
         }
     }
-
 
     val queueManager: QueueManager by GlobalContext.get().inject()
 
@@ -210,69 +207,43 @@ object MusicPlayerRemote {
 
     //region Control
 
-    fun playSongAt(position: Int) {
-        musicService?.playSongAt(position) ?: run {
+    fun pause() {
+        musicService?.pause()
+    }
+
+    fun play() {
+        musicService?.play()
+    }
+
+    fun playAt(position: Int) {
+        musicService?.playAt(position) ?: run {
             queueManager.modifyPosition(position)
         }
     }
 
-    fun pauseSong() {
-        musicService?.pause()
-    }
-
-    fun resumePlaying() {
-        musicService?.play()
-    }
-
-    private var resumeInstantlyIfReady: Boolean = false
-
-    fun requireResumeInstantlyIfReady() {
-        val service = musicService
-        if (service == null) {
-            resumeInstantlyIfReady = true
-        } else {
-            service.playSongAt(position)
-        }
-    }
-
-    fun cancelResumeInstantlyIfReady() {
-        resumeInstantlyIfReady = false
-    }
-
-    /**
-     * Async
-     */
     fun playNextSong() {
         musicService?.playNextSong(true) ?: run {
             queueManager.modifyPosition(queueManager.nextSongPosition)
         }
     }
 
-    /**
-     * Async
-     */
     fun playPreviousSong() {
         musicService?.playPreviousSong(true) ?: run {
             queueManager.modifyPosition(queueManager.previousSongPosition)
         }
     }
 
-    /**
-     * Async
-     */
     fun back() {
         musicService?.back(true) ?: run {
             queueManager.modifyPosition(queueManager.previousSongPosition)
         }
     }
 
-    fun seekTo(millis: Int) {
-        musicService?.seek(millis)
-    }
-
     fun fastForward(): Boolean = musicService?.fastForward() == true
 
     fun fastRewind(): Boolean = musicService?.fastRewind() == true
+
+    fun seekTo(millis: Int): Boolean = musicService?.seek(millis) == true
 
     fun cycleRepeatMode(): Boolean =
         runCatching {
@@ -288,6 +259,12 @@ object MusicPlayerRemote {
         runCatching {
             queueManager.modifyShuffleMode(shuffleMode)
         }.isSuccess
+
+    val speed: Float get() = musicService?.speed ?: -1f
+
+    fun setSpeed(speed: Float) {
+        musicService?.setSpeed(speed)
+    }
 
     /**
      * Play a queue (asynchronous)
@@ -315,7 +292,7 @@ object MusicPlayerRemote {
         // check whether queue already sits there
         if (queueManager.playingQueue === queue) {
             if (startPlaying) {
-                playSongAt(startPosition)
+                playAt(startPosition)
             } else {
                 queueManager.modifyPosition(startPosition, true)
             }
@@ -324,7 +301,7 @@ object MusicPlayerRemote {
                 // swap queue
                 if (shuffleMode != null) queueManager.modifyShuffleMode(shuffleMode, alongWithQueue = false)
                 queueManager.swapQueue(queue, startPosition, false)
-                if (startPlaying) musicService?.playSongAt(queueManager.currentSongPosition) else musicService?.pause()
+                if (startPlaying) musicService?.playAt(queueManager.currentSongPosition) else musicService?.pause()
             }
         }
         return true
@@ -336,7 +313,7 @@ object MusicPlayerRemote {
         } else {
             queueManager.addSong(song, position)
             withMusicService {
-                it.playSongAt(position)
+                it.playAt(position)
             }
         }
         toastWithService {
@@ -354,7 +331,7 @@ object MusicPlayerRemote {
         } else {
             queueManager.addSongs(songs, position)
             withMusicService {
-                it.playSongAt(position)
+                it.playAt(position)
             }
         }
         toastWithService {
@@ -376,7 +353,6 @@ object MusicPlayerRemote {
         return true
     }
 
-    @JvmStatic
     fun playNext(songs: List<Song>): Boolean {
         if (playingQueue.isEmpty()) {
             playQueue(songs, 0, false, null)
@@ -415,7 +391,32 @@ object MusicPlayerRemote {
         return true
     }
 
-    fun replaceLyrics(lyrics: LrcLyrics?) = musicService?.replaceLyrics(lyrics)
+    fun togglePlayPauseSafely(): Boolean =
+        if (isServiceConnected) {
+            if (isPlaying) pause() else play()
+            true
+        } else {
+            false
+        }
+
+    private var resumeInstantlyIfReady: Boolean = false
+
+    fun requireResumeInstantlyIfReady() {
+        val service = musicService
+        if (service == null) {
+            resumeInstantlyIfReady = true
+        } else {
+            service.playAt(position)
+        }
+    }
+
+    fun cancelResumeInstantlyIfReady() {
+        resumeInstantlyIfReady = false
+    }
+
+    fun replaceLyrics(lyrics: LrcLyrics?) {
+        musicService?.replaceLyrics(lyrics)
+    }
 
     //endregion
 

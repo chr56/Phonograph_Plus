@@ -473,7 +473,7 @@ class PlayerQueueFragment : AbsMusicServiceFragment() {
             title = context.getString(R.string.action_clear_playing_queue)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
             onClick {
-                MusicPlayerRemote.pauseSong()
+                MusicPlayerRemote.pause()
                 MusicPlayerRemote.queueManager.clearQueue()
                 true
             }

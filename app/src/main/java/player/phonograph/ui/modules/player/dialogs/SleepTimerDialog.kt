@@ -68,23 +68,23 @@ class SleepTimerDialog : DialogFragment() {
     }
 
     private fun startTimer() {
-        val service = MusicPlayerRemote.accessMusicService()
-        if (service == null) {
+        if (!MusicPlayerRemote.isServiceConnected) {
             showDisconnectedDialog()
             return
         }
 
+        val context = requireContext()
         val minutesToQuit = progress.toLong()
-        val shouldFinishLastSong = Settings(service)[Keys.sleepTimerFinishMusic].data
-        if (SleepTimer.setTimer(service, minutesToQuit, shouldFinishLastSong)) {
+        val shouldFinishLastSong = Settings(context)[Keys.sleepTimerFinishMusic].data
+        if (SleepTimer.setTimer(context, minutesToQuit, shouldFinishLastSong)) {
             Toast.makeText(
-                service,
+                context,
                 getString(R.string.msg_sleep_timer_set, minutesToQuit),
                 Toast.LENGTH_SHORT
             ).show()
         } else {
             Toast.makeText(
-                service,
+                context,
                 getString(R.string.failed),
                 Toast.LENGTH_SHORT
             ).show()
@@ -92,21 +92,21 @@ class SleepTimerDialog : DialogFragment() {
     }
 
     private fun cancelTimer() {
-        val service = MusicPlayerRemote.accessMusicService()
-        if (service == null) {
+        if (!MusicPlayerRemote.isServiceConnected) {
             showDisconnectedDialog()
             return
         }
 
-        if (SleepTimer.cancelTimer(service)) {
+        val context = requireContext()
+        if (SleepTimer.cancelTimer(context)) {
             Toast.makeText(
-                service,
+                context,
                 getString(R.string.msg_sleep_timer_canceled),
                 Toast.LENGTH_SHORT
             ).show()
         } else {
             Toast.makeText(
-                service,
+                context,
                 getString(R.string.failed),
                 Toast.LENGTH_SHORT
             ).show()

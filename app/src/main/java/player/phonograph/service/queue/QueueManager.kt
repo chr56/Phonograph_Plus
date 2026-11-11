@@ -308,7 +308,7 @@ class QueueManager(val context: Application) {
         snapshotAndNotify(queueHolder, createSnapshot) {
             queueHolder = newQueueHolder.clone()
         }
-        MusicPlayerRemote.playSongAt(queueHolder.currentSongPosition)
+        MusicPlayerRemote.playAt(queueHolder.currentSongPosition)
     }
 
 

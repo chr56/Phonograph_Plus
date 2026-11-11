@@ -218,7 +218,7 @@ class MusicService : MediaBrowserServiceCompat(),
         )
     }
 
-    fun playSongAt(position: Int) = controller.playAt(position)
+    fun playAt(position: Int) = controller.playAt(position)
     fun pause() = controller.pause(releaseResource = true, reason = PauseReason.PAUSE_BY_MANUAL_ACTION)
     fun play() = controller.play()
     fun playPreviousSong(force: Boolean) = controller.jumpBackward(force)
@@ -226,7 +226,6 @@ class MusicService : MediaBrowserServiceCompat(),
     fun playNextSong(force: Boolean) = controller.jumpForward(force)
     val songProgressMillis: Int get() = controller.songProgressMillis
     val songDurationMillis: Int get() = controller.songDurationMillis
-    var speed: Float by controller::playerSpeed
 
     fun seek(targetMilli: Int): Boolean = try {
         if (targetMilli in 0..controller.songDurationMillis) {
@@ -246,6 +245,9 @@ class MusicService : MediaBrowserServiceCompat(),
 
     fun fastForward(millis: Int = seekJumpInterval) = seek(songProgressMillis + millis)
     fun fastRewind(millis: Int = seekJumpInterval) = seek(songProgressMillis - millis)
+
+    val speed: Float get() = controller.playerSpeed
+    fun setSpeed(speed: Float): Unit = controller.setPlayerSpeed(speed)
 
     val audioSessionId: Int get() = controller.audioSessionId
     val mediaSession get() = mediaSessionController.mediaSession

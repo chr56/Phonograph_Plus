@@ -72,7 +72,7 @@ object ItemClickActions {
         entry(ActionSemantics.Details) { goToGenreDetail(context, item) }
 
     fun PlayingQueue(position: Int): ActionEntry =
-        entry(ActionSemantics.Play) { MusicPlayerRemote.playSongAt(position) }
+        entry(ActionSemantics.Play) { MusicPlayerRemote.playAt(position) }
 
     fun Folder(item: FileItem, onSwitch: (FileItem) -> Unit): ActionEntry =
         entry(ActionSemantics.Select) { onSwitch(item) }
@@ -106,7 +106,7 @@ object ItemClickActions {
 
         if (extraFlag.testBit(FLAG_MASK_GOTO_POSITION_FIRST) && list == MusicPlayerRemote.playingQueue) {
             // same queue, jump
-            MusicPlayerRemote.playSongAt(position)
+            MusicPlayerRemote.playAt(position)
             return
         }
 
@@ -159,7 +159,7 @@ object ItemClickActions {
             val songRequest = filter(list, position)
             if (songRequest.songs == MusicPlayerRemote.playingQueue) {
                 // same queue, jump
-                MusicPlayerRemote.playSongAt(songRequest.position)
+                MusicPlayerRemote.playAt(songRequest.position)
                 return
             }
         }
