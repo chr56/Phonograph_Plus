@@ -47,7 +47,9 @@ object MultiSelectionActionEntries {
     fun <I> ShuffleAll(context: Context, controller: MultiSelectionController<I>): ActionEntry =
         entry(ActionSemantics.ShuffleAll, controller) {
             val songs = convertToSongs(context, it)
-            ItemActions.play(context, songs, ShuffleMode.SHUFFLE, Random().nextInt(songs.size))
+            if (songs.isNotEmpty()) {
+                ItemActions.play(context, songs, ShuffleMode.SHUFFLE, Random().nextInt(songs.size))
+            }
         }
 
     fun <I> AddToPlayingQueue(context: Context, controller: MultiSelectionController<I>): ActionEntry =

@@ -122,8 +122,10 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<*>> : AbsPanelPage() {
         },
         onShuffle = {
             lifecycleScope.launch(Dispatchers.IO) {
-                val allSongs = viewModel.collectAllSongs(menuContext.context)
-                ItemActions.play(menuContext.context, allSongs, ShuffleMode.SHUFFLE, Random.nextInt(allSongs.size))
+                val songs = viewModel.collectAllSongs(menuContext.context)
+                if (songs.isNotEmpty()) {
+                    ItemActions.play(menuContext.context, songs, ShuffleMode.SHUFFLE, Random.nextInt(songs.size))
+                }
             }
             true
         }

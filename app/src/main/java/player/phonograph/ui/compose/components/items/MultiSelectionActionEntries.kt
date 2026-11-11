@@ -105,8 +105,10 @@ object MultiSelectionActionEntries {
         visibility: Int = ActionEntry.ToolbarEntry.IF_ROOM,
         value: (T) -> Any? = { it },
     ): ActionEntry.ToolbarEntry =
-        songEntry(context, ActionSemantics.ShuffleAll, state, value, visibility) {
-            ItemActions.play(context, it, ShuffleMode.SHUFFLE, Random.nextInt(it.size))
+        songEntry(context, ActionSemantics.ShuffleAll, state, value, visibility) { songs ->
+            if (songs.isNotEmpty()) {
+                ItemActions.play(context, songs, ShuffleMode.SHUFFLE, Random.nextInt(songs.size))
+            }
         }
 
     fun <T> AddToPlayingQueue(

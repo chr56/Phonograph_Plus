@@ -45,7 +45,9 @@ object ArtistDetailActionEntries {
     fun ShuffleArtist(context: ComponentActivity, item: Artist): ActionEntry =
         entry(ActionSemantics.ShuffleArtist, visibility = ALWAYS) {
             val songs = item.allSongs(context)
-            ItemActions.play(context, songs, ShuffleMode.SHUFFLE, Random.nextInt(songs.size))
+            if (songs.isNotEmpty()) {
+                ItemActions.play(context, songs, ShuffleMode.SHUFFLE, Random.nextInt(songs.size))
+            }
         }
 
     fun PlayNext(context: ComponentActivity, item: Artist): ActionEntry =

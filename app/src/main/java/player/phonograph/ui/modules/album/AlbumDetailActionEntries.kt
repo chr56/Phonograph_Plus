@@ -42,7 +42,9 @@ object AlbumDetailActionEntries {
     fun ShuffleAlbum(context: ComponentActivity, item: Album): ActionEntry =
         entry(ActionSemantics.ShuffleAlbum, visibility = ALWAYS) {
             val songs = item.allSongs(context)
-            ItemActions.play(context, songs, ShuffleMode.SHUFFLE, Random.nextInt(songs.size))
+            if (songs.isNotEmpty()) {
+                ItemActions.play(context, songs, ShuffleMode.SHUFFLE, Random.nextInt(songs.size))
+            }
         }
 
     fun PlayNext(context: ComponentActivity, item: Album): ActionEntry =

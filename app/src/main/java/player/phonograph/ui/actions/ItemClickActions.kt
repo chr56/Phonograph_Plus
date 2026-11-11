@@ -121,11 +121,10 @@ object ItemClickActions {
             QUEUE_APPEND_QUEUE        -> ItemActions.enqueue(context, list)
             QUEUE_SWITCH_TO_BEGINNING -> ItemActions.play(context, list, ShuffleMode.NONE, 0)
             QUEUE_SWITCH_TO_POSITION  -> ItemActions.play(context, list, ShuffleMode.NONE, position)
-            QUEUE_SHUFFLE             -> ItemActions.play(
-                context, list,
-                ShuffleMode.SHUFFLE,
-                Random.nextInt(list.size)
-            )
+            QUEUE_SHUFFLE             ->
+                if (list.isNotEmpty()) {
+                    ItemActions.play(context, list, ShuffleMode.SHUFFLE, Random.nextInt(list.size))
+                }
 
             else  /* invalided */     -> {
                 Settings(context)[Keys.songItemClickMode].data = SONG_PLAY_NOW // reset base mode
