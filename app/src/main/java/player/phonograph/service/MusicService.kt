@@ -137,7 +137,6 @@ class MusicService :
             ACTION_SHUFFLE               -> queueManager.modifyShuffleMode(null)
             ACTION_REPEAT                -> queueManager.modifyRepeatMode(null)
             ACTION_FAV                   -> toggleFavorite(queueManager.currentSong)
-            ACTION_EXIT_OR_STOP          -> exitOrStop()
             ACTION_STOP_AND_QUIT_NOW     -> exitOrStop()
             ACTION_STOP_AND_QUIT_PENDING -> controller.quitAfterFinishCurrentSong = true
             ACTION_CANCEL_PENDING_QUIT   -> controller.quitAfterFinishCurrentSong = false
