@@ -220,7 +220,7 @@ class PlayerController : ServiceComponent, Controller {
 
         override fun onDestroy(musicService: MusicService) {
             unregisterBecomingNoisyReceiver(musicService)
-            audioPlayer.release()
+            audioPlayer.stop(release = true)
 
             created = false
 
@@ -357,7 +357,7 @@ class PlayerController : ServiceComponent, Controller {
         }
 
         override fun stop() {
-            audioPlayer.stop()
+            audioPlayer.stop(release = false)
             controller.broadcastStopLyric()
             controller.playerState = PlayerState.STOPPED
             controller.releaseTakenResources()

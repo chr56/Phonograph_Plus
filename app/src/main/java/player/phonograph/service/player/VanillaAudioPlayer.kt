@@ -146,17 +146,18 @@ class VanillaAudioPlayer(private val context: Context, override var gaplessPlayb
             false
         }
 
-    override fun stop() {
-        currentMediaPlayer.reset()
-        isInitialized = false
-    }
-
-    override fun release() {
-        stop()
-        currentMediaPlayer.release()
-        nextMediaPlayer?.release()
-    }
-
+    override fun stop(release: Boolean): Boolean =
+        try {
+            currentMediaPlayer.reset()
+            if (release) {
+                currentMediaPlayer.release()
+                nextMediaPlayer?.release()
+            }
+            isInitialized = false
+            true
+        } catch (e: IllegalStateException) {
+            false
+        }
 
     override fun pause(): Boolean =
         try {
