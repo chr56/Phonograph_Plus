@@ -246,6 +246,7 @@ class MusicService :
 
     fun play() = controller.play()
     fun pause() = controller.pause(releaseResource = true, reason = PauseReason.PAUSE_BY_MANUAL_ACTION)
+    fun stop() = controller.stop()
 
     fun playAt(position: Int) = controller.playAt(position)
 
@@ -273,17 +274,13 @@ class MusicService :
     fun setSpeed(speed: Float): Unit = controller.setPlayerSpeed(speed)
 
     fun exitOrStop() {
+        controller.stop()
         log("serviceUsedInForeground: $serviceUsedInForeground", false)
         if (serviceUsedInForeground > 0) {
-            pause()
             MusicPlayerRemote.unbindAllFromService()
             log("All service bindings are removed", false)
-            controller.handler.post {
-                stopSelf()
-            }
-        } else {
-            stopSelf()
         }
+        controller.handler.postDelayed({ stopSelf() }, 1500)
     }
 
     fun replaceLyrics(lyrics: LrcLyrics?) = controller.replaceLyrics(lyrics)

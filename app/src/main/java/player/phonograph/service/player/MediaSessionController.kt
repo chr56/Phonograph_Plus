@@ -134,7 +134,7 @@ class MediaSessionController : ServiceComponent {
             }
 
             override fun onStop() {
-                service.stopSelf()
+                service.stop()
             }
 
             override fun onSeekTo(pos: Long) {
