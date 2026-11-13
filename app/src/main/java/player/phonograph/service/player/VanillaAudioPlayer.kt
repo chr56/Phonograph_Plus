@@ -240,7 +240,13 @@ class VanillaAudioPlayer(private val context: Context, override var gaplessPlayb
         false
     }
 
-    override val audioSessionId: Int get() = currentMediaPlayer.audioSessionId
+    override val audioSessionId: Int
+        get() = try {
+            currentMediaPlayer.audioSessionId
+        } catch (e: Exception) {
+            Log.w(TAG, "Failed to access current AudioSessionId", e)
+            -1
+        }
 
 
     override fun setAudioSessionId(sessionId: Int): Boolean =
