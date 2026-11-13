@@ -79,11 +79,7 @@ class VanillaAudioPlayer(private val context: Context, override var gaplessPlayb
         player.setOnCompletionListener(this)
         player.setOnErrorListener(this)
 
-        val intent = Intent(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION)
-        intent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, audioSessionId)
-        intent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, context.packageName)
-        intent.putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
-        context.sendBroadcast(intent)
+        openAudioEffectSession(audioSessionId)
 
         return true
     }
@@ -148,6 +144,7 @@ class VanillaAudioPlayer(private val context: Context, override var gaplessPlayb
 
     override fun stop(release: Boolean): Boolean =
         try {
+            if (release) closeAudioEffectSession(audioSessionId)
             currentMediaPlayer.reset()
             if (release) {
                 currentMediaPlayer.release()
@@ -279,6 +276,28 @@ class VanillaAudioPlayer(private val context: Context, override var gaplessPlayb
         } else {
             callbacks?.onTrackEnded()
         }
+    }
+
+    private fun openAudioEffectSession(audioSession: Int) {
+        if (audioSession <= 0) return
+        context.sendBroadcast(
+            Intent(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION).apply {
+                putExtra(AudioEffect.EXTRA_AUDIO_SESSION, audioSession)
+                putExtra(AudioEffect.EXTRA_PACKAGE_NAME, context.packageName)
+                putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
+            }
+        )
+    }
+
+
+    private fun closeAudioEffectSession(audioSession: Int) {
+        if (audioSession <= 0) return
+        context.sendBroadcast(
+            Intent(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION).apply {
+                putExtra(AudioEffect.EXTRA_AUDIO_SESSION, audioSession)
+                putExtra(AudioEffect.EXTRA_PACKAGE_NAME, context.packageName)
+            }
+        )
     }
 
     companion object {

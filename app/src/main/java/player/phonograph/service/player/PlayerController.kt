@@ -450,7 +450,10 @@ class PlayerController : ServiceComponent, Controller {
         override fun onTrackWentToNext() {
             // check sleep timer
             if (controller.quitAfterFinishCurrentSong) {
-                handler.request { stop() }
+                handler.request {
+                    it.quitRequestPending = true
+                    it.stop()
+                }
                 return
             }
             handler.request {
@@ -462,7 +465,10 @@ class PlayerController : ServiceComponent, Controller {
         override fun onTrackEnded() {
             // check sleep timer
             if (controller.quitAfterFinishCurrentSong) {
-                handler.request { stop() }
+                handler.request {
+                    it.quitRequestPending = true
+                    it.stop()
+                }
                 return
             }
             if (queueManager.isQueueEnded()) {
@@ -630,6 +636,9 @@ class PlayerController : ServiceComponent, Controller {
 
     override fun stop() = handler.request {
         impl.stop()
+        if (quitRequestPending) {
+            handler.postDelayed({ service.doQuit() }, 200)
+        }
     }
 
     /**
@@ -637,6 +646,16 @@ class PlayerController : ServiceComponent, Controller {
      * Used by Sleep Timer
      */
     var quitAfterFinishCurrentSong: Boolean = false
+        set(value) {
+            synchronized(this) {
+                field = value
+            }
+        }
+
+    /**
+     * true to mark the state for quitting service
+     */
+    var quitRequestPending: Boolean = false
         set(value) {
             synchronized(this) {
                 field = value

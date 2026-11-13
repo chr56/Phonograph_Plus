@@ -34,7 +34,6 @@ import androidx.media.MediaBrowserServiceCompat
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
-import android.media.audiofx.AudioEffect
 import android.os.Binder
 import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
@@ -137,7 +136,7 @@ class MusicService :
             ACTION_SHUFFLE               -> queueManager.modifyShuffleMode(null)
             ACTION_REPEAT                -> queueManager.modifyRepeatMode(null)
             ACTION_FAV                   -> toggleFavorite(queueManager.currentSong)
-            ACTION_STOP_AND_QUIT_NOW     -> exitOrStop()
+            ACTION_STOP_AND_QUIT_NOW     -> requestToQuit()
             ACTION_STOP_AND_QUIT_PENDING -> controller.quitAfterFinishCurrentSong = true
             ACTION_CANCEL_PENDING_QUIT   -> controller.quitAfterFinishCurrentSong = false
             ACTION_CONNECT_WIDGETS       -> AppWidgetUpdateReceiver.connect(this)
@@ -146,7 +145,7 @@ class MusicService :
 
     override fun onTaskRemoved(rootIntent: Intent?) {
         if (stopOnTaskRemoved) {
-            exitOrStop()
+            requestToQuit()
         }
         super.onTaskRemoved(rootIntent)
     }
@@ -154,7 +153,6 @@ class MusicService :
     override fun onDestroy() {
         isDestroyed = true
         mediaSessionController.mediaSession.isActive = false
-        closeAudioEffectSession()
         playNotificationManager.onDestroy(this)
         mediaSessionController.onDestroy(this)
         coverLoader.terminate()
@@ -171,15 +169,6 @@ class MusicService :
         _coroutineScope = null
         sendBroadcast(Intent("player.phonograph.PHONOGRAPH_MUSIC_SERVICE_DESTROYED"))
         super.onDestroy()
-    }
-
-    private fun closeAudioEffectSession() {
-        sendBroadcast(
-            Intent(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION).apply {
-                putExtra(AudioEffect.EXTRA_AUDIO_SESSION, controller.audioSessionId)
-                putExtra(AudioEffect.EXTRA_PACKAGE_NAME, packageName)
-            }
-        )
     }
 
 
@@ -273,14 +262,19 @@ class MusicService :
     val speed: Float get() = controller.playerSpeed
     fun setSpeed(speed: Float): Unit = controller.setPlayerSpeed(speed)
 
-    fun exitOrStop() {
+    fun requestToQuit() {
+        controller.quitRequestPending = true
         controller.stop()
         log("serviceUsedInForeground: $serviceUsedInForeground", false)
         if (serviceUsedInForeground > 0) {
             MusicPlayerRemote.unbindAllFromService()
             log("All service bindings are removed", false)
         }
-        controller.handler.postDelayed({ stopSelf() }, 1500)
+    }
+
+    fun doQuit() {
+        controller.quitRequestPending = false
+        stopSelf()
     }
 
     fun replaceLyrics(lyrics: LrcLyrics?) = controller.replaceLyrics(lyrics)
