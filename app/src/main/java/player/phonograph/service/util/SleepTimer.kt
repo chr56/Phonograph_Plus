@@ -7,7 +7,7 @@ package player.phonograph.service.util
 import player.phonograph.R
 import player.phonograph.foundation.error.warning
 import player.phonograph.model.service.ACTION_CANCEL_PENDING_QUIT
-import player.phonograph.model.service.ACTION_STOP_AND_QUIT_NOW
+import player.phonograph.model.service.ACTION_STOP_AND_QUIT_NOW_BY_SLEEP_TIMER
 import player.phonograph.model.service.ACTION_STOP_AND_QUIT_PENDING
 import player.phonograph.service.MusicService
 import android.app.AlarmManager
@@ -119,7 +119,11 @@ object SleepTimer {
         shouldFinishLastSong: Boolean,
     ): Intent =
         Intent(context.applicationContext, MusicService::class.java).apply {
-            action = if (shouldFinishLastSong) ACTION_STOP_AND_QUIT_PENDING else ACTION_STOP_AND_QUIT_NOW
+            action = if (shouldFinishLastSong) {
+                ACTION_STOP_AND_QUIT_PENDING
+            } else {
+                ACTION_STOP_AND_QUIT_NOW_BY_SLEEP_TIMER
+            }
         }
 
 

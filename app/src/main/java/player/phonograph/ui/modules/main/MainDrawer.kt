@@ -13,7 +13,7 @@ import player.phonograph.foundation.Reboot
 import player.phonograph.foundation.concurrent.runOnMainHandler
 import player.phonograph.foundation.error.warning
 import player.phonograph.model.pages.PagesConfig
-import player.phonograph.model.service.ACTION_STOP_AND_QUIT_NOW
+import player.phonograph.model.service.ACTION_STOP_AND_QUIT_NOW_BY_USER_ACTION
 import player.phonograph.model.service.ShuffleMode
 import player.phonograph.model.ui.GeneralTheme
 import player.phonograph.model.ui.GeneralTheme.Companion.THEME_BLACK
@@ -189,9 +189,9 @@ fun setupDrawerMenu(
                     context.getString(R.string.action_exit) to {
                         val pendingIntent = PendingIntent.getService(
                             context, 0,
-                            Intent(ACTION_STOP_AND_QUIT_NOW).apply {
+                            Intent(ACTION_STOP_AND_QUIT_NOW_BY_USER_ACTION).apply {
                                 component = ComponentName(context, MusicService::class.java)
-                            }, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT
+                            }, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
                         )
                         runOnMainHandler {
                             pendingIntent.send()

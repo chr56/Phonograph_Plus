@@ -10,7 +10,7 @@ import player.phonograph.foundation.permission.checkNotificationPermission
 import player.phonograph.model.Song
 import player.phonograph.model.notification.NotificationAction
 import player.phonograph.model.notification.NotificationActionsConfig
-import player.phonograph.model.service.ACTION_STOP_AND_QUIT_NOW
+import player.phonograph.model.service.ACTION_STOP_AND_QUIT_NOW_BY_NOTIFICATION
 import player.phonograph.model.service.MusicServiceStatus
 import player.phonograph.model.service.PlayerState.PAUSED
 import player.phonograph.model.service.PlayerState.PLAYING
@@ -572,7 +572,7 @@ class PlayingNotificationManager : ServiceComponent {
             service,
             0,
             Intent(action).apply { component = ComponentName(service, MusicService::class.java) },
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
     /**
@@ -583,14 +583,14 @@ class PlayingNotificationManager : ServiceComponent {
             service,
             0,
             MainActivity.launchingIntent(service, Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP),
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
     /**
      * PendingIntent to quit/stop
      */
     private val deletePendingIntent: PendingIntent
-        get() = buildPlaybackPendingIntent(ACTION_STOP_AND_QUIT_NOW)
+        get() = buildPlaybackPendingIntent(ACTION_STOP_AND_QUIT_NOW_BY_NOTIFICATION)
     //endregion
 
     companion object {
