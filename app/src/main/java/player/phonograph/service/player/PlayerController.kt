@@ -18,6 +18,7 @@ import player.phonograph.service.util.makeErrorMessage
 import player.phonograph.settings.Keys
 import player.phonograph.settings.SettingsObserver
 import androidx.core.content.ContextCompat
+import android.app.AlarmManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -29,11 +30,14 @@ import android.os.Looper
 import android.os.Message
 import android.os.PowerManager
 import android.os.PowerManager.WakeLock
+import android.os.SystemClock
 import android.util.Log
 import android.widget.Toast
 import kotlin.math.abs
 import kotlinx.coroutines.launch
 import java.io.File
+import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicLong
 
 // todo cleanup queueManager.setQueueCursor
 /**
@@ -51,6 +55,8 @@ class PlayerController : ServiceComponent, Controller {
     private var _wakeLock: WakeLock? = null
     private val wakeLock: WakeLock get() = _wakeLock!!
 
+    private var _alarmManager: AlarmManager? = null
+    private val alarmManager: AlarmManager get() = _alarmManager!!
 
     private var _handler: ControllerHandler? = null
     val handler: ControllerHandler get() = _handler!!
@@ -70,6 +76,7 @@ class PlayerController : ServiceComponent, Controller {
 
     override fun onCreate(musicService: MusicService) {
         _service = musicService
+        _alarmManager = musicService.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
         // acquire resources
         _wakeLock =
@@ -103,6 +110,7 @@ class PlayerController : ServiceComponent, Controller {
 
     override fun onDestroy(musicService: MusicService) {
         created = false
+        clearSleepTimer()
 
         lyricsUpdater.onDestroy(musicService)
         _lyricsUpdater = null
@@ -123,6 +131,7 @@ class PlayerController : ServiceComponent, Controller {
         _thread = null
         _handler = null
 
+        _alarmManager = null
         _service = null
     }
 
@@ -448,35 +457,19 @@ class PlayerController : ServiceComponent, Controller {
             }
 
         override fun onTrackWentToNext() {
-            // check sleep timer
-            if (controller.quitAfterFinishCurrentSong) {
-                handler.request {
-                    it.quitRequestPending = true
-                    it.stop()
-                }
-                return
-            }
             handler.request {
+                if (controller.checkSleepTimer()) return@request
                 queueManager.moveToNextSong(false)
                 controller.updateLyrics()
             }
         }
 
         override fun onTrackEnded() {
-            // check sleep timer
-            if (controller.quitAfterFinishCurrentSong) {
-                handler.request {
-                    it.quitRequestPending = true
-                    it.stop()
-                }
-                return
-            }
-            if (queueManager.isQueueEnded()) {
-                handler.request {
+            handler.request {
+                if (controller.checkSleepTimer()) return@request
+                if (queueManager.isQueueEnded()) {
                     pause(false, reason = PauseReason.PAUSE_FOR_QUEUE_ENDED)
-                }
-            } else {
-                handler.request {
+                } else {
                     playAt(queueManager.nextSongPosition)
                     controller.updateLyrics()
                 }
@@ -636,31 +629,89 @@ class PlayerController : ServiceComponent, Controller {
 
     override fun stop() = handler.request {
         impl.stop()
-        if (quitRequestPending) {
+        if (quitRequestPending.get()) {
+            clearSleepTimer()
             handler.postDelayed({ service.doQuit() }, 200)
         }
     }
 
-    /**
-     * true if you want to stop player when current track is ended
-     * Used by Sleep Timer
-     */
-    var quitAfterFinishCurrentSong: Boolean = false
-        set(value) {
-            synchronized(this) {
-                field = value
+    private var sleepTimerAlarm: AlarmManager.OnAlarmListener? = null
+    private val sleepTimerDeadline = AtomicLong(TIMER_OFF)
+
+    fun hasSleepTimer(): Boolean = sleepTimerDeadline.get() != TIMER_OFF
+    fun sleepTimerElapsedTime(): Long = sleepTimerDeadline.get().takeIf { it > 0 } ?: TIMER_OFF
+
+    fun setSleepTimer(minutesToQuit: Long, shouldFinishLastSong: Boolean): Boolean {
+        val timerHandler = _handler ?: return false
+        return timerHandler.post {
+            clearSleepTimer()
+            val deadline = SystemClock.elapsedRealtime() + minutesToQuit * 60_000L
+            val listener = object : AlarmManager.OnAlarmListener {
+                override fun onAlarm() {
+                    if (sleepTimerAlarm !== this) return
+                    sleepTimerAlarm = null
+                    if (shouldFinishLastSong) {
+                        sleepTimerDeadline.set(FINISH_CURRENT_TRACK)
+                    } else {
+                        quitFromSleepTimer()
+                    }
+                }
+            }
+            try {
+                alarmManager.set(
+                    AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                    deadline,
+                    "SleepTimer",
+                    listener,
+                    timerHandler
+                )
+                sleepTimerAlarm = listener
+                sleepTimerDeadline.set(deadline)
+            } catch (e: Exception) {
+                Log.w("PlayerController", "Failed to set sleep timer", e)
             }
         }
+    }
+
+    fun cancelSleepTimer(): Boolean = _handler?.post { clearSleepTimer() } ?: false
+
+    fun setFinishCurrentTrackPending(pending: Boolean) = handler.request {
+        if (pending) {
+            clearSleepTimer()
+            sleepTimerDeadline.set(FINISH_CURRENT_TRACK)
+        } else if (sleepTimerDeadline.get() == FINISH_CURRENT_TRACK) {
+            sleepTimerDeadline.set(TIMER_OFF)
+        }
+    }
+
+    private fun clearSleepTimer() {
+        val listener = sleepTimerAlarm
+        sleepTimerAlarm = null
+        sleepTimerDeadline.set(TIMER_OFF)
+        if (listener != null) alarmManager.cancel(listener)
+    }
+
+    private fun checkSleepTimer(): Boolean {
+        if (quitRequestPending.get() || _service?.isDestroyed != false) return true
+        val deadline = sleepTimerDeadline.get()
+        if (deadline == TIMER_OFF || deadline > SystemClock.elapsedRealtime()) return false
+        quitFromSleepTimer()
+        return true
+    }
+
+    private fun quitFromSleepTimer() {
+        clearSleepTimer()
+        val musicService = _service ?: return
+        quitRequestPending.set(true)
+        Handler(Looper.getMainLooper()).post {
+            if (!musicService.isDestroyed) musicService.requestToQuit()
+        }
+    }
 
     /**
      * true to mark the state for quitting service
      */
-    var quitRequestPending: Boolean = false
-        set(value) {
-            synchronized(this) {
-                field = value
-            }
-        }
+    val quitRequestPending = AtomicBoolean(false)
 
     var resumeAfterAudioFocusGain: Boolean = false
 
@@ -799,4 +850,8 @@ class PlayerController : ServiceComponent, Controller {
         }
     }
 
+    companion object {
+        private const val TIMER_OFF = -1L
+        private const val FINISH_CURRENT_TRACK = 0L
+    }
 }

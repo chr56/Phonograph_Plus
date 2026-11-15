@@ -141,8 +141,8 @@ class MusicService :
             ACTION_STOP_AND_QUIT_NOW_BY_NOTIFICATION,
                                          -> requestToQuit()
 
-            ACTION_STOP_AND_QUIT_PENDING -> controller.quitAfterFinishCurrentSong = true
-            ACTION_CANCEL_PENDING_QUIT   -> controller.quitAfterFinishCurrentSong = false
+            ACTION_STOP_AND_QUIT_PENDING -> controller.setFinishCurrentTrackPending(true)
+            ACTION_CANCEL_PENDING_QUIT   -> controller.setFinishCurrentTrackPending(false)
             ACTION_CONNECT_WIDGETS       -> AppWidgetUpdateReceiver.connect(this)
         }
     }
@@ -267,7 +267,7 @@ class MusicService :
     fun setSpeed(speed: Float): Unit = controller.setPlayerSpeed(speed)
 
     fun requestToQuit() {
-        controller.quitRequestPending = true
+        controller.quitRequestPending.set(true)
         controller.stop()
         log("serviceUsedInForeground: $serviceUsedInForeground", false)
         if (serviceUsedInForeground > 0) {
@@ -277,9 +277,16 @@ class MusicService :
     }
 
     fun doQuit() {
-        controller.quitRequestPending = false
+        controller.quitRequestPending.set(false)
         stopSelf()
     }
+
+    fun setSleepTimer(minutesToQuit: Long, shouldFinishLastSong: Boolean): Boolean =
+        controller.setSleepTimer(minutesToQuit, shouldFinishLastSong)
+
+    fun cancelSleepTimer(): Boolean = controller.cancelSleepTimer()
+    fun hasSleepTimer(): Boolean = controller.hasSleepTimer()
+    fun sleepTimerElapsedTime(): Long = controller.sleepTimerElapsedTime()
 
     fun replaceLyrics(lyrics: LrcLyrics?) = controller.replaceLyrics(lyrics)
 
