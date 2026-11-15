@@ -675,15 +675,6 @@ class PlayerController : ServiceComponent, Controller {
 
     fun cancelSleepTimer(): Boolean = _handler?.post { clearSleepTimer() } ?: false
 
-    fun setFinishCurrentTrackPending(pending: Boolean) = handler.request {
-        if (pending) {
-            clearSleepTimer()
-            sleepTimerDeadline.set(FINISH_CURRENT_TRACK)
-        } else if (sleepTimerDeadline.get() == FINISH_CURRENT_TRACK) {
-            sleepTimerDeadline.set(TIMER_OFF)
-        }
-    }
-
     private fun clearSleepTimer() {
         val listener = sleepTimerAlarm
         sleepTimerAlarm = null

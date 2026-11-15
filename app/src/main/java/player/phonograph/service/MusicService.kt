@@ -137,12 +137,8 @@ class MusicService :
             ACTION_REPEAT                -> queueManager.modifyRepeatMode(null)
             ACTION_FAV                   -> toggleFavorite(queueManager.currentSong)
             ACTION_STOP_AND_QUIT_NOW_BY_USER_ACTION,
-            ACTION_STOP_AND_QUIT_NOW_BY_SLEEP_TIMER,
             ACTION_STOP_AND_QUIT_NOW_BY_NOTIFICATION,
                                          -> requestToQuit()
-
-            ACTION_STOP_AND_QUIT_PENDING -> controller.setFinishCurrentTrackPending(true)
-            ACTION_CANCEL_PENDING_QUIT   -> controller.setFinishCurrentTrackPending(false)
             ACTION_CONNECT_WIDGETS       -> AppWidgetUpdateReceiver.connect(this)
         }
     }
