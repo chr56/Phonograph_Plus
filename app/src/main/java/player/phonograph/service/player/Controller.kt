@@ -39,6 +39,22 @@ interface Controller {
 
 
     /**
+     * Flag of enabling gapless playing
+     */
+    var gaplessPlayback: Boolean
+
+    /**
+     * Prepare next track
+     */
+    fun prepareNextTrack()
+
+    /**
+     * cancel the prepared next track
+     */
+    fun cancelNextTrackPreparation()
+
+
+    /**
      * The reason of pause
      */
     @PauseReason

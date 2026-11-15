@@ -353,12 +353,12 @@ class MusicService :
 
     override fun onCurrentPositionChanged(newPosition: Int) {
         onCurrentPlayingChanged()
-        controller.prepareNext()
+        controller.prepareNextTrack()
     }
 
     override fun onCurrentSongChanged(newSong: Song?) {
         onCurrentPlayingChanged()
-        controller.prepareNext()
+        controller.prepareNextTrack()
     }
 
     override fun onQueueChanged(newPlayingQueue: List<Song>) {
@@ -377,7 +377,7 @@ class MusicService :
 
         // notify controller
         if (queueManager.playingQueue.isNotEmpty()) {
-            controller.prepareNext()
+            controller.prepareNextTrack()
         } else {
             controller.stop()
             playNotificationManager.cancelNotification()
@@ -385,7 +385,7 @@ class MusicService :
 
         sendInternalIntent(EVENT_QUEUE_CHANGED)
         onCurrentPlayingChanged()
-        controller.prepareNext()
+        controller.prepareNextTrack()
     }
 
     override fun onShuffleModeChanged(newMode: ShuffleMode) {
@@ -402,7 +402,7 @@ class MusicService :
         AppWidgetUpdateReceiver.notifyWidgets(this, isPlaying)
 
         sendInternalIntent(EVENT_REPEAT_MODE_CHANGED)
-        controller.prepareNext()
+        controller.prepareNextTrack()
     }
 
     //////////////////

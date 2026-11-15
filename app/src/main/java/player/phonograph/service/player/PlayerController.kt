@@ -1,3 +1,7 @@
+/*
+ *  Copyright (c) 2021~2026 chr_56 & Abou Zeid (kabouzeid)
+ */
+
 package player.phonograph.service.player
 
 import player.phonograph.BuildConfig.DEBUG
@@ -39,15 +43,13 @@ import java.io.File
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicLong
 
-// todo cleanup queueManager.setQueueCursor
-/**
- * @author chr_56 & Abou Zeid (kabouzeid) (original author)
- */
+
 class PlayerController : ServiceComponent, Controller {
 
     private var _service: MusicService? = null
     val service: MusicService get() = _service!!
 
+    private val queueManager: QueueManager get() = service.queueManager
 
     private var _impl: ControllerInternal? = null
     private val impl: ControllerInternal get() = _impl!!
@@ -63,8 +65,6 @@ class PlayerController : ServiceComponent, Controller {
 
     private var _thread: HandlerThread? = null
     private val thread: HandlerThread get() = _thread!!
-
-    private val queueManager: QueueManager get() = service.queueManager
 
     private var _lyricsUpdater: LyricsUpdater? = null
     private val lyricsUpdater: LyricsUpdater get() = _lyricsUpdater!!
@@ -150,11 +150,13 @@ class PlayerController : ServiceComponent, Controller {
         settingsObserver.collect(Keys.gaplessPlayback) { gaplessPlayback ->
             handler.post {
                 val controllerImpl = _impl
-                if (controllerImpl is VanillaAudioPlayerControllerImpl && controllerImpl.created) {
+                if (controllerImpl != null && controllerImpl.created) {
                     controllerImpl.gaplessPlayback = gaplessPlayback
-                    controllerImpl.prepareNextPlayer(
-                        if (gaplessPlayback) queueManager.nextSong else null
-                    )
+                    if (gaplessPlayback) {
+                        controllerImpl.prepareNextTrack()
+                    } else {
+                        controllerImpl.cancelNextTrackPreparation()
+                    }
                 }
             }
         }
@@ -198,20 +200,17 @@ class PlayerController : ServiceComponent, Controller {
 
     interface ControllerInternal : Controller, ServiceComponent
 
-    class VanillaAudioPlayerControllerImpl(
-        val controller: PlayerController,
-    ) : ControllerInternal, Playback.PlaybackCallbacks {
+    class VanillaAudioPlayerControllerImpl(val controller: PlayerController) : ControllerInternal, Playback.PlaybackCallbacks {
 
         override var created: Boolean = false
+
+        private val queueManager: QueueManager get() = controller.queueManager
 
         private var _service: MusicService? = null
         val service: MusicService get() = _service!!
 
         private var _audioPlayer: Playback? = null
         private val audioPlayer: Playback get() = _audioPlayer!!
-
-        private var _queueManager: QueueManager? = null
-        private val queueManager: QueueManager get() = _queueManager!!
 
         private val handler: ControllerHandler get() = controller.handler
         private val audioFocusManager: AudioFocusManager get() = controller.audioFocusManager
@@ -221,19 +220,15 @@ class PlayerController : ServiceComponent, Controller {
 
             _audioPlayer = VanillaAudioPlayer(musicService, false, this)
 
-            _queueManager = musicService.queueManager
-
             created = true
             restore(musicService)
         }
 
         override fun onDestroy(musicService: MusicService) {
-            unregisterBecomingNoisyReceiver(musicService)
             audioPlayer.stop(release = true)
-
+            unregisterBecomingNoisyReceiver(musicService)
             created = false
 
-            _queueManager = null
             _audioPlayer = null
 
             _service = null
@@ -251,29 +246,36 @@ class PlayerController : ServiceComponent, Controller {
         }
 
 
+        private fun sourceUri(song: Song?): String? =
+            if (song != null && song.data.isNotEmpty()) {
+                mediaStoreUriSongExternal(song.id).toString()
+            } else {
+                null
+            }
+
         /**
          * prepare current player data source safely
          * @param song what to play now
          * @return true if success
          */
         private fun prepareCurrentPlayer(song: Song?): Boolean {
-            return if (song != null && song.data.isNotEmpty()) {
-                audioPlayer.setDataSource(mediaStoreUriSongExternal(song.id).toString())
-            } else {
-                false
-            }
+            val uri = sourceUri(song)
+            return uri != null && audioPlayer.setDataSource(uri)
         }
 
         /**
          * prepare next player data source safely
-         * @param song what to play now
          */
-        fun prepareNextPlayer(song: Song?) {
-            if (audioPlayer.isInitialized) audioPlayer.setNextDataSource(
-                if (song != null && song.data.isNotEmpty())
-                    mediaStoreUriSongExternal(song.id).toString()
-                else null
-            )
+        override fun prepareNextTrack() {
+            if (!audioPlayer.isInitialized) return
+            audioPlayer.setNextDataSource(sourceUri(queueManager.nextSong))
+        }
+        /**
+         * cancel the prepared next track
+         */
+        override fun cancelNextTrackPreparation() {
+            if (!audioPlayer.isInitialized) return
+            audioPlayer.setNextDataSource(null)
         }
 
         /**
@@ -291,8 +293,8 @@ class PlayerController : ServiceComponent, Controller {
             return synchronized(this) {
                 queueManager.modifyPosition(position, false)
                 // playerState = PlayerState.PREPARING
-                prepareCurrentPlayer(queueManager.currentSong).also { setCurrentSuccess ->
-                    prepareNextPlayer(if (setCurrentSuccess) queueManager.nextSong else null)
+                prepareCurrentPlayer(queueManager.currentSong).also { success ->
+                    if (success) prepareNextTrack() else cancelNextTrackPreparation()
 
                     controller.updateLyrics()
 
@@ -335,7 +337,7 @@ class PlayerController : ServiceComponent, Controller {
                                 )
                                 handler.removeMessages(ControllerHandler.DUCK)
                                 handler.sendEmptyMessage(ControllerHandler.UNDUCK)
-                                handler.lyricsLoop() // start broadcast lyrics loop
+                                handler.loop() // start broadcast lyrics loop
                             }
                         }
                         // Actual Logics End
@@ -450,7 +452,7 @@ class PlayerController : ServiceComponent, Controller {
 
         override val audioSessionId: Int get() = audioPlayer.audioSessionId
 
-        var gaplessPlayback
+        override var gaplessPlayback
             get() = audioPlayer.gaplessPlayback
             set(value) {
                 audioPlayer.gaplessPlayback = value
@@ -501,7 +503,7 @@ class PlayerController : ServiceComponent, Controller {
         private fun checkFile(path: String) {
             val exists = try {
                 File(path).exists()
-            } catch (e: SecurityException) {
+            } catch (_: SecurityException) {
                 false
             }
             Toast.makeText(
@@ -549,14 +551,21 @@ class PlayerController : ServiceComponent, Controller {
 
     }
 
-    fun prepareNext() {
+    override var gaplessPlayback: Boolean
+        get() = impl.gaplessPlayback
+        set(value) {
+            impl.gaplessPlayback = value
+        }
+
+    override fun prepareNextTrack() {
         handler.post {
-            val controllerImpl = impl
-            if (controllerImpl is VanillaAudioPlayerControllerImpl) {
-                controllerImpl.prepareNextPlayer(
-                    if (controllerImpl.gaplessPlayback) queueManager.nextSong else null
-                )
-            }
+            if (impl.gaplessPlayback) impl.prepareNextTrack() else impl.cancelNextTrackPreparation()
+        }
+    }
+
+    override fun cancelNextTrackPreparation() {
+        handler.post {
+            impl.cancelNextTrackPreparation()
         }
     }
 
@@ -720,8 +729,34 @@ class PlayerController : ServiceComponent, Controller {
 
     override val audioSessionId: Int get() = impl.audioSessionId
 
+    override val songProgressMillis: Int get() = impl.songProgressMillis
+
+    override val songDurationMillis: Int get() = impl.songDurationMillis
+
+    override val playerSpeed
+        get() = impl.playerSpeed
+
+    override fun setPlayerSpeed(speed: Float) {
+        handler.request { impl.setPlayerSpeed(speed) }
+    }
+
     override fun setVolume(vol: Float) = handler.request {
         impl.setVolume(vol)
+    }
+
+    private fun broadcastStopLyric() = StatusBarLyric.stopLyric()
+    fun replaceLyrics(lyrics: LrcLyrics?) {
+        if (lyrics != null) {
+            lyricsUpdater.updateViaLyrics(lyrics)
+        } else {
+            lyricsUpdater.clear()
+        }
+    }
+
+    fun updateLyrics() {
+        service.coroutineScope.launch {
+            lyricsUpdater.updateViaSong(service, queueManager.currentSong)
+        }
     }
 
     private val observers: MutableList<PlayerStateObserver> = ArrayList()
@@ -798,13 +833,10 @@ class PlayerController : ServiceComponent, Controller {
             }
         }
 
-        /**
-         * start loop to broadcast lyrics
-         */
-        fun lyricsLoop() {
+        fun loop() {
             postDelayed({
-                if (broadcastLyrics()) lyricsLoop()
-            }, 750)
+                if (broadcastLyrics()) loop()
+            }, LOOP_INTERVAL)
         }
 
         companion object {
@@ -812,32 +844,7 @@ class PlayerController : ServiceComponent, Controller {
             const val DUCK = 20
             const val UNDUCK = 30
 
-        }
-    }
-
-    override val songProgressMillis: Int get() = impl.songProgressMillis
-
-    override val songDurationMillis: Int get() = impl.songDurationMillis
-
-    override val playerSpeed
-        get() = impl.playerSpeed
-
-    override fun setPlayerSpeed(speed: Float) {
-        handler.request { impl.setPlayerSpeed(speed) }
-    }
-
-    private fun broadcastStopLyric() = StatusBarLyric.stopLyric()
-    fun replaceLyrics(lyrics: LrcLyrics?) {
-        if (lyrics != null) {
-            lyricsUpdater.updateViaLyrics(lyrics)
-        } else {
-            lyricsUpdater.clear()
-        }
-    }
-
-    fun updateLyrics() {
-        service.coroutineScope.launch {
-            lyricsUpdater.updateViaSong(service, queueManager.currentSong)
+            private const val LOOP_INTERVAL = 750L
         }
     }
 
