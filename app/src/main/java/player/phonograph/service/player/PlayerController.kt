@@ -57,9 +57,6 @@ class PlayerController : ServiceComponent, Controller {
     private var _wakeLock: WakeLock? = null
     private val wakeLock: WakeLock get() = _wakeLock!!
 
-    private var _alarmManager: AlarmManager? = null
-    private val alarmManager: AlarmManager get() = _alarmManager!!
-
     private var _handler: ControllerHandler? = null
     val handler: ControllerHandler get() = _handler!!
 
@@ -76,7 +73,6 @@ class PlayerController : ServiceComponent, Controller {
 
     override fun onCreate(musicService: MusicService) {
         _service = musicService
-        _alarmManager = musicService.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
         // acquire resources
         _wakeLock =
@@ -131,7 +127,6 @@ class PlayerController : ServiceComponent, Controller {
         _thread = null
         _handler = null
 
-        _alarmManager = null
         _service = null
     }
 
@@ -667,15 +662,18 @@ class PlayerController : ServiceComponent, Controller {
                 }
             }
             try {
-                alarmManager.set(
-                    AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                    deadline,
-                    "SleepTimer",
-                    listener,
-                    timerHandler
-                )
-                sleepTimerAlarm = listener
-                sleepTimerDeadline.set(deadline)
+                val alarmManager = alarmManager()
+                if (alarmManager != null) {
+                    alarmManager.set(
+                        AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                        deadline,
+                        "SleepTimer",
+                        listener,
+                        timerHandler
+                    )
+                    sleepTimerAlarm = listener
+                    sleepTimerDeadline.set(deadline)
+                }
             } catch (e: Exception) {
                 Log.w("PlayerController", "Failed to set sleep timer", e)
             }
@@ -688,7 +686,7 @@ class PlayerController : ServiceComponent, Controller {
         val listener = sleepTimerAlarm
         sleepTimerAlarm = null
         sleepTimerDeadline.set(TIMER_OFF)
-        if (listener != null) alarmManager.cancel(listener)
+        if (listener != null) alarmManager()?.cancel(listener)
     }
 
     private fun checkSleepTimer(): Boolean {
@@ -758,6 +756,9 @@ class PlayerController : ServiceComponent, Controller {
             lyricsUpdater.updateViaSong(service, queueManager.currentSong)
         }
     }
+
+    private fun alarmManager(): AlarmManager? =
+        _service?.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
 
     private val observers: MutableList<PlayerStateObserver> = ArrayList()
     fun addObserver(observer: PlayerStateObserver) = observers.add(observer)
