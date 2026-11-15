@@ -266,6 +266,15 @@ object MusicPlayerRemote {
         musicService?.setSpeed(speed)
     }
 
+    fun setSleepTimer(minutesToQuit: Long, shouldFinishLastSong: Boolean): Boolean =
+        musicService?.setSleepTimer(minutesToQuit, shouldFinishLastSong) ?: false
+
+    fun cancelSleepTimer(): Boolean = musicService?.cancelSleepTimer() ?: false
+
+    fun hasSleepTimer(): Boolean = musicService?.hasSleepTimer() ?: false
+
+    fun sleepTimerElapsedTime(): Long = musicService?.sleepTimerElapsedTime() ?: -1L
+
     /**
      * Play a queue (asynchronous)
      * @param queue new queue

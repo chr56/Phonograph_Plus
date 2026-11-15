@@ -8,7 +8,6 @@ import com.triggertrap.seekarc.SeekArc
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.service.util.SleepTimer
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
 import player.phonograph.ui.resource.Durations
@@ -49,11 +48,11 @@ class SleepTimerDialog : DialogFragment() {
             }
             .setView(R.layout.dialog_sleep_timer)
             .create().apply {
-                val duration = SleepTimer.timerElapsedTime() - SystemClock.elapsedRealtime()
+                val duration = MusicPlayerRemote.sleepTimerElapsedTime() - SystemClock.elapsedRealtime()
                 timerUpdater = TimerUpdater(duration.coerceAtLeast(0))
                 setOnShowListener {
                     tintAlertDialogButtons(it as AlertDialog)
-                    if (SleepTimer.hasTimer()) timerUpdater.start()
+                    if (MusicPlayerRemote.hasSleepTimer()) timerUpdater.start()
                 }
             }
 
@@ -76,7 +75,7 @@ class SleepTimerDialog : DialogFragment() {
         val context = requireContext()
         val minutesToQuit = progress.toLong()
         val shouldFinishLastSong = Settings(context)[Keys.sleepTimerFinishMusic].data
-        if (SleepTimer.setTimer(context, minutesToQuit, shouldFinishLastSong)) {
+        if (MusicPlayerRemote.setSleepTimer(minutesToQuit, shouldFinishLastSong)) {
             Toast.makeText(
                 context,
                 getString(R.string.msg_sleep_timer_set, minutesToQuit),
@@ -98,7 +97,7 @@ class SleepTimerDialog : DialogFragment() {
         }
 
         val context = requireContext()
-        if (SleepTimer.cancelTimer(context)) {
+        if (MusicPlayerRemote.cancelSleepTimer()) {
             Toast.makeText(
                 context,
                 getString(R.string.msg_sleep_timer_canceled),
@@ -185,7 +184,7 @@ class SleepTimerDialog : DialogFragment() {
         private fun setNegativeButtonText(time: Long) {
             val text = requireContext().getString(R.string.action_cancel_current_timer).plus(
                 if (MusicPlayerRemote.isServiceConnected) {
-                    if (time > 0 && SleepTimer.hasTimer()) "(${Durations.short(time)})" else ""
+                    if (time > 0 && MusicPlayerRemote.hasSleepTimer()) "(${Durations.short(time)})" else ""
                 } else {
                     requireContext().getString(R.string.tips_service_disconnected)
                 }
