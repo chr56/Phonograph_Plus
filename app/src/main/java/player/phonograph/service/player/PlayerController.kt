@@ -7,7 +7,6 @@ package player.phonograph.service.player
 import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.R
 import player.phonograph.foundation.mediastore.mediaStoreUriSongExternal
-import player.phonograph.mechanism.StatusBarLyric
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.model.service.PlayerState
@@ -16,7 +15,7 @@ import player.phonograph.model.service.RepeatMode
 import player.phonograph.service.MusicService
 import player.phonograph.service.ServiceComponent
 import player.phonograph.service.queue.QueueManager
-import player.phonograph.service.util.LyricsUpdater
+import player.phonograph.service.util.LyricsBroadcastController
 import player.phonograph.service.util.QueuePreferenceManager
 import player.phonograph.service.util.makeErrorMessage
 import player.phonograph.settings.Keys
@@ -63,8 +62,8 @@ class PlayerController : ServiceComponent, Controller {
     private var _thread: HandlerThread? = null
     private val thread: HandlerThread get() = _thread!!
 
-    private var _lyricsUpdater: LyricsUpdater? = null
-    private val lyricsUpdater: LyricsUpdater get() = _lyricsUpdater!!
+    private var _lyricsBroadcastController: LyricsBroadcastController? = null
+    private val lyricsBroadcastController: LyricsBroadcastController get() = _lyricsBroadcastController!!
 
     private var _audioFocusManager: AudioFocusManager? = null
     private val audioFocusManager: AudioFocusManager get() = _audioFocusManager!!
@@ -96,8 +95,8 @@ class PlayerController : ServiceComponent, Controller {
         impl.onCreate(musicService)
 
 
-        _lyricsUpdater = LyricsUpdater()
-        lyricsUpdater.onCreate(service)
+        _lyricsBroadcastController = LyricsBroadcastController()
+        updateLyrics()
 
         created = true
 
@@ -107,9 +106,6 @@ class PlayerController : ServiceComponent, Controller {
     override fun onDestroy(musicService: MusicService) {
         created = false
         clearSleepTimer()
-
-        lyricsUpdater.onDestroy(musicService)
-        _lyricsUpdater = null
 
         impl.stop()
         impl.onDestroy(musicService)
@@ -121,6 +117,7 @@ class PlayerController : ServiceComponent, Controller {
         _wakeLock = null
         _audioFocusManager = null
 
+        _lyricsBroadcastController = null
 
         thread.quitSafely()
         handler.looper.quitSafely()
@@ -742,18 +739,37 @@ class PlayerController : ServiceComponent, Controller {
         impl.setVolume(vol)
     }
 
-    private fun broadcastStopLyric() = StatusBarLyric.stopLyric()
+    var enableLyrics: Boolean = false
+        set(value) {
+            if (field == value) return
+            field = value
+            if (value) {
+                updateLyrics()
+            } else {
+                lyricsBroadcastController.clear()
+                broadcastStopLyric()
+            }
+        }
+
+    private fun broadcastStopLyric() = lyricsBroadcastController.stop()
     fun replaceLyrics(lyrics: LrcLyrics?) {
+        if (!enableLyrics) return
         if (lyrics != null) {
-            lyricsUpdater.updateViaLyrics(lyrics)
+            lyricsBroadcastController.load(lyrics)
         } else {
-            lyricsUpdater.clear()
+            lyricsBroadcastController.clear()
         }
     }
 
     fun updateLyrics() {
+        if (!enableLyrics) return
         service.coroutineScope.launch {
-            lyricsUpdater.updateViaSong(service, queueManager.currentSong)
+            val currentSong = queueManager.currentSong
+            if (currentSong != null) {
+                lyricsBroadcastController.load(service, currentSong)
+            } else {
+                lyricsBroadcastController.clear()
+            }
         }
     }
 
@@ -828,7 +844,7 @@ class PlayerController : ServiceComponent, Controller {
                 return false
             } else {
                 post {
-                    playerController.lyricsUpdater.broadcast(playerController.songProgressMillis)
+                    playerController.lyricsBroadcastController.broadcast(playerController.songProgressMillis)
                 }
                 return true
             }

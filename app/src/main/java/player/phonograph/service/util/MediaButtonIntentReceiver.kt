@@ -18,7 +18,7 @@ import player.phonograph.model.service.ACTION_NEXT
 import player.phonograph.model.service.ACTION_PAUSE
 import player.phonograph.model.service.ACTION_PLAY
 import player.phonograph.model.service.ACTION_PREVIOUS
-import player.phonograph.model.service.ACTION_STOP_AND_QUIT_NOW_BY_USER_ACTION
+import player.phonograph.model.service.ACTION_QUIT_BY_USER_ACTION
 import player.phonograph.model.service.ACTION_TOGGLE_PAUSE
 import player.phonograph.service.MusicService
 import androidx.core.content.ContextCompat
@@ -99,7 +99,7 @@ class MediaButtonIntentReceiver : BroadcastReceiver() {
                     KeyEvent.KEYCODE_MEDIA_PLAY       -> command = ACTION_PLAY
                     KeyEvent.KEYCODE_MEDIA_PREVIOUS   -> command = ACTION_PREVIOUS
                     KeyEvent.KEYCODE_MEDIA_NEXT       -> command = ACTION_NEXT
-                    KeyEvent.KEYCODE_MEDIA_STOP       -> command = ACTION_STOP_AND_QUIT_NOW_BY_USER_ACTION
+                    KeyEvent.KEYCODE_MEDIA_STOP       -> command = ACTION_QUIT_BY_USER_ACTION
                     KeyEvent.KEYCODE_HEADSETHOOK      -> command = ACTION_TOGGLE_PAUSE
                 }
                 if (command != null) {

@@ -61,8 +61,8 @@ class MusicService :
 
     private lateinit var throttledTimer: ThrottledTimer
 
-    val coroutineScope get() = _coroutineScope!!
     private var _coroutineScope: CoroutineScope? = null
+    val coroutineScope get() = _coroutineScope!!
 
     lateinit var coverLoader: CoverLoader
 
@@ -126,20 +126,19 @@ class MusicService :
 
     fun processCommand(action: String?) {
         when (action) {
-            ACTION_TOGGLE_PAUSE          -> if (isPlaying) pause() else play()
-            ACTION_PLAY                  -> play()
-            ACTION_PAUSE                 -> pause()
-            ACTION_NEXT                  -> playNextSong(true)
-            ACTION_PREVIOUS              -> back(true)
-            ACTION_FAST_FORWARD          -> fastForward()
-            ACTION_FAST_REWIND           -> fastRewind()
-            ACTION_SHUFFLE               -> queueManager.modifyShuffleMode(null)
-            ACTION_REPEAT                -> queueManager.modifyRepeatMode(null)
-            ACTION_FAV                   -> toggleFavorite(queueManager.currentSong)
-            ACTION_STOP_AND_QUIT_NOW_BY_USER_ACTION,
-            ACTION_STOP_AND_QUIT_NOW_BY_NOTIFICATION,
-                -> requestToQuit()
-            ACTION_CONNECT_WIDGETS       -> AppWidgetUpdateReceiver.connect(this)
+            ACTION_TOGGLE_PAUSE         -> if (isPlaying) pause() else play()
+            ACTION_PLAY                 -> play()
+            ACTION_PAUSE                -> pause()
+            ACTION_NEXT                 -> playNextSong(true)
+            ACTION_PREVIOUS             -> back(true)
+            ACTION_FAST_FORWARD         -> fastForward()
+            ACTION_FAST_REWIND          -> fastRewind()
+            ACTION_SHUFFLE              -> queueManager.modifyShuffleMode(null)
+            ACTION_REPEAT               -> queueManager.modifyRepeatMode(null)
+            ACTION_FAV                  -> toggleFavorite(queueManager.currentSong)
+            ACTION_QUIT_BY_USER_ACTION  -> requestToQuit()
+            ACTION_QUIT_BY_NOTIFICATION -> requestToQuit()
+            ACTION_CONNECT_WIDGETS      -> AppWidgetUpdateReceiver.connect(this)
         }
     }
 
@@ -176,6 +175,7 @@ class MusicService :
     //////////////////
 
     //region Settings
+
     private var broadcastCurrentPlayerState: Boolean = false
 
     private var couldPutCover: Boolean = true
@@ -201,11 +201,14 @@ class MusicService :
         _jobs += settingsObserver.collect(Keys.seekJumpInterval) { interval ->
             seekJumpInterval = (interval * 1000).toInt()
         }
-        _jobs += settingsObserver.collect(Keys.stopOnTaskRemoved) { state ->
-            stopOnTaskRemoved = state
+        _jobs += settingsObserver.collect(Keys.stopOnTaskRemoved) { value ->
+            stopOnTaskRemoved = value
         }
-        _jobs += settingsObserver.collect(Keys.enableHistory) { state ->
-            enableHistory = state
+        _jobs += settingsObserver.collect(Keys.enableHistory) { value ->
+            enableHistory = value
+        }
+        _jobs += settingsObserver.collect(Keys.enableLyrics) { value ->
+            controller.enableLyrics = value
         }
     }
 
@@ -296,8 +299,10 @@ class MusicService :
 
     fun replaceLyrics(lyrics: LrcLyrics?) = controller.replaceLyrics(lyrics)
 
-    fun toggleFavorite(song: Song?): Boolean {
-        return song != null && runBlocking { FavoriteTracks.toggleState(this@MusicService, song) }
+    fun toggleFavorite(song: Song?) {
+        if (song != null) coroutineScope.launch {
+            FavoriteTracks.toggleState(this@MusicService, song)
+        }
     }
 
     //////////////////
@@ -448,8 +453,8 @@ class MusicService :
 
     override fun onLoadChildren(parentId: String, result: Result<MutableList<MediaBrowserCompat.MediaItem>>) {
         log("onLoadChildren(): parentId $parentId", false)
+        val context = this
         runBlocking {
-            val context = this@MusicService
             val mediaItems = try {
                 MediaBrowserDelegate.listChildren(parentId, context)
             } catch (e: Throwable) {
@@ -523,10 +528,11 @@ class MusicService :
     //endregion
 
     companion object {
+        private const val TAG = "MusicService"
         private const val THROTTLE: Long = 500
 
-        fun log(msg: String, force: Boolean) {
-            if (force || BuildConfig.DEBUG) Log.i("MusicServiceDebug", msg)
+        private fun log(msg: String, force: Boolean = false) {
+            if (force || BuildConfig.DEBUG) Log.i(TAG, msg)
         }
 
         private fun sendPublicIntent(

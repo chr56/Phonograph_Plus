@@ -20,8 +20,8 @@ const val ACTION_FAST_FORWARD = "$PREFIX.fast_forward"
 const val ACTION_SHUFFLE = "$PREFIX.toggle_shuffle"
 const val ACTION_REPEAT = "$PREFIX.toggle_repeat"
 const val ACTION_FAV = "$PREFIX.fav"
-const val ACTION_STOP_AND_QUIT_NOW_BY_USER_ACTION = "$PREFIX.stop_and_quit_now_by_user_action"
-const val ACTION_STOP_AND_QUIT_NOW_BY_NOTIFICATION = "$PREFIX.stop_and_quit_now_by_notification"
+const val ACTION_QUIT_BY_USER_ACTION = "$PREFIX.quit_by_user_action"
+const val ACTION_QUIT_BY_NOTIFICATION = "$PREFIX.quit_by_notification"
 const val ACTION_CONNECT_WIDGETS = "$PREFIX.connect_widgets"
 
 //endregion
