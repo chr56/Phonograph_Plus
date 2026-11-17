@@ -26,7 +26,6 @@ import player.phonograph.service.queue.QueueManager
 import player.phonograph.service.queue.QueueManager.Companion.MSG_SAVE_CFG
 import player.phonograph.service.queue.QueueManager.Companion.MSG_SAVE_QUEUE
 import player.phonograph.service.util.AppWidgetUpdateReceiver
-import player.phonograph.service.util.MusicServiceUtil
 import player.phonograph.service.util.SongPlayCountHelper
 import player.phonograph.settings.Keys
 import player.phonograph.settings.SettingsObserver
@@ -139,7 +138,7 @@ class MusicService :
             ACTION_FAV                   -> toggleFavorite(queueManager.currentSong)
             ACTION_STOP_AND_QUIT_NOW_BY_USER_ACTION,
             ACTION_STOP_AND_QUIT_NOW_BY_NOTIFICATION,
-                                         -> requestToQuit()
+                -> requestToQuit()
             ACTION_CONNECT_WIDGETS       -> AppWidgetUpdateReceiver.connect(this)
         }
     }
@@ -177,6 +176,8 @@ class MusicService :
     //////////////////
 
     //region Settings
+    private var broadcastCurrentPlayerState: Boolean = false
+
     private var couldPutCover: Boolean = true
 
     private var seekJumpInterval: Int = 5_000
@@ -191,8 +192,8 @@ class MusicService :
 
     private fun observeSettings() {
         val settingsObserver = SettingsObserver(this, coroutineScope)
-        _jobs += settingsObserver.collect(Keys.broadcastCurrentPlayerState) { broadcastCurrentPlayerState ->
-            throttledTimer.broadcastCurrentPlayerState = broadcastCurrentPlayerState
+        _jobs += settingsObserver.collect(Keys.broadcastCurrentPlayerState) { value ->
+            broadcastCurrentPlayerState = value
         }
         _jobs += settingsObserver.collect(Keys.alwaysUseMediaSessionToDisplayCover) { alwaysUseMediaSessionToDisplayCover ->
             couldPutCover = SDK_INT >= VERSION_SET_COVER_USING_METADATA || alwaysUseMediaSessionToDisplayCover
@@ -336,7 +337,7 @@ class MusicService :
         }
 
         sendInternalIntent(EVENT_META_CHANGED)
-        MusicServiceUtil.sendPublicIntent(this, EVENT_META_CHANGED)
+        sendPublicIntent(EVENT_META_CHANGED)
     }
 
     override fun onPlayerStateChanged(oldState: PlayerState, newState: PlayerState) {
@@ -357,7 +358,7 @@ class MusicService :
         }
 
         sendInternalIntent(EVENT_PLAY_STATE_CHANGED)
-        MusicServiceUtil.sendPublicIntent(this, EVENT_PLAY_STATE_CHANGED)
+        sendPublicIntent(EVENT_PLAY_STATE_CHANGED)
     }
 
     override fun onCurrentPositionChanged(newPosition: Int) {
@@ -424,6 +425,15 @@ class MusicService :
         sendBroadcast(Intent(what).apply { `package` = ACTUAL_PACKAGE_NAME })
     }
 
+    private fun sendPublicIntent(what: String) {
+        if (broadcastCurrentPlayerState) {
+            // for services likes MusixMatch etc.
+            sendPublicIntent(
+                this, what, queueManager.currentSong, isPlaying, songProgressMillis.toLong()
+            )
+        }
+    }
+
     //region MediaBrowser
     override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?): BrowserRoot? {
         log("onGetRoot() clientPackageName: $clientPackageName, clientUid: $clientUid", false)
@@ -453,7 +463,6 @@ class MusicService :
 
     //region ThrottledTimer
     private inner class ThrottledTimer(private val mHandler: Handler) : Runnable {
-        var broadcastCurrentPlayerState: Boolean = false
         fun notifySeek() {
             mediaSessionController.updateMetaData(
                 queueManager.currentSong,
@@ -482,12 +491,7 @@ class MusicService :
 
         override fun run() {
             controller.saveCurrentMills()
-            if (broadcastCurrentPlayerState) {
-                MusicServiceUtil.sendPublicIntent(
-                    this@MusicService,
-                    EVENT_PLAY_STATE_CHANGED
-                ) // for musixmatch synced lyrics
-            }
+            this@MusicService.sendPublicIntent(EVENT_PLAY_STATE_CHANGED)
         }
     }
     //endregion
@@ -523,6 +527,29 @@ class MusicService :
 
         fun log(msg: String, force: Boolean) {
             if (force || BuildConfig.DEBUG) Log.i("MusicServiceDebug", msg)
+        }
+
+        private fun sendPublicIntent(
+            context: Context,
+            action: String,
+            song: Song?,
+            isPlaying: Boolean,
+            progressMillis: Long,
+        ) {
+            if (song == null) return
+            @Suppress("DEPRECATION")
+            context.sendStickyBroadcast(
+                Intent(action.replace(ACTUAL_PACKAGE_NAME, "com.android.music")).apply {
+                    putExtra("id", song.id)
+                    putExtra("artist", song.artistName)
+                    putExtra("album", song.albumName)
+                    putExtra("track", song.title)
+                    putExtra("duration", song.duration)
+                    putExtra("position", progressMillis)
+                    putExtra("playing", isPlaying)
+                    putExtra("scrobbling_source", ACTUAL_PACKAGE_NAME)
+                }
+            )
         }
     }
 }
