@@ -43,6 +43,7 @@ import android.support.v4.media.MediaBrowserCompat
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -111,7 +112,7 @@ class MusicService :
         throttledTimer = ThrottledTimer(controller.handler)
 
         // settings
-        readSettings()
+        observeSettings()
         // misc
         AppWidgetUpdateReceiver.register(this)
         sendBroadcast(Intent("player.phonograph.PHONOGRAPH_MUSIC_SERVICE_CREATED"))
@@ -152,6 +153,7 @@ class MusicService :
 
     override fun onDestroy() {
         isDestroyed = true
+        cancelSettingsObservation()
         mediaSessionController.mediaSession.isActive = false
         playNotificationManager.onDestroy(this)
         mediaSessionController.onDestroy(this)
@@ -185,23 +187,30 @@ class MusicService :
 
     private val songPlayCountHelper = SongPlayCountHelper()
 
-    private fun readSettings() {
+    private val _jobs = mutableListOf<Job>()
+
+    private fun observeSettings() {
         val settingsObserver = SettingsObserver(this, coroutineScope)
-        settingsObserver.collect(Keys.broadcastCurrentPlayerState) { broadcastCurrentPlayerState ->
+        _jobs += settingsObserver.collect(Keys.broadcastCurrentPlayerState) { broadcastCurrentPlayerState ->
             throttledTimer.broadcastCurrentPlayerState = broadcastCurrentPlayerState
         }
-        settingsObserver.collect(Keys.alwaysUseMediaSessionToDisplayCover) { alwaysUseMediaSessionToDisplayCover ->
+        _jobs += settingsObserver.collect(Keys.alwaysUseMediaSessionToDisplayCover) { alwaysUseMediaSessionToDisplayCover ->
             couldPutCover = SDK_INT >= VERSION_SET_COVER_USING_METADATA || alwaysUseMediaSessionToDisplayCover
         }
-        settingsObserver.collect(Keys.seekJumpInterval) { interval ->
+        _jobs += settingsObserver.collect(Keys.seekJumpInterval) { interval ->
             seekJumpInterval = (interval * 1000).toInt()
         }
-        settingsObserver.collect(Keys.stopOnTaskRemoved) { state ->
+        _jobs += settingsObserver.collect(Keys.stopOnTaskRemoved) { state ->
             stopOnTaskRemoved = state
         }
-        settingsObserver.collect(Keys.enableHistory) { state ->
+        _jobs += settingsObserver.collect(Keys.enableHistory) { state ->
             enableHistory = state
         }
+    }
+
+    private fun cancelSettingsObservation() {
+        for (job in _jobs) job.cancel()
+        _jobs.clear()
     }
     //endregion
 
