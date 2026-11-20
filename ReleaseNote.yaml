@@ -1,26 +1,32 @@
 version: "2.0.3-dev1"
 channel: "PREVIEW"
 versionCode: 20002
-timestamp: 1795000000
+timestamp: 1795500000
 
 warning:
   en: |
-    We have changed the signing key since v2.0.0. You have to _uninstall first_ before upgrading.
-    However, if your device runs Android 9 and higher, you can install `IntermediaRelease` variants to transit smoothly without uninstalling first.
+    We have changed or rotated our APK signing key since v2.0.0!
   zh: |
-    自 2.0.0 版本起，我们使用了新的签名密钥；更新前需要先卸载再安装；
-    但是，若设备运行 Android 9 及其以上，可安装带有 `IntermediaRelease` 的安装包，则可无需卸载即可迁到新签名密钥！
+    自 2.0.0 版本起，我们更换或轮转了新的 APK 签名密钥！
 
 notes:
   en:
     items:
+      - "Fix: crash when shuffling an empty list"
+      - "Fix: service occasionally failing to stop and exit"
+      - "Fix: sleep timer failing to stop current playing in some cases"
       - "Improve: support deleting files with their items in playing queue"
       - "Improve: rescan the playlist on entering Playlist Detail"
+      - "Modify: mute unnecessary error notifications"
       - "Development: build with AGP 9.4.1, update dependencies"
   zh:
     items:
+      - "修复 对空列表进行随机播放时发生崩溃"
+      - "修复 服务偶尔无法正常停止并退出"
+      - "修复 睡眠定时器在部分情况下未能停止播放"
       - "改进 支持删除文件时连同对应播放队列中条目一并删除"
       - "改进 进入播放列表详情时扫描检查一次播放列表"
+      - "修改 屏蔽不必要的错误通知"
       - "开发 使用 AGP 9.4.1 构建, 更新依赖"
 
 previousVersion: "2.0.2"
