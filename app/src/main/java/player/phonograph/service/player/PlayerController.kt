@@ -9,6 +9,7 @@ import player.phonograph.R
 import player.phonograph.foundation.mediastore.mediaStoreUriSongExternal
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
+import player.phonograph.model.service.PLAYER_EXOPLAYER3
 import player.phonograph.model.service.PlayerState
 import player.phonograph.model.service.PlayerStateObserver
 import player.phonograph.model.service.RepeatMode
@@ -19,6 +20,7 @@ import player.phonograph.service.util.LyricsBroadcastController
 import player.phonograph.service.util.QueuePreferenceManager
 import player.phonograph.service.util.makeErrorMessage
 import player.phonograph.settings.Keys
+import player.phonograph.settings.Settings
 import player.phonograph.settings.SettingsObserver
 import androidx.core.content.ContextCompat
 import android.app.AlarmManager
@@ -91,7 +93,11 @@ class PlayerController : ServiceComponent, Controller {
 
         // Prepare Player
 
-        _impl = VanillaAudioPlayerControllerImpl(this)
+        // todo: support switching player implementation after created
+        _impl = when (Settings(musicService)[Keys.playerImplementation].data) {
+            PLAYER_EXOPLAYER3 -> ExoAudioPlayerControllerImpl(this)
+            else              -> VanillaAudioPlayerControllerImpl(this)
+        }
         impl.onCreate(musicService)
 
 
