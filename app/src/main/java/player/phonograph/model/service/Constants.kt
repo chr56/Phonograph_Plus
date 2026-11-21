@@ -38,3 +38,6 @@ const val EVENT_QUEUE_CHANGED = "$PREFIX.queuechanged"
 const val EVENT_PLAY_STATE_CHANGED = "$PREFIX.playstatechanged"
 
 //endregion
+
+const val PLAYER_LEGACY = "legacy"
+const val PLAYER_EXOPLAYER3 = "exoplayer3"
