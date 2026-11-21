@@ -20,6 +20,7 @@ import player.phonograph.model.repo.DEFAULT_TAG_SEPARATORS_GENRES
 import player.phonograph.model.repo.MusicLibraryBackendOptions
 import player.phonograph.model.repo.PROVIDER_INTERNAL_DATABASE
 import player.phonograph.model.repo.SYNC_MODE_STANDARD
+import player.phonograph.model.service.PLAYER_LEGACY
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.model.time.Duration
@@ -238,6 +239,9 @@ object Keys {
 
     //<editor-fold desc="Experimental">
     //</editor-fold>
+
+    val playerImplementation
+        get() = PrimitiveKey<String>(stringPK("@_player_implementation")) { PLAYER_LEGACY }
 
     val forceEnableEdgeToEdge
         get() = PrimitiveKey<Boolean>(booleanPK("force_enable_edge_to_edge")) { false }
