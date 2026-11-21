@@ -5,10 +5,13 @@
 package player.phonograph.ui.modules.setting
 
 import player.phonograph.R
+import player.phonograph.model.service.PLAYER_EXOPLAYER3
+import player.phonograph.model.service.PLAYER_LEGACY
 import player.phonograph.repo.loader.FavoriteTracks
 import player.phonograph.settings.Keys
 import player.phonograph.ui.compose.ExperimentalContentThemeOverride
 import player.phonograph.ui.modules.setting.components.BooleanPreference
+import player.phonograph.ui.modules.setting.components.ListPreference
 import player.phonograph.ui.modules.setting.components.SettingsGroup
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -60,6 +63,15 @@ fun PreferenceScreenAdvanced() {
                     key = Keys.forceEnableEdgeToEdge,
                     title = "Force enable edge to edge",
                     summary = "Enable full edge to edge for Android 11 and later.",
+                )
+                ListPreference(
+                    key = Keys.playerImplementation,
+                    optionsValues = listOf(
+                        PLAYER_LEGACY,
+                        PLAYER_EXOPLAYER3,
+                    ),
+                    title = "Player backend implementation",
+                    summary = "[Experimental] Use legacy vanilla MediaPlayer or ExoPlayer3 (you may need reboot app!)"
                 )
             }
         }
