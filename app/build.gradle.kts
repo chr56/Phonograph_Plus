@@ -25,7 +25,7 @@ val isKeystoreAvailable = !keystoreFile.isNullOrEmpty() && !keystorePassword.isN
 android {
     compileSdk {
         version = release(37) {
-            minorApiLevel = 0
+            minorApiLevel = 1
         }
     }
     buildToolsVersion = "37.0.0"
