@@ -20,6 +20,8 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.input.TextFieldLineLimits
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
@@ -194,14 +196,13 @@ private fun EditableItem(
         var isEditing by remember { mutableStateOf(false) }
 
         if (isEditing) {
-            var editedValue by remember { mutableStateOf(value) }
+            val state = rememberTextFieldState(initialText = value)
             OutlinedTextField(
-                value = editedValue,
-                onValueChange = { editedValue = it },
+                state = state,
                 modifier = Modifier
                     .weight(1f)
                     .padding(horizontal = 4.dp),
-                maxLines = 3,
+                lineLimits = TextFieldLineLimits.MultiLine(maxHeightInLines = 3),
                 textStyle = MaterialTheme.typography.body2.copy(color = MaterialTheme.colors.onSurface),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = MaterialTheme.colors.secondary,
@@ -210,7 +211,7 @@ private fun EditableItem(
             )
 
             IconButton(onClick = {
-                actionEdit(value, editedValue)
+                actionEdit(value, state.text.toString())
                 isEditing = false
             }) {
                 Icon(
@@ -221,7 +222,6 @@ private fun EditableItem(
             }
 
             IconButton(onClick = {
-                editedValue = value
                 isEditing = false
             }) {
                 Icon(

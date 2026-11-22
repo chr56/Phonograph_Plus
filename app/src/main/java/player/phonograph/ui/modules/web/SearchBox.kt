@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.text.input.clearText
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
@@ -72,12 +74,10 @@ fun BaseSearchBox(
 }
 
 @Composable
-@Suppress("UNUSED_PARAMETER")
-fun SearchTextBox(current: String, modifier: Modifier = Modifier, hint: String? = null, onUpdate: (String) -> Unit) {
+fun SearchTextBox(state: TextFieldState, modifier: Modifier = Modifier, hint: String? = null) {
     TextField(
-        value = current,
-        onValueChange = onUpdate,
-        modifier = Modifier.fillMaxWidth(),
+        state = state,
+        modifier = modifier.fillMaxWidth(),
         colors = TextFieldDefaults.textFieldColors(
             backgroundColor = MaterialTheme.colors.background,
             textColor = MaterialTheme.colors.onBackground,
@@ -89,7 +89,7 @@ fun SearchTextBox(current: String, modifier: Modifier = Modifier, hint: String? 
                 modifier = Modifier
                     .padding(8.dp)
                     .clickable {
-                        onUpdate.invoke("")
+                        state.clearText()
                     }
             )
         },

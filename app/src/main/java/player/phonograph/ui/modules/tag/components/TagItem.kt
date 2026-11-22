@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
@@ -27,10 +29,12 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -65,7 +69,8 @@ fun EditableTagItem(
         )
         // content
         val originalValue = remember(key) { value }
-        var currentValue by remember(key) { mutableStateOf(value) }
+        val state = remember(key) { TextFieldState(initialText = value) }
+        var lastHandledText by remember(key) { mutableStateOf(value) }
         var hasEdited by remember(key) { mutableStateOf(false) }
 
 
@@ -74,16 +79,29 @@ fun EditableTagItem(
         }
 
 
-        fun updateValue(newValue: String) {
-            currentValue = newValue
+        fun updateEditingStatus(newValue: String) {
+            lastHandledText = newValue
             hasEdited = newValue != originalValue
             indicatorColor = if (hasEdited) Color(0xFFF59C01) else Color(0xFF707070)
         }
 
+        fun updateValue(newValue: String) {
+            state.setTextAndPlaceCursorAtEnd(newValue)
+            updateEditingStatus(newValue)
+        }
+
+        LaunchedEffect(state) {
+            snapshotFlow { state.text.toString() }.collect { text ->
+                if (text != lastHandledText) updateEditingStatus(text)
+            }
+        }
+
         fun submit() {
+            val currentValue = state.text.toString()
             onEdit.invoke(
                 InteractiveAction.Edit.UpdateTag(key, currentValue)
             )
+            lastHandledText = currentValue
             hasEdited = false
             indicatorColor = Color(0xFF00C72C)
         }
@@ -91,8 +109,7 @@ fun EditableTagItem(
         var showDropdownMenu by remember { mutableStateOf(false) }
 
         TextField(
-            value = currentValue,
-            onValueChange = ::updateValue,
+            state = state,
             modifier = Modifier
                 .align(Alignment.Start)
                 .fillMaxWidth(),
@@ -154,7 +171,7 @@ fun EditableTagItem(
                     Icon(
                         Icons.Default.Add, stringResource(R.string.action_add),
                         modifier = Modifier
-                            .clickable { onClick("$currentValue ; $alternative") }
+                            .clickable { onClick("${state.text} ; $alternative") }
                             .weight(1f)
                     )
                     Icon(

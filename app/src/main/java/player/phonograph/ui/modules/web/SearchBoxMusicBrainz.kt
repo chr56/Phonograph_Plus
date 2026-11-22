@@ -6,7 +6,6 @@ package player.phonograph.ui.modules.web
 
 import mms.musicbrainz.MusicBrainzAction
 import mms.musicbrainz.MusicBrainzAction.Target
-import mms.musicbrainz.MusicbrainzQueryParameter
 import player.phonograph.R
 import player.phonograph.ui.compose.components.display.HorizontalTextItem
 import androidx.compose.runtime.Composable
@@ -16,8 +15,7 @@ import androidx.compose.ui.res.stringResource
 
 @Composable
 fun MusicBrainzSearchBox(
-    queryParameter: MusicbrainzQueryParameter,
-    updateQueryParameter: ((MusicbrainzQueryParameter) -> MusicbrainzQueryParameter) -> Unit,
+    page: PageSearch.MusicBrainzSearch,
     modifier: Modifier = Modifier,
     onSearch: (MusicBrainzAction.Search) -> Unit,
 ) {
@@ -28,20 +26,18 @@ fun MusicBrainzSearchBox(
             Target(
                 all = listOf(Target.ReleaseGroup, Target.Release, Target.Artist, Target.Recording),
                 text = { stringResource(it.displayTextRes()) },
-                current = queryParameter.target
+                current = page.target
             ) {
-                updateQueryParameter { old -> old.copy(target = it) }
+                page.target = it
             }
         },
-        onSearch = { onSearch(queryParameter.toAction()) }
+        onSearch = { onSearch(page.queryParameter.toAction()) }
     ) {
         HorizontalTextItem(stringResource(R.string.label_query)) {
             SearchTextBox(
-                queryParameter.query,
+                state = page.queryState,
                 hint = stringResource(R.string.tips_hint_lucene_query_syntax)
-            ) {
-                updateQueryParameter { old -> old.copy(query = it) }
-            }
+            )
         }
     }
 }

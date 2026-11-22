@@ -5,7 +5,6 @@
 package player.phonograph.ui.modules.web
 
 import mms.lastfm.LastFmAction
-import mms.lastfm.LastFmQueryParameter
 import player.phonograph.R
 import player.phonograph.ui.compose.components.display.HorizontalTextItem
 import androidx.compose.runtime.Composable
@@ -15,8 +14,7 @@ import androidx.compose.ui.res.stringResource
 
 @Composable
 fun LastFmSearchBox(
-    queryParameter: LastFmQueryParameter,
-    updateQueryParameter: ((LastFmQueryParameter) -> LastFmQueryParameter) -> Unit,
+    page: PageSearch.LastFmSearch,
     modifier: Modifier = Modifier,
     onSearch: (LastFmAction.Search) -> Unit,
 ) {
@@ -27,36 +25,24 @@ fun LastFmSearchBox(
             Target(
                 all = listOf(LastFmAction.Target.Album, LastFmAction.Target.Artist, LastFmAction.Target.Track),
                 text = { stringResource(it.displayTextRes()) },
-                current = queryParameter.target
+                current = page.target
             ) {
-                updateQueryParameter { old -> old.copy(target = it) }
+                page.target = it
             }
         },
-        onSearch = { onSearch(queryParameter.toAction()) }
+        onSearch = { onSearch(page.queryParameter.toAction()) }
     ) {
-        if (queryParameter.target == LastFmAction.Target.Album)
+        if (page.target == LastFmAction.Target.Album)
             HorizontalTextItem(label = stringResource(id = R.string.label_album)) {
-                SearchTextBox(queryParameter.albumQuery.orEmpty()) {
-                    updateQueryParameter { old ->
-                        old.copy(albumQuery = it)
-                    }
-                }
+                SearchTextBox(state = page.albumState)
             }
-        if (queryParameter.target == LastFmAction.Target.Track)
+        if (page.target == LastFmAction.Target.Track)
             HorizontalTextItem(label = stringResource(id = R.string.label_song)) {
-                SearchTextBox(queryParameter.trackQuery.orEmpty()) {
-                    updateQueryParameter { old ->
-                        old.copy(trackQuery = it)
-                    }
-                }
+                SearchTextBox(state = page.trackState)
             }
-        if (queryParameter.target == LastFmAction.Target.Artist || queryParameter.target == LastFmAction.Target.Track)
+        if (page.target == LastFmAction.Target.Artist || page.target == LastFmAction.Target.Track)
             HorizontalTextItem(label = stringResource(id = R.string.label_artist)) {
-                SearchTextBox(queryParameter.artistQuery.orEmpty()) {
-                    updateQueryParameter { old ->
-                        old.copy(artistQuery = it)
-                    }
-                }
+                SearchTextBox(state = page.artistState)
             }
     }
 }

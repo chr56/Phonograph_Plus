@@ -17,7 +17,6 @@ import mms.musicbrainz.MusicBrainzTrack
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,13 +31,12 @@ import kotlinx.coroutines.launch
 @Composable
 fun MusicBrainzSearch(viewModel: WebSearchViewModel, page: PageSearch.MusicBrainzSearch) {
 
-    val parameterState by page.queryParameter.collectAsState()
     var searchResults: MusicBrainzSearchResult? by remember { mutableStateOf(null) }
 
     Column {
         val context = LocalContext.current
         MusicBrainzSearchBox(
-            parameterState, page::updateQueryParameter,
+            page,
             Modifier.wrapContentHeight()
         ) { action ->
             val delegate = viewModel.clientDelegateMusicBrainz(context)

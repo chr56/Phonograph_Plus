@@ -11,6 +11,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.text.input.clearText
+import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -20,11 +23,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,34 +32,27 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
 fun VerticalTextFieldItem(
     title: String,
-    value: String?,
+    state: TextFieldState,
     hint: String,
-    onTextChanged: (String) -> Unit,
     extraTrailingIcon: @Composable (() -> Unit)? = null,
     allowReset: Boolean = false,
     allowClear: Boolean = true,
 ) {
-    var currentValue by remember { mutableStateOf(value ?: "") }
-    val changeCurrentValue = { str: String ->
-        currentValue = str
-        onTextChanged(str)
-    }
+    val originalText = remember(state) { state.text.toString() }
     LabeledTextField(
         title = title,
-        value = currentValue,
+        state = state,
         hint = hint,
-        onValueChange = changeCurrentValue,
         trailingIcon = {
             if (extraTrailingIcon != null) extraTrailingIcon()
             TrailingIcon(
-                onReset = { changeCurrentValue(value ?: "") },
+                onReset = { state.setTextAndPlaceCursorAtEnd(originalText) },
                 allowReset = allowReset,
-                onClear = { changeCurrentValue("") },
+                onClear = { state.clearText() },
                 allowClear = allowClear
             )
         },
@@ -69,28 +61,10 @@ fun VerticalTextFieldItem(
 
 
 @Composable
-fun VerticalTextFieldItem(
-    title: String,
-    value: MutableStateFlow<String>,
-    hint: String,
-    trailingIcon: @Composable (() -> Unit)? = null,
-) {
-    val currentValue by value.collectAsState()
-    LabeledTextField(
-        title = title,
-        value = currentValue,
-        hint = hint,
-        onValueChange = { value.tryEmit(it) },
-        trailingIcon = trailingIcon,
-    )
-}
-
-@Composable
 private fun LabeledTextField(
     title: String,
-    value: String,
+    state: TextFieldState,
     hint: String,
-    onValueChange: (String) -> Unit,
     trailingIcon: @Composable (() -> Unit)? = null,
 ) {
     Column(
@@ -109,9 +83,8 @@ private fun LabeledTextField(
         )
         // content
         TextField(
-            value = value,
+            state = state,
             placeholder = { Text(text = hint) },
-            onValueChange = onValueChange,
             modifier = Modifier
                 .align(Alignment.Start)
                 .fillMaxWidth(),

@@ -12,7 +12,6 @@ import mms.lastfm.LastFmTrackResponse
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,13 +26,11 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun LastFmSearch(viewModel: WebSearchViewModel, page: PageSearch.LastFmSearch) {
-    val parameterState by page.queryParameter.collectAsState()
     var searchResults: LastFmSearchResults? by remember { mutableStateOf(null) }
     Column {
         val context = LocalContext.current
         LastFmSearchBox(
-            parameterState,
-            page::updateQueryParameter,
+            page,
             Modifier.wrapContentHeight()
         ) { action ->
             val delegate = viewModel.clientDelegateLastFm(context)

@@ -14,7 +14,9 @@ import androidx.compose.foundation.interaction.DragInteraction
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.input.TextFieldLineLimits
+import androidx.compose.foundation.text.input.rememberTextFieldState
+import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -24,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -80,8 +83,8 @@ fun ColorPicker(
         ColorRGBHexEditor(
             color = color,
             onColorChange = { color = it },
-            onColorChangeFinished = {
-                onColorChanged(color.toColor())
+            onColorChangeFinished = { finishedColor ->
+                onColorChanged(finishedColor.toColor())
             },
             modifier = Modifier
                 .fillMaxWidth(0.88f)
@@ -189,16 +192,38 @@ private fun ColorHueVerticalSliderBar(
 private fun ColorRGBHexEditor(
     color: HsvColor,
     onColorChange: (HsvColor) -> Unit,
-    onColorChangeFinished: () -> Unit,
+    onColorChangeFinished: (HsvColor) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val focusManager = LocalFocusManager.current
 
-    var hex by remember { mutableStateOf(colorToHex(color.toColor())) }
+    val state = rememberTextFieldState(initialText = colorToHex(color.toColor()))
+    var lastHandledText by remember(state) { mutableStateOf(state.text.toString()) }
+    var lastHandledColor by remember(state) { mutableStateOf(color) }
     var isEditing by remember { mutableStateOf(false) }
+    val updatedOnColorChange by rememberUpdatedState(onColorChange)
+    val updatedOnColorChangeFinished by rememberUpdatedState(onColorChangeFinished)
+
     LaunchedEffect(color) {
+        lastHandledColor = color
         if (!isEditing) {
-            hex = colorToHex(color.toColor())
+            val text = colorToHex(color.toColor())
+            lastHandledText = text
+            if (state.text.toString() != text) state.setTextAndPlaceCursorAtEnd(text)
+        }
+    }
+
+    fun updateColor(text: String) {
+        lastHandledText = text
+        hexToColor(text)?.let {
+            lastHandledColor = HsvColor(it)
+            updatedOnColorChange(lastHandledColor)
+        }
+    }
+
+    LaunchedEffect(state) {
+        snapshotFlow { state.text.toString() }.collect { text ->
+            if (text != lastHandledText) updateColor(text)
         }
     }
 
@@ -213,33 +238,25 @@ private fun ColorRGBHexEditor(
             .background(backgroundColor)
     ) {
         BasicTextField(
-            value = hex,
-            onValueChange = { updated ->
-                hex = updated
-                val updatedColor = hexToColor(updated)
-                if (updatedColor != null) {
-                    onColorChange(HsvColor(updatedColor))
-                }
-            },
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    focusManager.clearFocus()
-                }
-            ),
+            state = state,
+            onKeyboardAction = { focusManager.clearFocus() },
             modifier = Modifier
                 .align(Alignment.Center)
                 .heightIn(min = 24.dp)
                 .padding(vertical = 8.dp)
                 .onFocusChanged {
+                    val wasEditing = isEditing
                     isEditing = it.isFocused
-                    if (!it.isFocused) {
-                        onColorChangeFinished()
+                    if (wasEditing && !it.isFocused) {
+                        val text = state.text.toString()
+                        if (text != lastHandledText) updateColor(text)
+                        updatedOnColorChangeFinished(lastHandledColor)
                     }
                 },
             textStyle = MaterialTheme.typography.h6.copy(
                 textAlign = TextAlign.Center, color = foregroundColor
             ),
-            singleLine = true,
+            lineLimits = TextFieldLineLimits.SingleLine,
         )
     }
 }
