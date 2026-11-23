@@ -8,6 +8,7 @@ import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import com.github.chr56.android.menu_model.MenuContext
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.h6ah4i.android.widget.advrecyclerview.animator.DraggableItemAnimator
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -234,7 +235,7 @@ class PlayerQueueFragment : AbsMusicServiceFragment() {
         binding.playerRecyclerView.setUpFastScrollRecyclerViewColor(requireContext(), MaterialColor.Grey._500.asColor)
         binding.playerRecyclerView.adapter = wrappedAdapter
         binding.playerRecyclerView.layoutManager = layoutManager
-        binding.playerRecyclerView.itemAnimator = null
+        binding.playerRecyclerView.itemAnimator = DraggableItemAnimator()
         recyclerViewDragDropManager.attachRecyclerView(binding.playerRecyclerView)
         layoutManager.scrollToPositionWithOffset(MusicPlayerRemote.position + 1, 0)
     }
