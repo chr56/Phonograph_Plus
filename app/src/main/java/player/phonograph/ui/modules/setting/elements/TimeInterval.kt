@@ -8,7 +8,7 @@ import player.phonograph.foundation.time.TimeInterval
 import player.phonograph.model.time.Duration
 import player.phonograph.model.time.TimeIntervalCalculationMode
 import player.phonograph.model.time.TimeUnit
-import player.phonograph.ui.compose.components.WheelPicker
+import player.phonograph.ui.compose.components.picker.WheelPicker
 import player.phonograph.ui.resource.Texts
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement

@@ -23,12 +23,12 @@ class VanillaAudioPlayerTest : AndroidTestCase() {
             val broken = currentMediaPlayer(player)
             broken.release()
 
-            player.stop()
+            assertFalse(player.stop(release = false))
 
             assertFalse(player.isInitialized)
             assertNotSame(broken, currentMediaPlayer(player))
         } finally {
-            player.release()
+            player.stop(release = true)
             audioFile.delete()
         }
     }

@@ -4,13 +4,11 @@
 
 package player.phonograph.model.notification
 
-import player.phonograph.model.service.ACTION_EXIT_OR_STOP
 import player.phonograph.model.service.ACTION_FAST_FORWARD
 import player.phonograph.model.service.ACTION_FAST_REWIND
 import player.phonograph.model.service.ACTION_NEXT
-import player.phonograph.model.service.ACTION_PAUSE
-import player.phonograph.model.service.ACTION_PLAY
 import player.phonograph.model.service.ACTION_PREVIOUS
+import player.phonograph.model.service.ACTION_QUIT_BY_USER_ACTION
 import player.phonograph.model.service.ACTION_REPEAT
 import player.phonograph.model.service.ACTION_SHUFFLE
 import player.phonograph.model.service.ACTION_TOGGLE_PAUSE
@@ -54,7 +52,7 @@ enum class NotificationAction(
     FastForward(ACTION_KEY_FAST_FORWARD, ACTION_FAST_FORWARD),
     FastRewind(ACTION_KEY_FAST_REWIND, ACTION_FAST_REWIND),
     Fav(ACTION_KEY_FAV, ACTION_KEY_FAV),
-    Close(ACTION_KEY_CLOSE, ACTION_EXIT_OR_STOP),
+    Close(ACTION_KEY_CLOSE, ACTION_QUIT_BY_USER_ACTION),
     Invalid(ACTION_KEY_UNKNOWN, "");
 
     companion object {

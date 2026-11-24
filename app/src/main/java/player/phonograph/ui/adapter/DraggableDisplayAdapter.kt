@@ -21,9 +21,10 @@ import android.view.ViewGroup
 abstract class DraggableDisplayAdapter<I>(
     activity: FragmentActivity,
     presenter: DisplayPresenter<I>,
+    options: DisplayOptions,
     allowMultiSelection: Boolean = true,
     stableId: Boolean = true,
-) : DisplayAdapter<I>(activity, presenter, allowMultiSelection = allowMultiSelection, stableId = stableId),
+) : DisplayAdapter<I>(activity, presenter, options, allowMultiSelection = allowMultiSelection, stableId = stableId),
     DraggableItemAdapter<DraggableDisplayAdapter.DraggableViewHolder<I>> {
 
     abstract fun editableMode(): Boolean
@@ -64,7 +65,7 @@ abstract class DraggableDisplayAdapter<I>(
     )
     protected val generator = SafeIdentifierGenerator(seed = System.currentTimeMillis() / 23)
 
-    override fun getItemViewType(position: Int): Int = presenter.layoutStyle.ordinal
+    override fun getItemViewType(position: Int): Int = options.layoutStyle.ordinal
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<I> {
         val itemLayout = Layouts.itemLayoutStyle(ItemLayoutStyle.from(viewType))
         val view = LayoutInflater.from(activity).inflate(itemLayout, parent, false)

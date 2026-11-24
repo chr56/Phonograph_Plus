@@ -5,10 +5,10 @@
 package player.phonograph.ui.modules.explorer
 
 import player.phonograph.model.file.FileItem
+import player.phonograph.model.menu.ActionEntry
 import player.phonograph.settings.Keys
 import player.phonograph.settings.SettingsObserver
-import player.phonograph.ui.actions.ActionMenuProviders
-import player.phonograph.ui.actions.ClickActionProviders
+import player.phonograph.ui.actions.ItemClickActions
 import player.phonograph.ui.modules.panel.PanelViewModel
 import player.phonograph.ui.util.BottomViewWindowInsetsController
 import player.phonograph.ui.util.applyControllableWindowInsetsAsBottomView
@@ -19,38 +19,20 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.View
-import android.widget.ImageView
 import kotlinx.coroutines.Job
 
 class FilesPageExplorerFragment : AbsFilesExplorerFragment() {
 
     override val allowMultiSelection: Boolean = true
 
-    override fun createClickActionProvider(): ClickActionProviders.ClickActionProvider<FileItem> =
-        FilesPageClickActionProvider(::onSwitch)
-
-    override fun createMenuProvider(): ActionMenuProviders.ActionMenuProvider<FileItem>? =
-        ActionMenuProviders.FileItemActionMenuProvider
-
-    class FilesPageClickActionProvider(private val onSwitch: (FileItem) -> Unit) :
-            ClickActionProviders.ClickActionProvider<FileItem> {
-
-        private val provider = ClickActionProviders.FileEntityClickActionProvider()
-
-        override fun listClick(
-            list: List<FileItem>,
-            position: Int,
-            context: Context,
-            imageView: ImageView?,
-        ): Boolean {
-            val item = list[position]
-            when {
-                item.isFolder -> onSwitch(item)
-                else          -> provider.listClick(list, position, context, imageView)
-            }
-            return true
+    override fun clickAction(context: Context, item: FileItem, position: Int, list: List<FileItem>): ActionEntry? =
+        if (item.isFolder) {
+            ItemClickActions.Folder(item, ::onSwitch)
+        } else {
+            ItemClickActions.File(context, item, position, list)
         }
-    }
+
+    override val showMenu: Boolean = false
 
     //region WindowInsets
     private val panelViewModel: PanelViewModel by viewModels(ownerProducer = { requireActivity() })
@@ -67,7 +49,7 @@ class FilesPageExplorerFragment : AbsFilesExplorerFragment() {
 
         SettingsObserver(view.context, lifecycleScope).apply {
             jobs += collect(Keys.showFileImages) { value ->
-                (adapter.presenter as? FileItemPresenter)?.loadCover = value
+                adapter.options = adapter.options.copy(disableImage = !value)
                 @SuppressLint("NotifyDataSetChanged")
                 adapter.notifyDataSetChanged()
             }

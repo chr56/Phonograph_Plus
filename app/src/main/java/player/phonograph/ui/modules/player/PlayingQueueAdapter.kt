@@ -5,30 +5,42 @@
 package player.phonograph.ui.modules.player
 
 import player.phonograph.model.Song
+import player.phonograph.model.menu.ActionEntry
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.ui.actions.ActionMenuProviders
-import player.phonograph.ui.actions.ClickActionProviders
+import player.phonograph.ui.actions.ActionMenus
+import player.phonograph.ui.actions.ItemClickActions
+import player.phonograph.ui.adapter.DisplayOptions
 import player.phonograph.ui.adapter.DisplayPresenter
 import player.phonograph.ui.adapter.DraggableDisplayAdapter
+import player.phonograph.ui.adapter.IMAGERY_CUSTOM_TEXT
+import player.phonograph.ui.adapter.ImageryType
 import player.phonograph.ui.adapter.MultiSelectionController
+import player.phonograph.ui.adapter.SongDisplayPresenter
 import player.phonograph.ui.resource.Layouts
-import player.phonograph.ui.resource.infoString
 import player.phonograph.ui.util.hitTest
 import androidx.fragment.app.FragmentActivity
 import android.annotation.SuppressLint
 import android.content.Context
 import android.text.TextUtils
 import android.view.LayoutInflater
-import android.view.Menu
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 
 class PlayingQueueAdapter(activity: FragmentActivity) :
-        DraggableDisplayAdapter<Song>(activity, PlayingQueuePresenter, allowMultiSelection = false) {
+        DraggableDisplayAdapter<Song>(
+            activity,
+            PlayingQueuePresenter,
+            DisplayOptions(
+                ItemLayoutStyle.LIST, null, false,
+                imageryType = IMAGERY_CUSTOM_TEXT,
+            ),
+            allowMultiSelection = false
+        ) {
 
     var current: Int = -1
         set(value) {
@@ -58,10 +70,11 @@ class PlayingQueueAdapter(activity: FragmentActivity) :
             dataset: List<Song>,
             presenter: DisplayPresenter<Song>,
             controller: MultiSelectionController<Song>,
+            options: DisplayOptions,
         ) {
             title?.ellipsize = TextUtils.TruncateAt.MIDDLE
             text?.ellipsize = TextUtils.TruncateAt.MIDDLE
-            super.bind(item, position, dataset, presenter, controller)
+            super.bind(item, position, dataset, presenter, controller, options)
 
             shortSeparator?.visibility = if (bindingAdapterPosition == dataset.size - 1) GONE else VISIBLE
 
@@ -76,58 +89,20 @@ class PlayingQueueAdapter(activity: FragmentActivity) :
             paletteColorContainer?.alpha = alpha
         }
 
-        override fun loadImage(
-            item: Song,
-            imageType: Int,
-            imageView: ImageView?,
-            presenter: DisplayPresenter<Song>,
-        ) {
-            image?.visibility = GONE
-            imageText?.visibility = VISIBLE
-            imageText?.text = String.format(null, "%d", bindingAdapterPosition - current)
-            imageText?.isSingleLine = false
-            imageText?.maxLines = 2
-        }
+        override fun customText(): String =
+            String.format(null, "%d", bindingAdapterPosition - current)
 
         override fun isSelected(item: Song, controller: MultiSelectionController<Song>): Boolean = false
     }
 
-    object PlayingQueuePresenter : DisplayPresenter<Song> {
+    object PlayingQueuePresenter : SongDisplayPresenter() {
 
-        override fun getItemID(item: Song): Long = item.id
+        override fun clickAction(context: Context, item: Song, position: Int, list: List<Song>): ActionEntry? =
+            ItemClickActions.PlayingQueue(position)
 
-        override fun getDisplayTitle(context: Context, item: Song): CharSequence = item.title
+        override fun menuEntries(context: Context, item: Song, position: Int): List<ActionEntry> =
+            ActionMenus.Song(context, item, showPlay = false, index = position)
 
-        override fun getDescription(context: Context, item: Song): CharSequence = item.infoString()
-        override fun getSecondaryText(context: Context, item: Song): CharSequence = item.albumName ?: "N/A"
-        override fun getTertiaryText(context: Context, item: Song): CharSequence? = item.artistName
-
-        override val layoutStyle: ItemLayoutStyle = ItemLayoutStyle.LIST
-        override val imageType: Int = DisplayPresenter.IMAGE_TYPE_NONE // custom
-        override val usePalette: Boolean = false
-
-        override val clickActionProvider: ClickActionProviders.ClickActionProvider<Song> =
-            object : ClickActionProviders.ClickActionProvider<Song> {
-                override fun listClick(
-                    list: List<Song>, position: Int, context: Context, imageView: ImageView?,
-                ): Boolean {
-                    MusicPlayerRemote.playSongAt(position)
-                    return true
-                }
-            }
-
-        override val menuProvider: ActionMenuProviders.ActionMenuProvider<Song>
-            get() = object : ActionMenuProviders.ActionMenuProvider<Song> {
-                override fun inflateMenu(menu: Menu, context: Context, item: Song, position: Int) {}
-                override fun prepareMenu(
-                    menuButtonView: View,
-                    item: Song,
-                    bindingPosition: Int,
-                ) {
-                    ActionMenuProviders.SongActionMenuProvider(showPlay = false, index = bindingPosition)
-                        .prepareMenu(menuButtonView, item, bindingPosition)
-                }
-            }
     }
 
     //region Draggable

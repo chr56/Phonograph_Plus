@@ -13,8 +13,8 @@ import player.phonograph.model.metadata.ConventionalMusicMetadataKey
 import player.phonograph.model.metadata.InteractiveAction.Edit
 import player.phonograph.model.metadata.Metadata
 import player.phonograph.model.metadata.MusicMetadata
-import player.phonograph.ui.compose.components.CascadeVerticalItem
-import player.phonograph.ui.compose.components.Title
+import player.phonograph.ui.compose.components.sections.CascadeVerticalItem
+import player.phonograph.ui.compose.components.display.Title
 import player.phonograph.ui.modules.tag.components.ArtworkImageViewer
 import player.phonograph.ui.modules.tag.components.ArtworkSection
 import player.phonograph.ui.modules.tag.components.AudioImage

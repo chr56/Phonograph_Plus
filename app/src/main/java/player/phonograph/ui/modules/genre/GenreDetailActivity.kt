@@ -14,12 +14,10 @@ import player.phonograph.databinding.ActivityGenreDetailBinding
 import player.phonograph.mechanism.event.EventHub
 import player.phonograph.model.Genre
 import player.phonograph.model.Song
-import player.phonograph.model.sort.SortMode
-import player.phonograph.model.sort.SortRef
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.ui.adapter.DisplayAdapter
-import player.phonograph.ui.adapter.DisplayPresenter
-import player.phonograph.ui.adapter.SongBasicDisplayPresenter
+import player.phonograph.ui.adapter.DisplayOptions
+import player.phonograph.ui.adapter.SongDisplayPresenter
 import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.theme.ThemeSettingsDelegate.accentColor
 import player.phonograph.ui.theme.ThemeSettingsDelegate.primaryColor
@@ -27,6 +25,7 @@ import player.phonograph.ui.theme.setUpFastScrollRecyclerViewColor
 import player.phonograph.ui.theme.textColorOn
 import player.phonograph.ui.util.BottomViewWindowInsetsController
 import player.phonograph.ui.util.applyControllableWindowInsetsAsBottomView
+import player.phonograph.ui.util.inflateToolbarEntries
 import player.phonograph.ui.util.menuProvider
 import player.phonograph.ui.util.observe
 import util.theme.view.menu.tintOverflowButtonColor
@@ -97,7 +96,13 @@ class GenreDetailActivity : AbsSlidingMusicPanelActivity(),
 
     private fun setupMenu(menu: Menu) {
         val iconColor = textColorOn(this, panelViewModel.activityColor.value)
-        inflateGenreDetailMenu(menu, this, viewModel.genre.value, iconColor)
+        val item = viewModel.genre.value
+        val entries = listOf(
+            GenreDetailActionEntries.Play(this, item),
+            GenreDetailActionEntries.ShufflePlaylist(this, item),
+            GenreDetailActionEntries.PlayNext(this, item),
+        )
+        inflateToolbarEntries(this, menu, iconColor, entries)
         tintToolbarMenuActionIcons(menu, iconColor)
         tintOverflowButtonColor(this, iconColor)
         tintOverflowMenuItems(viewBinding.toolbar, accentColor())
@@ -105,7 +110,11 @@ class GenreDetailActivity : AbsSlidingMusicPanelActivity(),
 
     private lateinit var bottomViewWindowInsetsController: BottomViewWindowInsetsController
     private fun setUpMainContent() {
-        adapter = DisplayAdapter(this, GenreSongDisplayPresenter)
+        adapter = DisplayAdapter(
+            this,
+            SongDisplayPresenter(),
+            DisplayOptions(ItemLayoutStyle.LIST, null, false)
+        )
         viewBinding.recyclerView.apply {
             layoutManager = LinearLayoutManager(this@GenreDetailActivity)
             adapter = this@GenreDetailActivity.adapter
@@ -140,15 +149,5 @@ class GenreDetailActivity : AbsSlidingMusicPanelActivity(),
             }
 
         private fun parseIntent(intent: Intent): Long = intent.extras?.getLong(EXTRA_GENRE_ID) ?: -1
-    }
-
-    object GenreSongDisplayPresenter : SongBasicDisplayPresenter(SortMode(SortRef.ID)) {
-
-        override val layoutStyle: ItemLayoutStyle = ItemLayoutStyle.LIST
-
-        override val usePalette: Boolean get() = false
-
-        override val imageType: Int = DisplayPresenter.IMAGE_TYPE_IMAGE
-
     }
 }

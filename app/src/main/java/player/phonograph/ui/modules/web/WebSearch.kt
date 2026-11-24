@@ -5,7 +5,7 @@
 package player.phonograph.ui.modules.web
 
 import player.phonograph.ui.compose.Navigator
-import player.phonograph.ui.compose.components.SystemBarsPadded
+import player.phonograph.ui.compose.components.system.SystemBarsPadded
 import player.phonograph.ui.modules.web.PageSearch.LastFmSearch
 import player.phonograph.ui.modules.web.PageSearch.MusicBrainzSearch
 import androidx.compose.foundation.clickable
@@ -81,10 +81,10 @@ fun WebSearch(viewModel: WebSearchViewModel, scaffoldState: ScaffoldState, page:
                         .fillMaxWidth()
                 ) {
                     when (page) {
-                        PageHome -> Home(viewModel, page)
-                        is LastFmSearch -> LastFmSearch(viewModel, page)
-                        is MusicBrainzSearch -> MusicBrainzSearch(viewModel, page)
-                        is PageDetail.LastFmDetail -> DetailLastFm(viewModel, page)
+                        PageHome                        -> Home(viewModel, page)
+                        is LastFmSearch                 -> LastFmSearch(viewModel, page)
+                        is MusicBrainzSearch            -> MusicBrainzSearch(viewModel, page)
+                        is PageDetail.LastFmDetail      -> DetailLastFm(viewModel, page)
                         is PageDetail.MusicBrainzDetail -> DetailMusicBrainz(viewModel, page)
                     }
                 }

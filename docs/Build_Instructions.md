@@ -6,7 +6,7 @@ _This document seeks to improve clarity and coherence._
 
 See also [Developer Guide](./Developer_Guide.md).
 
-_Last Updated at 2026.09.29_
+_Last Updated at 2026.10.02_
 
 ## Requirements
 
@@ -20,7 +20,7 @@ You would like to build the application from source instead of developing and co
 - Compatible desktop operating system [^PC]:
     - Windows 10/11 (tested)
     - Ubuntu 24.04 (tested)
-- JDK 25 (Android Gradle Plugin 9.2.1 along with Gradle 9.7.1 are used in this project)
+- JDK 25 (Android Gradle Plugin 9.4.1 along with Gradle 9.7.1 are used in this project)
 - Android SDK (automatically downloaded via AGP)
 - Internet connection 
 
@@ -31,7 +31,7 @@ You would like to build the application from source instead of developing and co
 If you would like to contribute:
 
 - Git
-- Android Studio Quail 4 | 2026.1.4
+- Android Studio Quail 4 | 2026.1.4 Patch 1
   (Note: JetBrains IDEA may not be compatible due to its limited support on latest Android Gradle Plugin) 
 
 ## Build Instructions

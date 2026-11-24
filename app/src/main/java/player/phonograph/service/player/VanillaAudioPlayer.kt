@@ -79,11 +79,7 @@ class VanillaAudioPlayer(private val context: Context, override var gaplessPlayb
         player.setOnCompletionListener(this)
         player.setOnErrorListener(this)
 
-        val intent = Intent(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION)
-        intent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, audioSessionId)
-        intent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, context.packageName)
-        intent.putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
-        context.sendBroadcast(intent)
+        openAudioEffectSession(audioSessionId)
 
         return true
     }
@@ -146,11 +142,17 @@ class VanillaAudioPlayer(private val context: Context, override var gaplessPlayb
             false
         }
 
-    override fun stop() {
+    override fun stop(release: Boolean): Boolean {
         // Drop initialized state before reset so a failed reset cannot leave playback looking live.
         isInitialized = false
-        try {
+        return try {
+            if (release) closeAudioEffectSession(audioSessionId)
             currentMediaPlayer.reset()
+            if (release) {
+                currentMediaPlayer.release()
+                nextMediaPlayer?.release()
+            }
+            true
         } catch (e: IllegalStateException) {
             Log.e(TAG, "Failed to reset current media player", e)
             currentMediaPlayer.release()
@@ -158,18 +160,14 @@ class VanillaAudioPlayer(private val context: Context, override var gaplessPlayb
                 it.release()
                 nextMediaPlayer = null
             }
-            currentMediaPlayer = MediaPlayer().also { player ->
-                player.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK)
+            if (!release) {
+                currentMediaPlayer = MediaPlayer().also { player ->
+                    player.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK)
+                }
             }
+            false
         }
     }
-
-    override fun release() {
-        stop()
-        currentMediaPlayer.release()
-        nextMediaPlayer?.release()
-    }
-
 
     override fun pause(): Boolean =
         try {
@@ -252,7 +250,13 @@ class VanillaAudioPlayer(private val context: Context, override var gaplessPlayb
         false
     }
 
-    override val audioSessionId: Int get() = currentMediaPlayer.audioSessionId
+    override val audioSessionId: Int
+        get() = try {
+            currentMediaPlayer.audioSessionId
+        } catch (e: Exception) {
+            Log.w(TAG, "Failed to access current AudioSessionId", e)
+            -1
+        }
 
 
     override fun setAudioSessionId(sessionId: Int): Boolean =
@@ -285,6 +289,28 @@ class VanillaAudioPlayer(private val context: Context, override var gaplessPlayb
         } else {
             callbacks?.onTrackEnded()
         }
+    }
+
+    private fun openAudioEffectSession(audioSession: Int) {
+        if (audioSession <= 0) return
+        context.sendBroadcast(
+            Intent(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION).apply {
+                putExtra(AudioEffect.EXTRA_AUDIO_SESSION, audioSession)
+                putExtra(AudioEffect.EXTRA_PACKAGE_NAME, context.packageName)
+                putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
+            }
+        )
+    }
+
+
+    private fun closeAudioEffectSession(audioSession: Int) {
+        if (audioSession <= 0) return
+        context.sendBroadcast(
+            Intent(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION).apply {
+                putExtra(AudioEffect.EXTRA_AUDIO_SESSION, audioSession)
+                putExtra(AudioEffect.EXTRA_PACKAGE_NAME, context.packageName)
+            }
+        )
     }
 
     companion object {

@@ -8,8 +8,10 @@ import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.foundation.error.warning
 import player.phonograph.foundation.notification.Notifications
+import player.phonograph.foundation.notification.ProgressNotificationConnection
 import player.phonograph.mechanism.scanner.MediaStoreScanner
 import player.phonograph.model.metadata.EditAction
+import player.phonograph.model.notification.NOTIFICATION_CHANNEL_ID_BACKGROUND_TASKS
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -50,7 +52,13 @@ abstract class AudioMetadataEditor(
             yield()
             // refresh media store
             val paths = songFiles.map { it.path }.toTypedArray()
-            MediaStoreScanner(context).scan(paths)
+            MediaStoreScanner(
+                context,
+                ProgressNotificationConnection(
+                    context, R.string.notification_background_name,
+                    channel = NOTIFICATION_CHANNEL_ID_BACKGROUND_TASKS,
+                ),
+            ).scan(paths)
         }
     }
 

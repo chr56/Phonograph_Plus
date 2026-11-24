@@ -4,40 +4,38 @@
 
 package player.phonograph.ui.adapter
 
-import coil.request.Disposable
-import coil.target.Target
 import lib.storage.extension.rootDirectory
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.foundation.dateTextShortText
-import player.phonograph.mechanism.coil.loadImage
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Genre
 import player.phonograph.model.QueueSong
 import player.phonograph.model.Song
 import player.phonograph.model.SongCollection
+import player.phonograph.model.menu.ActionEntry
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
-import player.phonograph.model.ui.ItemLayoutStyle
-import player.phonograph.ui.actions.ActionMenuProviders
-import player.phonograph.ui.actions.ClickActionProviders
+import player.phonograph.repo.loader.Genres
+import player.phonograph.repo.loader.Songs
+import player.phonograph.ui.actions.ActionMenus
+import player.phonograph.ui.actions.ItemClickActions
 import player.phonograph.ui.resource.Durations
 import player.phonograph.ui.resource.Texts
 import player.phonograph.ui.resource.albumCountString
+import player.phonograph.ui.resource.buildInfoString
 import player.phonograph.ui.resource.infoString
 import player.phonograph.ui.resource.readableYear
 import player.phonograph.ui.resource.songCountString
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.getSystemService
 import android.content.Context
-import android.graphics.drawable.Drawable
 import android.os.storage.StorageManager
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
-abstract class SongBasicDisplayPresenter(
-    private val sortMode: SortMode,
-) : DisplayPresenter<Song> {
+open class SongDisplayPresenter : DisplayPresenter<Song> {
 
     override fun getItemID(item: Song): Long = item.id
 
@@ -47,19 +45,17 @@ abstract class SongBasicDisplayPresenter(
     override fun getSecondaryText(context: Context, item: Song): CharSequence = item.albumName ?: "N/A"
     override fun getTertiaryText(context: Context, item: Song): CharSequence? = item.artistName
 
-    override val clickActionProvider: ClickActionProviders.ClickActionProvider<Song> =
-        ClickActionProviders.SongClickActionProvider()
+    override fun hasArtwork(item: Song): Boolean = true
+    override fun getDefaultArtwork(item: Song): Int = R.drawable.default_album_art
 
-    override val menuProvider: ActionMenuProviders.ActionMenuProvider<Song> =
-        ActionMenuProviders.SongActionMenuProvider(showPlay = false)
+    override fun menuEntries(context: Context, item: Song, position: Int): List<ActionEntry> =
+        ActionMenus.Song(context, item, showPlay = false)
 
-    override fun getIcon(context: Context, item: Song): Drawable? =
-        AppCompatResources.getDrawable(context, R.drawable.default_album_art)
+    override fun clickAction(context: Context, item: Song, position: Int, list: List<Song>): ActionEntry? =
+        ItemClickActions.Song(context, item, position, list)
 
-    override fun getSortOrderKey(context: Context): SortMode = sortMode
-
-    override fun getSortOrderReference(item: Song, sortMode: SortMode): String? =
-        when (sortMode.sortRef) {
+    override fun getSectionText(item: Song, sortMode: SortMode?): String? =
+        when (sortMode?.sortRef) {
             SortRef.SONG_NAME         -> makeSectionName(item.title)
             SortRef.ARTIST_NAME       -> makeSectionName(item.artistName)
             SortRef.ALBUM_NAME        -> makeSectionName(item.albumName)
@@ -69,25 +65,28 @@ abstract class SongBasicDisplayPresenter(
             SortRef.DURATION          -> Durations.short(item.duration)
             SortRef.MODIFIED_DATE     -> dateTextShortText(item.dateModified)
             SortRef.ADDED_DATE        -> dateTextShortText(item.dateAdded)
-            else                      -> ""
+            else                      -> null
         }
 
-    override fun startLoadingImage(
-        context: Context,
-        item: Song,
-        target: Target,
-    ): Disposable? = loadImage(context)
-        .from(item)
-        .withPalette()
-        .default(R.drawable.default_album_art)
-        .into(target)
-        .enqueue()
 }
 
+open class AlbumSongDisplayPresenter : SongDisplayPresenter() {
 
-abstract class AlbumBasicDisplayPresenter(
-    private val sortMode: SortMode,
-) : DisplayPresenter<Album> {
+    override fun getSectionText(item: Song, sortMode: SortMode?): String = trackNumber(item)
+
+    override fun getOrdinalText(item: Song, position: Int): String = trackNumber(item)
+
+    override fun getDescription(context: Context, item: Song): CharSequence =
+        buildInfoString(Durations.short(item.duration), item.artistName)
+
+    private fun trackNumber(item: Song): String {
+        // iTunes uses for example 1002 for track 2 CD1 or 3011 for track 11 CD3.
+        val num = item.trackNumber % 1000
+        return if (num > 0) num.toString() else "-"
+    }
+}
+
+open class AlbumDisplayPresenter : DisplayPresenter<Album> {
     override fun getItemID(item: Album): Long = item.id
 
     override fun getDisplayTitle(context: Context, item: Album): CharSequence = item.title
@@ -96,41 +95,34 @@ abstract class AlbumBasicDisplayPresenter(
     override fun getSecondaryText(context: Context, item: Album): CharSequence = item.artistName ?: "N/A"
     override fun getTertiaryText(context: Context, item: Album): CharSequence = songCountString(context, item.songCount)
 
-    override val clickActionProvider: ClickActionProviders.ClickActionProvider<Album> =
-        ClickActionProviders.AlbumClickActionProvider()
+    override fun hasArtwork(item: Album): Boolean = true
+    override fun getDefaultArtwork(item: Album): Int = R.drawable.default_album_art
 
-    override val menuProvider: ActionMenuProviders.ActionMenuProvider<Album> =
-        ActionMenuProviders.AlbumActionMenuProvider
+    override fun menuEntries(context: Context, item: Album, position: Int): List<ActionEntry> =
+        ActionMenus.Composite(context, item) { context, album ->
+            withContext(Dispatchers.IO) { Songs.album(context, album.id) }
+        }
 
-    override fun getSortOrderKey(context: Context): SortMode = sortMode
+    override fun clickAction(context: Context, item: Album, position: Int, list: List<Album>): ActionEntry? =
+        ItemClickActions.Album(context, item)
 
-    override fun getIcon(context: Context, item: Album): Drawable? =
-        AppCompatResources.getDrawable(context, R.drawable.default_album_art)
-
-    override fun getSortOrderReference(item: Album, sortMode: SortMode): String? =
-        when (sortMode.sortRef) {
+    override fun getSectionText(item: Album, sortMode: SortMode?): String? =
+        when (sortMode?.sortRef) {
             SortRef.ALBUM_NAME  -> makeSectionName(item.title)
             SortRef.ARTIST_NAME -> makeSectionName(item.artistName)
             SortRef.YEAR        -> readableYear(item.year)
             SortRef.SONG_COUNT  -> item.songCount.toString()
-            else                -> ""
+            else                -> null
         }
 
-    override fun startLoadingImage(
-        context: Context,
-        item: Album,
-        target: Target,
-    ): Disposable? = loadImage(context)
-        .from(item)
-        .withPalette()
-        .default(R.drawable.default_album_art)
-        .into(target)
-        .enqueue()
 }
 
-abstract class ArtistBasicDisplayPresenter(
-    private val sortMode: SortMode,
-) : DisplayPresenter<Artist> {
+open class ArtistAlbumDisplayPresenter : AlbumDisplayPresenter() {
+    override fun getDescription(context: Context, item: Album): CharSequence =
+        buildInfoString(readableYear(item.year), songCountString(context, item.songCount))
+}
+
+open class ArtistDisplayPresenter : DisplayPresenter<Artist> {
 
     override fun getItemID(item: Artist): Long = item.id
 
@@ -144,66 +136,52 @@ abstract class ArtistBasicDisplayPresenter(
     override fun getTertiaryText(context: Context, item: Artist): CharSequence =
         songCountString(context, item.songCount)
 
-    override val clickActionProvider: ClickActionProviders.ClickActionProvider<Artist> =
-        ClickActionProviders.ArtistClickActionProvider()
+    override fun hasArtwork(item: Artist): Boolean = true
+    override fun getDefaultArtwork(item: Artist): Int = R.drawable.default_artist_image
 
-    override val menuProvider: ActionMenuProviders.ActionMenuProvider<Artist> =
-        ActionMenuProviders.ArtistActionMenuProvider
+    override fun clickAction(context: Context, item: Artist, position: Int, list: List<Artist>): ActionEntry? =
+        ItemClickActions.Artist(context, item)
 
-    override fun getSortOrderKey(context: Context): SortMode = sortMode
+    override fun menuEntries(context: Context, item: Artist, position: Int): List<ActionEntry> =
+        ActionMenus.Composite(context, item) { context, artist ->
+            withContext(Dispatchers.IO) { Songs.artist(context, artist.id) }
+        }
 
-    override fun getIcon(context: Context, item: Artist): Drawable? =
-        AppCompatResources.getDrawable(context, R.drawable.default_artist_image)
-
-    override fun getSortOrderReference(item: Artist, sortMode: SortMode): String? =
-        when (sortMode.sortRef) {
+    override fun getSectionText(item: Artist, sortMode: SortMode?): String? =
+        when (sortMode?.sortRef) {
             SortRef.ARTIST_NAME -> makeSectionName(item.name)
             SortRef.ALBUM_COUNT -> item.albumCount.toString()
             SortRef.SONG_COUNT  -> item.songCount.toString()
-            else                -> ""
+            else                -> null
         }
-
-    override fun startLoadingImage(
-        context: Context,
-        item: Artist,
-        target: Target,
-    ): Disposable? = loadImage(context)
-        .from(item)
-        .withPalette()
-        .default(R.drawable.default_artist_image)
-        .into(target)
-        .enqueue()
 
 }
 
-abstract class GenreBasicDisplayPresenter(
-    private val sortMode: SortMode,
-) : DisplayPresenter<Genre> {
+open class GenreDisplayPresenter : DisplayPresenter<Genre> {
 
     override fun getItemID(item: Genre): Long = item.id
     override fun getDisplayTitle(context: Context, item: Genre): CharSequence = item.name ?: "UNKNOWN GENRE ${item.id}"
     override fun getDescription(context: Context, item: Genre): CharSequence = item.infoString(context)
     override fun getSecondaryText(context: Context, item: Genre): CharSequence = item.infoString(context)
 
-    override val clickActionProvider: ClickActionProviders.ClickActionProvider<Genre> =
-        ClickActionProviders.GenreClickActionProvider()
+    override fun menuEntries(context: Context, item: Genre, position: Int): List<ActionEntry> =
+        ActionMenus.Composite(context, item) { context, genre ->
+            withContext(Dispatchers.IO) { Genres.songs(context, genre.id) }
+        }
 
-    override val menuProvider: ActionMenuProviders.ActionMenuProvider<Genre> =
-        ActionMenuProviders.GenreActionMenuProvider
+    override fun clickAction(context: Context, item: Genre, position: Int, list: List<Genre>): ActionEntry? =
+        ItemClickActions.Genre(context, item)
 
-    override fun getSortOrderKey(context: Context): SortMode = sortMode
-
-    override fun getSortOrderReference(item: Genre, sortMode: SortMode): String? =
-        when (sortMode.sortRef) {
+    override fun getSectionText(item: Genre, sortMode: SortMode?): String? =
+        when (sortMode?.sortRef) {
             SortRef.DISPLAY_NAME -> makeSectionName(item.name)
             SortRef.SONG_COUNT   -> item.songCount.toString()
-            else                 -> ""
+            else                 -> null
         }
+
 }
 
-abstract class PlaylistBasicDisplayPresenter(
-    private val sortMode: SortMode,
-) : DisplayPresenter<Playlist> {
+open class PlaylistDisplayPresenter : DisplayPresenter<Playlist> {
 
     override fun getItemID(item: Playlist): Long = item.id
     override fun getDisplayTitle(context: Context, item: Playlist): CharSequence = item.name
@@ -213,32 +191,32 @@ abstract class PlaylistBasicDisplayPresenter(
     override fun getSecondaryText(context: Context, item: Playlist): CharSequence =
         Texts.playlist(context.resources, item.location)
 
-    override val clickActionProvider: ClickActionProviders.ClickActionProvider<Playlist> =
-        ClickActionProviders.PlaylistClickActionProvider()
+    override fun getDefaultArtwork(item: Playlist): Int = item.iconRes
 
-    override val menuProvider: ActionMenuProviders.ActionMenuProvider<Playlist>?
-        get() = ActionMenuProviders.PlaylistActionMenuProvider
+    override fun menuEntries(context: Context, item: Playlist, position: Int): List<ActionEntry> =
+        ActionMenus.Playlist(context, item)
+
+    override fun clickAction(context: Context, item: Playlist, position: Int, list: List<Playlist>): ActionEntry? =
+        ItemClickActions.Playlist(context, item)
 
 
-    override fun getSortOrderKey(context: Context): SortMode = sortMode
-
-    override fun getSortOrderReference(item: Playlist, sortMode: SortMode): String? =
-        when (sortMode.sortRef) {
+    override fun getSectionText(item: Playlist, sortMode: SortMode?): String? =
+        when (sortMode?.sortRef) {
             SortRef.DISPLAY_NAME  -> makeSectionName(item.name)
             SortRef.MODIFIED_DATE -> dateTextShortText(item.dateModified)
             SortRef.ADDED_DATE    -> dateTextShortText(item.dateAdded)
-            else                  -> ""
+            else                  -> null
         }
-
-    override fun getIcon(context: Context, item: Playlist): Drawable? {
-        return AppCompatResources.getDrawable(context, item.iconRes)
-    }
 
 }
 
-abstract class SongCollectionBasicDisplayPresenter(
-    private val sortMode: SortMode,
+open class SongCollectionDisplayPresenter(
+    private val onClick: (Context, SongCollection, Int, List<SongCollection>) -> ActionEntry?,
 ) : DisplayPresenter<SongCollection> {
+
+    override fun clickAction(
+        context: Context, item: SongCollection, position: Int, list: List<SongCollection>,
+    ): ActionEntry? = onClick(context, item, position, list)
 
     override fun getItemID(item: SongCollection): Long = item.hashCode().toLong()
 
@@ -253,19 +231,16 @@ abstract class SongCollectionBasicDisplayPresenter(
     override fun getTertiaryText(context: Context, item: SongCollection): CharSequence? =
         songCountString(context, item.songs.size)
 
-    override fun getSortOrderKey(context: Context): SortMode = sortMode
+    override fun getDefaultArtwork(item: SongCollection): Int = R.drawable.ic_folder_white_24dp
 
-    override fun getSortOrderReference(item: SongCollection, sortMode: SortMode): String? =
-        when (sortMode.sortRef) {
+    override fun getSectionText(item: SongCollection, sortMode: SortMode?): String? =
+        when (sortMode?.sortRef) {
             SortRef.DISPLAY_NAME -> item.name
-            else                 -> ""
+            else                 -> null
         }
 
-    override val imageType: Int = DisplayPresenter.IMAGE_TYPE_FIXED_ICON
-
-    override fun getIcon(context: Context, item: SongCollection): Drawable? {
-        return AppCompatResources.getDrawable(context, R.drawable.ic_folder_white_24dp)
-    }
+    override fun menuEntries(context: Context, item: SongCollection, position: Int): List<ActionEntry> =
+        ActionMenus.Composite(context, item) { _, collection -> collection.songs }
 
     companion object {
 
@@ -281,10 +256,7 @@ abstract class SongCollectionBasicDisplayPresenter(
     }
 }
 
-abstract class QueueSongBasicDisplayPresenter : DisplayPresenter<QueueSong> {
-    override val layoutStyle: ItemLayoutStyle = ItemLayoutStyle.LIST
-    override val usePalette: Boolean = false
-    override val imageType: Int = DisplayPresenter.IMAGE_TYPE_TEXT
+open class QueueSongDisplayPresenter : DisplayPresenter<QueueSong> {
 
     override fun getItemID(item: QueueSong): Long = item.song.id
 
@@ -294,8 +266,9 @@ abstract class QueueSongBasicDisplayPresenter : DisplayPresenter<QueueSong> {
     override fun getSecondaryText(context: Context, item: QueueSong) = item.song.albumName ?: "N/A"
     override fun getTertiaryText(context: Context, item: QueueSong) = item.song.artistName
 
-    override fun getNonSortOrderReference(item: QueueSong): String? = item.index.toString()
-    override fun getRelativeOrdinalText(item: QueueSong): String? = item.index.toString()
+    override fun getSectionText(item: QueueSong, sortMode: SortMode?): String? = item.index.toString()
+    override fun getOrdinalText(item: QueueSong, position: Int): String? = item.index.toString()
+
 }
 
 
@@ -304,8 +277,8 @@ private fun makeSectionName(reference: String?): String {
     var str = reference.trim { it <= ' ' }.lowercase()
     str = when {
         str.startsWith("the ") -> str.substring(4)
-        str.startsWith("a ") -> str.substring(2)
-        else -> str
+        str.startsWith("a ")   -> str.substring(2)
+        else                   -> str
     }
     return if (str.isEmpty()) "" else str[0].uppercase()
 }

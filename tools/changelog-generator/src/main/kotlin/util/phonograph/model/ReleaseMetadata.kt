@@ -12,6 +12,7 @@ data class ReleaseMetadata(
     val versionCode: Int,
     val timestamp: Long,
     val channel: ReleaseChannel,
+    val warning: Warning? = null,
     val notes: Notes,
     val previousVersion: String,
     val previousChannel: ReleaseChannel,
@@ -26,6 +27,12 @@ data class ReleaseMetadata(
 
     fun language(lang: Language): Notes.Note = notes.language(lang)
 
+
+    @Serializable
+    data class Warning(
+        val en: String? = null,
+        val zh: String? = null,
+    )
 
     @Serializable
     data class Notes(

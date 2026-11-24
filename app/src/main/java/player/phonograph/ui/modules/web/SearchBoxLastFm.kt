@@ -7,7 +7,7 @@ package player.phonograph.ui.modules.web
 import mms.lastfm.LastFmAction
 import mms.lastfm.LastFmQueryParameter
 import player.phonograph.R
-import player.phonograph.ui.compose.components.HorizontalTextItem
+import player.phonograph.ui.compose.components.display.HorizontalTextItem
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource

@@ -8,8 +8,8 @@ import player.phonograph.R
 import player.phonograph.settings.PathFilterSetting
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
-import player.phonograph.ui.compose.components.LimitedDialog
-import player.phonograph.ui.compose.components.StringValuesEditor
+import player.phonograph.ui.compose.components.dialogs.LimitedDialog
+import player.phonograph.ui.modules.setting.components.StringValuesEditor
 import player.phonograph.ui.modules.explorer.PathSelectorRequester
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.heightIn

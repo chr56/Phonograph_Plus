@@ -10,7 +10,7 @@ import com.vanpra.composematerialdialogs.customView
 import com.vanpra.composematerialdialogs.title
 import player.phonograph.R
 import player.phonograph.model.metadata.InteractiveAction
-import player.phonograph.ui.compose.components.Title
+import player.phonograph.ui.compose.components.display.Title
 import player.phonograph.ui.modules.tag.components.MetadataDifferenceItem
 import player.phonograph.ui.theme.accentColoredButtonStyle
 import androidx.activity.compose.LocalActivity
@@ -150,7 +150,7 @@ private fun ExitWithoutSavingDialog(
             stringResource(R.string.action_exit_without_saving),
             Modifier
                 .fillMaxWidth()
-                .padding(vertical = 24.dp, horizontal =12.dp)
+                .padding(vertical = 24.dp, horizontal = 12.dp)
                 .height(64.dp),
             style = MaterialTheme.typography.body1
         )

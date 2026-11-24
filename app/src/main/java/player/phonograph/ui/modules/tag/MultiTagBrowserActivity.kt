@@ -15,7 +15,7 @@ import player.phonograph.model.Song
 import player.phonograph.repo.loader.Songs
 import player.phonograph.ui.basis.ComposeActivity
 import player.phonograph.ui.compose.PhonographTheme
-import player.phonograph.ui.compose.components.SystemBarsPadded
+import player.phonograph.ui.compose.components.system.SystemBarsPadded
 import player.phonograph.ui.modules.tag.components.RequestWebSearchButton
 import player.phonograph.ui.modules.web.IWebSearchRequester
 import player.phonograph.ui.modules.web.WebSearchLauncher
@@ -85,18 +85,17 @@ class MultiTagBrowserActivity :
     companion object {
 
         private const val PATHS = "PATHS"
+
+        fun launchIntent(context: Context, paths: ArrayList<String>): Intent =
+            Intent(context, MultiTagBrowserActivity::class.java).apply {
+                putStringArrayListExtra(PATHS, paths)
+            }
+
         private fun parseIntent(context: Context, intent: Intent): List<Song> {
             val paths = intent.extras?.getStringArrayList(PATHS) ?: return emptyList()
             return paths.mapNotNull { runBlocking { Songs.path(context, it) } }
         }
 
-        fun launch(context: Context, paths: ArrayList<String>) {
-            context.startActivity(
-                Intent(context, MultiTagBrowserActivity::class.java).apply {
-                    putStringArrayListExtra(PATHS, paths)
-                }
-            )
-        }
     }
 }
 

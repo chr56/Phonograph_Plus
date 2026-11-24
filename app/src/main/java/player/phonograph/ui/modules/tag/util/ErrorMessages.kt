@@ -7,7 +7,7 @@ package player.phonograph.ui.modules.tag.util
 import player.phonograph.R
 import player.phonograph.foundation.error.warning
 import player.phonograph.model.Song
-import player.phonograph.ui.compose.components.CascadeVerticalItem
+import player.phonograph.ui.compose.components.sections.CascadeVerticalItem
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height

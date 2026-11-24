@@ -8,11 +8,11 @@ import player.phonograph.mechanism.metadata.RelationshipResolver
 import player.phonograph.mechanism.metadata.RelationshipResolver.AccumulatedSongRelationship
 import player.phonograph.mechanism.metadata.RelationshipResolver.SongRelationship
 import player.phonograph.model.Song
-import player.phonograph.model.repo.sync.ProgressConnection
 import player.phonograph.model.repo.sync.DataSource
 import player.phonograph.model.repo.sync.SyncReport
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
+import player.phonograph.model.ui.ProgressConnection
 import player.phonograph.repo.room.converter.EntityConverter
 import player.phonograph.repo.room.entity.AlbumEntity
 import player.phonograph.repo.room.entity.ArtistEntity

@@ -4,7 +4,7 @@
 
 package player.phonograph.model.migration
 
-import player.phonograph.model.repo.sync.ProgressConnection
+import player.phonograph.model.ui.ProgressConnection
 import android.content.Context
 
 /**

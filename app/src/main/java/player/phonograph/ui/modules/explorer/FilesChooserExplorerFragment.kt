@@ -5,38 +5,20 @@
 package player.phonograph.ui.modules.explorer
 
 import player.phonograph.model.file.FileItem
-import player.phonograph.ui.actions.ActionMenuProviders
-import player.phonograph.ui.actions.ClickActionProviders
+import player.phonograph.model.menu.ActionEntry
+import player.phonograph.ui.actions.ItemClickActions
 import android.content.Context
 import android.os.Bundle
 import android.view.View
-import android.widget.ImageView
 
 class FilesChooserExplorerFragment : AbsFilesExplorerFragment() {
 
     override val allowMultiSelection: Boolean = false
 
-    override fun createClickActionProvider(): ClickActionProviders.ClickActionProvider<FileItem> =
-        FilesChooserClickActionProvider(::onSwitch)
+    override fun clickAction(context: Context, item: FileItem, position: Int, list: List<FileItem>): ActionEntry? =
+        if (item.isFolder) ItemClickActions.Folder(item, ::onSwitch) else null
 
-    override fun createMenuProvider(): ActionMenuProviders.ActionMenuProvider<FileItem>? = null
-
-    class FilesChooserClickActionProvider(private val onSwitch: (FileItem) -> Unit) :
-            ClickActionProviders.ClickActionProvider<FileItem> {
-        override fun listClick(
-            list: List<FileItem>,
-            position: Int,
-            context: Context,
-            imageView: ImageView?,
-        ): Boolean {
-            val item = list[position]
-            when {
-                item.isFolder -> onSwitch(item)
-                else          -> Unit
-            }
-            return true
-        }
-    }
+    override val showMenu: Boolean = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

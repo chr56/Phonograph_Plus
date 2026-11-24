@@ -39,6 +39,22 @@ interface Controller {
 
 
     /**
+     * Flag of enabling gapless playing
+     */
+    var gaplessPlayback: Boolean
+
+    /**
+     * Prepare next track
+     */
+    fun prepareNextTrack()
+
+    /**
+     * cancel the prepared next track
+     */
+    fun cancelNextTrackPreparation()
+
+
+    /**
      * The reason of pause
      */
     @PauseReason
@@ -93,11 +109,23 @@ interface Controller {
     fun jumpForward(force: Boolean)
 
 
+    /**
+     * Current playing speed
+     */
+    val playerSpeed: Float
 
-    var playerSpeed: Float
+    /**
+     * Set playing speed to [speed]
+     */
+    fun setPlayerSpeed(speed: Float)
 
-
+    /**
+     * Set volume to [vol]
+     */
     fun setVolume(vol: Float)
 
+    /**
+     * Linked AudioSessionId
+     */
     val audioSessionId: Int
 }

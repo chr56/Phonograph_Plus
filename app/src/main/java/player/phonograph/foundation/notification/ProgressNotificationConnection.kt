@@ -6,7 +6,7 @@ package player.phonograph.foundation.notification
 
 import player.phonograph.R
 import player.phonograph.model.notification.ChannelID
-import player.phonograph.model.repo.sync.ProgressConnection
+import player.phonograph.model.ui.ProgressConnection
 import android.content.Context
 
 class ProgressNotificationConnection(

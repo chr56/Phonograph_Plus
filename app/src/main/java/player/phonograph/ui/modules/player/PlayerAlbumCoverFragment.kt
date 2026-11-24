@@ -220,7 +220,7 @@ class PlayerAlbumCoverFragment : AbsMusicServiceFragment() {
     private val pageChangeListener = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
             if (position != MusicPlayerRemote.position) {
-                MusicPlayerRemote.playSongAt(position)
+                MusicPlayerRemote.playAt(position)
             }
         }
     }

@@ -6,6 +6,9 @@ package player.phonograph.ui.adapter
 
 import coil.request.Disposable
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
+import player.phonograph.R
+import player.phonograph.foundation.concurrent.lifecycleScopeOrNewOne
+import player.phonograph.mechanism.coil.loadImage
 import player.phonograph.mechanism.coil.palette.PaletteColorViewTarget
 import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.ui.resource.Layouts
@@ -13,19 +16,29 @@ import player.phonograph.ui.theme.secondaryTextColorOn
 import player.phonograph.ui.theme.textColorOn
 import player.phonograph.ui.theme.themeFooterColor
 import player.phonograph.ui.theme.themeIconColor
+import player.phonograph.ui.theme.withColorFilter
+import player.phonograph.ui.util.preparePopupMenu
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.PorterDuff
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 open class DisplayAdapter<I>(
     val activity: FragmentActivity,
     var presenter: DisplayPresenter<I>,
+    var options: DisplayOptions,
     allowMultiSelection: Boolean = true,
     stableId: Boolean = true,
 ) : RecyclerView.Adapter<DisplayAdapter.DisplayViewHolder<I>>(),
@@ -52,7 +65,7 @@ open class DisplayAdapter<I>(
 
     override fun getItemCount(): Int = dataset.size
 
-    override fun getItemViewType(position: Int): Int = presenter.layoutStyle.ordinal
+    override fun getItemViewType(position: Int): Int = options.layoutStyle.ordinal
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<I> {
         val itemLayout = Layouts.itemLayoutStyle(ItemLayoutStyle.from(viewType))
         val view = LayoutInflater.from(activity).inflate(itemLayout, parent, false)
@@ -61,22 +74,17 @@ open class DisplayAdapter<I>(
 
 
     override fun onBindViewHolder(holder: DisplayViewHolder<I>, position: Int) {
-        holder.bind(dataset[position], position, dataset, presenter, controller)
+        holder.bind(dataset[position], position, dataset, presenter, controller, options)
     }
 
     override fun getSectionName(position: Int): String =
-        if (presenter.showSectionName) getSectionNameImp(position) else ""
-
-    open fun getSectionNameImp(position: Int): String {
-        val item = dataset[position]
-        val sortMode = presenter.getSortOrderKey(activity)
-        val text = if (sortMode != null) {
-            presenter.getSortOrderReference(item, sortMode)
+        if (options.showSectionName) {
+            presenter.getSectionText(
+                dataset[position], options.sortMode,
+            ) ?: "-"
         } else {
-            presenter.getNonSortOrderReference(item)
+            ""
         }
-        return text ?: "-"
-    }
 
     fun setMultiSelectionEnabled(value: Boolean) {
         controller.enable = value
@@ -90,80 +98,138 @@ open class DisplayAdapter<I>(
             dataset: List<I>,
             presenter: DisplayPresenter<I>,
             controller: MultiSelectionController<I>,
+            options: DisplayOptions,
         ) {
-
+            val context = itemView.context
             // Text
-            title?.text = presenter.getDisplayTitle(itemView.context, item)
-            text?.text = presenter.getDescription(itemView.context, item)
-            textSecondary?.text = presenter.getSecondaryText(itemView.context, item)
-            textTertiary?.text = presenter.getTertiaryText(itemView.context, item)
+            title?.text = presenter.getDisplayTitle(context, item)
+            text?.text = presenter.getDescription(context, item)
+            textSecondary?.text = presenter.getSecondaryText(context, item)
+            textTertiary?.text = presenter.getTertiaryText(context, item)
 
             // Decorations
             shortSeparator?.visibility = View.VISIBLE
             itemView.isActivated = isSelected(item, controller)
 
             // Click
-            val clickActionProvider = presenter.clickActionProvider
-            controller.registerClicking(itemView, position) {
-                clickActionProvider.listClick(dataset, position, itemView.context, image)
+            controller.registerClicking(itemView, position) { context ->
+                val entry = presenter.clickAction(context, item, position, dataset)
+                if (entry != null) {
+                    context.lifecycleScopeOrNewOne().launch(Dispatchers.Main.immediate) {
+                        entry.action()
+                    }
+                }
             }
 
             // Menu
             val menuButtonView = menu
-            val menuProvider = presenter.menuProvider
             if (menuButtonView != null) {
-                if (menuProvider != null) {
+                if (options.showMenu) {
                     menuButtonView.visibility = View.VISIBLE
                     menuButtonView.setOnClickListener {
-                        menuProvider.prepareMenu(menuButtonView, item, position)
+                        val context = menuButtonView.context
+                        preparePopupMenu(context, menuButtonView, presenter.menuEntries(context, item, position))
                     }
                 } else {
                     menuButtonView.visibility = View.GONE
+                    menuButtonView.setOnClickListener(null)
                 }
             }
 
             // Image
-            loadImage(item, presenter.imageType, image, presenter)
+            setupImage(
+                item, image, imageText,
+                presenter, options,
+            )
         }
 
-        protected open fun loadImage(
+        protected fun setupImage(
             item: I,
-            imageType: Int,
             imageView: ImageView?,
+            imageText: TextView?,
             presenter: DisplayPresenter<I>,
+            options: DisplayOptions,
         ) {
-            when (imageType) {
-                DisplayPresenter.IMAGE_TYPE_FIXED_ICON -> {
-                    val icon = presenter.getIcon(itemView.context, item)
-                    if (imageView != null) {
-                        imageView.visibility = View.VISIBLE
-                        imageView.setColorFilter(themeIconColor(itemView.context), PorterDuff.Mode.SRC_IN)
-                        imageView.setImageDrawable(icon)
-                    }
-                }
+            imageView?.setImageDrawable(null)
+            imageView?.visibility = View.GONE
+            imageText?.visibility = View.GONE
 
-                DisplayPresenter.IMAGE_TYPE_IMAGE      -> {
+            when (options.imageryType) {
+                IMAGERY_IMAGE        -> {
                     if (imageView != null) {
-                        image?.visibility = View.VISIBLE
                         loadJob?.dispose()
-                        loadJob = presenter.startLoadingImage(
-                            itemView.context, item,
-                            PaletteColorViewTarget(
-                                imageView,
-                                ::setPaletteColors,
-                                themeFooterColor(itemView.context),
-                                presenter.usePalette
-                            )
-                        )
+                        loadJob = null
+                        loadJob = startLoadImageOnDemand(imageView, item, presenter, options.usePalette, options.disableImage)
                     }
                 }
 
-                DisplayPresenter.IMAGE_TYPE_TEXT       -> {
-                    val ordinalText = presenter.getRelativeOrdinalText(item) ?: "-"
-                    imageText?.visibility = View.VISIBLE
-                    imageText?.text = ordinalText
+                IMAGERY_ICON         -> {
+                    val icon = getDefaultArtwork(itemView.context, item, presenter)
+                    if (imageView != null && icon != null) {
+                        setImageIcon(imageView, icon)
+                    }
                 }
+
+                IMAGERY_ORDINAL_TEXT -> {
+                    val ordinalText = presenter.getOrdinalText(item, bindingAdapterPosition) ?: "-"
+                    if (imageText != null) {
+                        setImageText(imageText, ordinalText)
+                    }
+                }
+
+                IMAGERY_CUSTOM_TEXT  -> {
+                    val customText = customText() ?: "-"
+                    if (imageText != null) {
+                        setImageText(imageText, customText)
+                    }
+                }
+
+                IMAGERY_NONE         -> {}
             }
+        }
+
+        protected fun startLoadImageOnDemand(
+            imageView: ImageView,
+            item: I,
+            presenter: DisplayPresenter<I>,
+            usePalette: Boolean,
+            disableImage: Boolean,
+        ): Disposable? {
+            val context = imageView.context
+            imageView.visibility = View.VISIBLE
+            imageView.clearColorFilter()
+            val target = PaletteColorViewTarget(
+                imageView,
+                ::setPaletteColors,
+                themeFooterColor(context),
+                usePalette,
+            )
+            val default = getDefaultArtwork(context, item, presenter)?.let {
+                it as? BitmapDrawable ?: it.withColorFilter(themeIconColor(context))
+            }
+
+            return if (!disableImage && presenter.hasArtwork(item)) {
+                loadImage(context)
+                    .from(item)
+                    .withPalette()
+                    .default(default)
+                    .into(target)
+                    .enqueue()
+            } else {
+                target.onStart(
+                    default ?: AppCompatResources.getDrawable(context, R.drawable.default_album_art)
+                )
+                null
+            }
+        }
+
+        private fun getDefaultArtwork(
+            context: Context,
+            item: I,
+            presenter: DisplayPresenter<I>,
+        ): Drawable? {
+            val res = presenter.getDefaultArtwork(item)
+            return if (res > 0) AppCompatResources.getDrawable(context, res) else null
         }
 
         protected open fun setPaletteColors(color: Int) {
@@ -178,6 +244,19 @@ open class DisplayAdapter<I>(
                 textTertiary?.setTextColor(secondaryTextColor)
             }
         }
+
+        protected fun setImageIcon(imageView: ImageView, icon: Drawable) {
+            imageView.visibility = View.VISIBLE
+            imageView.setColorFilter(themeIconColor(itemView.context), PorterDuff.Mode.SRC_IN)
+            imageView.setImageDrawable(icon)
+        }
+
+        protected fun setImageText(imageText: TextView, text: String) {
+            imageText.visibility = View.VISIBLE
+            imageText.text = text
+        }
+
+        protected open fun customText(): String? = null
 
         open fun isSelected(item: I, controller: MultiSelectionController<I>): Boolean = controller.isSelected(item)
 

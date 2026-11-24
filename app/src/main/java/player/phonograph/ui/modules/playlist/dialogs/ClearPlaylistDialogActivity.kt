@@ -17,9 +17,9 @@ import player.phonograph.mechanism.playlist.PlaylistActions
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.ui.basis.DialogActivity
 import player.phonograph.ui.compose.PhonographTheme
-import player.phonograph.ui.compose.components.ButtonPanel
-import player.phonograph.ui.compose.components.CheckBoxItem
-import player.phonograph.ui.compose.components.ListItem
+import player.phonograph.ui.compose.components.actions.ButtonPanel
+import player.phonograph.ui.compose.components.input.CheckBoxItem
+import player.phonograph.ui.compose.components.display.ListItem
 import player.phonograph.ui.modules.playlist.dialogs.ClearPlaylistDialogActivity.ClearPlaylistViewModel.State.ConfirmToDelete
 import player.phonograph.ui.modules.playlist.dialogs.ClearPlaylistDialogActivity.ClearPlaylistViewModel.State.PreparedToDelete
 import player.phonograph.ui.modules.playlist.dialogs.ClearPlaylistDialogActivity.ClearPlaylistViewModel.State.Success
@@ -211,7 +211,6 @@ class ClearPlaylistDialogActivity : DialogActivity(),
                     val name = remember { playlist.name }
                     val description = remember { Texts.playlist(resources, playlist.location) }
                     ListItem(
-                        modifier = Modifier,
                         title = name,
                         subtitle = description,
                         onClick = {},

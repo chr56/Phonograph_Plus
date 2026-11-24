@@ -7,7 +7,7 @@ package player.phonograph.ui.modules.web
 import mms.musicbrainz.MusicBrainzAction
 import mms.musicbrainz.MusicBrainzSearchResult
 import player.phonograph.R
-import player.phonograph.ui.compose.components.ListItem
+import player.phonograph.ui.compose.components.display.ListItem
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding

@@ -43,12 +43,7 @@ interface Playback {
     /**
      * Reset to its uninitialized state.
      */
-    fun stop()
-
-    /**
-     * Releases resources associated with this.
-     */
-    fun release()
+    fun stop(release: Boolean): Boolean
 
     /**
      * Pause

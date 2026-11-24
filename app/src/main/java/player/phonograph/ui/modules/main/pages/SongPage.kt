@@ -6,17 +6,14 @@ package player.phonograph.ui.modules.main.pages
 
 import player.phonograph.R
 import player.phonograph.model.Song
-import player.phonograph.model.sort.SortMode
-import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.repo.loader.Songs
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
 import player.phonograph.ui.adapter.DisplayAdapter
-import player.phonograph.ui.adapter.DisplayPresenter
-import player.phonograph.ui.adapter.SongBasicDisplayPresenter
+import player.phonograph.ui.adapter.DisplayOptions
+import player.phonograph.ui.adapter.SongDisplayPresenter
 import androidx.fragment.app.viewModels
 import android.content.Context
-import kotlin.getValue
 import kotlinx.coroutines.CoroutineScope
 
 class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>>() {
@@ -39,38 +36,18 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>>() {
     override val displayConfig: PageDisplayConfig get() = SongPageDisplayConfig(requireContext())
 
     override fun createAdapter(): DisplayAdapter<Song> {
-        return DisplayAdapter(requireActivity(), SongDisplayPresenter.from(displayConfig))
+        return DisplayAdapter(
+            requireActivity(),
+            SongDisplayPresenter(),
+            DisplayOptions(
+                displayConfig.layout,
+                displayConfig.sortMode,
+                displayConfig.colorFooter
+            )
+        )
     }
 
     override fun updateDisplayedItems(items: List<Song>) {
         adapter.dataset = items
     }
-
-    override fun updatePresenterSettings(
-        sortMode: SortMode,
-        usePalette: Boolean,
-        layoutStyle: ItemLayoutStyle,
-    ) {
-        adapter.presenter = SongDisplayPresenter.from(sortMode, usePalette, layoutStyle)
-    }
-
-
-    class SongDisplayPresenter(
-        sortMode: SortMode,
-        override val usePalette: Boolean,
-        override val layoutStyle: ItemLayoutStyle,
-    ) : SongBasicDisplayPresenter(sortMode) {
-
-        override val imageType: Int = DisplayPresenter.IMAGE_TYPE_IMAGE
-
-        companion object {
-
-            fun from(displayConfig: PageDisplayConfig): SongDisplayPresenter =
-                SongDisplayPresenter(displayConfig.sortMode, displayConfig.colorFooter, displayConfig.layout)
-
-            fun from(sortMode: SortMode, usePalette: Boolean, layoutStyle: ItemLayoutStyle): SongDisplayPresenter =
-                SongDisplayPresenter(sortMode, usePalette, layoutStyle)
-        }
-    }
-
 }

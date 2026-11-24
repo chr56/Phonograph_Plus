@@ -18,9 +18,9 @@ import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.ui.basis.DialogActivity
 import player.phonograph.ui.compose.PhonographTheme
-import player.phonograph.ui.compose.components.ButtonPanel
-import player.phonograph.ui.compose.components.CheckBoxItem
-import player.phonograph.ui.compose.components.ListItem
+import player.phonograph.ui.compose.components.actions.ButtonPanel
+import player.phonograph.ui.compose.components.input.CheckBoxItem
+import player.phonograph.ui.compose.components.display.ListItem
 import player.phonograph.ui.resource.Texts
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -98,11 +98,10 @@ class AddToPlaylistDialogActivity : DialogActivity(),
                 style = MaterialTheme.typography.h5
             )
             ListItem(
-                modifier = Modifier,
                 title = stringResource(R.string.action_new_playlist),
                 subtitle = stringResource(R.string.title_new_playlist),
                 onClick = { viewModel.createNewPlaylist(context as FragmentActivity) },
-                painter = rememberVectorPainter(Icons.Default.Add)
+                painter = rememberVectorPainter(Icons.Default.Add),
             )
             val resources = LocalResources.current
             LazyColumn(Modifier.heightIn(max = 480.dp)) {
@@ -111,7 +110,6 @@ class AddToPlaylistDialogActivity : DialogActivity(),
                         val name = remember { playlist.name }
                         val description = remember { Texts.playlist(resources, playlist.location) }
                         ListItem(
-                            modifier = Modifier,
                             title = name,
                             subtitle = description,
                             onClick = { viewModel.addToExistedPlaylist(context, index) },

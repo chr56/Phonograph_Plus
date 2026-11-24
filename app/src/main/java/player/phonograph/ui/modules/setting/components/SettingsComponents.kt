@@ -6,7 +6,7 @@
 package player.phonograph.ui.modules.setting.components
 
 import player.phonograph.settings.PreferenceKey
-import player.phonograph.ui.compose.components.ColorCircle
+import player.phonograph.ui.compose.components.picker.ColorCircle
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ColumnScope

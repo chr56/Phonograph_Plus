@@ -14,9 +14,9 @@ import mms.lastfm.Tags
 import mms.musicbrainz.MusicBrainzAction
 import player.phonograph.R
 import player.phonograph.mechanism.coil.lastfm.LastFmImageBundle
-import player.phonograph.ui.compose.components.Chip
-import player.phonograph.ui.compose.components.HorizontalTextItem
-import player.phonograph.ui.compose.components.VerticalTextItem
+import player.phonograph.ui.compose.components.display.Chip
+import player.phonograph.ui.compose.components.display.HorizontalTextItem
+import player.phonograph.ui.compose.components.display.VerticalTextItem
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -63,7 +63,7 @@ fun DetailLastFm(viewModel: WebSearchViewModel, lastFmDetail: PageDetail.LastFmD
             is LastFmAlbum  -> LastFmAlbum(item)
             is LastFmArtist -> LastFmArtist(item)
             is LastFmTrack  -> LastFmTrack(item)
-            else            -> Text(
+            else -> Text(
                 stringResource(R.string.msg_empty), modifier = Modifier.align(Alignment.TopCenter)
             )
         }

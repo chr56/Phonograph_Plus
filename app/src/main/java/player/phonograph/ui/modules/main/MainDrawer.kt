@@ -13,7 +13,7 @@ import player.phonograph.foundation.Reboot
 import player.phonograph.foundation.concurrent.runOnMainHandler
 import player.phonograph.foundation.error.warning
 import player.phonograph.model.pages.PagesConfig
-import player.phonograph.model.service.ACTION_EXIT_OR_STOP
+import player.phonograph.model.service.ACTION_QUIT_BY_USER_ACTION
 import player.phonograph.model.service.ShuffleMode
 import player.phonograph.model.ui.GeneralTheme
 import player.phonograph.model.ui.GeneralTheme.Companion.THEME_BLACK
@@ -23,13 +23,13 @@ import player.phonograph.repo.loader.Songs
 import player.phonograph.service.MusicService
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
-import player.phonograph.ui.navigateToAppDetailSetting
-import player.phonograph.ui.navigateToStorageSetting
-import player.phonograph.ui.actions.actionPlay
+import player.phonograph.ui.actions.ItemActions
 import player.phonograph.ui.modules.auxiliary.AboutActivity
 import player.phonograph.ui.modules.auxiliary.DatabaseMaintenanceDialog
 import player.phonograph.ui.modules.setting.SettingsActivity
 import player.phonograph.ui.modules.web.WebSearchLauncher
+import player.phonograph.ui.navigateToAppDetailSetting
+import player.phonograph.ui.navigateToStorageSetting
 import player.phonograph.ui.resource.Icons
 import player.phonograph.ui.resource.Texts
 import player.phonograph.ui.theme.getTintedDrawable
@@ -113,7 +113,7 @@ fun setupDrawerMenu(
                 closeDrawer()
                 lifecycleScope.launch(Dispatchers.IO) {
                     val songs = Songs.all(activity)
-                    if (songs.isNotEmpty()) songs.actionPlay(ShuffleMode.SHUFFLE, Random.nextInt(songs.size))
+                    if (songs.isNotEmpty()) ItemActions.play(activity, songs, ShuffleMode.SHUFFLE, Random.nextInt(songs.size))
                 }
                 true
             }
@@ -189,9 +189,9 @@ fun setupDrawerMenu(
                     context.getString(R.string.action_exit) to {
                         val pendingIntent = PendingIntent.getService(
                             context, 0,
-                            Intent(ACTION_EXIT_OR_STOP).apply {
+                            Intent(ACTION_QUIT_BY_USER_ACTION).apply {
                                 component = ComponentName(context, MusicService::class.java)
-                            }, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT
+                            }, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
                         )
                         runOnMainHandler {
                             pendingIntent.send()

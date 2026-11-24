@@ -6,8 +6,8 @@ package player.phonograph.ui.modules.setting.elements
 
 import player.phonograph.R
 import player.phonograph.model.SongClickMode
-import player.phonograph.ui.compose.components.FlagCheckBox
-import player.phonograph.ui.compose.components.ModeRadioBox
+import player.phonograph.ui.compose.components.input.FlagCheckBox
+import player.phonograph.ui.compose.components.input.ModeRadioBox
 import player.phonograph.ui.resource.Texts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

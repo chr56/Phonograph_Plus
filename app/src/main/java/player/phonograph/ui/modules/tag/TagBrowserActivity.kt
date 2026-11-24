@@ -16,7 +16,7 @@ import player.phonograph.model.Song
 import player.phonograph.repo.loader.Songs
 import player.phonograph.ui.basis.ComposeActivity
 import player.phonograph.ui.compose.PhonographTheme
-import player.phonograph.ui.compose.components.SystemBarsPadded
+import player.phonograph.ui.compose.components.system.SystemBarsPadded
 import player.phonograph.ui.modules.tag.components.RequestWebSearchButton
 import player.phonograph.ui.modules.tag.util.importWebSearchResult
 import player.phonograph.ui.modules.web.IWebSearchRequester
@@ -100,18 +100,17 @@ class TagBrowserActivity :
     companion object {
 
         private const val PATH = "PATH"
+
+        fun launchIntent(context: Context, path: String): Intent =
+            Intent(context, TagBrowserActivity::class.java).apply {
+                putExtra(PATH, path)
+            }
+
         private fun parseIntent(context: Context, intent: Intent): Song? {
             val path = intent.extras?.getString(PATH) ?: return null
             return runBlocking { Songs.path(context, path) }
         }
 
-        fun launch(context: Context, path: String) {
-            context.startActivity(
-                Intent(context, TagBrowserActivity::class.java).apply {
-                    putExtra(PATH, path)
-                }
-            )
-        }
     }
 }
 

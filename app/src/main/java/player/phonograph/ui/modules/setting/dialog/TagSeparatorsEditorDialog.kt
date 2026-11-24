@@ -11,8 +11,8 @@ import player.phonograph.settings.TagSeparatorsSetting.Companion.TARGET_SEPARATO
 import player.phonograph.settings.TagSeparatorsSetting.Companion.TARGET_SEPARATORS_GENRES
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
-import player.phonograph.ui.compose.components.LimitedDialog
-import player.phonograph.ui.compose.components.StringValuesEditor
+import player.phonograph.ui.compose.components.dialogs.LimitedDialog
+import player.phonograph.ui.modules.setting.components.StringValuesEditor
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.rememberScrollState

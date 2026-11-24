@@ -21,7 +21,7 @@ import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.loader.Songs
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Settings
-import player.phonograph.ui.actions.actionPlay
+import player.phonograph.ui.actions.ItemActions
 import player.phonograph.ui.modules.explorer.FileExplorerViewModel
 import player.phonograph.ui.modules.explorer.FilesPageExplorerFragment
 import player.phonograph.ui.modules.popup.ListOptionsPopup
@@ -174,9 +174,9 @@ class FilesPage : AbsPage() {
                 context.resources.getQuantityString(R.plurals.item_songs, size, size)
             )
             if (shuffle) {
-                allSongs.actionPlay(ShuffleMode.SHUFFLE, Random.nextInt(size))
+                ItemActions.play(context, allSongs, ShuffleMode.SHUFFLE, Random.nextInt(size))
             } else {
-                allSongs.actionPlay(ShuffleMode.NONE, 0)
+                ItemActions.play(context, allSongs, ShuffleMode.NONE, 0)
             }
         } else {
             coroutineToast(

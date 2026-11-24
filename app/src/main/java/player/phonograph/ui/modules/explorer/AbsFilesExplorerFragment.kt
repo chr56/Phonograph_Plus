@@ -10,10 +10,10 @@ import player.phonograph.databinding.FragmentFileExploreBinding
 import player.phonograph.mechanism.explorer.MediaPaths
 import player.phonograph.model.file.FileItem
 import player.phonograph.model.file.MediaPath
-import player.phonograph.ui.actions.ActionMenuProviders
-import player.phonograph.ui.actions.ClickActionProviders
+import player.phonograph.model.menu.ActionEntry
+import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.ui.adapter.DisplayAdapter
-import player.phonograph.ui.adapter.DisplayPresenter
+import player.phonograph.ui.adapter.DisplayOptions
 import player.phonograph.ui.theme.ThemeSettingsDelegate.accentColor
 import player.phonograph.ui.theme.getTintedDrawableOnBackground
 import player.phonograph.ui.theme.setUpFastScrollRecyclerViewColor
@@ -29,6 +29,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.withStateAtLeast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -44,7 +45,6 @@ sealed class AbsFilesExplorerFragment : Fragment() {
     protected val model: FileExplorerViewModel by viewModels({ requireActivity() })
     // adapter
     protected lateinit var adapter: DisplayAdapter<FileItem>
-    protected lateinit var presenter: DisplayPresenter<FileItem>
     protected lateinit var layoutManager: LinearLayoutManager
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -104,13 +104,10 @@ sealed class AbsFilesExplorerFragment : Fragment() {
         }
 
         // Recycle View
-        presenter = FileItemPresenter(
-            clickActionProvider = createClickActionProvider(),
-            menuProvider = createMenuProvider(),
-        )
         adapter = DisplayAdapter(
             activity = requireActivity(),
-            presenter = presenter,
+            presenter = FileItemPresenter(::clickAction),
+            options = DisplayOptions(ItemLayoutStyle.LIST, null, false, showMenu),
             allowMultiSelection = allowMultiSelection,
             stableId = false,
         )
@@ -128,8 +125,8 @@ sealed class AbsFilesExplorerFragment : Fragment() {
     }
 
     abstract val allowMultiSelection: Boolean
-    abstract fun createClickActionProvider(): ClickActionProviders.ClickActionProvider<FileItem>
-    abstract fun createMenuProvider(): ActionMenuProviders.ActionMenuProvider<FileItem>?
+    abstract fun clickAction(context: Context, item: FileItem, position: Int, list: List<FileItem>): ActionEntry?
+    abstract val showMenu: Boolean
 
     protected open fun setupObservers() {
         observe(model.currentPath) { newPath ->

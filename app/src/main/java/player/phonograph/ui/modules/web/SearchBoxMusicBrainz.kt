@@ -8,7 +8,7 @@ import mms.musicbrainz.MusicBrainzAction
 import mms.musicbrainz.MusicBrainzAction.Target
 import mms.musicbrainz.MusicbrainzQueryParameter
 import player.phonograph.R
-import player.phonograph.ui.compose.components.HorizontalTextItem
+import player.phonograph.ui.compose.components.display.HorizontalTextItem
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource

@@ -4,28 +4,29 @@
 
 package player.phonograph.ui.modules.explorer
 
-import coil.request.Disposable
-import coil.target.Target
 import player.phonograph.R
 import player.phonograph.foundation.dateTimeText
-import player.phonograph.mechanism.coil.loadImage
 import player.phonograph.model.file.FileItem
-import player.phonograph.model.ui.ItemLayoutStyle
-import player.phonograph.ui.actions.ActionMenuProviders
-import player.phonograph.ui.actions.ClickActionProviders
+import player.phonograph.model.menu.ActionEntry
+import player.phonograph.ui.actions.ActionMenus
 import player.phonograph.ui.adapter.DisplayPresenter
-import player.phonograph.ui.theme.getTintedDrawable
-import player.phonograph.ui.theme.themeIconColor
 import android.content.Context
 import android.content.res.Resources
-import android.graphics.drawable.Drawable
 import android.text.format.Formatter
 
 class FileItemPresenter(
-    override var clickActionProvider: ClickActionProviders.ClickActionProvider<FileItem>,
-    override var menuProvider: ActionMenuProviders.ActionMenuProvider<FileItem>?,
-    var loadCover: Boolean = false,
+    private val accessClickAction: (Context, FileItem, Int, List<FileItem>) -> ActionEntry?,
 ) : DisplayPresenter<FileItem> {
+
+    override fun clickAction(context: Context, item: FileItem, position: Int, list: List<FileItem>): ActionEntry? =
+        accessClickAction(context, item, position, list)
+
+    override fun hasArtwork(item: FileItem): Boolean = !item.isFolder
+    override fun getDefaultArtwork(item: FileItem): Int =
+        if (item.isFolder) R.drawable.ic_folder_white_24dp else R.drawable.ic_file_music_white_24dp
+
+    override fun menuEntries(context: Context, item: FileItem, position: Int): List<ActionEntry> =
+        ActionMenus.FileItem(context, item)
 
     override fun getItemID(item: FileItem): Long =
         item.mediaPath.hashCode().toLong() shl 16 + item.name.hashCode() shl 1 + if (item.isFolder) 1 else 0
@@ -45,12 +46,6 @@ class FileItemPresenter(
     override fun getDescription(context: Context, item: FileItem): CharSequence? =
         getSecondaryText(context, item)
 
-    override val layoutStyle: ItemLayoutStyle = ItemLayoutStyle.LIST
-
-    override val imageType: Int = DisplayPresenter.IMAGE_TYPE_IMAGE
-
-    override val usePalette: Boolean = false
-
     private fun songCountString(resources: Resources, songCount: Int): String {
         return if (songCount >= 0) {
             resources.getQuantityString(R.plurals.item_songs, songCount, songCount)
@@ -58,39 +53,5 @@ class FileItemPresenter(
             resources.getString(R.string.label_folder)
         }
     }
-
-    //region Images
-    override fun startLoadingImage(
-        context: Context,
-        item: FileItem,
-        target: Target,
-    ): Disposable? = when (item.content) {
-        is FileItem.SongContent -> {
-            if (loadCover) {
-                loadImage(context)
-                    .from(item)
-                    .default(iconFile(context))
-                    .into(target)
-                    .enqueue()
-            } else {
-                target.onSuccess(iconFile(context))
-                null
-            }
-        }
-
-        else                    -> {
-            target.onSuccess(if (item.isFolder) iconFolder(context) else iconFile(context))
-            null
-        }
-    }
-
-    private fun iconFile(context: Context): Drawable =
-        context.getTintedDrawable(R.drawable.ic_file_music_white_24dp, color(context))!!
-
-    private fun iconFolder(context: Context): Drawable =
-        context.getTintedDrawable(R.drawable.ic_folder_white_24dp, color(context))!!
-
-    private fun color(context: Context): Int = themeIconColor(context)
-    //endregion
 
 }

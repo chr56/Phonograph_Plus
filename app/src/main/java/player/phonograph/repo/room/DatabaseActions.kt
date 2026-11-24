@@ -5,8 +5,8 @@
 package player.phonograph.repo.room
 
 import player.phonograph.mechanism.event.EventHub
-import player.phonograph.model.repo.sync.ProgressConnection
 import player.phonograph.model.repo.sync.SyncReport
+import player.phonograph.model.ui.ProgressConnection
 import player.phonograph.repo.room.sync.SyncExecutors
 import androidx.room.withTransaction
 import android.content.Context

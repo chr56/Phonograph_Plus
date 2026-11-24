@@ -7,7 +7,7 @@ package player.phonograph.ui.modules.tag.components
 import player.phonograph.R
 import player.phonograph.model.metadata.ConventionalMusicMetadataKey
 import player.phonograph.model.metadata.InteractiveAction
-import player.phonograph.ui.compose.components.VerticalTextItem
+import player.phonograph.ui.compose.components.display.VerticalTextItem
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -149,7 +149,7 @@ fun EditableTagItem(
                     Text(
                         text = alternative,
                         modifier =
-                        Modifier.weight(5f)
+                            Modifier.weight(5f)
                     )
                     Icon(
                         Icons.Default.Add, stringResource(R.string.action_add),
@@ -160,9 +160,9 @@ fun EditableTagItem(
                     Icon(
                         Icons.Default.Check, stringResource(R.string.action_save),
                         modifier =
-                        Modifier
-                            .clickable { onClick(alternative) }
-                            .weight(1f)
+                            Modifier
+                                .clickable { onClick(alternative) }
+                                .weight(1f)
                     )
 
                 }
