@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--
+        Platform android.test classes are shared libraries on API 29, not on the boot classpath.
+        The test package has to opt in or InstrumentationTestRunner / AndroidTestCase will not load.
+        required=false keeps installation working on images that dropped these libraries.
+    -->
+    <application>
+        <uses-library
+            android:name="android.test.runner"
+            android:required="false" />
+        <uses-library
+            android:name="android.test.base"
+            android:required="false" />
+    </application>
+</manifest>

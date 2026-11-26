@@ -31,6 +31,10 @@ android {
     buildToolsVersion = "37.0.0"
     namespace = "player.phonograph"
 
+    // android.test.* is an optional platform library on this SDK (compile-only stubs).
+    useLibrary("android.test.base")
+    useLibrary("android.test.runner")
+
     defaultConfig {
         minSdk = 26
         targetSdk = 36
@@ -42,6 +46,8 @@ android {
         proguardFiles(File("proguard-rules-base.pro"), File("proguard-rules-app.pro"))
 
         manifestPlaceholders["GIT_COMMIT_HASH"] = "-"
+
+        testInstrumentationRunner = "android.test.InstrumentationTestRunner"
     }
 
     buildFeatures {
