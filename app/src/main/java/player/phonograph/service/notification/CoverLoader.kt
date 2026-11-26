@@ -70,10 +70,8 @@ class CoverLoader(private val context: Context) {
     /**
      * size correct size
      */
-    private fun ImageRequest.Builder.properSize(): ImageRequest.Builder {
-        if (Build.VERSION.SDK_INT < VERSION_CODES.P) size(largeIconSize)
-        return this
-    }
+    private fun ImageRequest.Builder.properSize(): ImageRequest.Builder =
+        size(if (Build.VERSION.SDK_INT < VERSION_CODES.P) largeIconSize else mediaArtworkSize)
 
     internal val defaultCover: Bitmap by lazy(LazyThreadSafetyMode.NONE) {
         BitmapFactory.decodeResource(context.resources, R.drawable.default_album_art)
@@ -88,7 +86,17 @@ class CoverLoader(private val context: Context) {
         }
     }
 
+    private val mediaArtworkSize: Size by lazy(LazyThreadSafetyMode.NONE) {
+        val maxSize = with(context.resources.displayMetrics) { maxOf(widthPixels, heightPixels) }
+        val size = minOf(maxSize, MEDIA_ARTWORK_MAX_SIZE)
+        Size(size, size)
+    }
+
     fun terminate() {
         cache.evictAll()
+    }
+
+    companion object {
+        private const val MEDIA_ARTWORK_MAX_SIZE = 1024
     }
 }
