@@ -18,7 +18,7 @@ notes:
       - "Improve: support deleting files with their items in playing queue"
       - "Improve: rescan the playlist on entering Playlist Detail"
       - "Modify: mute unnecessary error notifications"
-      - "Development: build with AGP 9.4.1, update dependencies"
+      - "Development: build with AGP 9.4.1, build with SDK 37.1, update dependencies"
   zh:
     items:
       - "修复 对空列表进行随机播放时发生崩溃"
@@ -27,7 +27,7 @@ notes:
       - "改进 支持删除文件时连同对应播放队列中条目一并删除"
       - "改进 进入播放列表详情时扫描检查一次播放列表"
       - "修改 屏蔽不必要的错误通知"
-      - "开发 使用 AGP 9.4.1 构建, 更新依赖"
+      - "开发 使用 AGP 9.4.1 构建, 使用 SDK 37.1 构建, 更新依赖"
 
 previousVersion: "2.0.2"
 previousChannel: "STABLE"
